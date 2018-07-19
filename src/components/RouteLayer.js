@@ -2,6 +2,34 @@ import React, {Component} from "react";
 import {Polyline, CircleMarker, Popup} from "react-leaflet";
 import distanceBetween from "../helpers/distanceBetween";
 import moment from "moment";
+import {Query} from "react-apollo";
+import gql from "graphql-tag";
+import get from "lodash/get";
+
+const timetable = gql`
+  {
+    allDepartures(
+      condition: {
+        stopId: "1362148"
+        routeId: "1078N"
+        dateBegin: "2018-06-18"
+        dateEnd: "2018-08-12"
+        dayType: "Ma"
+      }
+    ) {
+      nodes {
+        stopId
+        routeId
+        departureId
+        hours
+        minutes
+        dateBegin
+        dateEnd
+        dayType
+      }
+    }
+  }
+`;
 
 class RouteLayer extends Component {
   coords = this.props.positions.map(([lon, lat]) => [lat, lon]);
@@ -57,13 +85,30 @@ class RouteLayer extends Component {
             fillOpacity={1}
             radius={6}>
             <Popup>
-              {stop.nameFi}, {stop.shortId.replace(/ /g, "")}
-              {!!stop.hfp && (
-                <React.Fragment>
-                  <br />
-                  Drive-by time: {moment(stop.hfp.receivedAt).format("HH:mm:ss")}
-                </React.Fragment>
-              )}
+              <Query query={timetable}>
+                {({loading, error, data}) => {
+                  const schedule = get(data, "allDepartures.nodes", []);
+                  if (loading || error || schedule.length === 0) return null;
+                  return (
+                    <React.Fragment>
+                      {stop.nameFi}, {stop.shortId.replace(/ /g, "")},{" "}
+                      {schedule.map(({hours, minutes}) => [
+                        hours,
+                        ":",
+                        minutes,
+                        <br />,
+                      ])}
+                      {!!stop.hfp && (
+                        <React.Fragment>
+                          <br />
+                          Drive-by time:{" "}
+                          {moment(stop.hfp.receivedAt).format("HH:mm:ss")}
+                        </React.Fragment>
+                      )}
+                    </React.Fragment>
+                  );
+                }}
+              </Query>
             </Popup>
           </CircleMarker>
         ))}

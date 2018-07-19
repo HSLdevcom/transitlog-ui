@@ -143,6 +143,7 @@ export class LeafletMap extends Component {
                         positions={positions}
                         hfpPositions={hfpPositions}
                         stops={stops}
+                        route={route}
                       />
                     );
                   }}
