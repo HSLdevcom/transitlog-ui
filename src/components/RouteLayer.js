@@ -6,16 +6,18 @@ import {Query} from "react-apollo";
 import gql from "graphql-tag";
 import get from "lodash/get";
 
+// expired timetables not available in jore
 const timetable = gql`
-  {
+  query stopDepartures($stopId: String!, $routeId: String!) {
     allDepartures(
       condition: {
-        stopId: "1362148"
-        routeId: "1078N"
-        dateBegin: "2018-06-18"
-        dateEnd: "2018-08-12"
+        stopId: $stopId
+        routeId: $routeId
         dayType: "Ma"
+        dateBegin: "2018-06-25"
+        dateEnd: "2018-07-22"
       }
+      orderBy: DEPARTURE_ID_ASC
     ) {
       nodes {
         stopId
@@ -72,6 +74,7 @@ class RouteLayer extends Component {
   }, []);
 
   render() {
+    const {route} = this.props;
     return (
       <React.Fragment>
         <Polyline weight={3} positions={this.coords} />
@@ -85,10 +88,12 @@ class RouteLayer extends Component {
             fillOpacity={1}
             radius={6}>
             <Popup>
-              <Query query={timetable}>
+              <Query query={timetable} variables={{...route, stopId: stop.stopId}}>
                 {({loading, error, data}) => {
                   const schedule = get(data, "allDepartures.nodes", []);
+                  console.log(stop.stopId);
                   if (loading || error || schedule.length === 0) return null;
+                  console.log("foo", schedule);
                   return (
                     <React.Fragment>
                       {stop.nameFi}, {stop.shortId.replace(/ /g, "")},{" "}
