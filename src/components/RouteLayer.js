@@ -2,6 +2,36 @@ import React, {Component} from "react";
 import {Polyline, CircleMarker, Popup} from "react-leaflet";
 import distanceBetween from "../helpers/distanceBetween";
 import moment from "moment";
+import {Query} from "react-apollo";
+import gql from "graphql-tag";
+import get from "lodash/get";
+
+// expired timetables not available in jore
+const timetable = gql`
+  query stopDepartures($stopId: String!, $routeId: String!) {
+    allDepartures(
+      condition: {
+        stopId: $stopId
+        routeId: $routeId
+        dayType: "Ma"
+        dateBegin: "2018-06-25"
+        dateEnd: "2018-07-22"
+      }
+      orderBy: DEPARTURE_ID_ASC
+    ) {
+      nodes {
+        stopId
+        routeId
+        departureId
+        hours
+        minutes
+        dateBegin
+        dateEnd
+        dayType
+      }
+    }
+  }
+`;
 
 class RouteLayer extends Component {
   coords = this.props.positions.map(([lon, lat]) => [lat, lon]);
@@ -44,6 +74,7 @@ class RouteLayer extends Component {
   }, []);
 
   render() {
+    const {route} = this.props;
     return (
       <React.Fragment>
         <Polyline weight={3} positions={this.coords} />
@@ -57,13 +88,32 @@ class RouteLayer extends Component {
             fillOpacity={1}
             radius={6}>
             <Popup>
-              {stop.nameFi}, {stop.shortId.replace(/ /g, "")}
-              {!!stop.hfp && (
-                <React.Fragment>
-                  <br />
-                  Drive-by time: {moment(stop.hfp.receivedAt).format("HH:mm:ss")}
-                </React.Fragment>
-              )}
+              <Query query={timetable} variables={{...route, stopId: stop.stopId}}>
+                {({loading, error, data}) => {
+                  const schedule = get(data, "allDepartures.nodes", []);
+                  console.log(stop.stopId);
+                  if (loading || error || schedule.length === 0) return null;
+                  console.log("foo", schedule);
+                  return (
+                    <React.Fragment>
+                      {stop.nameFi}, {stop.shortId.replace(/ /g, "")},{" "}
+                      {schedule.map(({hours, minutes}) => [
+                        hours,
+                        ":",
+                        minutes,
+                        <br />,
+                      ])}
+                      {!!stop.hfp && (
+                        <React.Fragment>
+                          <br />
+                          Drive-by time:{" "}
+                          {moment(stop.hfp.receivedAt).format("HH:mm:ss")}
+                        </React.Fragment>
+                      )}
+                    </React.Fragment>
+                  );
+                }}
+              </Query>
             </Popup>
           </CircleMarker>
         ))}
