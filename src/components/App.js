@@ -173,7 +173,15 @@ class App extends Component {
           onStopSelected={this.onStopSelected}
         />
         <LeafletMap position={map} onMapChanged={this.onMapChanged}>
-          {!route.routeId && map.zoom > 15 && <StopLayer bounds={this.state.bbox} />}
+          {!route.routeId &&
+            map.zoom > 15 && (
+              <StopLayer
+                queryDate={queryDate}
+                onLineSelected={onLineSelected}
+                onRouteSelected={onRouteSelected}
+                bounds={this.state.bbox}
+              />
+            )}
           <RouteLayer
             route={route}
             setMapBounds={this.setMapBounds}
