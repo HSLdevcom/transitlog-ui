@@ -5,8 +5,11 @@ import React from "react";
 import {getCachedData, cacheData, getCacheKey} from "../helpers/hfpCache";
 import groupBy from "lodash/groupBy";
 import map from "lodash/map";
+import get from "lodash/get";
 import HfpQuery from "../queries/HfpQuery";
 import takeEveryNth from "../helpers/takeEveryNth";
+import withRoute from "./withRoute";
+import getJourneyId from "../helpers/getJourneyId";
 
 const formatData = (hfpData) => {
   if (hfpData.length === 0) {
@@ -14,7 +17,7 @@ const formatData = (hfpData) => {
   }
 
   return (
-    takeEveryNth(hfpData, 2) // Take every other hfp item.
+    takeEveryNth(hfpData, 3) // Take every other hfp item.
       // Some HFP items are null for one reason or another. Filter those out.
       .filter((pos) => !!pos && !!pos.lat && !!pos.long)
   );
@@ -39,15 +42,16 @@ const getGroupedByJourney = (hfpData) => {
     return hfpData;
   }
 
-  const groupedData = groupBy(hfpData, "journeyStartTime");
-  const journeyGroups = map(groupedData, (positions, groupName) => ({
-    journeyStartTime: groupName,
+  const groupedData = groupBy(hfpData, getJourneyId);
+  const journeyGroups = map(groupedData, (positions, journeyId) => ({
+    journeyId: journeyId,
     positions,
   }));
 
   return journeyGroups;
 };
 
+@observer
 class HfpLoader extends React.Component {
   render() {
     const {children, route, date, cachedHfp = []} = this.props;
@@ -84,6 +88,7 @@ class HfpLoader extends React.Component {
 
 export default (Component) => {
   @inject(app("state"))
+  @withRoute
   @observer
   class WithHfpData extends React.Component {
     constructor() {
@@ -101,19 +106,23 @@ export default (Component) => {
 
     async updateComponentCache() {
       const {
-        state: {date, route},
+        state: {date},
+        route,
       } = this.props;
 
-      if (!route) {
+      if (!route || !get(route, "routeId", "")) {
         return;
       }
 
       const cacheKey = getCacheKey(date, route);
-      const existingCache = this.cachedHfp.get(cacheKey);
 
-      if (!existingCache) {
-        const cachedHfp = await getCachedData(date, route);
-        this.setCachedHfp(cachedHfp, cacheKey);
+      if (cacheKey) {
+        const existingCache = this.cachedHfp.get(cacheKey);
+
+        if (!existingCache) {
+          const cachedHfp = await getCachedData(date, route);
+          this.setCachedHfp(cachedHfp, cacheKey);
+        }
       }
     }
 
@@ -124,11 +133,12 @@ export default (Component) => {
 
     render() {
       const {
-        state: {date, route},
+        state: {date},
+        route,
       } = this.props;
 
       const cacheKey = getCacheKey(date, route);
-      const cachedPositions = this.cachedHfp.get(cacheKey);
+      const cachedPositions = !cacheKey ? [] : this.cachedHfp.get(cacheKey);
 
       return (
         <HfpLoader cachedHfp={cachedPositions} date={date} route={route}>

@@ -1,12 +1,14 @@
-import get from "lodash/get";
+import {pickJourneyProps} from "../stores/journeyActions";
 
-export default (journey) => {
-  const oday = get(journey, "oday", null);
-  const journeyStartTime = get(journey, "journeyStartTime", null);
-  const route = get(journey, "routeId", null);
-  const dir = get(journey, "directionId", null);
+export default (journey = null) => {
+  const {
+    oday = null,
+    journeyStartTime = null,
+    routeId = null,
+    directionId = null,
+  } = pickJourneyProps(journey || {});
 
   if (!oday || !journeyStartTime) return "";
 
-  return `journey:${oday}_${journeyStartTime}_${route}_${dir}`;
+  return `journey:${oday}_${journeyStartTime}_${routeId}_${directionId}`;
 };

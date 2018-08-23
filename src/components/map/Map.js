@@ -41,19 +41,22 @@ class Map extends Component {
   };
 
   render() {
-    const {bounds: propBounds, children} = this.props;
+    const {bounds: propBounds, children, center} = this.props;
     const {lat, lng, zoom, bounds} = this.state;
 
     const useBounds = propBounds || bounds || null;
+    const useCenter = center || [lat, lng] || null;
 
     return (
       <LeafletMap
-        center={[lat, lng]}
+        center={useCenter}
         zoom={zoom}
         bounds={useBounds}
         onMapChanged={this.onMapChanged}
         onMapChange={this.onMapChange}>
-        {typeof children === "function" ? children(lat, lng, zoom) : children}
+        {typeof children === "function"
+          ? children({lat, lng, zoom, setMapBounds: this.setMapBounds})
+          : children}
       </LeafletMap>
     );
   }

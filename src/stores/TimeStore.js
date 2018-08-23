@@ -1,6 +1,7 @@
 import {extendObservable, reaction, action} from "mobx";
 import moment from "moment";
 import timer from "../helpers/timer";
+import timeActions from "./timeActions";
 
 let timerHandle = null;
 
@@ -11,18 +12,14 @@ export default (state) => {
     timeIncrement: 5,
   });
 
-  const setTime = action((timeValue) => (state.time = timeValue));
-
-  const setTimeIncrement = action(
-    (timeIncrementValue) => (state.timeIncrement = timeIncrementValue)
-  );
+  const actions = timeActions(state);
 
   const onAutoplayIteration = () => {
     const nextTimeValue = moment(state.time, "HH:mm:ss")
       .add(state.timeIncrement, "seconds")
       .format("HH:mm:ss");
 
-    setTime(nextTimeValue);
+    actions.setTime(nextTimeValue);
   };
 
   const toggleAutoplay = action(() => {
@@ -44,8 +41,7 @@ export default (state) => {
   );
 
   return {
-    setTime,
-    setTimeIncrement,
+    ...actions,
     toggleAutoplay,
   };
 };

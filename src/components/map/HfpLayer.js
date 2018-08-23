@@ -7,6 +7,7 @@ import moment from "moment";
 import getDelayType from "../../helpers/getDelayType";
 import {observer, inject} from "mobx-react";
 import {app} from "mobx-app";
+import getJourneyId from "../../helpers/getJourneyId";
 
 @inject(app("state"))
 @observer
@@ -15,12 +16,12 @@ class HfpLayer extends Component {
 
   getLine() {
     const {selectedJourney, positions} = this.props;
-    const journeyStartTime = get(selectedJourney, "journeyStartTime", null);
+    const journeyId = getJourneyId(selectedJourney);
 
     // Get only the positions from the same journey and create latNg items for Leaflet.
     // Additional data can be passed as the third array element which Leaflet won't touch.
     return positions
-      .filter((pos) => pos.journeyStartTime === journeyStartTime)
+      .filter((pos) => getJourneyId(pos) === journeyId)
       .reduce((allChunks, position) => {
         const positionDelay = get(position, "dl", 0);
         const delayType = getDelayType(positionDelay); // "early", "late" or "on-time"
@@ -100,6 +101,7 @@ Delay: ${hfpItem.dl} sek.`;
   render() {
     const {name} = this.props;
     const positions = this.getLine();
+
     return (
       <React.Fragment>
         {positions.map((delayChunk, index) => {

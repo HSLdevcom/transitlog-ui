@@ -27,7 +27,11 @@ class App extends Component {
   };
 
   onMapChanged = (map) => {
-    this.setStopsBbox(map);
+    const {route} = this.props.state;
+
+    if (!route.routeId && map.getZoom() > 14) {
+      this.setStopsBbox(map);
+    }
   };
 
   setStopsBbox = (map) => {
@@ -51,30 +55,26 @@ class App extends Component {
     });
   };
 
-  getJourneyBounds = () => {
+  getJourneyPosition = () => {
     const {
       state: {selectedJourney, date, time},
       positionsByJourney,
     } = this.props;
 
-    let journeyBounds = null;
+    let journeyPosition = null;
 
     if (selectedJourney) {
-      const journeyStartTime = get(selectedJourney, "journeyStartTime");
+      const journeyId = getJourneyId(selectedJourney);
       const timeDate = new Date(`${date}T${time}`);
 
-      const pos = getCoarsePositionForTime(
-        positionsByJourney,
-        journeyStartTime,
-        timeDate
-      );
+      const pos = getCoarsePositionForTime(positionsByJourney, journeyId, timeDate);
 
       if (pos) {
-        journeyBounds = latLng([pos.lat, pos.long]).toBounds(1000);
+        journeyPosition = latLng([pos.lat, pos.long]);
       }
     }
 
-    return journeyBounds;
+    return journeyPosition;
   };
 
   onClickVehicleMarker = (journey) => {
@@ -94,58 +94,56 @@ class App extends Component {
     const {loading, state, positionsByVehicle, positionsByJourney} = this.props;
     const {route, vehicle, stop, selectedJourney} = state;
 
-    const journeyBounds = this.getJourneyBounds();
+    const journeyPosition = this.getJourneyPosition();
 
     return (
       <div className="transitlog">
         <FilterPanel />
-        <Map onMapChanged={this.onMapChanged} bounds={journeyBounds}>
-          {(lat, lng, zoom) => (
+        <Map onMapChanged={this.onMapChanged} center={journeyPosition}>
+          {({lat, lng, zoom, setMapBounds}) => (
             <React.Fragment>
-              {!route &&
+              {!route.routeId &&
                 zoom > 14 && <StopLayer selectedStop={stop} bounds={stopsBbox} />}
               <RouteQuery route={route}>
-                {({routePositions, stops}) => (
-                  <RouteLayer
-                    route={route}
-                    routePositions={routePositions}
-                    stops={stops}
-                    setMapBounds={this.setMapBounds}
-                    key={`route_line_${route}`}
-                    positionsByVehicle={positionsByVehicle}
-                    positionsByJourney={positionsByJourney}
-                  />
-                )}
+                {({routePositions, stops}) =>
+                  routePositions.length !== 0 ? (
+                    <RouteLayer
+                      routePositions={routePositions}
+                      stops={stops}
+                      setMapBounds={setMapBounds}
+                      key={`route_line_${route.routeId}`}
+                      positionsByVehicle={positionsByVehicle}
+                      positionsByJourney={positionsByJourney}
+                    />
+                  ) : null
+                }
               </RouteQuery>
-              {positionsByVehicle.length > 0 &&
-                positionsByVehicle.map(({positions, vehicleId}) => {
-                  if (vehicle && vehicleId !== vehicle) {
+              {positionsByJourney.length > 0 &&
+                positionsByJourney.map(({positions, journeyId}) => {
+                  if (
+                    vehicle &&
+                    get(positions, "[0].uniqueVehicleId", "") !== vehicle
+                  ) {
                     return null;
                   }
 
-                  const lineVehicleId = get(selectedJourney, "uniqueVehicleId", "");
-                  const journeyStartTime = get(
-                    selectedJourney,
-                    "journeyStartTime",
-                    ""
-                  );
-
-                  const key = `${lineVehicleId}_${route}_${journeyStartTime}`;
+                  const isSelectedJourney =
+                    selectedJourney && getJourneyId(selectedJourney) === journeyId;
 
                   return [
-                    lineVehicleId === vehicleId ? (
+                    isSelectedJourney ? (
                       <HfpLayer
-                        key={`hfp_line_${key}`}
+                        key={`hfp_line_${journeyId}`}
                         selectedJourney={selectedJourney}
                         positions={positions}
-                        name={vehicleId}
+                        name={journeyId}
                       />
                     ) : null,
                     <HfpMarkerLayer
-                      key={`hfp_markers_${route}_${vehicleId}`}
+                      key={`hfp_markers_${journeyId}`}
                       onMarkerClick={this.onClickVehicleMarker}
                       positions={positions}
-                      name={vehicleId}
+                      name={journeyId}
                     />,
                   ];
                 })}

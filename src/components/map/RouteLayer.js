@@ -9,6 +9,7 @@ import calculateBoundsFromPositions from "../../helpers/calculateBoundsFromPosit
 import StopMarker from "./StopMarker";
 import {inject, observer} from "mobx-react";
 import {app} from "mobx-app";
+import getJourneyId from "../../helpers/getJourneyId";
 
 @inject(app("Time"))
 @observer
@@ -98,22 +99,24 @@ class RouteLayer extends Component {
       state: {selectedJourney},
     } = this.props;
 
+    const selectedJourneyId = getJourneyId(selectedJourney);
+
     const selectedJourneyPositions = get(
-      positionsByJourney.find(
-        (j) => j.journeyStartTime === selectedJourney.journeyStartTime
-      ),
+      positionsByJourney.find((j) => j.journeyId === selectedJourneyId),
       "positions",
       []
     );
 
-    // Get the hfp positions for when this vehicle was at this stop.
-    const stopJourneys = this.getHfpStopPositions(
-      [selectedJourneyPositions],
-      stop.stopId
-    );
+    return map(
+      groupBy(selectedJourneyPositions, "uniqueVehicleId"),
+      (positions, uniqueVehicleId) => {
+        // Get the hfp positions for when this vehicle was at this stop.
+        const stopJourneys = this.getHfpStopPositions([positions], stop.stopId);
 
-    const journeys = this.getArriveDepartTimes(stopJourneys);
-    return [{vehicleId: selectedJourney.uniqueVehicleId, journeys}];
+        const journeys = this.getArriveDepartTimes(stopJourneys);
+        return {vehicleId: uniqueVehicleId, journeys};
+      }
+    );
   };
 
   getAllStopTimes = (stop) => {
@@ -128,7 +131,6 @@ class RouteLayer extends Component {
       }
     }
 
-    // Hfp positions grouped by the vehicle ID
     const stopHfpGroups = positionsByVehicle.map(({vehicleId, positions}) => {
       const vehicleJourneys = groupBy(positions, "journeyStartTime");
       // Get the hfp positions for when this vehicle was at this stop.

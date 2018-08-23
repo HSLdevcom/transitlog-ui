@@ -83,6 +83,10 @@ class RouteQuery extends Component {
           dateEnd,
         }}>
         {({loading, error, data}) => {
+          if (loading || error) {
+            return null;
+          }
+
           const positions = get(
             data,
             "route.geometries.nodes[0].geometry.coordinates",

@@ -6,7 +6,8 @@ import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import HfpFieldsFragment from "./HfpFieldsFragment";
 import withRoute from "../hoc/withRoute";
-import {observer} from "mobx-react";
+import {observer, inject} from "mobx-react";
+import {app} from "mobx-app";
 
 export const hfpQuery = gql`
   query hfpQuery($routeId: String, $direction: Int, $date: Date) {
@@ -22,6 +23,7 @@ export const hfpQuery = gql`
   ${HfpFieldsFragment}
 `;
 
+@inject(app("Filters"))
 @withRoute
 @observer
 class HfpQuery extends Component {

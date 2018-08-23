@@ -26,10 +26,10 @@ const selectedStopColor = "#33ff88";
 
 class StopLayer extends Component {
   render() {
-    const {selectedStop} = this.props;
+    const {selectedStop, bounds} = this.props;
 
     return (
-      <Query query={stopsByBboxQuery} variables={this.props.bounds}>
+      <Query query={stopsByBboxQuery} variables={bounds}>
         {({loading, data, error}) => {
           if (loading) return "Loading...";
           if (error) return "Error!";

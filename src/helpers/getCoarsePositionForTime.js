@@ -13,25 +13,24 @@ let prevPosition = {
 // This function is not as precise as the ones used
 // for the HFP markers and stop drive-by times. But
 // it is a lot cheaper and more performant!
-function getCoarsePositionForTime(positionsByJourney, journeyStartTime, time) {
+function getCoarsePositionForTime(positionsByJourney, journeyId, time) {
   const positions = get(
-    positionsByJourney.find((j) => j.journeyStartTime === journeyStartTime),
+    positionsByJourney.find((j) => j.journeyId === journeyId),
     "positions",
     []
   );
 
   let followPosition = null;
 
-  const prevPosIdx =
-    prevPosition.journey === journeyStartTime ? prevPosition.posIndex : 0;
+  const prevPosIdx = prevPosition.journey === journeyId ? prevPosition.posIndex : 0;
 
   for (let posIdx = prevPosIdx; posIdx < positions.length; posIdx++) {
     const pos = positions[posIdx];
 
-    if (pos && Math.abs(diffDates(new Date(pos.receivedAt), time)) < 30) {
+    if (pos && Math.abs(diffDates(new Date(pos.receivedAt), time)) <= 15) {
       followPosition = pos;
       prevPosition = {
-        journey: journeyStartTime,
+        journey: journeyId,
         posIndex: posIdx,
       };
 
