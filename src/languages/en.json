@@ -13,12 +13,12 @@
   "filterpanel.find_line_route": "Search line and route",
   "filterpanel.select_route": "Choose route",
   "filterpanel.planned_start_time": "Planned start time",
-  "filterpanel.real_start_time": "Real start time",
+  "filterpanel.real_start_time": "Observed start time",
   "filterpanel.journey.unrealized": "Unrealized",
   "filterpanel.journey.click_to_fetch": "Fetch",
 
-  "map.stops.arrive": "Arrive",
-  "map.stops.depart": "Depart",
+  "map.stops.arrive": "Arrival",
+  "map.stops.depart": "Departure",
 
   "vehicle.next_stop": "Next stop",
   "vehicle.speed": "Speed",
