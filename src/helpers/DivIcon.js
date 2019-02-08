@@ -1,9 +1,9 @@
 // Stolen from https://github.com/jgimbel/react-leaflet-div-icon/blob/master/div-icon.js
-
+import React from "react";
 import {render} from "react-dom";
-import {DivIcon as LeafletDivIcon, marker} from "leaflet";
+import {DivIcon as LeafletDivIcon, Marker as LeafletMarker} from "leaflet";
 import PropTypes from "prop-types";
-import {withLeaflet, MapLayer} from "react-leaflet";
+import {withLeaflet, MapLayer, LeafletProvider} from "react-leaflet";
 
 @withLeaflet
 class DivIcon extends MapLayer {
@@ -16,12 +16,17 @@ class DivIcon extends MapLayer {
   createLeafletElement(newProps) {
     const {icon, position, className, html = "", iconSize, ...props} = newProps;
     this.icon = new LeafletDivIcon({className, html, iconSize});
-    this.leafletElement = marker(position, {...props, icon: this.icon});
+
+    this.leafletElement = new LeafletMarker(position, {
+      ...this.getOptions(props),
+      icon: this.icon,
+    });
 
     setTimeout(() => {
       this.renderComponent(newProps);
     }, 1);
 
+    this.contextValue = {...props.leaflet, popupContainer: this.leafletElement};
     return this.leafletElement;
   }
 
@@ -53,6 +58,13 @@ class DivIcon extends MapLayer {
     if (container) {
       render(component, container);
     }
+  }
+
+  render() {
+    const {children} = this.props;
+    return children == null || this.contextValue == null ? null : (
+      <LeafletProvider value={this.contextValue}>{children}</LeafletProvider>
+    );
   }
 }
 

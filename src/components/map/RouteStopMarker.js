@@ -17,6 +17,7 @@ import get from "lodash/get";
 import {StopRadius} from "./StopRadius";
 import DeparturesQuery from "../../queries/DeparturesQuery";
 import {departureTime} from "../../helpers/time";
+import {Text} from "../../helpers/text";
 import {TIMEZONE} from "../../constants";
 
 const PopupParagraph = styled(P)`
@@ -35,7 +36,7 @@ const ObservedTime = styled(ColoredBackgroundSlot)`
 @observer
 class RouteStopMarker extends React.Component {
   createStopMarker = (delayType, color, isTerminal, children) => {
-    const {stop, showRadius, isSelected, onSelect} = this.props;
+    const {stop, showRadius, selected, onSelect} = this.props;
 
     const timingStopIcon = icon({
       iconUrl: TimingStopIcon,
@@ -58,10 +59,10 @@ class RouteStopMarker extends React.Component {
         center: markerPosition, // One marker type uses center...
         position: markerPosition, // ...the other uses position.
         color: color,
-        fillColor: isSelected ? stopColor : "white",
+        fillColor: selected ? stopColor : "white",
         fillOpacity: 1,
         strokeWeight: isTerminal ? 5 : 3,
-        radius: isTerminal ? 12 : isSelected ? 10 : 8,
+        radius: isTerminal || selected ? 12 : 8,
         onClick: onSelect,
       },
       children
@@ -69,8 +70,8 @@ class RouteStopMarker extends React.Component {
 
     return showRadius ? (
       <StopRadius
-        key={`stop_radius_${stop.stopId}${isSelected ? "_selected" : ""}`}
-        isHighlighted={isSelected}
+        key={`stop_radius_${stop.stopId}${selected ? "_selected" : ""}`}
+        isHighlighted={selected}
         center={markerPosition}
         radius={stop.stopRadius}
         color={stopColor}>
@@ -248,22 +249,24 @@ class RouteStopMarker extends React.Component {
                 </Heading>
                 {doorDidOpen ? (
                   <PopupParagraph>
-                    Arrival time:{" "}
+                    <Text>map.stops.arrive</Text>:{" "}
                     <PlannedTime>{arrivalMoment.format("HH:mm:ss")}</PlannedTime>
                   </PopupParagraph>
                 ) : (
                   <PopupParagraph>
-                    The doors did not open at this stop.
+                    <Text>map.stops.doors_not_open</Text>
                   </PopupParagraph>
                 )}
                 <PopupParagraph>
-                  Planned drive by time:{" "}
+                  <Text>map.stops.planned_driveby</Text>:{" "}
                   <PlannedTime>{plannedMoment.format("HH:mm:ss")}</PlannedTime>
                 </PopupParagraph>
                 <PopupParagraph>
-                  Observed drive by time: {observedTime}
+                  <Text>map.stops.observed_driveby</Text>: {observedTime}
                 </PopupParagraph>
-                <button onClick={this.onShowStreetView}>Show in street view</button>
+                <button onClick={this.onShowStreetView}>
+                  <Text>map.stops.show_in_streetview</Text>
+                </button>
               </Popup>
             );
 

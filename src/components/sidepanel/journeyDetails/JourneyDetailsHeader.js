@@ -5,12 +5,12 @@ import styled from "styled-components";
 import Calendar from "../../../icons/Calendar";
 import JourneyPlanner from "../../../icons/JourneyPlanner";
 import Time2 from "../../../icons/Time2";
-import {getOperatorName} from "../../../helpers/getOperatorNameById";
 
 const JourneyPanelHeader = styled.div`
   flex: none;
   padding: 1rem 1rem 1.5rem 1rem;
   border-bottom: 1px solid var(--lighter-grey);
+  width: 100%;
 
   > * {
     display: flex;
@@ -39,6 +39,7 @@ const MainHeaderRow = styled(Heading).attrs({level: 3})`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const HeaderText = styled.span`
@@ -48,6 +49,7 @@ const HeaderText = styled.span`
   align-items: center;
   font-size: 0.875rem;
   padding-bottom: 1px;
+  overflow: visible;
 
   &:first-child {
     margin-left: 0;
@@ -74,7 +76,6 @@ export default ({mode, routeId, date, name, journey}) => {
           <TransportIcon mode={mode} width={17} height={17} />
           {journey.unique_vehicle_id}
         </HeaderText>
-        <HeaderText>{getOperatorName(journey.owner_operator_id)}</HeaderText>
       </MainHeaderRow>
       <DateTimeHeading>
         <HeaderText>

@@ -15,6 +15,8 @@ export const vehicleTypeQuery = gql`
         multiAxle
         exteriorColor
         class
+        emissionDesc
+        emissionClass
       }
     }
   }

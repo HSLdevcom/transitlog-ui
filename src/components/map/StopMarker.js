@@ -9,6 +9,7 @@ import {app} from "mobx-app";
 import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
 import {StopRadius} from "./StopRadius";
 import {observable, action} from "mobx";
+import {Text} from "../../helpers/text";
 
 const StopOptionButton = styled.button`
   text-decoration: none;
@@ -122,7 +123,9 @@ class StopMarker extends Component {
             {cleanRouteId(routeSegment.routeId)}
           </StopOptionButton>
         ))}
-        <button onClick={this.onShowStreetView}>Show in street view</button>
+        <button onClick={this.onShowStreetView}>
+          <Text>map.stops.show_in_streetview</Text>
+        </button>
       </Popup>
     );
 

@@ -11,7 +11,6 @@ const IconWrapper = styled.span`
   border-radius: 50%;
   position: relative;
   background-color: ${({color}) => color};
-  ${({isStopped = false}) => (isStopped ? "box-shadow: 0 0 1px 1px black;" : "")}
 `;
 
 const Icon = styled.div`
@@ -22,7 +21,6 @@ const Icon = styled.div`
   justify-content: center;
   border-radius: 50%;
   position: relative;
-  transform: none;
   z-index: 10;
   overflow: hidden;
   transform: ${({rotation}) => `rotate(${rotation}deg)`};
@@ -64,10 +62,9 @@ const HeadingArrow = styled.span`
   width: 0;
   height: 0;
   position: absolute;
-  top: -82%;
-  left: 50%;
-  margin-left: -14px;
-  border-width: 18px 14px;
+  top: -29px;
+  left: 5px;
+  border-width: 17px 13px;
   border-color: transparent transparent ${({color = "var(--blue)"}) => color}
     transparent;
   border-style: solid;
@@ -82,6 +79,7 @@ class VehicleMarker extends React.Component {
 
     const color = getModeColor(get(position, "mode", "").toUpperCase());
 
+    // The spd value can be a bit flaky, so I decided that under 2 m/s is stopped enough.
     const isStopped = position.spd < 2;
 
     return (

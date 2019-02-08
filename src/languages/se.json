@@ -18,6 +18,8 @@
   "filterpanel.journey.no_data": "Ingen data",
   "filterpanel.journey.incomplete_data": "Ofullständig data",
   "filterpanel.journey.click_to_fetch": "Hämta",
+  "filterpanel.clear.stop": "Återställ hållplats",
+  "filterpanel.clear.vehicle": "Återställ fordon",
 
   "sidepanel.tabs.journeys": "Resor",
   "sidepanel.tabs.timetables": "Tidtabeller",
@@ -28,6 +30,10 @@
 
   "map.stops.arrive": "Anländningstid",
   "map.stops.depart": "Avgångstid",
+  "map.stops.planned_driveby": "Planerad körtid",
+  "map.stops.observed_driveby": "Observerad körtid",
+  "map.stops.show_in_streetview": "Visa i gatuvy",
+  "map.stops.doors_not_open": "Dörrarna öppnades aldrig på denna hållplats",
 
   "vehicle.next_stop": "Nästa hållplats",
   "vehicle.speed": "Hastighet",
@@ -37,7 +43,7 @@
 
   "journey.terminal_time": "Terminaltid",
   "journey.recovery_time": "Återhämtningstid",
-  "journey.requested_equipment": "Begärd utrustning",
+  "journey.requested_equipment": "Utrustning",
   "journey.departure_minus_terminal": "avgångstid - terminaltid",
   "journey.stops_hidden": "hållplatser gömda",
   "journey.arrival": "Ankomst",
@@ -58,5 +64,6 @@
   "general.journey": "resa",
   "general.update": "Uppdatera",
   "general.live": "Live",
-  "general.no_type": "Ingen typ"
+  "general.no_type": "Ingen typ",
+  "general.share": "Dela vy"
 }

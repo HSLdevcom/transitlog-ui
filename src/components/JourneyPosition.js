@@ -75,25 +75,21 @@ class JourneyPosition extends Component {
   // Index the hfp events under their timestamp to make it easy to find them on the fly.
   // This is a performance optimization.
   indexPositions = (positions) => {
-    const indexed = positions.reduce((positionIndex, position) => {
+    return positions.reduce((positionIndex, position) => {
       const key = position.received_at_unix;
       positionIndex.set(key, position);
       return positionIndex;
     }, new Map());
-
-    return indexed;
   };
 
   indexJourneys = (journeys) => {
-    const indexed = journeys.reduce(
+    this.positions = journeys.reduce(
       (journeyIndex, {journeyId = "", events = []}) => {
         journeyIndex.set(journeyId, this.indexPositions(events));
         return journeyIndex;
       },
       new Map()
     );
-
-    this.positions = indexed;
   };
 
   componentDidMount() {

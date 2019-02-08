@@ -18,6 +18,8 @@
   "filterpanel.journey.no_data": "Ei tietoja",
   "filterpanel.journey.incomplete_data": "Puutteelliset tiedot",
   "filterpanel.journey.click_to_fetch": "Hae",
+  "filterpanel.clear.stop": "Tyhjennä pysäkkivalinta",
+  "filterpanel.clear.vehicle": "Tyhjennä ajoneuvovalinta",
 
   "sidepanel.tabs.journeys": "Lähdöt",
   "sidepanel.tabs.timetables": "Aikataulut",
@@ -28,6 +30,10 @@
 
   "map.stops.arrive": "Saapumisaika",
   "map.stops.depart": "Lähtöaika",
+  "map.stops.planned_driveby": "Suunniteltu ohitusaika",
+  "map.stops.observed_driveby": "Toteutunut ohitusaika",
+  "map.stops.show_in_streetview": "Näytä katunäkymässä",
+  "map.stops.doors_not_open": "Ovet eivät avautuneet tällä pysäkillä. The doors did not open at this stop.",
 
   "vehicle.next_stop": "Seuraava pysäkki",
   "vehicle.speed": "Nopeus",
@@ -37,7 +43,7 @@
 
   "journey.terminal_time": "Terminaaliaika",
   "journey.recovery_time": "Elpymisaika",
-  "journey.requested_equipment": "Vaadittu kalusto",
+  "journey.requested_equipment": "Kalusto",
   "journey.departure_minus_terminal": "Lähtöaika - terminaaliaika",
   "journey.stops_hidden": "pysäkkiä piilossa",
   "journey.arrival": "Saapuminen",
@@ -58,5 +64,6 @@
   "general.journey": "lähtö",
   "general.update": "Päivitä",
   "general.live": "Elävä",
-  "general.no_type": "Ei tyyppiä"
+  "general.no_type": "Ei tyyppiä",
+  "general.share": "Jaa näkymää"
 }

@@ -68,7 +68,7 @@ export default decorate(({UI, className}) => (
     </MainHeading>
     <BottomRow>
       <Button small transparent onClick={() => UI.toggleShareModal(true)}>
-        Share
+        <Text>general.share</Text>
       </Button>
       <LangSelectContainer>
         <LanguageSelect />

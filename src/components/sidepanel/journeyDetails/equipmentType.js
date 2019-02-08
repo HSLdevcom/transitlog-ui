@@ -27,7 +27,7 @@ export function getEquipmentType(code) {
 
 export function checkRequirements(departure, equipment) {
   const {trunkColorRequired, equipmentRequired, equipmentType} = departure;
-  const {type, exteriorColor} = equipment;
+  const {type, exteriorColor, emissionDesc, emissionClass} = equipment;
 
   const plannedEquipmentType = getEquipmentType(equipmentType);
 
@@ -45,6 +45,10 @@ export function checkRequirements(departure, equipment) {
     exteriorColor: {
       observed: exteriorColor,
       required: trunkColorRequired ? "HSL-orans" : false,
+    },
+    emissionClass: {
+      observed: `${emissionDesc} (${emissionClass})`,
+      required: false,
     },
   };
 

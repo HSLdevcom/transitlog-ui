@@ -28,7 +28,6 @@ class Map extends PureComponent {
   prevCenter = null;
 
   disposeSidePanelReaction = () => {};
-  disposeCanSetViewReaction = () => {};
 
   mapRef = React.createRef();
 
@@ -58,11 +57,6 @@ class Map extends PureComponent {
     const {state} = this.props;
     const map = this.getLeaflet();
 
-    this.disposeCanSetViewReaction = reaction(
-      () => (!this.canSetView ? [state.time, state.route] : false),
-      (change) => change !== false && (this.canSetView = true)
-    );
-
     this.disposeSidePanelReaction = reaction(
       () =>
         (state.sidePanelVisible ? "visible" : "not visible") +
@@ -79,8 +73,10 @@ class Map extends PureComponent {
       }
     );
 
+    let urlCenter = "";
+
     if (map) {
-      const urlCenter = getUrlValue(MAP_BOUNDS_URL_KEY);
+      urlCenter = getUrlValue(MAP_BOUNDS_URL_KEY);
 
       let [lat = "", lng = "", zoom = this.state.zoom] = urlCenter.split(",");
 
@@ -100,6 +96,10 @@ class Map extends PureComponent {
         zoom
       );
     }
+
+    // To prevent the map from moving away from the view shared in the URL, allow
+    // view changes only after a timeout. Feel free to adjust if this value doesn't work.
+    setTimeout(() => (this.canSetView = true), urlCenter ? 3000 : 0);
   }
 
   setMapCenter = (center) => {
@@ -119,7 +119,6 @@ class Map extends PureComponent {
 
   componentWillUnmount() {
     this.disposeSidePanelReaction();
-    this.disposeCanSetViewReaction();
   }
 
   setMapBounds = (bounds = null) => {
@@ -185,10 +184,6 @@ class Map extends PureComponent {
     const {zoom, currentMapillaryViewerLocation, mapView} = this.state;
     const {children, className} = this.props;
 
-    const child = (props) => (
-      <>{typeof children === "function" ? children(props) : children}</>
-    );
-
     return (
       <LeafletMap
         setMapillaryViewerLocation={this.setMapillaryViewerLocation}
@@ -198,7 +193,7 @@ class Map extends PureComponent {
         className={className}
         onMapChanged={this.onMapChanged}
         onZoom={this.onZoom}>
-        {child({
+        {children({
           setViewerLocation: this.setMapillaryViewerLocation,
           zoom,
           mapView,

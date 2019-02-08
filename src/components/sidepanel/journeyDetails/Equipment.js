@@ -19,7 +19,7 @@ const Requirement = styled.span`
   }
 `;
 
-export default ({journey, departure}) => {
+export default ({journey, departure, children}) => {
   const {owner_operator_id, vehicle_number} = journey;
 
   const operatorId = (owner_operator_id + "").padStart(4, "0");
@@ -28,36 +28,33 @@ export default ({journey, departure}) => {
   return (
     <EquipmentQuery vehicleId={vehicleId} operatorId={operatorId}>
       {({vehicle, loading}) => {
-        if (!vehicle || loading) return null;
+        if (!vehicle || loading) {
+          return children({equipment: [], loading});
+        }
 
         const equipmentRequirements = checkRequirements(departure, vehicle);
 
-        return (
-          <EquipmentWrapper data-testid="equipment-wrapper">
-            {map(equipmentRequirements, ({observed, required}, prop) => {
-              if (!observed) {
-                return null;
-              }
+        const equipment = map(
+          equipmentRequirements,
+          ({observed, required}, prop) => {
+            const isRequired = required !== false;
 
-              const isRequired = required !== false;
+            const color = isRequired
+              ? observed === required
+                ? "var(--light-green)"
+                : "var(--red)"
+              : "var(--lighter-grey)";
 
-              const color = isRequired
-                ? observed === required
-                  ? "var(--light-green)"
-                  : "var(--red)"
-                : "var(--dark-grey)";
-
-              return (
-                <Requirement
-                  key={`observed_equipment_${prop}`}
-                  color={color}
-                  bold={isRequired}>
-                  {observed}
-                </Requirement>
-              );
-            })}
-          </EquipmentWrapper>
+            return {
+              name: prop,
+              observed,
+              required,
+              color,
+            };
+          }
         );
+
+        return children({equipment, loading});
       }}
     </EquipmentQuery>
   );

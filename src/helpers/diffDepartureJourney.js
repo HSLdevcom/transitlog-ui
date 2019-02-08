@@ -19,10 +19,11 @@ export function diffDepartureJourney(journey, departure, date, useArrival = fals
   // TODO: verify that the change in diff direction works
 
   const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
-  const {seconds, minutes} = secondsToTimeObject(diff);
+  const {seconds, minutes, hours} = secondsToTimeObject(diff);
 
   return {
     diff,
+    hours,
     minutes,
     seconds,
     sign,

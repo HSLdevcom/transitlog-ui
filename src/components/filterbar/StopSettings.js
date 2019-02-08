@@ -1,6 +1,6 @@
 import React from "react";
 import Input from "../Input";
-import {text} from "../../helpers/text";
+import {text, Text} from "../../helpers/text";
 import {ControlGroup, Button} from "../Forms";
 import {inject, observer} from "mobx-react";
 import {app} from "mobx-app";
@@ -38,7 +38,7 @@ class StopSettings extends React.Component {
         </ControlGroup>
         {!!stop && (
           <Button primary={false} small={true} onClick={() => Filters.setStop("")}>
-            Clear stop
+            <Text>filterpanel.clear.stop</Text>
           </Button>
         )}
       </>

@@ -223,6 +223,9 @@ class Journeys extends Component {
                                 "var(--light-green)"
                               )}>
                               {plannedObservedDiff.sign === "-" ? "-" : ""}
+                              {plannedObservedDiff.hours
+                                ? doubleDigit(plannedObservedDiff.hours) + ":"
+                                : ""}
                               {doubleDigit(plannedObservedDiff.minutes)}:
                               {doubleDigit(plannedObservedDiff.seconds)}
                             </DelaySlot>

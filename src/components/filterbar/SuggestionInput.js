@@ -25,11 +25,16 @@ export const SuggestionContent = styled.div`
     isHighlighted ? "white" : "var(--dark-grey)"};
   padding: 0.25rem 0.5rem;
 
-  &:before {
+  ${({withIcon = false}) =>
+    withIcon
+      ? `
+&:before {
     content: "";
     width: 1.25rem;
     height: 1.25rem;
   }
+`
+      : ""};
 `;
 
 export const SuggestionText = styled.div`

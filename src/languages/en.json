@@ -18,6 +18,8 @@
   "filterpanel.journey.no_data": "No data",
   "filterpanel.journey.incomplete_data": "Incomplete data",
   "filterpanel.journey.click_to_fetch": "Fetch",
+  "filterpanel.clear.stop": "Clear stop",
+  "filterpanel.clear.vehicle": "Clear vehicle",
 
   "sidepanel.tabs.journeys": "Journeys",
   "sidepanel.tabs.timetables": "Timetables",
@@ -28,6 +30,10 @@
 
   "map.stops.arrive": "Arrival",
   "map.stops.depart": "Departure",
+  "map.stops.planned_driveby": "Planned drive-by time",
+  "map.stops.observed_driveby": "Observed drive-by time",
+  "map.stops.show_in_streetview": "Show in street view",
+  "map.stops.doors_not_open": "The doors did not open at this stop.",
 
   "vehicle.next_stop": "Next stop",
   "vehicle.speed": "Speed",
@@ -37,7 +43,7 @@
 
   "journey.terminal_time": "Terminal time",
   "journey.recovery_time": "Recovery time",
-  "journey.requested_equipment": "Requested equipment",
+  "journey.requested_equipment": "Equipment",
   "journey.departure_minus_terminal": "departure time - terminal time",
   "journey.stops_hidden": "stops hidden",
   "journey.arrival": "Arrival",
@@ -58,5 +64,6 @@
   "general.journey": "journey",
   "general.update": "Update",
   "general.live": "Live",
-  "general.no_type": "No type"
+  "general.no_type": "No type",
+  "general.share": "Share view"
 }

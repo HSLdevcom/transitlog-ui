@@ -3,13 +3,14 @@ import {Polyline} from "react-leaflet";
 import {latLng} from "leaflet";
 import get from "lodash/get";
 import last from "lodash/last";
-import moment from "moment";
+import orderBy from "lodash/orderBy";
 import getDelayType from "../../helpers/getDelayType";
-import {observer, inject} from "mobx-react";
+import {observer, inject, Observer} from "mobx-react";
 import {app} from "mobx-app";
 import getJourneyId from "../../helpers/getJourneyId";
-import {text} from "../../helpers/text";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
+import {observable, action} from "mobx";
+import HfpTooltip from "./HfpTooltip";
 
 export function getLineChunksByDelay(positions, journeyId) {
   // Get only the positions from the same journey and create latLng items for Leaflet.
@@ -51,12 +52,21 @@ export function getLineChunksByDelay(positions, journeyId) {
 @inject(app("state"))
 @observer
 class HfpLayer extends Component {
+  @observable.ref
+  hoverPosition = null;
+
   mouseOver = false;
 
-  findHfpItem = (chunk = [], latlng) => {
-    const hfpItem = get(chunk, "positions", []).find((hfp) =>
-      latlng.equals(latLng(hfp.lat, hfp.long), 0.0001)
-    );
+  setHoverPosition = action((position) => {
+    this.hoverPosition = position;
+  });
+
+  findHfpItem = (positions = [], latlng) => {
+    const hfpItem = orderBy(
+      positions,
+      (hfp) => latlng.distanceTo(latLng(hfp.lat, hfp.long)),
+      "ASC"
+    )[0];
 
     return hfpItem || null;
   };
@@ -75,39 +85,20 @@ class HfpLayer extends Component {
 
   onMousemove = (positions) => (event) => {
     if (!this.mouseOver) {
+      this.setHoverPosition(null);
       return;
     }
 
     const hfpItem = this.findHfpItem(positions, event.latlng);
 
     if (hfpItem) {
-      const dlText =
-        hfpItem.dl !== 0
-          ? `${
-              hfpItem.dl < 0
-                ? text("vehicle.delay.late")
-                : text("vehicle.delay.early")
-            }: ${Math.abs(hfpItem.dl)} ${text("general.seconds.short")}`
-          : "";
-
-      const line = event.target;
-      const tooltipContent = `${moment(hfpItem.received_at).format("HH:mm:ss")}<br />
-${hfpItem.unique_vehicle_id}<br />
-${text("vehicle.speed")}: ${Math.round((hfpItem.spd * 18) / 5)} km/h<br />
-${dlText}`;
-
-      const lineTooltip = line.getTooltip();
-
-      if (lineTooltip) {
-        lineTooltip.setContent(tooltipContent);
-      } else {
-        line.bindTooltip(tooltipContent, {sticky: true}).openTooltip();
-      }
+      this.setHoverPosition(hfpItem);
     }
   };
 
   render() {
     const {name, selectedJourney, positions: hfpPositions} = this.props;
+
     const positions = getLineChunksByDelay(
       hfpPositions,
       getJourneyId(selectedJourney)
@@ -118,19 +109,23 @@ ${dlText}`;
         {positions.map((delayChunk, index) => {
           const chunkDelayType = get(delayChunk, "delayType", "on-time");
           const chunkPositions = get(delayChunk, "positions", []);
+          const points = chunkPositions.map((pos) => [pos.lat, pos.long]);
 
-          // Render each chunk with a color that matches the delay.
           return (
-            <Polyline
-              key={`hfp_polyline_${name}_chunk_${index}`}
-              onMousemove={this.onMousemove(delayChunk)}
-              onMouseover={this.onHover}
-              onMouseout={this.onMouseout}
-              pane="hfp-lines"
-              weight={3}
-              color={getTimelinessColor(chunkDelayType, "var(--light-green)")}
-              positions={chunkPositions.map((pos) => [pos.lat, pos.long])}
-            />
+            <Observer key={`hfp_polyline_${name}_chunk_${index}`}>
+              {() => (
+                <Polyline
+                  onMousemove={this.onMousemove(chunkPositions)}
+                  onMouseover={this.onHover}
+                  onMouseout={this.onMouseout}
+                  pane="hfp-lines"
+                  weight={3}
+                  color={getTimelinessColor(chunkDelayType, "var(--light-green)")}
+                  positions={points}>
+                  <HfpTooltip position={this.hoverPosition} />
+                </Polyline>
+              )}
+            </Observer>
           );
         })}
       </React.Fragment>

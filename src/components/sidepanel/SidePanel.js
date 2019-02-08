@@ -156,7 +156,7 @@ class SidePanel extends Component {
             )}
           </Tabs>
         </MainSidePanel>
-        <JourneyPanel visible={hasEvents && journeyDetailsAreOpen}>
+        <JourneyPanel visible={journeyDetailsAreOpen}>
           {/* The content of the sidebar is independent from the sidebar wrapper so that we can animate it. */}
           {journeyDetailsAreOpen && (
             <JourneyDetails selectedJourneyEvents={selectedJourneyEvents} />

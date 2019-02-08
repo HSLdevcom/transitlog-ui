@@ -5,9 +5,6 @@ import get from "lodash/get";
 import sortBy from "lodash/sortBy";
 import omit from "lodash/omit";
 import styled from "styled-components";
-import {Button} from "../../Forms";
-import Minus from "../../../icons/Minus";
-import Plus from "../../../icons/Plus";
 import JourneyStop from "./JourneyStop";
 import {Text} from "../../../helpers/text";
 import {filterRouteSegments} from "../../../helpers/filterJoreCollections";
@@ -16,9 +13,6 @@ const JourneyStopsWrapper = styled.div`
   margin-left: ${({expanded}) => (expanded ? "0" : "calc(1.5rem - 1px)")};
   border-left: ${({expanded}) => (expanded ? "0" : "3px dotted var(--light-grey)")};
   padding: ${({expanded}) => (expanded ? "0" : "1rem 0")};
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
   position: relative;
 `;
 
@@ -29,31 +23,28 @@ const StopsList = styled.div`
 `;
 
 const HiddenStopsMessage = styled.span`
-  padding-left: 0.875rem;
+  padding-left: 1.5rem;
 `;
 
-const JourneyExpandToggle = styled(Button).attrs({small: true})`
-  box-sizing: content-box;
-  border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
+const JourneyExpandToggle = styled.button`
+  position: absolute;
+  top: ${({expanded}) => (expanded ? "-1.5rem" : "0")};
+  left: 0;
   padding: 0;
+  padding-left: ${({expanded}) => (expanded ? "1.5rem" : "0")};
+  background: transparent;
+  border: 0;
+  font-family: inherit;
   color: white;
-  background: var(--blue);
-  position: fixed;
-  transform: translateX(
-    ${({isExpanded = false}) => (isExpanded ? "22.2rem" : "21.5rem")}
-  );
-  transition: border-width 0.1s ease-out;
-  border: 0 solid var(--blue);
+  text-decoration: underline dashed;
+  color: var(--blue);
+  transition: transform 0.1s ease-out;
+  cursor: pointer;
+  outline: none;
+  text-align: left;
 
   &:hover {
-    background: var(--blue);
-    color: white;
-    border-width: 1px;
-    transform: translateX(
-      ${({isExpanded = false}) => (isExpanded ? "22.2rem" : "21.5rem")}
-    );
+    transform: scale(1.025);
   }
 `;
 
@@ -95,8 +86,19 @@ class JourneyStops extends React.Component {
 
     return (
       <JourneyStopsWrapper expanded={this.journeyIsExpanded}>
-        <StopsList>
+        <JourneyExpandToggle
+          expanded={this.journeyIsExpanded}
+          onClick={() => this.toggleJourneyExpanded()}>
           {this.journeyIsExpanded ? (
+            <HiddenStopsMessage>Hide stops</HiddenStopsMessage>
+          ) : (
+            <HiddenStopsMessage>
+              {journeyStops.length - 2} <Text>journey.stops_hidden</Text>
+            </HiddenStopsMessage>
+          )}
+        </JourneyExpandToggle>
+        <StopsList>
+          {this.journeyIsExpanded &&
             journeyStops
               .slice(1, journeyStops.length - 1)
               .map((journeyStop) => (
@@ -108,22 +110,8 @@ class JourneyStops extends React.Component {
                   journeyPositions={journeyHfp}
                   onClickTime={onClickTime}
                 />
-              ))
-          ) : (
-            <HiddenStopsMessage>
-              {journeyStops.length - 2} <Text>journey.stops_hidden</Text>
-            </HiddenStopsMessage>
-          )}
+              ))}
         </StopsList>
-        <JourneyExpandToggle
-          isExpanded={this.journeyIsExpanded}
-          onClick={() => this.toggleJourneyExpanded()}>
-          {this.journeyIsExpanded ? (
-            <Minus fill="white" width="0.75rem" height="0.75rem" />
-          ) : (
-            <Plus fill="white" width="0.75rem" height="0.75rem" />
-          )}
-        </JourneyExpandToggle>
       </JourneyStopsWrapper>
     );
   }

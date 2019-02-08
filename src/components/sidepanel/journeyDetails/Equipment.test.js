@@ -14,6 +14,8 @@ const equipmentProps = {
   class: "A",
   registryNr: "123",
   vehicleId: "100",
+  emissionClass: "01",
+  emissionDesc: "EEV",
 };
 
 describe("Equipment", () => {
@@ -75,7 +77,7 @@ describe("Equipment", () => {
   beforeEach(onBeforeEach);
   afterEach(cleanup);
 
-  test("Renders a list of used equipment and compares it to the requirements", async () => {
+  test("Compiles a list of used equipment and compares it to the requirements", async () => {
     const event = {
       owner_operator_id: 1,
       vehicle_number: 100,
@@ -86,21 +88,41 @@ describe("Equipment", () => {
       equipmentType: "0", // 0 corresponds to type C.
     };
 
-    const {getByTestId, queryByText, baseElement} = render({
+    // The test will wait for the mock element to exist, so mount it only when the data finished loading.
+    const cb = jest.fn(({loading}) =>
+      loading ? null : <div data-testid="equipment" />
+    );
+
+    const {getByTestId} = render({
       journey: event,
       departure,
+      children: cb,
     });
 
-    const equipment = await waitForElement(() => getByTestId("equipment-wrapper"));
+    // Await the mock element created above.
+    await waitForElement(() => getByTestId("equipment"));
 
-    expect(equipment).toHaveTextContent("CHSL-orans");
-    // Green means it's CORRECT, bold means it's a hard requirement
-    expect(queryByText("C")).toHaveStyle(
-      "color: var(--light-green); font-weight: bold;"
-    );
-    expect(queryByText("HSL-orans")).toHaveStyle(
-      "color: var(--light-green); font-weight: bold;"
-    );
+    const expectEquipment = {
+      loading: false,
+      equipment: [
+        {name: "type", observed: "C", required: "C", color: "var(--light-green)"},
+        {
+          name: "exteriorColor",
+          observed: "HSL-orans",
+          required: "HSL-orans",
+          color: "var(--light-green)",
+        },
+        {
+          name: "emissionClass",
+          observed: "EEV (01)",
+          required: false,
+          color: "var(--lighter-grey)",
+        },
+      ],
+    };
+
+    expect(cb).toHaveBeenCalledTimes(3);
+    return expect(cb.mock.calls[2][0]).toMatchObject(expectEquipment);
   });
 
   test("Highlights mismatching equipment", async () => {
@@ -114,19 +136,31 @@ describe("Equipment", () => {
       equipmentType: "0", // 0 corresponds to type C. The equipment will have type A1 so it's an error.
     };
 
-    const {getByTestId, queryByText} = render({
+    const cb = jest.fn(({loading}) =>
+      loading ? null : <div data-testid="equipment" />
+    );
+
+    const {getByTestId} = render({
       journey: event,
       departure,
+      children: cb,
     });
 
-    const equipment = await waitForElement(() => getByTestId("equipment-wrapper"));
+    await waitForElement(() => getByTestId("equipment"));
 
-    expect(equipment).toHaveTextContent("A1HSL-sin");
-    // Red means it's WRONG, bold means it's a hard requirement
-    expect(queryByText("A1")).toHaveStyle("color: var(--red); font-weight: bold;");
-    expect(queryByText("HSL-sin")).toHaveStyle(
-      "color: var(--red); font-weight: bold;"
-    );
+    expect(cb.mock.calls[2][0].equipment[0]).toMatchObject({
+      name: "type",
+      required: "C",
+      observed: "A1",
+      color: "var(--red)",
+    });
+
+    expect(cb.mock.calls[2][0].equipment[1]).toMatchObject({
+      name: "exteriorColor",
+      required: "HSL-orans",
+      observed: "HSL-sin",
+      color: "var(--red)",
+    });
   });
 
   test("No highlight if the requirement is not hard", async () => {
@@ -140,20 +174,30 @@ describe("Equipment", () => {
       equipmentType: "0", // 0 corresponds to type C, but it's not a hard requirement in this case.
     };
 
-    const {getByTestId, queryByText} = render({
+    const cb = jest.fn(({loading}) =>
+      loading ? null : <div data-testid="equipment" />
+    );
+
+    const {getByTestId} = render({
       journey: event,
       departure,
+      children: cb,
     });
 
-    const equipment = await waitForElement(() => getByTestId("equipment-wrapper"));
+    await waitForElement(() => getByTestId("equipment"));
 
-    expect(equipment).toHaveTextContent("A1HSL-sin");
-    // Red means it's WRONG, bold means it's a hard requirement
-    expect(queryByText("A1")).toHaveStyle(
-      "color: var(--dark-grey); font-weight: normal;"
-    );
-    expect(queryByText("HSL-sin")).toHaveStyle(
-      "color: var(--dark-grey); font-weight: normal;"
-    );
+    expect(cb.mock.calls[2][0].equipment[0]).toMatchObject({
+      name: "type",
+      required: false,
+      observed: "A1",
+      color: "var(--lighter-grey)",
+    });
+
+    expect(cb.mock.calls[2][0].equipment[1]).toMatchObject({
+      name: "exteriorColor",
+      required: false,
+      observed: "HSL-sin",
+      color: "var(--lighter-grey)",
+    });
   });
 });

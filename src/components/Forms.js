@@ -9,7 +9,7 @@ export const GlobalFormStyle = createGlobalStyle`
   }
 `;
 
-const NORMAL_HEIGHT = "2rem";
+const INPUT_HEIGHT = "2rem";
 
 export const ControlGroup = styled.div`
   display: flex;
@@ -37,12 +37,12 @@ export const InputLabel = styled.label`
 
 export const InputStyles = css`
   font-family: var(--font-family);
-  padding: 0.7rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 0.25rem;
   border: 1px solid var(--alt-grey);
   outline: none;
   font-size: 0.875rem;
-  height: ${NORMAL_HEIGHT};
+  height: ${INPUT_HEIGHT};
   background-color: white;
 
   &:focus {
