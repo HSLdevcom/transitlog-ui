@@ -12,12 +12,12 @@ select opt in "${option_labels[@]}"; do
     ;;
   "Development")
     echo "You chose Development"
-    ENV=development
+    ENV=dev
     break
     ;;
   "Staging")
     echo "You chose Staging"
-    ENV=staging
+    ENV=stage
     break
     ;;
   "Production")
@@ -35,7 +35,7 @@ done
 echo "Building for the $opt ($ENV) environment..."
 
 ORG=${ORG:-hsldevcom}
-DOCKER_IMAGE=${ORG}/transitlog-ui:latest-${ENV}
+DOCKER_IMAGE=${ORG}/transitlog-ui:${ENV}
 
 docker build --build-arg BUILD_ENV=${ENV} -t ${DOCKER_IMAGE} .
 docker push ${DOCKER_IMAGE}
