@@ -1,12 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  TagButton,
-  ColoredSlot,
-  ColoredBackgroundSlot,
-  PlainSlot,
-  PlainSlotSmall,
-} from "../TagButton";
+import {TagButton, ColoredBackgroundSlot, PlainSlotSmall} from "../TagButton";
 
 const ExampleSlotWrapper = styled.div`
   margin-left: 20px;

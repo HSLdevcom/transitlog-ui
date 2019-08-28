@@ -11,7 +11,6 @@ import Login from "../../icons/Login";
 import ControlBar from "../sidepanel/ControlBar";
 import {Button} from "../Forms";
 import Info from "../../icons/Info";
-import {applyTooltip} from "../../hooks/useTooltip";
 import {text} from "../../helpers/text";
 
 const Header = styled.header`
