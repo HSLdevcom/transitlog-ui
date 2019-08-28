@@ -2,7 +2,7 @@
 set -e
 
 PS3='Select an environment:'
-option_labels=("Local" "Development" "Staging" "Production")
+option_labels=("Local" "Development" "Staging" "Production" "Old")
 select opt in "${option_labels[@]}"; do
   case $opt in
   "Local")
@@ -23,6 +23,11 @@ select opt in "${option_labels[@]}"; do
   "Production")
     echo "You chose Production"
     ENV=production
+    break
+    ;;
+  "Old")
+    echo "You chose Old"
+    ENV=old
     break
     ;;
   *)
