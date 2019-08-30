@@ -16,9 +16,10 @@ const decorate = flow(
 
 const Alerts = decorate(({state}) => {
   const searchTime = state.date;
+  const language = state.language;
 
   return (
-    <AlertsQuery time={searchTime} alertSearch={{all: true}}>
+    <AlertsQuery time={searchTime} language={language} alertSearch={{all: true}}>
       {({alerts = [], loading: alertsLoading}) => (
         <CancellationsQuery date={searchTime} cancellationsSearch={{all: true}}>
           {({cancellations = [], loading: cancellationsLoading}) => (

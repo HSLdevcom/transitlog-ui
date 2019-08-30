@@ -8,6 +8,7 @@ import {AlertFieldsFragment} from "./AlertFieldsFragment";
 const alertsQuery = gql`
   query alertsQuery(
     $time: String!
+    $language: String!
     $all: Boolean
     $network: Boolean
     $allRoutes: Boolean
@@ -17,6 +18,7 @@ const alertsQuery = gql`
   ) {
     alerts(
       time: $time
+      language: $language
       alertSearch: {
         all: $all
         network: $network
@@ -32,9 +34,9 @@ const alertsQuery = gql`
   ${AlertFieldsFragment}
 `;
 
-const AlertsQuery = observer(({time, alertSearch, children}) => {
+const AlertsQuery = observer(({time, language = "fi", alertSearch, children}) => {
   return (
-    <Query query={alertsQuery} variables={{time, ...alertSearch}}>
+    <Query query={alertsQuery} variables={{time, language, ...alertSearch}}>
       {({loading, error, data}) => {
         const alerts = get(data, "alerts", []);
 

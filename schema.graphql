@@ -16,6 +16,7 @@ type Alert {
   description: String!
   distribution: AlertDistribution!
   endDateTime: DateTime!
+  id: Int!
   impact: AlertImpact!
   lastModifiedDateTime: DateTime!
   level: AlertLevel!
@@ -49,6 +50,7 @@ type Cancellation {
   departureDate: Date!
   description: String!
   direction: Direction!
+  id: Int!
   isCancelled: Boolean!
   journeyStartTime: Time!
   lastModifiedDateTime: DateTime!
@@ -214,7 +216,7 @@ type PlannedDeparture {
 }
 
 type Query {
-  alerts(alertSearch: AlertSearchInput, time: String): [Alert!]!
+  alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
   departures(date: Date!, filter: DepartureFilterInput, stopId: String!): [Departure]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
@@ -450,6 +452,7 @@ enum CancellationSubcategory {
   CONGESTION_CAUSED_BY_WEATHER
   CONGESTION_REASON_UKNOWN
   DEVICE_ERROR
+  DOOR_MALFUNCTION
   DRIVER_ERROR
   DRIVER_LATE
   DRIVER_SEIZURE
