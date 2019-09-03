@@ -114,6 +114,15 @@ class RouteStop extends React.Component {
       );
     }
 
+    const stopDepartureDateTime = get(
+      departure,
+      "observedDepartureTime.departureDateTime",
+      get(departure, "plannedDepartureTime.departureDateTime", date)
+    );
+
+    const stopAlerts = getAlertsInEffect(stop, stopDepartureDateTime);
+    const departureAlerts = getAlertsInEffect(departure);
+
     const firstDeparture = firstStop;
 
     const departureDiff = departure.observedDepartureTime.departureTimeDifference;
@@ -311,7 +320,7 @@ class RouteStop extends React.Component {
             )}
           </StopContentWrapper>
         </StopPopupContentSection>
-        <StopAlerts alerts={getAlertsInEffect(departure)} />
+        <StopAlerts alerts={[...stopAlerts, ...departureAlerts]} />
         <StopStreetViewWrapper>
           <Button onClick={this.onShowStreetView}>
             <Text>map.stops.show_in_streetview</Text>
@@ -349,14 +358,6 @@ class RouteStop extends React.Component {
     );
 
     markerChildren = [stopTooltip, stopPopup];
-
-    const stopDepartureDateTime = get(
-      departure,
-      "observedDepartureTime.departureDateTime",
-      get(departure, "plannedDepartureTime.departureDateTime", date)
-    );
-
-    const stopAlerts = getAlertsInEffect(stop, stopDepartureDateTime);
 
     return (
       <StopMarker

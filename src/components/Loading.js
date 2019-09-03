@@ -49,7 +49,9 @@ const LoadingIndicator = styled.div`
   }
 `;
 
-const LoadingContainer = styled.div`
+const LoadingSafeDivComponent = ({loading, ...props}) => <div {...props} />;
+
+const LoadingContainer = styled(LoadingSafeDivComponent)`
   position: absolute;
   top: 1rem;
   left: 0;

@@ -1,6 +1,6 @@
 export const getAlertKey = (alert) =>
   [
-    alert.title,
+    alert.id,
     alert.affectedId,
     alert.level,
     alert.distribution,
@@ -10,6 +10,7 @@ export const getAlertKey = (alert) =>
 
 export const getCancellationKey = (cancellation) =>
   [
+    cancellation.id,
     cancellation.routeId,
     cancellation.direction,
     cancellation.departureDate,

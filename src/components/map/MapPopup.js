@@ -37,6 +37,7 @@ const MapPopup = ({className, children, onClose}) => {
     <>
       <PopupStyle />
       <Popup
+        pane="popups"
         className={className}
         autoClose={false}
         autoPan={false}
