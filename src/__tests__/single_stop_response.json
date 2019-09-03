@@ -11,6 +11,7 @@
       "modes": ["BUS"],
       "alerts": [
         {
+          "id": 1,
           "affectedId": "",
           "level": "SEVERE",
           "distribution": "ALL_ROUTES",

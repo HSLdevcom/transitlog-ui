@@ -13,6 +13,7 @@
         "originStopId": "1050417",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -42,6 +43,7 @@
         "originStopId": "1250431",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -71,6 +73,7 @@
         "originStopId": "1020117",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -100,6 +103,7 @@
         "originStopId": "1453128",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -129,6 +133,7 @@
         "originStopId": "1431189",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -158,6 +163,7 @@
         "originStopId": "1304130",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -187,6 +193,7 @@
         "originStopId": "1020118",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -216,6 +223,7 @@
         "originStopId": "1431138",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -245,6 +253,7 @@
         "originStopId": "1420123",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -274,6 +283,7 @@
         "originStopId": "1414149",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -303,6 +313,7 @@
         "originStopId": "1453128",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
@@ -332,6 +343,7 @@
         "originStopId": "1431189",
         "alerts": [
           {
+            "id": 1,
             "affectedId": "",
             "level": "SEVERE",
             "distribution": "ALL_ROUTES",
