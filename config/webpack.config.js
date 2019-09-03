@@ -120,6 +120,7 @@ module.exports = function(webpackEnv) {
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [
+      'react-hot-loader/patch',
       // Include an alternative client for WebpackDevServer. A client's job is to
       // connect to WebpackDevServer by a socket and get notified about changes.
       // When you save a file, the client will either apply hot updates (in case
@@ -331,7 +332,6 @@ module.exports = function(webpackEnv) {
                     compact: isEnvProduction,
                   },
                 },
-                require.resolve("workerize-loader"),
               ],
             },
             // Process application JS with Babel.
@@ -340,12 +340,6 @@ module.exports = function(webpackEnv) {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
               loader: require.resolve("babel-loader"),
-              rules: [
-                {
-                  test: /\.worker.(js|mjs|jsx|ts|tsx)$/,
-                  loader: require.resolve("workerize-loader"),
-                },
-              ],
               options: {
                 customize: require.resolve(
                   "babel-preset-react-app/webpack-overrides"

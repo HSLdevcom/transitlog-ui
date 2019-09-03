@@ -7,7 +7,6 @@
     "@babel/plugin-transform-runtime": "^7.4.3",
     "@babel/runtime": "7.4.5",
     "@fmidev/metolib": "^2.0.6",
-    "@hot-loader/react-dom": "npm:@hot-loader/react-dom",
     "@svgr/webpack": "^4.3.0",
     "@testing-library/react": "^8.0.1",
     "@types/jest": "^24.0.15",
@@ -107,8 +106,7 @@
     "webpack": "^4.34.0",
     "webpack-dev-server": "^3.7.2",
     "webpack-manifest-plugin": "^2.0.4",
-    "workbox-webpack-plugin": "^4.3.0",
-    "workerize-loader": "^1.0.4"
+    "workbox-webpack-plugin": "^4.3.0"
   },
   "scripts": {
     "docker:build": "docker build -t hsldevcom/transitlog-ui .",
