@@ -95,13 +95,11 @@ const StopLayer = decorate(
   ({bounds, onViewLocation, showRadius, state, selectedStop, zoom = 13}) => {
     const {stop: selectedStopId, date} = state;
 
-    const bbox = useMemo(() => getBboxString(bounds, true), [
-      getBboxString(bounds, true),
-    ]);
-
     if (zoom < 15 && !selectedStopId) {
       return null;
     }
+
+    const bbox = getBboxString(bounds);
 
     return (
       <StopsByBboxQuery skip={!bbox} bbox={bbox}>
