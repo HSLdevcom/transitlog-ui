@@ -37,7 +37,7 @@ function getTransportType(lineId = "", numeric = false) {
     return "RAIL";
   }
 
-  if (lineType.substr(1) === "560" || lineType.substr(1) === "550") {
+  if (["550", "560", "510", "500"].includes(lineType.substr(1))) {
     if (numeric) {
       return 1000;
     }

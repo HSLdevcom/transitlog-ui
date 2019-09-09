@@ -17,11 +17,28 @@ const decorate = flow(
 const Alerts = decorate(({state}) => {
   const searchTime = state.date;
   const language = state.language;
+  const routeId = state.route.routeId;
+  const direction = state.route.direction;
+
+  const alertSearch = {
+    all: !routeId,
+    allRoutes: !!routeId,
+    route: routeId,
+  };
+
+  const cancellationsSearch = {
+    all: !routeId,
+    routeId,
+  };
+
+  if (direction) {
+    cancellationsSearch.direction = direction;
+  }
 
   return (
-    <AlertsQuery time={searchTime} language={language} alertSearch={{all: true}}>
+    <AlertsQuery time={searchTime} language={language} alertSearch={alertSearch}>
       {({alerts = [], loading: alertsLoading}) => (
-        <CancellationsQuery date={searchTime} cancellationsSearch={{all: true}}>
+        <CancellationsQuery date={searchTime} cancellationsSearch={cancellationsSearch}>
           {({cancellations = [], loading: cancellationsLoading}) => (
             <Observer>
               {() => {

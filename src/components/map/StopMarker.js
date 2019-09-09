@@ -132,10 +132,6 @@ const StopMarker = decorate(
 
     const {lat, lng} = stop || position || {};
 
-    const onShowStreetView = useCallback(() => {
-      onViewLocation(latLng({lat, lng}));
-    }, [onViewLocation, stop]);
-
     if (!stop && !position) {
       return null;
     }
@@ -155,15 +151,13 @@ const StopMarker = decorate(
           stop={stop}
           color={stopColor}
           onSelectRoute={selectRoute}
-          onShowStreetView={onShowStreetView}
+          onShowStreetView={onViewLocation}
         />
       </MapPopup>
     ) : null;
 
     const markerPosition = latLng({lat, lng});
-
-    const stopAlerts =
-      alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.timeMoment);
+    const stopAlerts = []; // alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.timeMoment);
 
     const markerElement = (
       <DivIcon

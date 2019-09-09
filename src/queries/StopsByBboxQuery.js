@@ -24,9 +24,17 @@ export const stopsByBboxQuery = gql`
   ${AlertFieldsFragment}
 `;
 
+let currentlyFetching = "";
+
 const StopsByBboxQuery = observer((props) => {
   const {children, bbox, skip} = props;
   const prevResult = useRef([]);
+
+  if (currentlyFetching === bbox) {
+    return children({stops: prevResult.current, loading: false});
+  }
+
+  currentlyFetching = bbox;
 
   return (
     <Query skip={skip} query={stopsByBboxQuery} variables={{bbox}}>

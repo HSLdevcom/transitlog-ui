@@ -10,6 +10,7 @@ import {Button} from "../Forms";
 import {observer} from "mobx-react-lite";
 import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
+import {latLng} from "leaflet";
 
 export const StopAlerts = styled(AlertsList)`
   padding: 0;
@@ -63,7 +64,7 @@ const StopPopupContent = decorate(
         </StopPopupContentSection>
         {stop && <StopAlerts alerts={getAlertsInEffect(stop, state.timeMoment)} />}
         <StopStreetViewWrapper>
-          <Button onClick={onShowStreetView}>
+          <Button onClick={() => onShowStreetView(latLng([stop.lat, stop.lng]))}>
             <Text>map.stops.show_in_streetview</Text>
           </Button>
         </StopStreetViewWrapper>
