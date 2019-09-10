@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState, useEffect} from "react";
+import React, {useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import StopsByBboxQuery from "../../queries/StopsByBboxQuery";
 import StopMarker from "./StopMarker";

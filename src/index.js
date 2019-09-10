@@ -5,19 +5,16 @@ import {TIMEZONE} from "./constants";
 // Set the default timezone for the app
 moment.tz.setDefault(TIMEZONE);
 
-console.log(TIMEZONE);
-
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import {StoreContext, store} from "./stores/StoreContext";
 import {Provider} from "mobx-react";
+import Root from "./Root";
 
 const root = document.getElementById("root");
 
-const render = () => {
-  const Root = require("./Root").default;
-
+(() => {
   /* inject() from mobx-react uses the first Provider context */
   ReactDOM.render(
     <Provider {...store}>
@@ -28,6 +25,4 @@ const render = () => {
     </Provider>,
     root
   );
-};
-
-render();
+})();
