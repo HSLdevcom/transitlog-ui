@@ -35,6 +35,10 @@ const RouteSettings = decorate(({Filters, state: {route, date}}) => {
               return <LoadingSpinner inline={true} />;
             }
 
+            const alertsInEffect = !selectedRoute
+              ? []
+              : getAlertsInEffect(selectedRoute, date);
+
             return (
               <>
                 <ControlGroup>
@@ -70,7 +74,7 @@ const RouteSettings = decorate(({Filters, state: {route, date}}) => {
                       <br />
                       {selectedRoute.origin} - {selectedRoute.destination}
                     </SuggestionText>
-                    <SuggestionAlerts alerts={getAlertsInEffect(selectedRoute, date)} />
+                    {alertsInEffect && <SuggestionAlerts alerts={alertsInEffect} />}
                   </SelectedOptionDisplay>
                 )}
               </>

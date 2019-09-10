@@ -21,6 +21,8 @@ export const allStopsQuery = gql`
       }
       alerts {
         level
+        affectedId
+        distribution
         startDateTime
         endDateTime
       }
