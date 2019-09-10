@@ -95,7 +95,7 @@ const StopLayer = decorate(
   ({bounds, onViewLocation, showRadius, state, selectedStop, zoom = 13}) => {
     const {stop: selectedStopId, date} = state;
 
-    if (zoom < 15 && !selectedStopId) {
+    if (zoom < 14 && !selectedStopId) {
       return null;
     }
 
@@ -104,7 +104,7 @@ const StopLayer = decorate(
     return (
       <StopsByBboxQuery skip={!bbox} bbox={bbox}>
         {({stops = []}) => {
-          if ((stops.length === 0 || zoom < 15) && selectedStopId) {
+          if ((stops.length === 0 || zoom < 14) && selectedStopId) {
             return (
               <StopMarker
                 showRadius={showRadius}
