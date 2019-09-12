@@ -12,7 +12,10 @@ import {AlertDistribution} from "../helpers/getAlertsInEffect";
 import BusStop from "../icons/BusStop";
 import JourneyPlanner from "../icons/JourneyPlanner";
 import HSLLogoNoText from "../icons/HSLLogoNoText";
-import {text} from "../helpers/text";
+import {text, alertText} from "../helpers/text";
+import flow from "lodash/flow";
+import {inject} from "../helpers/inject";
+import {lang} from "moment";
 
 const AlertComponent = styled.div`
   font-family: var(--font-family);
@@ -166,7 +169,12 @@ const AlertTimeDisplay = observer(({alert}) => {
   );
 });
 
-const AlertItem = observer(({alert}) => {
+const decorate = flow(
+  observer,
+  inject("state")
+);
+
+const AlertItem = decorate(({alert, state}) => {
   const {Icon, color} = getAlertStyle(alert);
 
   const AlertIcon = AlertIconStyle.withComponent(Icon);
@@ -204,10 +212,13 @@ const AlertItem = observer(({alert}) => {
             <Row baseline>
               <AlertType>
                 <TypeIcon fill={!lightBg ? "white" : "var(--dark-grey)"} width="1rem" />
-                {alert.affectedId || type === "route"
+                {alert.distribution === AlertDistribution.AllRoutes
                   ? text("domain.alerts.all_routes")
-                  : type === "stop"
+                  : alert.distribution === AlertDistribution.AllStops
                   ? text("domain.alerts.all_stops")
+                  : alert.distribution === AlertDistribution.Route ||
+                    alert.distribution === AlertDistribution.Stop
+                  ? alert.affectedId
                   : text("domain.alerts.network")}
               </AlertType>
               <AlertTimeDisplay alert={alert} />
@@ -225,12 +236,15 @@ const AlertItem = observer(({alert}) => {
           </AlertHeader>
         }>
         <AlertContent>
-          <AlertDescription lightBg={colorful && lightBg}>
-            {alert.description}
-          </AlertDescription>
+          {alert.description && (
+            <AlertDescription lightBg={colorful && lightBg}>
+              {alert.description}
+            </AlertDescription>
+          )}
           <AlertInfo>
             <AlertInfoRow>
-              {text("general.category")}: <strong>{alert.category}</strong>
+              {text("general.category")}:{" "}
+              <strong>{alertText(alert.category, state.language)}</strong>
             </AlertInfoRow>
             <AlertInfoRow>
               {text("general.impact")}: <strong>{alert.impact}</strong>

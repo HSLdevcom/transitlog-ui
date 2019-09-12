@@ -14,6 +14,12 @@ const helpFiles = {
   en: require("../languages/help/en.json"),
 };
 
+const alertFiles = {
+  fi: require("../languages/alerts/fi.json"),
+  se: require("../languages/alerts/fi.json"),
+  en: require("../languages/alerts/en.json"),
+};
+
 function getTextForToken(token, files, language = languageState.language) {
   const languageFile = get(files, language, false);
 
@@ -28,6 +34,10 @@ function getTextForToken(token, files, language = languageState.language) {
   }
 
   return languageStr;
+}
+
+export function alertText(text, language) {
+  return getTextForToken(text, alertFiles, language);
 }
 
 export function helpText(text, language) {
