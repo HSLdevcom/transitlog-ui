@@ -125,7 +125,7 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
     this.prevFetchedBbox = bboxStr;
     const minTime = format(subYears(new Date(), 2), "YYYY-MM-DD");
 
-    const url = `https://a.mapillary.com/v3/sequences?bbox=${bboxStr}&client_id=V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw&per_page=500&start_time=${minTime}`;
+    const url = `https://a.mapillary.com/v3/sequences?bbox=${bboxStr}&client_id=V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw&per_page=500&start_time=${minTime}&organization_keys=mstFdbqROWkgC2sNNU2tZ1`;
 
     const request = await fetch(url);
     const data = await request.json();

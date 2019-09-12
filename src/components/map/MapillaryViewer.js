@@ -75,6 +75,7 @@ class MapillaryViewer extends React.Component {
       }
     );
 
+    this.mly.setFilter(["==", "organizationKey", "mstFdbqROWkgC2sNNU2tZ1"]);
     this.mly.on(Mapillary.Viewer.nodechanged, onNavigation);
     window.addEventListener("resize", this.onResize);
   }
