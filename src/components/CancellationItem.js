@@ -185,19 +185,32 @@ const CancellationItem = observer(
                   <strong>{cancellation.journeyStartTime}</strong>
                 </CancellationTime>
               </Row>
-              {!small && <CancellationTitle>{cancellation.title}</CancellationTitle>}
+              {!small && cancellation.title && cancellation.title.trim() !== "-" && (
+                <CancellationTitle>{cancellation.title}</CancellationTitle>
+              )}
             </CancellationHeader>
           }>
           <CancellationContent>
-            {small && <CancellationTitle>{cancellation.title}</CancellationTitle>}
-            <CancellationDescription>{cancellation.description}</CancellationDescription>
+            {small && cancellation.title && cancellation.title.trim() !== "-" && (
+              <CancellationTitle>{cancellation.title}</CancellationTitle>
+            )}
+            {cancellation.description && cancellation.description.trim() !== "-" && (
+              <CancellationDescription>
+                {cancellation.description}
+              </CancellationDescription>
+            )}
             <CancellationInfo>
-              <CancellationInfoRow>
-                {text("general.category")}: <strong>{cancellation.category}</strong>
-              </CancellationInfoRow>
-              <CancellationInfoRow>
-                {text("general.subcategory")}: <strong>{cancellation.subCategory}</strong>
-              </CancellationInfoRow>
+              {cancellation.category !== "HIDDEN" && (
+                <>
+                  <CancellationInfoRow>
+                    {text("general.category")}: <strong>{cancellation.category}</strong>
+                  </CancellationInfoRow>
+                  <CancellationInfoRow>
+                    {text("general.subcategory")}:{" "}
+                    <strong>{cancellation.subCategory}</strong>
+                  </CancellationInfoRow>
+                </>
+              )}
               <CancellationInfoRow>
                 {text("general.impact")}:{" "}
                 <strong>{cancellation.cancellationEffect}</strong>

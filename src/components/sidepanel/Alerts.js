@@ -28,7 +28,7 @@ const Alerts = decorate(({state}) => {
 
   const cancellationsSearch = {
     all: !routeId,
-    routeId,
+    routeId: routeId || undefined,
   };
 
   if (direction) {
