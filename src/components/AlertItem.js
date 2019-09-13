@@ -15,7 +15,6 @@ import HSLLogoNoText from "../icons/HSLLogoNoText";
 import {text, alertText} from "../helpers/text";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
-import {lang} from "moment";
 
 const AlertComponent = styled.div`
   font-family: var(--font-family);
