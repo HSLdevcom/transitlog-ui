@@ -215,6 +215,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                       const isSpecialDayType =
                         getDayTypeFromDate(departureDate) !== departure.dayType ||
                         !dayTypes.includes(departure.dayType);
+
                       const {isCancelled} = departure;
 
                       if (!departure.journey) {
@@ -257,7 +258,11 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                               </JourneyRowLeft>
                             </Tooltip>
                             <Tooltip helpText="Journey no data">
-                              <span>{text("filterpanel.journey.no_data")}</span>
+                              <span>
+                                {isCancelled
+                                  ? text("domain.cancelled")
+                                  : text("filterpanel.journey.no_data")}
+                              </span>
                             </Tooltip>
                             {get(departure, "alerts", []).length !== 0 && (
                               <JourneyAlertIcons alerts={getAlertsInEffect(departure)} />
