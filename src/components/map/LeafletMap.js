@@ -80,6 +80,7 @@ class LeafletMap extends Component {
       className,
       currentMapillaryViewerLocation,
       setMapillaryViewerLocation,
+      zoom,
       onZoom = () => {},
       onMapChanged = () => {},
     } = this.props;
@@ -97,7 +98,7 @@ class LeafletMap extends Component {
         <Map
           key="the-map"
           ref={mapRef}
-          maxZoom={20}
+          maxZoom={18}
           zoomSnap={1}
           wheelPxPerZoomLevel={50}
           selectArea={true}
@@ -124,9 +125,8 @@ class LeafletMap extends Component {
               name="Aerial"
               checked={currentBaseLayer === "Aerial"}>
               <TileLayer
-                maxZoom={18}
                 tileSize={256}
-                attribution="HSL/HSY"
+                attribution="© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY"
                 url="https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg"
               />
             </LayersControl.BaseLayer>
