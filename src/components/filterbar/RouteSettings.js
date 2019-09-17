@@ -26,7 +26,7 @@ const decorate = flow(
 const RouteSettings = decorate(({Filters, state: {route, date}}) => {
   return (
     <RouteOptionsQuery date={date}>
-      {({routes = [], loading, search}) => (
+      {({routes = [], loading}) => (
         <Observer>
           {() => {
             const selectedRoute = getFullRoute(routes, route);
@@ -46,7 +46,7 @@ const RouteSettings = decorate(({Filters, state: {route, date}}) => {
                     helpText="Select route"
                     label={text("filterpanel.find_line_route")}
                     animatedLabel={false}>
-                    <RouteInput search={search} route={route} routes={routes} />
+                    <RouteInput route={route} routes={routes} />
                   </Input>
                   {route && route.routeId && (
                     <Tooltip>
