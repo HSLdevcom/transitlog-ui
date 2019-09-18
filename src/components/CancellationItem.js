@@ -222,7 +222,9 @@ const CancellationItem = decorate(
               )}
               <CancellationInfoRow>
                 {text("general.impact")}:{" "}
-                <strong>{cancellation.cancellationEffect}</strong>
+                <strong>
+                  {alertText(cancellation.cancellationEffect, state.language)}
+                </strong>
               </CancellationInfoRow>
             </CancellationInfo>
             <CancellationFooter>

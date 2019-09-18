@@ -246,7 +246,8 @@ const AlertItem = decorate(({alert, state}) => {
               <strong>{alertText(alert.category, state.language)}</strong>
             </AlertInfoRow>
             <AlertInfoRow>
-              {text("general.impact")}: <strong>{alert.impact}</strong>
+              {text("general.impact")}:{" "}
+              <strong>{alertText(alert.impact, state.language)}</strong>
             </AlertInfoRow>
           </AlertInfo>
           <AlertFooter lightBg={colorful && lightBg}>
