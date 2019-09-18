@@ -212,18 +212,37 @@ const CancellationItem = decorate(
                 <>
                   <CancellationInfoRow>
                     {text("general.category")}:{" "}
-                    <strong>{alertText(cancellation.category, state.language)}</strong>
+                    <strong>
+                      {alertText("category." + cancellation.category, state.language)}
+                    </strong>
                   </CancellationInfoRow>
                   <CancellationInfoRow>
                     {text("general.subcategory")}:{" "}
-                    <strong>{alertText(cancellation.subCategory, state.language)}</strong>
+                    <strong>
+                      {alertText(
+                        "subCategory." + cancellation.subCategory,
+                        state.language
+                      )}
+                    </strong>
                   </CancellationInfoRow>
                 </>
               )}
               <CancellationInfoRow>
+                {text("general.type")}:{" "}
+                <strong>
+                  {alertText(
+                    "cancelType." + cancellation.cancellationType,
+                    state.language
+                  )}
+                </strong>
+              </CancellationInfoRow>
+              <CancellationInfoRow>
                 {text("general.impact")}:{" "}
                 <strong>
-                  {alertText(cancellation.cancellationEffect, state.language)}
+                  {alertText(
+                    "cancelEffect." + cancellation.cancellationEffect,
+                    state.language
+                  )}
                 </strong>
               </CancellationInfoRow>
             </CancellationInfo>

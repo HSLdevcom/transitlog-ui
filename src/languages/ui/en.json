@@ -108,6 +108,7 @@
   "general.category": "Category",
   "general.subcategory": "Subkategory",
   "general.impact": "Impact",
+  "general.type": "Type",
   "general.previous": "Previous",
   "general.previous.plural": "Previous",
 
