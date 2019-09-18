@@ -83,5 +83,33 @@
   "VS_OPERATOR_PLANNING_ERROR": "Operator planning error",
   "WRONG_INFORMATION_IN_DEVICE": "Wrong information in device",
   "SLIPPERY_TRACK": "Slippery track (leawes)",
-  "MISSPARKED_VEHICLE": "Miss parked vehicle"
+  "MISSPARKED_VEHICLE": "Miss parked vehicle",
+
+  "CANCEL_DEPARTURE": "Departure cancelled",
+  "DETOUR": "Detour",
+  "EARLY_DEPARTURE": "Early departure",
+  "EARLY_DEPARTURE_FROM_TIMING_POINT": "Early departure from timing stop",
+  "LATE_DEPARTURE": "Late departure",
+  "DEPARTURED_AFTER_NEXT_JOURNEY": "Departure after the next departure",
+  "BLOCK_FIRST_DEPARTURE_LATE": "First departure late or blocked.",
+
+  "CANCEL_ENTIRE_DEPARTURE": "Departure cancelled",
+
+  "DELAYED": "Late",
+  "POSSIBLY_DELAYED": "Possibly late",
+  "REDUCED_TRANSPORT": "Reduced transport capacity",
+  "CANCELLED": "Departure cancelled",
+  "POSSIBLE_DEVIATIONS": "Possible deviations",
+  "RETURNING_TO_NORMAL": "Returning to normal",
+  "DISRUPTION_ROUTE": "Disruption on route",
+  "DEVIATING_SCHEDULE": "Deviating schedule",
+  "IRREGULAR_DEPARTURES": "Irregular departures",
+  "IRREGULAR_DEPARTURES_MAX_15": "Irregular departures for the next 15 minutes",
+  "IRREGULAR_DEPARTURES_MAX_30": "Irregular departures for the next 30 minutes",
+  "VENDING_MACHINE_OUT_OF_ORDER": "Vending machine out of order",
+  "BICYCLE_STATION_OUT_OF_ORDER": "Bicycle station out of order",
+  "BICYCLE_SYSTEM_OUT_OF_ORDER": "Bicycle system out of order",
+  "REDUCED_BICYCLE_PARK_CAPACITY": "Reduced bicycle parking capacity",
+  "NO_TRAFFIC_IMPACT": "No traffic impact",
+  "UNKNOWN": "Unknown"
 }

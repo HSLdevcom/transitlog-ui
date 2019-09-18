@@ -16,7 +16,7 @@ type Alert {
   description: String!
   distribution: AlertDistribution!
   endDateTime: DateTime!
-  id: Int!
+  id: String!
   impact: AlertImpact!
   lastModifiedDateTime: DateTime!
   level: AlertLevel!
@@ -231,8 +231,8 @@ type Query {
   routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
   routes(date: Date, filter: RouteFilterInput, line: String): [Route]!
   stop(date: Date!, stopId: String!): Stop
-  stops(date: Date, filter: StopFilterInput): [SimpleStop]!
-  stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [SimpleStop]!
+  stops(date: Date, filter: StopFilterInput): [Stop]!
+  stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [Stop]!
   uiMessage: UIMessage!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!): [VehicleJourney]!
   weeklyDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
@@ -288,27 +288,8 @@ type RouteSegment implements Position {
   stopIndex: Int!
 }
 
-type SimpleRoute {
-  direction: Direction!
-  isTimingStop: Boolean!
-  routeId: String!
-}
-
-type SimpleStop implements Position {
-  _matchScore: Float
-  alerts: [Alert!]!
-  id: ID!
-  lat: Float!
-  lng: Float!
-  modes: [String]!
-  name: String
-  radius: Float
-  routes: [SimpleRoute!]!
-  shortId: String!
-  stopId: String!
-}
-
 type Stop implements Position {
+  _matchScore: Float
   alerts: [Alert!]!
   id: ID!
   lat: Float!
@@ -365,6 +346,7 @@ enum AlertCategory {
   ASSAULT
   DISTURBANCE
   EARLIER_DISRUPTION
+  HIDDEN
   ITS_SYSTEM_ERROR
   MEDICAL_INCIDENT
   MISPARKED_VEHICLE
@@ -461,6 +443,7 @@ enum CancellationSubcategory {
   FALSE_ALARM
   FAULT_UNKNOWN
   FLUID_LEAKAGE
+  HIDDEN
   INSUFFICIENT_CAPASITY
   INSUFFICIENT_INSTRUCTIONS_BY_AUTHORITY
   INSUFFICIENT_INSTRUCTIONS_BY_OPERATOR

@@ -7,7 +7,7 @@
   "WRONG_ROUTE": "Ajettu väärää reittiä",
   "WEATHER": "Huono ajokeli",
   "STRIKE": "Työtaistelutoimenpide",
-  "OTHER": "Muu syy",
+  "OTHER": "Muu",
   "VEHICLE_OFF_THE_ROAD": "Kulkutie/Suistuminen/Ruuhka",
   "SEIZURE": "Sairaskohtaus/Loukkaantuminen",
   "ITS_SYSTEM_ERROR": "LIJ-järjestelmän ongelma/käyttövirhe",
@@ -83,5 +83,33 @@
   "VS_OPERATOR_PLANNING_ERROR": "Liikennöitsijän suunnitteluvirhe",
   "WRONG_INFORMATION_IN_DEVICE": "Laitteessa väärät lähdöt",
   "SLIPPERY_TRACK": "Liukkaat kiskot (lehtikeli)",
-  "MISSPARKED_VEHICLE": "Väärin pysäköity auto"
+  "MISSPARKED_VEHICLE": "Väärin pysäköity auto",
+
+  "CANCEL_DEPARTURE": "Lähtö peruttu",
+  "DETOUR": "Kiertotie",
+  "EARLY_DEPARTURE": "Aikainen lähtö",
+  "EARLY_DEPARTURE_FROM_TIMING_POINT": "Aikainen lähtö ajantasauspysäkiltä",
+  "LATE_DEPARTURE": "Myöhäinen lähtö",
+  "DEPARTURED_AFTER_NEXT_JOURNEY": "Lähtö seruaavan lähdön jälkeen",
+  "BLOCK_FIRST_DEPARTURE_LATE": "Ensimmäinen lähtö estetty",
+
+  "CANCEL_ENTIRE_DEPARTURE": "Lähtö peruttu",
+
+  "DELAYED": "Myöhässä",
+  "POSSIBLY_DELAYED": "Mahdollisesti viivästynyt",
+  "REDUCED_TRANSPORT": "Ajoneuvoja vähennetty",
+  "CANCELLED": "Lähtö peruttu",
+  "POSSIBLE_DEVIATIONS": "Mahdollisia poikkeamia",
+  "RETURNING_TO_NORMAL": "Palautus ennalleen",
+  "DISRUPTION_ROUTE": "Häiriö reitillä",
+  "DEVIATING_SCHEDULE": "Poikkeava aikataulu",
+  "IRREGULAR_DEPARTURES": "Epäsäännöllisiä lähtöjä",
+  "IRREGULAR_DEPARTURES_MAX_15": "Epäsäännöllisiä lähtöjä seuraavan 15 minuutin ajan",
+  "IRREGULAR_DEPARTURES_MAX_30": "Epäsäännöllisiä lähtöjä seuraavan 30 minuutin ajan",
+  "VENDING_MACHINE_OUT_OF_ORDER": "Myyntiautomaatti epäkunnossa",
+  "BICYCLE_STATION_OUT_OF_ORDER": "Pyöräasema epäkunossa",
+  "BICYCLE_SYSTEM_OUT_OF_ORDER": "Pyöräjärjestelmä epäkunnossa",
+  "REDUCED_BICYCLE_PARK_CAPACITY": "Pyöräpysäköintikapasiteetti vähennetty",
+  "NO_TRAFFIC_IMPACT": "Ei liikennehäiriötä",
+  "UNKNOWN": "Ei tiedossa"
 }

@@ -5,10 +5,12 @@ import styled from "styled-components";
 import {Heading} from "./Typography";
 import ToggleView from "./ToggleView";
 import {observer} from "mobx-react-lite";
-import {text, Text} from "../helpers/text";
+import {text, Text, alertText} from "../helpers/text";
 import format from "date-fns/format";
 import CrossThick from "../icons/CrossThick";
 import Checkmark2 from "../icons/Checkmark2";
+import flow from "lodash/flow";
+import {inject} from "../helpers/inject";
 
 const CancellationComponent = styled.div`
   font-family: var(--font-family);
@@ -147,7 +149,12 @@ const Accordion = styled(ToggleView)`
   }
 `;
 
-const CancellationItem = observer(
+const decorate = flow(
+  observer,
+  inject("state")
+);
+
+const CancellationItem = decorate(
   ({
     cancellation,
     small = false,
@@ -155,6 +162,7 @@ const CancellationItem = observer(
     className,
     noIcon = false,
     timestampInHeader = false,
+    state,
   }) => {
     const publishedMoment = moment.tz(cancellation.lastModifiedDateTime, TIMEZONE);
     const Icon = cancellation.isCancelled ? CrossThick : Checkmark2;
@@ -203,11 +211,12 @@ const CancellationItem = observer(
               {cancellation.category !== "HIDDEN" && (
                 <>
                   <CancellationInfoRow>
-                    {text("general.category")}: <strong>{cancellation.category}</strong>
+                    {text("general.category")}:{" "}
+                    <strong>{alertText(cancellation.category, state.language)}</strong>
                   </CancellationInfoRow>
                   <CancellationInfoRow>
                     {text("general.subcategory")}:{" "}
-                    <strong>{cancellation.subCategory}</strong>
+                    <strong>{alertText(cancellation.subCategory, state.language)}</strong>
                   </CancellationInfoRow>
                 </>
               )}
