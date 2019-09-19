@@ -7,6 +7,7 @@ import Login from "../icons/Login";
 import {applyTooltip} from "../hooks/useTooltip";
 import {logout, authorize} from "../auth/authService";
 import {redirectToLogin} from "../stores/UrlManager";
+import {withApollo} from "react-apollo";
 
 const Root = styled.div`
   position: fixed;
@@ -71,6 +72,7 @@ const Title = styled.h2`
 const allowDevLogin = process.env.REACT_APP_ALLOW_DEV_LOGIN === "true";
 
 @inject(app("UI", "Update"))
+@withApollo
 @observer
 class LoginModal extends React.Component {
   onModalClick = (e) => {
@@ -81,11 +83,12 @@ class LoginModal extends React.Component {
   };
 
   onLogoutClick = () => {
-    logout().then((response) => {
+    logout().then(async (response) => {
       if (response.status === 200) {
         this.props.UI.setUser(null);
-        this.props.Update.update();
+        await this.props.client.resetStore();
       }
+
       this.props.UI.toggleLoginModal();
     });
   };
@@ -95,12 +98,12 @@ class LoginModal extends React.Component {
   };
 
   onDevLogin = async () => {
-    const {UI, Update} = this.props;
+    const {UI, client} = this.props;
     const response = await authorize("dev");
 
     if (response && response.isOk && response.email) {
       UI.setUser(response.email);
-      Update.update();
+      await client.resetStore();
     }
 
     UI.toggleLoginModal();

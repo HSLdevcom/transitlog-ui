@@ -4,6 +4,8 @@ import {Query} from "react-apollo";
 import get from "lodash/get";
 import {observer} from "mobx-react";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
+import flow from "lodash/flow";
+import {inject} from "../helpers/inject";
 
 const cancellationsQuery = gql`
   query cancellationsQuery(
@@ -28,9 +30,16 @@ const cancellationsQuery = gql`
   ${CancellationFieldsFragment}
 `;
 
-const CancellationsQuery = observer(({date, cancellationsSearch, children}) => {
+const decorate = flow(
+  observer,
+  inject("state")
+);
+
+const CancellationsQuery = decorate(({state, date, cancellationsSearch, children}) => {
   return (
-    <Query query={cancellationsQuery} variables={{date, ...cancellationsSearch}}>
+    <Query
+      query={cancellationsQuery}
+      variables={{user: !!state.user, date, ...cancellationsSearch}}>
       {({loading, error, data}) => {
         const cancellations = get(data, "cancellations", []);
 
