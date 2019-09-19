@@ -200,6 +200,13 @@ const AlertItem = decorate(({alert, state}) => {
   const colorful = type === "network";
   const lightBg = (colorful && !color.includes("red")) || !colorful;
 
+  const validUrl =
+    typeof alert.url.startsWith !== "undefined"
+      ? alert.url.startsWith("http")
+        ? alert.url
+        : "https://" + alert.url
+      : "";
+
   return (
     <AlertComponent
       lightText={!lightBg}
@@ -251,8 +258,8 @@ const AlertItem = decorate(({alert, state}) => {
             </AlertInfoRow>
           </AlertInfo>
           <AlertFooter lightBg={colorful && lightBg}>
-            {alert.url && (
-              <AlertLink target="_blank" href={alert.url}>
+            {validUrl && (
+              <AlertLink target="_blank" href={validUrl}>
                 <Website width="1.25rem" fill={lightBg ? "var(--grey)" : "white"} />
               </AlertLink>
             )}
