@@ -23,7 +23,8 @@ const CancellationsList = decorate(
 
     const cancellationGroups = groupBy(
       validCancellations,
-      ({departureDate, journeyStartTime}) => departureDate + journeyStartTime
+      ({departureDate, journeyStartTime, routeId, direction}) =>
+        departureDate + journeyStartTime + routeId + direction
     );
 
     return (
