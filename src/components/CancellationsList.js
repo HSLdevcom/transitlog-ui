@@ -11,6 +11,7 @@ import Tooltip from "./Tooltip";
 
 const CancellationsListWrapper = styled.div`
   padding-bottom: 1rem;
+  overflow-x: hidden;
 `;
 
 const decorate = flow(observer);

@@ -3,7 +3,7 @@ import flow from "lodash/flow";
 import {observer, Observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import React from "react";
-import {getAlertsInEffect, AlertDistribution} from "../../helpers/getAlertsInEffect";
+import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import SidepanelList from "./SidepanelList";
 import AlertsList from "../AlertsList";
 import CancellationsQuery from "../../queries/CancellationsQuery";
@@ -43,10 +43,6 @@ const Alerts = decorate(({state}) => {
             <Observer>
               {() => {
                 const alertsInEffect = getAlertsInEffect(alerts, state.timeMoment);
-
-                alertsInEffect.sort((a) =>
-                  a.distribution === AlertDistribution.Network ? -1 : 0
-                );
 
                 return (
                   <SidepanelList loading={alertsLoading || cancellationsLoading}>
