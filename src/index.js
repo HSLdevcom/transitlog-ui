@@ -9,9 +9,20 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import Root from "./Root";
+import {Provider} from "mobx-react";
+import {store, StoreContext} from "./stores/StoreContext";
 
 const root = document.getElementById("root");
 
 (() => {
-  ReactDOM.render(<Root />, root);
+  ReactDOM.render(
+    /* inject() from mobx-react uses the first Provider context */
+    <Provider {...store}>
+      {/* Our own inject() helper uses this context */}
+      <StoreContext.Provider value={store}>
+        <Root />
+      </StoreContext.Provider>
+    </Provider>,
+    root
+  );
 })();

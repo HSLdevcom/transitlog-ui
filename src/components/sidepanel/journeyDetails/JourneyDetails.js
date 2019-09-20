@@ -4,7 +4,7 @@ import JourneyDetailsHeader from "./JourneyDetailsHeader";
 import {observer, inject} from "mobx-react";
 import {app} from "mobx-app";
 import get from "lodash/get";
-import JourneyStops from "./JourneyStops";
+import JourneyEvents from "./JourneyEvents";
 import {LoadingDisplay} from "../../Loading";
 import JourneyInfo from "./JourneyInfo";
 import {transportColor} from "../../transportModes";
@@ -54,12 +54,12 @@ class JourneyDetails extends React.Component {
 
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
-    const stopDepartures = get(journey, "departures", []);
+    const originDeparture = get(journey, "departure", null);
+    const journeyEvents = get(journey, "events", []);
 
-    const journeyTime =
-      stopDepartures.length !== 0
-        ? get(stopDepartures, "[0].observedDepartureTime.departureDateTime", timeMoment)
-        : timeMoment;
+    const journeyTime = originDeparture
+      ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)
+      : timeMoment;
 
     const alerts = getAlertsInEffect(
       get(journey, "alerts", []).length !== 0 ? journey : route,
@@ -75,15 +75,15 @@ class JourneyDetails extends React.Component {
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} />
-            <Tabs suggestedTab="journey-stops">
-              {stopDepartures.length !== 0 && (
-                <JourneyStops
+            <Tabs suggestedTab="journey-events">
+              {journeyEvents.length !== 0 && (
+                <JourneyEvents
                   cancellations={cancellations}
                   loading={loading}
-                  name="journey-stops"
-                  label={text("journey.stops")}
-                  departures={stopDepartures}
-                  date={date}
+                  name="journey-events"
+                  label={text("journey.events")}
+                  events={journeyEvents}
+                  date={journey.departureDate}
                   color={journeyColor}
                 />
               )}

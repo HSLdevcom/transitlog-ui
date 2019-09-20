@@ -48,7 +48,7 @@ const ChildHeading = styled(Heading).attrs({level: 6})`
   font-weight: normal;
 `;
 
-const CancellationHeader = styled.div`
+export const CancellationHeader = styled.div`
   width: 100%;
   padding: 0.75rem 1rem;
 
@@ -58,7 +58,7 @@ const CancellationHeader = styled.div`
   }
 `;
 
-const Row = styled.div`
+export const Row = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -70,7 +70,7 @@ const Row = styled.div`
   }
 `;
 
-const CancellationType = styled.span`
+export const CancellationType = styled.span`
   margin-right: 1rem;
   flex: 1 1 auto;
 
@@ -80,12 +80,12 @@ const CancellationType = styled.span`
   }
 `;
 
-const CancellationContent = styled.div`
+export const CancellationContent = styled.div`
   width: 100%;
   padding: 0 1rem 0.75rem;
 `;
 
-const CancellationTime = styled.div`
+export const CancellationTime = styled.div`
   text-align: right;
   margin-left: auto;
 
@@ -103,7 +103,7 @@ const CancellationTime = styled.div`
   }
 `;
 
-const CancellationTitle = styled(Heading).attrs({level: 5})`
+export const CancellationTitle = styled(Heading).attrs({level: 5})`
   margin: 0 0 0.75rem;
   font-size: 0.875rem;
   font-weight: bold;
@@ -114,26 +114,26 @@ const CancellationTitle = styled(Heading).attrs({level: 5})`
   }
 `;
 
-const CancellationDescription = styled.div`
+export const CancellationDescription = styled.div`
   margin: 0 0 1rem;
   font-size: 0.875rem;
 `;
 
-const CancellationInfo = styled.div`
+export const CancellationInfo = styled.div`
   font-size: 0.75rem;
   margin-bottom: 0.75rem;
 `;
 
-const CancellationInfoRow = styled.div`
+export const CancellationInfoRow = styled.div`
   padding: 0.5rem 0 0;
 `;
 
-const CancellationPublishTime = styled.span`
+export const CancellationPublishTime = styled.span`
   font-size: 0.75rem;
   color: var(--grey);
 `;
 
-const CancellationFooter = styled.div`
+export const CancellationFooter = styled.div`
   padding-top: 0;
   display: flex;
   align-items: center;

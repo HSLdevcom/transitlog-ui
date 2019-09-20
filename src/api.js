@@ -1,11 +1,7 @@
 import {ApolloClient} from "apollo-client";
 import {concat} from "apollo-link";
 import {HttpLink} from "apollo-link-http";
-import {
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-  HeuristicFragmentMatcher,
-} from "apollo-cache-inmemory";
+import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import get from "lodash/get";
 import fragmentTypes from "./fragmentTypes";

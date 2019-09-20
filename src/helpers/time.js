@@ -159,18 +159,19 @@ export function journeyStartTime(event, useMoment) {
   return getTimeString(intHours, minutes, seconds);
 }
 
-export function journeyEventTime(event) {
-  if (!event || !event.journey_start_time) {
+export function journeyEventTime(event, date) {
+  if (!event || !event.recordedAt) {
     return "";
   }
 
-  const receivedAtMoment = moment.tz(event.tst, TIMEZONE);
+  const useDate = date || event.departureDate || event.oday;
+  const recordedMoment = moment.tz(event.recordedAt, TIMEZONE);
 
-  let hours = receivedAtMoment.hours();
-  let minutes = receivedAtMoment.minutes();
-  let seconds = receivedAtMoment.seconds();
+  let hours = recordedMoment.hours();
+  let minutes = recordedMoment.minutes();
+  let seconds = recordedMoment.seconds();
 
-  if (event.oday !== receivedAtMoment.format("YYYY-MM-DD")) {
+  if (useDate !== recordedMoment.format("YYYY-MM-DD")) {
     hours = hours + 24;
   }
 

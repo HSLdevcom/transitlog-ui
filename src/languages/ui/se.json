@@ -66,6 +66,7 @@
   "journey.end_of_stream": "De sista uppgifterna används som hållplatsens avfärd.",
   "journey.duration": "Resans tidslängd",
   "journey.stops": "Hållplatser",
+  "journey.events": "Händelser",
 
   "domain.line": "Linje",
   "domain.route": "Rutt",
