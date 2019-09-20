@@ -80,7 +80,6 @@ class LeafletMap extends Component {
       className,
       currentMapillaryViewerLocation,
       setMapillaryViewerLocation,
-      zoom,
       onZoom = () => {},
       onMapChanged = () => {},
     } = this.props;

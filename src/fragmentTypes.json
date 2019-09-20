@@ -1,0 +1,39 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "INTERFACE",
+        "name": "Position",
+        "possibleTypes": [
+          {
+            "name": "Stop"
+          },
+          {
+            "name": "RouteGeometryPoint"
+          },
+          {
+            "name": "RouteSegment"
+          },
+          {
+            "name": "VehiclePosition"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "JourneyEventType",
+        "possibleTypes": [
+          {
+            "name": "JourneyEvent"
+          },
+          {
+            "name": "JourneyStopEvent"
+          },
+          {
+            "name": "PlannedStopEvent"
+          }
+        ]
+      }
+    ]
+  }
+}

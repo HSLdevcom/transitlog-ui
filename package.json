@@ -126,7 +126,7 @@
     "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/plugin-proposal-decorators": "^7.2.3",
     "@graphql-codegen/cli": "^1.2.1",
-    "@graphql-codegen/fragment-matcher": "^1.2.1",
+    "@graphql-codegen/fragment-matcher": "^1.7.0",
     "@graphql-codegen/introspection": "^1.2.1",
     "@graphql-codegen/typescript": "^1.2.1",
     "babel-plugin-styled-components": "^1.10.1",

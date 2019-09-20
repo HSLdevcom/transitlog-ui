@@ -21,7 +21,7 @@ const MAX_TIME_DIFF = 60;
 
 const matchLiveEvents = (time, journeys) => {
   return journeys.reduce((journeysMap, journey) => {
-    const lastEvent = findLast(journey.events, (event) => {
+    const lastEvent = findLast(journey.vehiclePositions, (event) => {
       if (!event.lat || !event.lng) {
         return false;
       }
@@ -108,7 +108,7 @@ const getIndexedEvents = (time, timeIndex, journeys) => {
 
   if (unindexedJourneys.length !== 0) {
     for (const journey of unindexedJourneys) {
-      const events = journey.events || [];
+      const events = journey.vehiclePositions || [];
 
       if (
         get(events, "[0].recordedAtUnix", 0) > time ||
@@ -142,7 +142,7 @@ const JourneyPosition = decorate(({journeys, state, children}) => {
     for (const journey of journeys) {
       const journeyId = journey.id;
 
-      for (const event of journey.events) {
+      for (const event of journey.vehiclePositions) {
         if (!event.lat || !event.lng) {
           continue;
         }

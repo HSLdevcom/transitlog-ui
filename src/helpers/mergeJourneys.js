@@ -14,7 +14,10 @@ export function mergeJourneys(journeys) {
 
       // Select the journey with the most events
       for (const journey of journeyGroup) {
-        if (!selectedJourney || journey.events.length > selectedJourney.events.length) {
+        if (
+          !selectedJourney ||
+          journey.vehiclePositions.length > selectedJourney.vehiclePositions.length
+        ) {
           selectedJourney = journey;
         }
       }

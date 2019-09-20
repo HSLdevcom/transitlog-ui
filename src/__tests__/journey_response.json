@@ -43,7 +43,6 @@
           "lat": 60.205439,
           "lng": 24.876498,
           "nextStopId": "1304103",
-          "receivedAt": "2019-05-27T09:51:50.834+03:00",
           "recordedAt": "2019-05-27T07:07:59.000+03:00",
           "recordedAtUnix": 1558930079,
           "recordedTime": "07:07:59",
@@ -58,7 +57,6 @@
           "lat": 60.155288,
           "lng": 24.94237,
           "nextStopId": "1060129",
-          "receivedAt": "2019-05-27T09:51:50.963+03:00",
           "recordedAt": "2019-05-27T08:02:24.000+03:00",
           "recordedAtUnix": 1558933344,
           "recordedTime": "08:02:24",
@@ -141,7 +139,6 @@
             "arrivalEvent": {
               "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558930122",
               "nextStopId": "1304103",
-              "receivedAt": "2019-05-27T09:51:50.760+03:00",
               "recordedAt": "2019-05-27T07:08:42.000+03:00",
               "recordedAtUnix": 1558930122,
               "recordedTime": "07:08:42",
@@ -158,7 +155,6 @@
             "departureEvent": {
               "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558930808",
               "nextStopId": "1304103",
-              "receivedAt": "2019-05-27T09:51:50.761+03:00",
               "recordedAt": "2019-05-27T07:20:08.000+03:00",
               "recordedAtUnix": 1558930808,
               "recordedTime": "07:20:08",
@@ -250,7 +246,6 @@
             "arrivalEvent": {
               "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558933341",
               "nextStopId": "1060129",
-              "receivedAt": "2019-05-27T09:51:50.832+03:00",
               "recordedAt": "2019-05-27T08:02:21.000+03:00",
               "recordedAtUnix": 1558933341,
               "recordedTime": "08:02:21",
@@ -267,7 +262,6 @@
             "departureEvent": {
               "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558933344",
               "nextStopId": "1060129",
-              "receivedAt": "2019-05-27T09:51:50.832+03:00",
               "recordedAt": "2019-05-27T08:02:24.000+03:00",
               "recordedAtUnix": 1558933344,
               "recordedTime": "08:02:24",

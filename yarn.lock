@@ -894,7 +894,7 @@
     graphql-toolkit "0.5.11"
     tslib "1.10.0"
 
-"@graphql-codegen/fragment-matcher@^1.2.1":
+"@graphql-codegen/fragment-matcher@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/fragment-matcher/-/fragment-matcher-1.7.0.tgz#4ecc7ac2efd1ee52847a2334980dd9c6124652cf"
   integrity sha512-uzOsoiKbLGSqiJ5hH+KsnTb1qhbytBz0ko+uhU4XzkHzOFJj8wgJO2j+B38fuZSjOVPuM98Zb/sBSkczEimdmA==

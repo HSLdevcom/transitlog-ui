@@ -257,7 +257,7 @@ function App({route, state, UI}) {
                                                     )}
                                                     events={get(
                                                       selectedJourney,
-                                                      "events",
+                                                      "vehiclePositions",
                                                       []
                                                     )}
                                                     graphExpanded={

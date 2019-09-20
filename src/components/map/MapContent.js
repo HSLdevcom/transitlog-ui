@@ -181,7 +181,7 @@ const MapContent = decorate(
                   zoom={zoom}
                   name={journey.id}
                   key={`hfp_polyline_${journey.id}`}
-                  events={journey.events}
+                  events={journey.vehiclePositions}
                 />
               );
             })}

@@ -22,9 +22,8 @@ const areaJourneysQuery = gql`
       vehicleId
       headsign
       mode
-      events {
+      vehiclePositions {
         id
-        receivedAt
         recordedAt
         recordedAtUnix
         recordedTime

@@ -54,7 +54,7 @@ export const journeyQuery = gql`
         type
         vehicleId
       }
-      events {
+      vehiclePositions {
         id
         delay
         doorStatus
@@ -62,13 +62,81 @@ export const journeyQuery = gql`
         lat
         lng
         nextStopId
-        receivedAt
         recordedAt
         recordedAtUnix
         recordedTime
         velocity
       }
-      departures {
+      events {
+        __typename
+        ... on JourneyStopEvent {
+          id
+          departureId
+          doorsOpened
+          index
+          isNextDay
+          isTimingStop
+          nextStopId
+          plannedDate
+          plannedDateTime
+          plannedTime
+          plannedTimeDifference
+          recordedAt
+          recordedAtUnix
+          recordedTime
+          stopId
+          stopped
+          type
+          stop {
+            id
+            isTimingStop
+            lat
+            lng
+            modes
+            name
+            radius
+            shortId
+            stopId
+            alerts {
+              ...AlertFieldsFragment
+            }
+          }
+        }
+        ... on PlannedStopEvent {
+          id
+          departureId
+          index
+          isNextDay
+          isTimingStop
+          plannedDate
+          plannedDateTime
+          plannedTime
+          stopId
+          type
+          stop {
+            id
+            isTimingStop
+            lat
+            lng
+            modes
+            name
+            radius
+            shortId
+            stopId
+            alerts {
+              ...AlertFieldsFragment
+            }
+          }
+        }
+        ... on JourneyEvent {
+          id
+          recordedAt
+          recordedAtUnix
+          recordedTime
+          type
+        }
+      }
+      departure {
         id
         stopId
         dayType
@@ -94,19 +162,11 @@ export const journeyQuery = gql`
           isTimingStop
           lat
           lng
-          lineId
           modes
-          destination
-          distanceFromPrevious
-          distanceFromStart
-          duration
           name
-          originStopId
           radius
-          routeId
           shortId
           stopId
-          stopIndex
           alerts {
             ...AlertFieldsFragment
           }
@@ -124,15 +184,6 @@ export const journeyQuery = gql`
           arrivalDateTime
           arrivalTime
           arrivalTimeDifference
-          doorDidOpen
-          arrivalEvent {
-            id
-            nextStopId
-            receivedAt
-            recordedAt
-            recordedAtUnix
-            recordedTime
-          }
         }
         observedDepartureTime {
           id
@@ -140,14 +191,6 @@ export const journeyQuery = gql`
           departureTime
           departureDateTime
           departureTimeDifference
-          departureEvent {
-            id
-            nextStopId
-            receivedAt
-            recordedAt
-            recordedAtUnix
-            recordedTime
-          }
         }
         plannedDepartureTime {
           id
