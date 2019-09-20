@@ -8,16 +8,13 @@ import {useMemo} from "react";
 // the departure time and the terminal time for the first stop of a route.
 
 export default function CalculateTerminalTime({
-  departure,
   event,
+  departure,
   recovery = false,
   children,
 }) {
   const observedTime = useMemo(() => moment.tz(event.recordedAt, TIMEZONE), [event]);
-  const plannedTime = useMemo(
-    () => moment.tz(departure.plannedArrivalTime.arrivalDateTime, TIMEZONE),
-    [departure]
-  );
+  const plannedTime = useMemo(() => moment.tz(event.plannedDateTime, TIMEZONE), [event]);
 
   const bufferTime = get(departure, recovery ? "recoveryTime" : "terminalTime", 0);
 

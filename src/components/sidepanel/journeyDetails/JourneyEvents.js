@@ -2,6 +2,7 @@ import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import flow from "lodash/flow";
+import uniqBy from "lodash/uniqBy";
 import {inject} from "../../../helpers/inject";
 import {
   JourneyStopEvent,
@@ -55,7 +56,7 @@ const JourneyEvents = decorate(({events = [], date, color, Filters, UI, Time}) =
   return (
     <EventsListWrapper>
       <EventsList>
-        {events.map((event, index) => {
+        {uniqBy(events, "id").map((event, index) => {
           let Component = null;
 
           switch (event.type) {
@@ -67,15 +68,8 @@ const JourneyEvents = decorate(({events = [], date, color, Filters, UI, Time}) =
             case "CANCELLATION":
               Component = JourneyCancellationEventItem;
               break;
-            case "DOO":
-            case "DOC":
-            case "PAS":
-            case "TLR":
-            case "TLA":
-              Component = JourneyEvent;
-              break;
             default:
-              Component = null;
+              Component = JourneyEvent;
           }
 
           if (!Component) {

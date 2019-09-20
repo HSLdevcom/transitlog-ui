@@ -75,7 +75,7 @@ export const StopContent = styled.div`
 `;
 
 export const StopHeading = styled.button`
-  margin: 0.2rem 0.5rem 0;
+  margin: 0.2rem 0 0;
   color: var(--dark-grey);
   font-size: 0.875rem;
   font-weight: normal;
