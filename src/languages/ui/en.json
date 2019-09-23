@@ -83,7 +83,7 @@
   "journey.event.PDE": "Ready tod epart from stop",
   "journey.event.PAS": "Passsed stop without stopping",
   "journey.event.WAIT": "Waiting at stop",
-  "journey.event.TLR": "Traffic light priority requested",
+  "journey.event.TLR": "Traffic light priority event",
   "journey.event.TLA": "Traffic light priority request answered",
   "journey.event.DA": "Driver signs into vehicle",
   "journey.event.DOUT": "Driver signs out of vehicle",
