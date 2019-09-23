@@ -40,7 +40,7 @@ const JourneyEvents = decorate(
               return eventTypes;
             }
 
-            if (type === "CANCELLATION") {
+            if (["CANCELLATION", "PLANNED"].includes(type)) {
               eventTypes[type] = true;
             } else {
               eventTypes[type] = false;
@@ -93,65 +93,60 @@ const JourneyEvents = decorate(
       <EventsListWrapper>
         <EventFilters onChange={onFilterChange} filterState={eventFilterState} />
         <EventsList>
-          {uniqBy(events, "id").map((event, index, arr) => {
-            let Component = null;
+          {uniqBy(events, "id")
+            .filter((event, index, arr) => {
+              const eventsOfType = arr.filter((evt) => evt.type === event.type);
+              const isFirstOfType = eventsOfType[0] === event;
+              const isLastOfType = last(eventsOfType) === event;
 
-            const eventsOfType = arr.filter((evt) => evt.type === event.type);
-            const isFirstOfType = eventsOfType[0] === event;
-            const isLastOfType = last(eventsOfType) === event;
+              const isTimingStopArr = event.isTimingStop && event.type === "ARR";
+              const isTerminalArr =
+                (isFirstOfType || isLastOfType) && event.type === "ARR";
 
-            const isTimingStopArr = event.isTimingStop && event.type === "ARR";
-            const isTerminalArr = (isFirstOfType || isLastOfType) && event.type === "ARR";
+              const types = [event.type];
 
-            const types = [event.type];
+              // Show ARR for timing stops
+              if (isTimingStopArr) {
+                types.push("TIMING_STOP_ARR");
+              }
 
-            // Show ARR for timing stops
-            if (isTimingStopArr) {
-              types.push("TIMING_STOP_ARR");
-            }
+              // Show ARR for first and last stop
+              if (isTerminalArr) {
+                types.push("TERMINAL_ARR");
+              }
 
-            // Show ARR for first and last stop
-            if (isTerminalArr) {
-              types.push("TERMINAL_ARR");
-            }
+              return types.some((type) => eventFilterState[type]);
+            })
+            .map((event, index, arr) => {
+              let Component = JourneyEvent;
 
-            const eventVisible = types.some((type) => eventFilterState[type]);
+              switch (event.type) {
+                case "DEP":
+                case "ARR":
+                case "PLANNED":
+                  Component = JourneyStopEvent;
+                  break;
+                case "CANCELLATION":
+                  Component = JourneyCancellationEventItem;
+                  break;
+                default:
+                  Component = JourneyEvent;
+              }
 
-            if (!eventVisible) {
-              return null;
-            }
-
-            switch (event.type) {
-              case "DEP":
-              case "ARR":
-              case "PLANNED":
-                Component = JourneyStopEvent;
-                break;
-              case "CANCELLATION":
-                Component = JourneyCancellationEventItem;
-                break;
-              default:
-                Component = JourneyEvent;
-            }
-
-            if (!Component) {
-              return null;
-            }
-
-            return (
-              <Component
-                isFirst={isFirstOfType}
-                isLast={isLastOfType}
-                key={event.id}
-                onHover={onHover}
-                onClick={onClick}
-                event={event}
-                date={date}
-                departure={originDeparture}
-                onSelectTime={onClickTime}
-              />
-            );
-          })}
+              return (
+                <Component
+                  isFirst={index === 0}
+                  isLast={index === arr.length - 1}
+                  key={event.id}
+                  onHover={onHover}
+                  onClick={onClick}
+                  event={event}
+                  date={date}
+                  departure={originDeparture}
+                  onSelectTime={onClickTime}
+                />
+              );
+            })}
         </EventsList>
       </EventsListWrapper>
     );

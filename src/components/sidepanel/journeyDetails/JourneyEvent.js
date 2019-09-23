@@ -75,29 +75,33 @@ const decorate = flow(
   inject("state")
 );
 
-export const JourneyEvent = decorate(({event, color, date, onSelectTime, state}) => {
-  const timestamp = moment.tz(event.recordedAt, TIMEZONE);
+export const JourneyEvent = decorate(
+  ({event, color, date, isFirst, isLast, onSelectTime, state}) => {
+    const timestamp = moment.tz(event.recordedAt, TIMEZONE);
 
-  const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
-    timestamp,
-  ]);
+    const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
+      timestamp,
+    ]);
 
-  return (
-    <StopWrapper>
-      <StopElementsWrapper color={color}>
-        <StopMarker color={color} />
-      </StopElementsWrapper>
-      <StopContent>
-        <StopTime onClick={selectTime}>
-          <PlainSlot>{text(`journey.event.${event.type}`, state.language)}</PlainSlot>
-          <PlainSlotSmall style={{marginLeft: "auto"}}>
-            {timestamp.format("HH:mm:ss")}
-          </PlainSlotSmall>
-        </StopTime>
-      </StopContent>
-    </StopWrapper>
-  );
-});
+    return (
+      <StopWrapper>
+        <StopElementsWrapper
+          color={color}
+          terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
+          <StopMarker color={color} />
+        </StopElementsWrapper>
+        <StopContent>
+          <StopTime onClick={selectTime}>
+            <PlainSlot>{text(`journey.event.${event.type}`, state.language)}</PlainSlot>
+            <PlainSlotSmall style={{marginLeft: "auto"}}>
+              {timestamp.format("HH:mm:ss")}
+            </PlainSlotSmall>
+          </StopTime>
+        </StopContent>
+      </StopWrapper>
+    );
+  }
+);
 
 export const JourneyStopEvent = decorate(
   ({
@@ -143,7 +147,9 @@ export const JourneyStopEvent = decorate(
     if (event.type === "PLANNED") {
       return (
         <StopWrapper>
-          <StopElementsWrapper color={color} terminus={isFirst ? "origin" : undefined}>
+          <StopElementsWrapper
+            color={color}
+            terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
             {event.isTimingStop ? (
               <TimingStopMarker color={color} onClick={onStopClick} {...hoverProps} />
             ) : (
@@ -174,13 +180,7 @@ export const JourneyStopEvent = decorate(
       <StopWrapper>
         <StopElementsWrapper
           color={color}
-          terminus={
-            isFirst
-              ? "origin"
-              : isLast && event.type === "ARR"
-              ? "destination"
-              : undefined
-          }>
+          terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
           {event.isTimingStop ? (
             <TimingStopMarker color={color} onClick={onStopClick} {...hoverProps} />
           ) : (
@@ -273,6 +273,7 @@ const CancellationWrapper = styled(StopWrapper)`
     margin-right: 0.5rem;
 
     svg {
+      margin-left: 1px;
       margin-top: 0.75rem;
     }
   }
@@ -284,7 +285,7 @@ const CancellationWrapper = styled(StopWrapper)`
             margin-top: 1.5rem;
 
             svg {
-              margin-top: -0.72rem;
+              margin-top: -0.875rem;
             }
           }
         `
@@ -300,76 +301,78 @@ const StopCancellation = styled.div`
   border-bottom: 0;
 `;
 
-export const JourneyCancellationEventItem = decorate(({event, state}) => {
-  const timestamp = moment.tz(event.recordedAt, TIMEZONE);
+export const JourneyCancellationEventItem = decorate(
+  ({event, isFirst, isLast, state}) => {
+    const timestamp = moment.tz(event.recordedAt, TIMEZONE);
 
-  return (
-    <CancellationWrapper>
-      <StopElementsWrapper>
-        {event.isCancelled ? (
-          <CrossThick fill="var(--red)" width="1rem" />
-        ) : (
-          <CircleCheckmark fill={{outer: "var(--green)"}} width="1.225rem" />
-        )}
-      </StopElementsWrapper>
-      <StopCancellation>
-        <CancellationHeader>
-          <Row>
-            {event.title && event.title.trim() !== "-" ? (
-              <>
-                <CancellationTitle>{event.title}</CancellationTitle>
-                <CancellationTime>
-                  {format(event.plannedDate, "DD/MM")} {event.plannedTime}
-                </CancellationTime>
-              </>
-            ) : (
-              <CancellationTitle>
-                {format(event.plannedDate, "DD/MM")} {event.plannedTime}
-              </CancellationTitle>
-            )}
-          </Row>
-        </CancellationHeader>
-        <CancellationContent>
-          {event.description && event.description.trim() !== "-" && (
-            <CancellationDescription>{event.description}</CancellationDescription>
+    return (
+      <CancellationWrapper isFirst={isFirst} isLast={isLast}>
+        <StopElementsWrapper>
+          {event.isCancelled ? (
+            <CrossThick fill="var(--red)" width="1.3rem" />
+          ) : (
+            <CircleCheckmark fill={{outer: "var(--green)"}} width="1.3rem" />
           )}
-          <CancellationInfo>
-            {event.category !== "HIDDEN" && (
-              <>
-                <CancellationInfoRow>
-                  {text("general.category")}:{" "}
-                  <strong>
-                    {alertText("category." + event.category, state.language)}
-                  </strong>
-                </CancellationInfoRow>
-                <CancellationInfoRow>
-                  {text("general.subcategory")}:{" "}
-                  <strong>
-                    {alertText("subCategory." + event.subCategory, state.language)}
-                  </strong>
-                </CancellationInfoRow>
-              </>
+        </StopElementsWrapper>
+        <StopCancellation>
+          <CancellationHeader>
+            <Row>
+              {event.title && event.title.trim() !== "-" ? (
+                <>
+                  <CancellationTitle>{event.title}</CancellationTitle>
+                  <CancellationTime>
+                    {format(event.plannedDate, "DD/MM")} {event.plannedTime}
+                  </CancellationTime>
+                </>
+              ) : (
+                <CancellationTitle>
+                  {format(event.plannedDate, "DD/MM")} {event.plannedTime}
+                </CancellationTitle>
+              )}
+            </Row>
+          </CancellationHeader>
+          <CancellationContent>
+            {event.description && event.description.trim() !== "-" && (
+              <CancellationDescription>{event.description}</CancellationDescription>
             )}
-            <CancellationInfoRow>
-              {text("general.type")}:{" "}
-              <strong>
-                {alertText("cancelType." + event.cancellationType, state.language)}
-              </strong>
-            </CancellationInfoRow>
-            <CancellationInfoRow>
-              {text("general.impact")}:{" "}
-              <strong>
-                {alertText("cancelEffect." + event.cancellationEffect, state.language)}
-              </strong>
-            </CancellationInfoRow>
-          </CancellationInfo>
-          <CancellationFooter>
-            <CancellationPublishTime>
-              {timestamp.format("DD/MM HH:mm")}
-            </CancellationPublishTime>
-          </CancellationFooter>
-        </CancellationContent>
-      </StopCancellation>
-    </CancellationWrapper>
-  );
-});
+            <CancellationInfo>
+              {event.category !== "HIDDEN" && (
+                <>
+                  <CancellationInfoRow>
+                    {text("general.category")}:{" "}
+                    <strong>
+                      {alertText("category." + event.category, state.language)}
+                    </strong>
+                  </CancellationInfoRow>
+                  <CancellationInfoRow>
+                    {text("general.subcategory")}:{" "}
+                    <strong>
+                      {alertText("subCategory." + event.subCategory, state.language)}
+                    </strong>
+                  </CancellationInfoRow>
+                </>
+              )}
+              <CancellationInfoRow>
+                {text("general.type")}:{" "}
+                <strong>
+                  {alertText("cancelType." + event.cancellationType, state.language)}
+                </strong>
+              </CancellationInfoRow>
+              <CancellationInfoRow>
+                {text("general.impact")}:{" "}
+                <strong>
+                  {alertText("cancelEffect." + event.cancellationEffect, state.language)}
+                </strong>
+              </CancellationInfoRow>
+            </CancellationInfo>
+            <CancellationFooter>
+              <CancellationPublishTime>
+                {timestamp.format("DD/MM HH:mm")}
+              </CancellationPublishTime>
+            </CancellationFooter>
+          </CancellationContent>
+        </StopCancellation>
+      </CancellationWrapper>
+    );
+  }
+);
