@@ -31,6 +31,7 @@ import {applyTooltip} from "../../../hooks/useTooltip";
 import {observer} from "mobx-react-lite";
 import CrossThick from "../../../icons/CrossThick";
 import CircleCheckmark from "../../../icons/CircleCheckmark";
+import format from "date-fns/format";
 import {
   CancellationHeader,
   CancellationContent,
@@ -299,24 +300,32 @@ const StopCancellation = styled.div`
   border-bottom: 0;
 `;
 
-export const JourneyCancellationEventItem = decorate(({event, isFirst, state}) => {
+export const JourneyCancellationEventItem = decorate(({event, state}) => {
   const timestamp = moment.tz(event.recordedAt, TIMEZONE);
 
   return (
-    <CancellationWrapper isFirst={isFirst}>
+    <CancellationWrapper>
       <StopElementsWrapper>
         {event.isCancelled ? (
           <CrossThick fill="var(--red)" width="1rem" />
         ) : (
-          <CircleCheckmark fill={{outer: "var(--green)"}} width="1.2rem" />
+          <CircleCheckmark fill={{outer: "var(--green)"}} width="1.225rem" />
         )}
       </StopElementsWrapper>
       <StopCancellation>
         <CancellationHeader>
           <Row>
-            <CancellationTime>{timestamp.format("DD/MM HH:mm")}</CancellationTime>
-            {event.title && event.title.trim() !== "-" && (
-              <CancellationTitle>{event.title}</CancellationTitle>
+            {event.title && event.title.trim() !== "-" ? (
+              <>
+                <CancellationTitle>{event.title}</CancellationTitle>
+                <CancellationTime>
+                  {format(event.plannedDate, "DD/MM")} {event.plannedTime}
+                </CancellationTime>
+              </>
+            ) : (
+              <CancellationTitle>
+                {format(event.plannedDate, "DD/MM")} {event.plannedTime}
+              </CancellationTitle>
             )}
           </Row>
         </CancellationHeader>

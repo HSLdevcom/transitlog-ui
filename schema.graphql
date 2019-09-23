@@ -10,7 +10,7 @@ interface Position {
   lng: Float
 }
 
-union JourneyEventType = JourneyEvent | JourneyStopEvent | PlannedStopEvent
+union JourneyEventType = JourneyCancellationEvent | JourneyEvent | JourneyStopEvent | PlannedStopEvent
 
 type Alert {
   affectedId: String!
@@ -159,6 +159,23 @@ type Journey {
   uniqueVehicleId: VehicleId
   vehicleId: String
   vehiclePositions: [VehiclePosition!]!
+}
+
+type JourneyCancellationEvent {
+  cancellationEffect: CancellationEffect!
+  cancellationType: CancellationType!
+  category: AlertCategory!
+  description: String!
+  id: ID!
+  isCancelled: Boolean!
+  plannedDate: Date
+  plannedTime: Time
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  subCategory: CancellationSubcategory!
+  title: String!
+  type: String!
 }
 
 type JourneyEvent {

@@ -40,7 +40,12 @@ const JourneyEvents = decorate(
               return eventTypes;
             }
 
-            eventTypes[type] = false;
+            if (type === "CANCELLATION") {
+              eventTypes[type] = true;
+            } else {
+              eventTypes[type] = false;
+            }
+
             return eventTypes;
           },
           {TIMING_STOP_ARR: true, TERMINAL_ARR: true, DEP: true}
