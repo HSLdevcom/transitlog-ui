@@ -10,7 +10,7 @@
   "Time increment field": "Aseta kuinka paljon aika muuttuu kun simulointi on käynnissä tai kun käytät aikakentän eteenpäin/taaksepäin nappeja",
   "Search range minutes field": "Aseta aluehaun aikaväli, eli kuinka pitkältä aikaväliltä aluehaku hakee tapahtumia. Aikavälin keskipiste on valittu aika hakuhetkellä.",
   "Select route": "Valitse reitin minkä haluat tutkia.",
-  "Select vehicle": "Etsi HSL-alueen ajoneuvoa rekisterinumerolla, kylkinumerolla tai liikennöitsijän nimellä. Ajoneuvot jotka eivät olleet liikenteessä valittuna päivämääränä näkyvät harmaalla värillä.",
+  "Select vehicle": "Etsi HSL-alueen ajoneuvoa rekisterinumerolla, kylkinumerolla tai liikennöitsijän nimellä. Korostettuina ajoneuvot jotka ovat olleet linja-ajossa kyseisenä päivänä",
   "Select vehicle disabled": "Ajoneuvohaku on suljettu kun sinulla on valittu lähtö. Poista lähtö-valinta niin voit hakea ajoneuvoa.",
   "Select stop": "Etsi pysäkki pysäkkinumerolla, tunnisteella tai nimellä.",
   "Clear vehicle": "Tyhjentää ajoneuvohaku-kenttää. Tiedot mitkä haettiin ajoneuvotiedon pohjalta tyhjentyy myös.",

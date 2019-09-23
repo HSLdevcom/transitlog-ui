@@ -10,7 +10,7 @@
   "Time increment field": "Set the time-step that is used in simulation mode or when using the backward/forward buttons in the time field.",
   "Search range minutes field": "Set the range of minutes that is used in the area search. Events in the selected areas will be fetched from within this timerange with the current time at the center.",
   "Select route": "Select the route that you want to observe. Filter the suggestions by writing in this field and make your selection. Use a forward slash (/) and the numbers 1 or 2 to filter route directions.",
-  "Select vehicle": "Find vehicles that are active within the HSL area. Search using the vehicle number, operator name or registry number. Vehicles that have events from the current day are highlighted.",
+  "Select vehicle": "Find vehicles that are active within the HSL area. Search using the vehicle number, operator name or registry number. Vehicles that have been in signed-in journeys on the current day are highlighted.",
   "Select vehicle disabled": "The vehicle search is disabled while you have a journey selected. Deselect the journey to enable the vehicle search again.",
   "Select stop": "Find a stop by the stop id, the short id or the name of the stop.",
   "Clear vehicle": "Clear the vehicle search field and the selected vehicle.",
