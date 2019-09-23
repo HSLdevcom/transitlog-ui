@@ -20,7 +20,7 @@ const JourneyStopsLayer = decorate(
   }) => {
     if (journey && journey.events) {
       const stopEvents = journey.events.filter((evt) =>
-        ["ARR", "DEP"].includes(evt.type)
+        ["ARR", "DEP", "PLANNED"].includes(evt.type)
       );
 
       const stopGroups = orderBy(
@@ -33,19 +33,26 @@ const JourneyStopsLayer = decorate(
         const isFirst = index === 0;
         const isLast = index === arr.length - 1;
 
+        let useEvent;
         const arrival = events.find((evt) => evt.type === "ARR");
         const departure = events.find((evt) => evt.type === "DEP") || arrival;
 
         if (!arrival && !departure) {
-          return null;
+          useEvent = events.find((evt) => evt.type === "PLANNED");
+
+          if (!useEvent) {
+            return null;
+          }
+        } else {
+          useEvent = departure;
         }
 
-        const isSelected = departure.stopId === selectedStop;
-        const isHighlighted = departure.stopId === highlightedStop;
+        const isSelected = useEvent.stopId === selectedStop;
+        const isHighlighted = useEvent.stopId === highlightedStop;
 
         return (
           <RouteStop
-            key={`journey_stop_marker_${departure.stopId}_${departure.index}_${departure.id}`}
+            key={`journey_stop_marker_${useEvent.stopId}_${useEvent.index}_${useEvent.id}`}
             selected={isSelected}
             highlighted={isHighlighted}
             firstTerminal={isFirst}
@@ -53,7 +60,7 @@ const JourneyStopsLayer = decorate(
             selectedJourney={selectedJourney}
             journey={journey}
             firstStop={arr[0][1]}
-            stop={departure.stop}
+            stop={useEvent.stop}
             departure={departure}
             arrival={arrival}
             date={date}

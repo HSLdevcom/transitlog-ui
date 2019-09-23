@@ -93,7 +93,10 @@ export const getValidTimeWithinRange = (time, journeys = [], returnRange = false
     // Get the first and last event from each journey. This is used
     // to get the min and max time for the range slider and time input
     const eventsRange = flatten(
-      journeys.map(({events = []}) => [events[0], events[events.length - 1]])
+      journeys.map(({vehiclePositions = []}) => [
+        vehiclePositions[0],
+        vehiclePositions[vehiclePositions.length - 1],
+      ])
     );
 
     const eventsTimeRange = getTimeRangeFromEvents(eventsRange);

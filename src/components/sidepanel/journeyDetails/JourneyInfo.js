@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import get from "lodash/get";
+import findLast from "lodash/findLast";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import doubleDigit from "../../../helpers/doubleDigit";
 import {getEquipmentType, validateEquipment} from "./equipmentType";
@@ -78,7 +79,7 @@ const ObservedValue = styled.span`
 `;
 
 export default observer(({journey, date}) => {
-  const departure = get(journey, "departures[0]", null);
+  const departure = get(journey, "departure", null);
 
   if (!departure) {
     return null;
@@ -89,19 +90,8 @@ export default observer(({journey, date}) => {
   const operatorName = getOperatorName(departure.operatorId);
   const observedOperatorName = getOperatorName(journey.operatorId);
 
-  const originDeparture = departure;
-  const originArrivalEvent = get(
-    originDeparture,
-    "observedArrivalTime.arrivalEvent",
-    null
-  );
-
-  const destinationDeparture = journey.departures[journey.departures.length - 1];
-  const destinationArrivalEvent = get(
-    destinationDeparture,
-    "observedArrivalTime.arrivalEvent",
-    null
-  );
+  const originArrivalEvent = journey.events.find((evt) => evt.type === "ARR");
+  const destinationArrivalEvent = findLast(journey.events, (evt) => evt.type === "ARR");
 
   return (
     <JourneyInfo>
@@ -141,7 +131,7 @@ export default observer(({journey, date}) => {
               <CalculateTerminalTime
                 recovery={true}
                 date={date}
-                departure={destinationDeparture}
+                departure={departure}
                 event={destinationArrivalEvent}>
                 {({diffMinutes, diffSeconds, wasLate, sign}) => (
                   <ObservedValue
@@ -209,7 +199,7 @@ export default observer(({journey, date}) => {
                 <span>{journey.equipment.age}</span>
                 &nbsp;
                 <Text>
-                  {journey.equipment.age < 2 ? "general.year" : "general.year.plural"}
+                  {journey.equipment.age === 1 ? "general.year" : "general.year.plural"}
                 </Text>
               </Values>
             </Line>
@@ -226,7 +216,7 @@ export default observer(({journey, date}) => {
                     : equipmentCode
                     ? equipmentCode
                     : text("general.no_type")}
-                  {get(originDeparture, "equipmentColor", "")}
+                  {get(departure, "equipmentColor", "")}
                 </span>
               </Values>
             </Line>
