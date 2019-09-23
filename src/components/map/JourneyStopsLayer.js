@@ -35,10 +35,11 @@ const JourneyStopsLayer = decorate(
 
         let useEvent;
         const arrival = events.find((evt) => evt.type === "ARR");
-        const departure = events.find((evt) => evt.type === "DEP") || arrival;
+        let departure = events.find((evt) => evt.type === "DEP") || arrival;
 
-        if (!arrival && !departure) {
+        if (!departure) {
           useEvent = events.find((evt) => evt.type === "PLANNED");
+          departure = useEvent;
 
           if (!useEvent) {
             return null;

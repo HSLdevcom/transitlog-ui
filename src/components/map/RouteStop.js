@@ -95,7 +95,7 @@ class RouteStop extends React.Component {
     const mode = getPriorityMode(get(stop, "modes", []));
     let color = getModeColor(mode);
 
-    if (!selectedJourney || !departure || !arrival) {
+    if (!selectedJourney || (!departure && !arrival)) {
       return (
         <StopMarker
           key={`route_stop_marker_${stop.stopId}`}
@@ -122,17 +122,20 @@ class RouteStop extends React.Component {
 
     const firstDeparture = firstStop;
 
-    const departureDiff = departure.plannedTimeDifference;
+    const departureDiff = get(departure, "plannedTimeDifference", 0);
     const departureDelayType = getDelayType(departureDiff);
     const departureDiffTime = secondsToTimeObject(departureDiff);
 
-    const arrivalDiff = arrival.plannedTimeDifference;
+    const arrivalDiff = get(arrival, "plannedTimeDifference", 0);
     const arrivalDiffTime = secondsToTimeObject(arrivalDiff);
 
     color = getTimelinessColor(departureDelayType, "var(--light-green)");
 
-    const stopArrivalTime = arrival.recordedTime;
-    const stopDepartureTime = departure.recordedTime;
+    const plannedArrivalTime = get(arrival, "plannedTime", "");
+    const plannedDepartureTime = get(departure, "plannedTime", "");
+
+    const stopArrivalTime = get(arrival, "recordedTime", "");
+    const stopDepartureTime = get(departure, "recordedTime", "");
 
     // Calculate the duration values
 
@@ -165,7 +168,7 @@ class RouteStop extends React.Component {
 
     const observedDepartureTime = (
       <TagButton onClick={this.onClickTime(stopDepartureTime)}>
-        <PlainSlot>{getNormalTime(departure.plannedTime)}</PlainSlot>
+        <PlainSlot>{getNormalTime(plannedDepartureTime)}</PlainSlot>
         <ColoredBackgroundSlot
           color={departureDelayType === "late" ? "var(--dark-grey)" : "white"}
           backgroundColor={color}>
@@ -180,12 +183,9 @@ class RouteStop extends React.Component {
 
     let observedArrivalTime = null;
 
-    if (firstTerminal && journey.departure) {
+    if (arrival && firstTerminal && journey.departure) {
       observedArrivalTime = (
-        <CalculateTerminalTime
-          date={date}
-          departure={journey.departure}
-          event={departure}>
+        <CalculateTerminalTime date={date} departure={journey.departure} event={arrival}>
           {({offsetTime, wasLate, diffHours, diffMinutes, diffSeconds, sign}) => (
             <>
               <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
@@ -213,7 +213,7 @@ class RouteStop extends React.Component {
           )}
         </CalculateTerminalTime>
       );
-    } else if (lastTerminal && journey.departure) {
+    } else if (arrival && lastTerminal && journey.departure) {
       observedArrivalTime = (
         <CalculateTerminalTime
           recovery={true}
@@ -235,7 +235,7 @@ class RouteStop extends React.Component {
           )}
         </CalculateTerminalTime>
       );
-    } else {
+    } else if (arrival) {
       observedArrivalTime = (
         <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
           <PlainSlot>{getNormalTime(arrival.plannedTime)}</PlainSlot>
@@ -263,7 +263,9 @@ class RouteStop extends React.Component {
               )
             </StopHeading>
 
-            {(isTerminal || doorDidOpen) && departure.recordedTime ? (
+            {observedArrivalTime &&
+            (isTerminal || doorDidOpen) &&
+            departure.recordedTime ? (
               <>
                 <TimeHeading>
                   <Text>journey.arrival</Text>
@@ -276,7 +278,7 @@ class RouteStop extends React.Component {
               </PopupParagraph>
             ) : null}
 
-            {!lastTerminal && (
+            {!lastTerminal && observedDepartureTime && (
               <DepartureTimeGroup>
                 <TimeHeading>
                   <Text>journey.departure</Text>
@@ -325,7 +327,7 @@ class RouteStop extends React.Component {
             <Text>map.stops.doors_not_open</Text>
           </TooltipParagraph>
         )}
-        {lastTerminal ? (
+        {lastTerminal && observedArrivalTime ? (
           <>
             <TimeHeading>
               <Text>journey.arrival</Text>
