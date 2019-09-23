@@ -83,6 +83,7 @@ class JourneyDetails extends React.Component {
                   name="journey-events"
                   label={text("journey.events")}
                   events={journeyEvents}
+                  originDeparture={journey.departure}
                   date={journey.departureDate}
                   color={journeyColor}
                 />

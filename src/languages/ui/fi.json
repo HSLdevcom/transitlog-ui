@@ -73,6 +73,8 @@
 
   "journey.event.DEP": "Lähtö",
   "journey.event.ARR": "Saapuminen",
+  "journey.event.TIMING_STOP_ARR": "Saapuminen ajantasauspysäkille",
+  "journey.event.TERMINAL_ARR": "Saapuminen päätypysäkille",
   "journey.event.PLANNED": "Suunniteltu lähtö",
   "journey.event.CANCELLATION": "Peruutus",
   "journey.event.DOO": "Ovi auki",

@@ -8,6 +8,9 @@ import {
   StopWrapper as DefaultStopWrapper,
   StopContent,
   StopHeading,
+  TimeHeading,
+  StopArrivalTime,
+  SmallText,
 } from "../../StopElements";
 import {
   TagButton,
@@ -17,7 +20,7 @@ import {
 } from "../../TagButton";
 import {getTimelinessColor} from "../../../helpers/timelinessColor";
 import doubleDigit from "../../../helpers/doubleDigit";
-import {text, alertText} from "../../../helpers/text";
+import {text, alertText, Text} from "../../../helpers/text";
 import {
   getNormalTime,
   secondsToTimeObject,
@@ -44,6 +47,8 @@ import flow from "lodash/flow";
 import {inject} from "../../../helpers/inject";
 import {TIMEZONE} from "../../../constants";
 import moment from "moment-timezone";
+import {getModeColor} from "../../../helpers/vehicleColor";
+import CalculateTerminalTime from "./CalculateTerminalTime";
 
 const StopWrapper = styled(DefaultStopWrapper)`
   padding: 0;
@@ -94,7 +99,17 @@ export const JourneyEvent = decorate(({event, color, date, onSelectTime, state})
 });
 
 export const JourneyStopEvent = decorate(
-  ({event, color, onSelectTime, onClick = () => {}, onHover = () => {}, state}) => {
+  ({
+    event,
+    onSelectTime,
+    onClick = () => {},
+    onHover = () => {},
+    state,
+    date,
+    departure,
+    isFirst,
+    isLast,
+  }) => {
     const plannedTime = get(event, "plannedTime", "");
     const observedTime = get(event, "recordedTime");
 
@@ -104,6 +119,7 @@ export const JourneyStopEvent = decorate(
     ]);
 
     const stop = get(event, "stop", {stopId: ""});
+    const color = getModeColor(event.mode);
 
     const selectWithStopId = useCallback(() => onClick(stop.stopId), [stop.stopId]);
     const hoverWithStopId = useCallback(() => onHover(stop.stopId), [stop.stopId]);
@@ -126,7 +142,7 @@ export const JourneyStopEvent = decorate(
     if (event.type === "PLANNED") {
       return (
         <StopWrapper>
-          <StopElementsWrapper color={color}>
+          <StopElementsWrapper color={color} terminus={isFirst ? "origin" : undefined}>
             {event.isTimingStop ? (
               <TimingStopMarker color={color} onClick={onStopClick} {...hoverProps} />
             ) : (
@@ -155,7 +171,15 @@ export const JourneyStopEvent = decorate(
 
     return (
       <StopWrapper>
-        <StopElementsWrapper color={color}>
+        <StopElementsWrapper
+          color={color}
+          terminus={
+            isFirst
+              ? "origin"
+              : isLast && event.type === "ARR"
+              ? "destination"
+              : undefined
+          }>
           {event.isTimingStop ? (
             <TimingStopMarker color={color} onClick={onStopClick} {...hoverProps} />
           ) : (
@@ -169,17 +193,71 @@ export const JourneyStopEvent = decorate(
           <EventTypeHeading>
             {text(`journey.event.${event.type}`, state.language)}
           </EventTypeHeading>
-          <StopTime onClick={selectTime}>
-            <PlainSlot>{getNormalTime(event.plannedTime)}</PlainSlot>
-            <ColoredBackgroundSlot
-              color={delayType === "late" ? "var(--dark-grey)" : "white"}
-              backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
-              {diffObject.hours > 0 ? doubleDigit(diffObject.hours) + ":" : ""}
-              {doubleDigit(get(diffObject, "minutes", 0))}:
-              {doubleDigit(get(diffObject, "seconds", 0))}
-            </ColoredBackgroundSlot>
-            <PlainSlotSmall>{getNormalTime(event.recordedTime)}</PlainSlotSmall>
-          </StopTime>
+          {/* TODO: Show doors opened and stopped status */}
+          {isFirst && event.type === "ARR" ? (
+            <CalculateTerminalTime date={date} departure={departure} event={event}>
+              {({offsetTime, wasLate, diffMinutes, diffSeconds, sign}) => (
+                <>
+                  <StopArrivalTime onClick={selectTime}>
+                    <PlainSlot
+                      style={{
+                        fontStyle: "italic",
+                        fontSize: "0.925rem",
+                        lineHeight: "1.2rem",
+                      }}>
+                      {offsetTime.format("HH:mm:ss")}*
+                    </PlainSlot>
+                    <ColoredBackgroundSlot
+                      color="white"
+                      backgroundColor={wasLate ? "var(--red)" : "var(--light-green)"}>
+                      {sign === "-" ? "-" : ""}
+                      {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
+                    </ColoredBackgroundSlot>
+                    <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+                  </StopArrivalTime>
+                  <SmallText>
+                    * <Text>journey.departure_minus_terminal</Text>
+                  </SmallText>
+                </>
+              )}
+            </CalculateTerminalTime>
+          ) : isLast && event.type === "ARR" ? (
+            <CalculateTerminalTime
+              recovery={true}
+              date={date}
+              departure={departure}
+              event={event}>
+              {({offsetTime, wasLate, diffMinutes, diffSeconds, sign}) => (
+                <>
+                  <TimeHeading>
+                    <Text>journey.arrival</Text>
+                  </TimeHeading>
+                  <StopArrivalTime onClick={selectTime}>
+                    <PlainSlot>{offsetTime.format("HH:mm:ss")}</PlainSlot>
+                    <ColoredBackgroundSlot
+                      color="white"
+                      backgroundColor={wasLate ? "var(--red)" : "var(--light-green)"}>
+                      {sign === "-" ? "-" : ""}
+                      {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
+                    </ColoredBackgroundSlot>
+                    <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+                  </StopArrivalTime>
+                </>
+              )}
+            </CalculateTerminalTime>
+          ) : (
+            <StopTime onClick={selectTime}>
+              <PlainSlot>{getNormalTime(event.plannedTime)}</PlainSlot>
+              <ColoredBackgroundSlot
+                color={delayType === "late" ? "var(--dark-grey)" : "white"}
+                backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+                {diffObject.hours > 0 ? doubleDigit(diffObject.hours) + ":" : ""}
+                {doubleDigit(get(diffObject, "minutes", 0))}:
+                {doubleDigit(get(diffObject, "seconds", 0))}
+              </ColoredBackgroundSlot>
+              <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+            </StopTime>
+          )}
         </StopContent>
       </StopWrapper>
     );

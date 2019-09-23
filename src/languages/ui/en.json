@@ -72,6 +72,8 @@
 
   "journey.event.DEP": "Departure",
   "journey.event.ARR": "Arrival",
+  "journey.event.TIMING_STOP_ARR": "Arrival at timing stop",
+  "journey.event.TERMINAL_ARR": "Arrival at terminus stop",
   "journey.event.PLANNED": "Planned departure",
   "journey.event.CANCELLATION": "Cancellation",
   "journey.event.DOO": "Door open",
