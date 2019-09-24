@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useMemo} from "react";
+import React, {useCallback, useMemo, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import flow from "lodash/flow";
@@ -25,11 +25,11 @@ const EventsList = styled.div`
 
 const decorate = flow(
   observer,
-  inject("Time", "Filters", "UI")
+  inject("Time", "Filters", "UI", "Journey")
 );
 
 const JourneyEvents = decorate(
-  ({events = [], originDeparture, date, color, Filters, UI, Time}) => {
+  ({events = [], originDeparture, date, Filters, UI, Time, Journey, state}) => {
     const eventFilterTypes = useMemo(
       () =>
         events.reduce(
@@ -48,18 +48,20 @@ const JourneyEvents = decorate(
 
             return eventTypes;
           },
-          {TIMING_STOP_ARS: true, TERMINAL_ARS: true, PDE: true}
+          {ALL: false, TIMING_STOP_ARS: true, TERMINAL_ARS: true, PDE: true}
         ),
       [events]
     );
 
-    const [eventFilterState, setFilter] = useState(eventFilterTypes);
+    useEffect(() => {
+      Journey.setJourneyEventFilter(eventFilterTypes, true);
+    }, []);
 
     const onFilterChange = useCallback(
       (nextState) => {
-        setFilter(merge({}, eventFilterState, nextState));
+        Journey.setJourneyEventFilter(nextState);
       },
-      [eventFilterState]
+      [Journey, state.journeyEvents]
     );
 
     const onClickTime = useCallback(
@@ -91,7 +93,7 @@ const JourneyEvents = decorate(
 
     return (
       <EventsListWrapper>
-        <EventFilters onChange={onFilterChange} filterState={eventFilterState} />
+        <EventFilters onChange={onFilterChange} filterState={state.journeyEvents} />
         <EventsList>
           {uniqBy(events, "id")
             .filter((event, index, arr) => {
@@ -115,7 +117,7 @@ const JourneyEvents = decorate(
                 types.push("TERMINAL_ARS");
               }
 
-              return types.some((type) => eventFilterState[type]);
+              return types.some((type) => state.journeyEvents[type]);
             })
             .map((event, index, arr) => {
               let Component = JourneyEvent;
