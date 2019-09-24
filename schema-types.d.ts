@@ -384,6 +384,24 @@ export type Journey = {
   isCancelled: Scalars['Boolean'],
 };
 
+export type JourneyCancellationEvent = {
+   __typename?: 'JourneyCancellationEvent',
+  id: Scalars['ID'],
+  type: Scalars['String'],
+  recordedAt: Scalars['DateTime'],
+  recordedAtUnix: Scalars['Int'],
+  recordedTime: Scalars['Time'],
+  plannedDate?: Maybe<Scalars['Date']>,
+  plannedTime?: Maybe<Scalars['Time']>,
+  title: Scalars['String'],
+  description: Scalars['String'],
+  category: AlertCategory,
+  subCategory: CancellationSubcategory,
+  isCancelled: Scalars['Boolean'],
+  cancellationType: CancellationType,
+  cancellationEffect: CancellationEffect,
+};
+
 export type JourneyEvent = {
    __typename?: 'JourneyEvent',
   id: Scalars['ID'],
@@ -393,7 +411,7 @@ export type JourneyEvent = {
   recordedTime: Scalars['Time'],
 };
 
-export type JourneyEventType = JourneyEvent | JourneyStopEvent | PlannedStopEvent;
+export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent;
 
 export type JourneyStopEvent = {
    __typename?: 'JourneyStopEvent',

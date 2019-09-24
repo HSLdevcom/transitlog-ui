@@ -61,6 +61,7 @@ const JourneyStopsLayer = decorate(
             selectedJourney={selectedJourney}
             journey={journey}
             firstStop={arr[0][1]}
+            stopId={useEvent.stopId}
             stop={useEvent.stop}
             departure={departure}
             arrival={arrival}

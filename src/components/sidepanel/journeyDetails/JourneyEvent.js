@@ -50,6 +50,7 @@ import {TIMEZONE} from "../../../constants";
 import moment from "moment-timezone";
 import {getModeColor} from "../../../helpers/vehicleColor";
 import CalculateTerminalTime from "./CalculateTerminalTime";
+import RoutesFail from "../../../icons/RoutesFail";
 
 const StopWrapper = styled(DefaultStopWrapper)`
   padding: 0;
@@ -74,6 +75,15 @@ const EventTextSmall = styled.span`
 const EventHeadingButton = styled(StopHeading)`
   margin-bottom: 0.5rem;
   margin-left: 0;
+`;
+
+const IconBackground = styled.div`
+  background: white;
+  width: 2rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StopTime = styled(TagButton)``;
@@ -197,6 +207,10 @@ export const JourneyStopEvent = decorate(
           terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
           {event.isTimingStop ? (
             <TimingStopMarker color={color} onClick={onStopClick} {...hoverProps} />
+          ) : event.unplannedStop ? (
+            <IconBackground>
+              <RoutesFail width="1.875rem" />
+            </IconBackground>
           ) : (
             <StopMarker color={color} onClick={onStopClick} {...hoverProps} />
           )}

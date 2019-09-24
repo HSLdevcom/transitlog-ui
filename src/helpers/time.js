@@ -44,8 +44,8 @@ export function secondsToTime(secondsDuration) {
   return getTimeString(hours, minutes, seconds);
 }
 
-export function getNormalTime(time) {
-  let [hours = 0, minutes = 0, seconds = 0] = time.split(":");
+export function getNormalTime(time = "") {
+  let [hours = 0, minutes = 0, seconds = 0] = (time || "").split(":");
 
   if (parseInt(hours, 10) > 23) {
     hours = hours - 24;

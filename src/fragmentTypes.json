@@ -30,6 +30,9 @@
             "name": "JourneyStopEvent"
           },
           {
+            "name": "JourneyCancellationEvent"
+          },
+          {
             "name": "PlannedStopEvent"
           }
         ]

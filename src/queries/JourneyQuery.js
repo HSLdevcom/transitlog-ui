@@ -101,6 +101,7 @@ export const journeyQuery = gql`
           recordedTime
           stopId
           stopped
+          unplannedStop
           type
           stop {
             id

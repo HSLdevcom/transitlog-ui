@@ -29,6 +29,7 @@ import MapPopup from "./MapPopup";
 import {Button} from "../Forms";
 import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import StopMarker from "./StopMarker";
+import {inject} from "../../helpers/inject";
 
 const PopupParagraph = styled(P)`
   font-family: var(--font-family);
@@ -45,11 +46,12 @@ const DepartureTimeGroup = styled.div`
   min-width: 300px;
 `;
 
+@inject("Time")
 @observer
 class RouteStop extends React.Component {
   onClickTime = (time) => (e) => {
     e.preventDefault();
-    this.props.Time2.setTime(time);
+    this.props.Time.setTime(time);
   };
 
   onShowStreetView = () => {
@@ -60,6 +62,7 @@ class RouteStop extends React.Component {
   render() {
     const {
       stop,
+      stopId,
       departure,
       arrival,
       date,
@@ -76,16 +79,16 @@ class RouteStop extends React.Component {
     const isTerminal = firstTerminal || lastTerminal;
 
     let stopTooltip = (
-      <Tooltip key={`stop${stop.stopId}_tooltip`}>
+      <Tooltip key={`stop${stopId}_tooltip`}>
         <StopHeading>
-          <strong>{get(stop, "name", "")}</strong> {get(stop, "stopId", "")} (
+          <strong>{get(stop, "name", "")}</strong> {stopId} (
           {get(stop, "shortId", "").replace(/ /g, "")})
         </StopHeading>
       </Tooltip>
     );
 
     let stopStreetViewPopup = (
-      <MapPopup key={`stop_${stop.stopId}_popup`}>
+      <MapPopup key={`stop_${stopId}_popup`}>
         <StopPopupContent stop={stop} onShowStreetView={this.onShowStreetView} />
       </MapPopup>
     );
@@ -238,7 +241,7 @@ class RouteStop extends React.Component {
     } else if (arrival) {
       observedArrivalTime = (
         <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
-          <PlainSlot>{getNormalTime(arrival.plannedTime)}</PlainSlot>
+          <PlainSlot>{getNormalTime(plannedArrivalTime)}</PlainSlot>
           <ColoredBackgroundSlot
             color="var(--dark-grey)"
             backgroundColor="var(--lighter-grey)">
@@ -255,12 +258,11 @@ class RouteStop extends React.Component {
     const doorDidOpen = departure.doorsOpened;
 
     const stopPopup = (
-      <MapPopup key={`stop${stop.stopId}_popup`}>
+      <MapPopup key={`stop${stopId}_popup`}>
         <StopPopupContentSection>
           <StopContentWrapper>
             <StopHeading>
-              <strong>{stop.name}</strong> {stop.stopId} ({stop.shortId.replace(/ /g, "")}
-              )
+              <strong>{stop.name}</strong> {stopId} ({stop.shortId.replace(/ /g, "")})
             </StopHeading>
 
             {observedArrivalTime &&

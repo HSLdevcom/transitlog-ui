@@ -205,6 +205,7 @@ type JourneyStopEvent {
   stopId: String
   stopped: Boolean
   type: String!
+  unplannedStop: Boolean!
 }
 
 type Line {
