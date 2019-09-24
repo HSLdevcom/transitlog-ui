@@ -94,6 +94,7 @@ export const JourneyEvent = decorate(
           <StopTime onClick={selectTime}>
             <PlainSlot
               lang={state.language}
+              {...applyTooltip(event.type)}
               dangerouslySetInnerHTML={{
                 __html: text(`journey.event.${event.type}`, state.language),
               }}
