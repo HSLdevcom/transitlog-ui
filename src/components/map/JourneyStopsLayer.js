@@ -20,7 +20,7 @@ const JourneyStopsLayer = decorate(
   }) => {
     if (journey && journey.events) {
       const stopEvents = journey.events.filter((evt) =>
-        ["ARS", "PDE", "PLANNED"].includes(evt.type)
+        ["ARS", "DEP", "PLANNED"].includes(evt.type)
       );
 
       const stopGroups = orderBy(
@@ -35,7 +35,7 @@ const JourneyStopsLayer = decorate(
 
         let useEvent;
         const arrival = events.find((evt) => evt.type === "ARS");
-        let departure = events.find((evt) => evt.type === "PDE") || arrival;
+        let departure = events.find((evt) => evt.type === "DEP") || arrival;
 
         if (!departure) {
           useEvent = events.find((evt) => evt.type === "PLANNED");

@@ -48,7 +48,7 @@ const JourneyEvents = decorate(
 
             return eventTypes;
           },
-          {ALL: false, TIMING_STOP_ARS: true, TERMINAL_ARS: true, PDE: true}
+          {ALL: false, TIMING_STOP_ARS: true, TERMINAL_ARS: true, DEP: true}
         ),
       [events]
     );
@@ -98,12 +98,11 @@ const JourneyEvents = decorate(
           {uniqBy(events, "id")
             .filter((event, index, arr) => {
               const eventsOfType = arr.filter((evt) => evt.type === event.type);
-              const isFirstOfType = eventsOfType[0] === event;
+              const isOrigin = originDeparture.stopId === event.stopId;
               const isLastOfType = last(eventsOfType) === event;
 
               const isTimingStopArr = event.isTimingStop && event.type === "ARS";
-              const isTerminalArr =
-                (isFirstOfType || isLastOfType) && event.type === "ARS";
+              const isTerminalArr = (isOrigin || isLastOfType) && event.type === "ARS";
 
               const types = [event.type];
 
@@ -123,7 +122,7 @@ const JourneyEvents = decorate(
               let Component = JourneyEvent;
 
               switch (event.type) {
-                case "PDE":
+                case "DEP":
                 case "ARS":
                 case "PLANNED":
                   Component = JourneyStopEvent;
@@ -137,6 +136,7 @@ const JourneyEvents = decorate(
 
               return (
                 <Component
+                  isOrigin={originDeparture.stopId === event.stopId}
                   isFirst={index === 0}
                   isLast={index === arr.length - 1}
                   key={event.id}

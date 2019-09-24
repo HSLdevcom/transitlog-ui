@@ -101,7 +101,7 @@ export const JourneyEvent = decorate(
       timestamp,
     ]);
 
-    const isStopEvent = ["DOO", "DOC", "DUE", "ARR", "DEP", "PAS", "PLANNED"].includes(
+    const isStopEvent = ["DOO", "DOC", "DUE", "ARR", "PDE", "PAS", "PLANNED"].includes(
       event.type
     );
 
@@ -144,6 +144,7 @@ export const JourneyStopEvent = decorate(
     departure,
     isFirst,
     isLast,
+    isOrigin,
   }) => {
     const plannedTime = get(event, "plannedTime", "");
     const observedTime = get(event, "recordedTime");
@@ -239,7 +240,7 @@ export const JourneyStopEvent = decorate(
             </EventTextSmall>
           )}
           {/* TODO: Show doors opened and stopped status */}
-          {isFirst && event.type === "ARS" ? (
+          {isOrigin && event.type === "ARS" ? (
             <CalculateTerminalTime date={date} departure={departure} event={event}>
               {({offsetTime, wasLate, diffMinutes, diffSeconds, sign}) => (
                 <>
