@@ -92,7 +92,12 @@ export const JourneyEvent = decorate(
         </StopElementsWrapper>
         <StopContent>
           <StopTime onClick={selectTime}>
-            <PlainSlot>{text(`journey.event.${event.type}`, state.language)}</PlainSlot>
+            <PlainSlot
+              lang={state.language}
+              dangerouslySetInnerHTML={{
+                __html: text(`journey.event.${event.type}`, state.language),
+              }}
+            />
             <PlainSlotSmall style={{marginLeft: "auto"}}>
               {timestamp.format("HH:mm:ss")}
             </PlainSlotSmall>

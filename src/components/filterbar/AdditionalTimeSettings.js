@@ -40,7 +40,7 @@ const AdditionalTimeSettings = decorate(({state, Time}) => {
       <ControlGroup>
         <IncrementValueInput
           helpText="Search range minutes field"
-          label="Area search minutes range"
+          label={text("filterpanel.area_search_range")}
           type="number"
           max={60 * 12}
           min={5}
