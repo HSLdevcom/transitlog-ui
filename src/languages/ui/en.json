@@ -71,6 +71,8 @@
   "journey.show_graph": "Show delays and average speeds.",
   "journey.stops": "Stops",
   "journey.events": "Events",
+  "journey.event.doors_not_open": "Doors did not open",
+  "journey.event.vehicle_not_stopped": "Vehicle did not stop",
 
   "journey.event.DEP": "Departure",
   "journey.event.ARR": "Arrival",

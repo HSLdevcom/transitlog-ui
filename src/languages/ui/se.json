@@ -71,6 +71,8 @@
   "journey.show_graph": "Visa fördröjningar och medelhastigheter",
   "journey.stops": "Hållplatser",
   "journey.events": "Händelser",
+  "journey.event.doors_not_open": "Dörrarna öppnades inte",
+  "journey.event.vehicle_not_stopped": "Fordonet stannade inte",
 
   "journey.event.DEP": "Poistuminen pysäkkialueelta",
   "journey.event.ARR": "Saapuminen pysäkkialueelle",

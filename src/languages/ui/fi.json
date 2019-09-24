@@ -71,6 +71,8 @@
   "journey.show_graph": "Näytä viiveet ja keskinopeudet",
   "journey.stops": "Pysäkit",
   "journey.events": "Tapahtumat",
+  "journey.event.doors_not_open": "Ovet eivät auenneet",
+  "journey.event.vehicle_not_stopped": "Ajoneuvo ei pysähtynyt",
 
   "journey.event.DEP": "Poistuminen pysäkkialueelta",
   "journey.event.ARR": "Saapuminen pysäkkialueelle",

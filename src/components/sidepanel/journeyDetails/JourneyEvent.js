@@ -63,6 +63,14 @@ const EventTypeHeading = styled.span`
   margin-bottom: 0.75rem;
 `;
 
+const EventTextSmall = styled.span`
+  display: block;
+  margin-top: -0.3rem;
+  color: var(--grey);
+  font-size: 0.75rem;
+  margin-bottom: 0.75rem;
+`;
+
 const EventHeadingButton = styled(StopHeading)`
   margin-bottom: 0.5rem;
   margin-left: 0;
@@ -200,6 +208,16 @@ export const JourneyStopEvent = decorate(
           <EventTypeHeading>
             {text(`journey.event.${event.type}`, state.language)}
           </EventTypeHeading>
+          {event.doorsOpened === false && (
+            <EventTextSmall>
+              {text(`journey.event.doors_not_open`, state.language)}
+            </EventTextSmall>
+          )}
+          {event.stopped === false && (
+            <EventTextSmall>
+              {text(`journey.event.vehicle_not_stopped`, state.language)}
+            </EventTextSmall>
+          )}
           {/* TODO: Show doors opened and stopped status */}
           {isFirst && event.type === "ARR" ? (
             <CalculateTerminalTime date={date} departure={departure} event={event}>
