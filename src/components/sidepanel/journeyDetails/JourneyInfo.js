@@ -90,8 +90,8 @@ export default observer(({journey, date}) => {
   const operatorName = getOperatorName(departure.operatorId);
   const observedOperatorName = getOperatorName(journey.operatorId);
 
-  const originArrivalEvent = journey.events.find((evt) => evt.type === "ARR");
-  const destinationArrivalEvent = findLast(journey.events, (evt) => evt.type === "ARR");
+  const originArrivalEvent = journey.events.find((evt) => evt.type === "ARS");
+  const destinationArrivalEvent = findLast(journey.events, (evt) => evt.type === "ARS");
 
   return (
     <JourneyInfo>

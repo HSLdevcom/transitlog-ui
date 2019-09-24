@@ -101,6 +101,10 @@ export const JourneyEvent = decorate(
       timestamp,
     ]);
 
+    const isStopEvent = ["DOO", "DOC", "DUE", "ARR", "DEP", "PAS", "PLANNED"].includes(
+      event.type
+    );
+
     return (
       <StopWrapper>
         <StopElementsWrapper
@@ -114,7 +118,9 @@ export const JourneyEvent = decorate(
               lang={state.language}
               {...applyTooltip(event.type)}
               dangerouslySetInnerHTML={{
-                __html: text(`journey.event.${event.type}`, state.language),
+                __html:
+                  text(`journey.event.${event.type}`, state.language) +
+                  (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
               }}
             />
             <PlainSlotSmall style={{marginLeft: "auto"}}>
@@ -233,7 +239,7 @@ export const JourneyStopEvent = decorate(
             </EventTextSmall>
           )}
           {/* TODO: Show doors opened and stopped status */}
-          {isFirst && event.type === "ARR" ? (
+          {isFirst && event.type === "ARS" ? (
             <CalculateTerminalTime date={date} departure={departure} event={event}>
               {({offsetTime, wasLate, diffMinutes, diffSeconds, sign}) => (
                 <>
@@ -260,7 +266,7 @@ export const JourneyStopEvent = decorate(
                 </>
               )}
             </CalculateTerminalTime>
-          ) : isLast && event.type === "ARR" ? (
+          ) : isLast && event.type === "ARS" ? (
             <CalculateTerminalTime
               recovery={true}
               date={date}

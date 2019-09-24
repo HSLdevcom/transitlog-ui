@@ -150,6 +150,7 @@ export const journeyQuery = gql`
           recordedAtUnix
           recordedTime
           type
+          stopId
         }
       }
       departure {

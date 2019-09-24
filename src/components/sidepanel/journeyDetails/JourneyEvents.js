@@ -48,7 +48,7 @@ const JourneyEvents = decorate(
 
             return eventTypes;
           },
-          {TIMING_STOP_ARR: true, TERMINAL_ARR: true, DEP: true}
+          {TIMING_STOP_ARS: true, TERMINAL_ARS: true, PDE: true}
         ),
       [events]
     );
@@ -99,20 +99,20 @@ const JourneyEvents = decorate(
               const isFirstOfType = eventsOfType[0] === event;
               const isLastOfType = last(eventsOfType) === event;
 
-              const isTimingStopArr = event.isTimingStop && event.type === "ARR";
+              const isTimingStopArr = event.isTimingStop && event.type === "ARS";
               const isTerminalArr =
-                (isFirstOfType || isLastOfType) && event.type === "ARR";
+                (isFirstOfType || isLastOfType) && event.type === "ARS";
 
               const types = [event.type];
 
               // Show ARR for timing stops
               if (isTimingStopArr) {
-                types.push("TIMING_STOP_ARR");
+                types.push("TIMING_STOP_ARS");
               }
 
               // Show ARR for first and last stop
               if (isTerminalArr) {
-                types.push("TERMINAL_ARR");
+                types.push("TERMINAL_ARS");
               }
 
               return types.some((type) => eventFilterState[type]);
@@ -121,8 +121,8 @@ const JourneyEvents = decorate(
               let Component = JourneyEvent;
 
               switch (event.type) {
-                case "DEP":
-                case "ARR":
+                case "PDE":
+                case "ARS":
                 case "PLANNED":
                   Component = JourneyStopEvent;
                   break;

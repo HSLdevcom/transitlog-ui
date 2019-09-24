@@ -183,6 +183,7 @@ type JourneyEvent {
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
+  stopId: String
   type: String!
 }
 
