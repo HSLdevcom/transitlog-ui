@@ -71,7 +71,7 @@ export default (state) => {
       state.journeyEvents = merge({}, events, state.journeyEvents);
     } else if (!init) {
       if (typeof events.ALL !== "undefined") {
-        // Set all filters to the value of events.all if present
+        // Set all filters to the value of events.ALL if present
         Object.keys(state.journeyEvents).map((key) => {
           // Set the default configuration if deselecting ALL. For others, set the value of ALL.
           const setValue =

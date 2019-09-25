@@ -2,7 +2,6 @@ import React, {useCallback, useMemo, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import flow from "lodash/flow";
-import merge from "lodash/merge";
 import last from "lodash/last";
 import uniqBy from "lodash/uniqBy";
 import {inject} from "../../../helpers/inject";
