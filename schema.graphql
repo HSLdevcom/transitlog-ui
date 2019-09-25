@@ -195,6 +195,7 @@ type JourneyStopEvent {
   id: ID!
   index: Int
   isNextDay: Boolean
+  isOrigin: Boolean
   isTimingStop: Boolean!
   nextStopId: String!
   plannedDate: Date
@@ -256,6 +257,7 @@ type PlannedStopEvent {
   id: ID!
   index: Int
   isNextDay: Boolean
+  isOrigin: Boolean
   isTimingStop: Boolean!
   plannedDate: Date
   plannedDateTime: DateTime

@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import React, {useCallback} from "react";
 import {applyTooltip} from "../../../hooks/useTooltip";
-import {text} from "../../../helpers/text";
+import {text, helpText} from "../../../helpers/text";
 
 const EventFilters = styled.div`
   display: flex;
@@ -14,7 +14,8 @@ const EventFilters = styled.div`
 const FilterItem = styled.div``;
 
 const FilterLabel = styled.label`
-  display: block;
+  display: flex;
+  align-items: center;
   margin: 0 0.25rem 0.25rem 0;
   padding: 0.15rem 0.2rem;
   border-radius: 5px;
@@ -36,20 +37,31 @@ export default decorate(({onChange, filterState}) => {
 
   return (
     <EventFilters>
-      {Object.entries(filterState).map(([name, value]) => (
-        <FilterItem key={name}>
-          <FilterLabel {...applyTooltip(text(`journey.event.${name}`))}>
-            <FilterInput
-              type="checkbox"
-              name={name}
-              value={1}
-              checked={value}
-              onChange={() => onChangeFilter(name, value)}
-            />
-            {name}
-          </FilterLabel>
-        </FilterItem>
-      ))}
+      {Object.entries(filterState).map(([name, value]) => {
+        const labelKey = `journey.event.short.${name}`;
+        const labelText = text(labelKey);
+        const label = labelText === labelKey ? name : labelText;
+
+        const tooltipKey = name;
+        const tooltipText = helpText(tooltipKey);
+        const tooltip =
+          tooltipText === tooltipKey ? text(`journey.event.${name}`) : tooltipText;
+
+        return (
+          <FilterItem key={name}>
+            <FilterLabel {...applyTooltip(tooltip)}>
+              <FilterInput
+                type="checkbox"
+                name={name}
+                value={1}
+                checked={value}
+                onChange={() => onChangeFilter(name, value)}
+              />
+              {label}
+            </FilterLabel>
+          </FilterItem>
+        );
+      })}
     </EventFilters>
   );
 });

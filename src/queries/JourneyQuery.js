@@ -103,6 +103,8 @@ export const journeyQuery = gql`
           stopped
           unplannedStop
           type
+          isOrigin
+          isTimingStop
           stop {
             id
             isTimingStop
@@ -129,6 +131,8 @@ export const journeyQuery = gql`
           plannedTime
           stopId
           type
+          isOrigin
+          isTimingStop
           stop {
             id
             isTimingStop

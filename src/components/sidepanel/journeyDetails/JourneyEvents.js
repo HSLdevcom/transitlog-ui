@@ -47,7 +47,7 @@ const JourneyEvents = decorate(
 
             return eventTypes;
           },
-          {ALL: false, TIMING_STOP_ARS: true, TERMINAL_ARS: true, DEP: true}
+          {ALL: false, TIMING_STOP_ARS: true, TERMINAL_ARS: true, DEPARTURE: true}
         ),
       [events]
     );
@@ -97,13 +97,30 @@ const JourneyEvents = decorate(
           {uniqBy(events, "id")
             .filter((event, index, arr) => {
               const eventsOfType = arr.filter((evt) => evt.type === event.type);
-              const isOrigin = originDeparture.stopId === event.stopId;
+              // The origin stop is the PLANNED origin stop, not necessarily always
+              // the first stop that the vehicle arrived at.
+              const isOrigin = event.isOrigin === true;
+              const isTimingStop = event.isTimingStop === true;
+
               const isLastOfType = last(eventsOfType) === event;
 
               const isTimingStopArr = event.isTimingStop && event.type === "ARS";
               const isTerminalArr = (isOrigin || isLastOfType) && event.type === "ARS";
 
               const types = [event.type];
+
+              // Special departure filter for the relevant departure event for this stop.
+              // DEP for origins and timing stops, PDE for everything else.
+              if (
+                (typeof event.isOrigin !== "undefined" &&
+                  (isOrigin || isTimingStop) &&
+                  event.type === "DEP") ||
+                (typeof event.isOrigin !== "undefined" &&
+                  !(isOrigin || isTimingStop) &&
+                  event.type === "PDE")
+              ) {
+                types.push("DEPARTURE");
+              }
 
               // Show ARR for timing stops
               if (isTimingStopArr) {
@@ -119,9 +136,10 @@ const JourneyEvents = decorate(
             })
             .map((event, index, arr) => {
               let Component = JourneyEvent;
+              const departureEvent = event.isOrigin || event.isTimingStop ? "DEP" : "PDE";
 
               switch (event.type) {
-                case "DEP":
+                case departureEvent:
                 case "ARS":
                 case "PLANNED":
                   Component = JourneyStopEvent;

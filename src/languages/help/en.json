@@ -52,5 +52,14 @@
   "Focus on stop": "Kohdista pysäkkiin klikkaamalla.",
   "Show info": "Näytä tai piilota käyttöohjeet.",
 
-  "PDE": "Doors closed"
+  "PDE": "Departure when the doors closed",
+  "DEP": "Departure when the vehicle exited the stop radius.",
+  "ARS": "Arrival when the vehicle arrived to a stop.",
+  "ARR": "Arrival when the vehicle arrived inside the stop radius.",
+  "ALL": "Show or hide all events. Deselecting this will reset the filters to the original state that shows the most important departure and arrival events.",
+  "DEPARTURE": "Departure from a stop. For timing stops and route origin stops, this will show DEP events. For other stops PDE events will be shown.",
+  "TIMING_STOP_ARS": "Arrival at a timing stop.",
+  "TERMINAL_ARS": "Arrival at a terminus stop.",
+  "PLANNED": "Planned stops according to JORE.",
+  "CANCELLATION": "Cancellation events."
 }

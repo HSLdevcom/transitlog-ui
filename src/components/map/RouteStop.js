@@ -114,6 +114,8 @@ class RouteStop extends React.Component {
       );
     }
 
+    const isTimingStop = get(arrival || departure || stop, "isTimingStop", false);
+
     const stopDepartureDateTime = get(
       departure,
       "recordedAt",
@@ -255,7 +257,7 @@ class RouteStop extends React.Component {
       );
     }
 
-    const doorDidOpen = departure.doorsOpened;
+    const doorDidOpen = get(arrival || departure, "doorsOpened", false);
     const stopName = get(stop, "name");
     const stopShortId = get(stop, "shortId", "").replace(/ /g, "");
 
@@ -269,19 +271,21 @@ class RouteStop extends React.Component {
             </StopHeading>
 
             {observedArrivalTime &&
-            (isTerminal || doorDidOpen) &&
-            departure.recordedTime ? (
-              <>
-                <TimeHeading>
-                  <Text>journey.arrival</Text>
-                </TimeHeading>
-                {observedArrivalTime}
-              </>
-            ) : !doorDidOpen ? (
+              (isTerminal || isTimingStop) &&
+              departure.recordedTime && (
+                <>
+                  <TimeHeading>
+                    <Text>journey.arrival</Text>
+                  </TimeHeading>
+                  {observedArrivalTime}
+                </>
+              )}
+
+            {!doorDidOpen && (
               <PopupParagraph>
                 <Text>map.stops.doors_not_open</Text>
               </PopupParagraph>
-            ) : null}
+            )}
 
             {!lastTerminal && observedDepartureTime && (
               <DepartureTimeGroup>
@@ -333,17 +337,19 @@ class RouteStop extends React.Component {
             <Text>map.stops.doors_not_open</Text>
           </TooltipParagraph>
         )}
-        {lastTerminal && observedArrivalTime ? (
+        {(lastTerminal || isTimingStop) && observedArrivalTime && (
           <>
             <TimeHeading>
-              <Text>journey.arrival</Text>
+              <Text>{`journey.event.${arrival.type}`}</Text>
             </TimeHeading>
             {observedArrivalTime}
           </>
-        ) : (
+        )}
+
+        {!lastTerminal && observedDepartureTime && (
           <>
             <TimeHeading>
-              <Text>journey.departure</Text>
+              <Text>{`journey.event.${departure.type}`}</Text>
             </TimeHeading>
             {observedDepartureTime}
           </>

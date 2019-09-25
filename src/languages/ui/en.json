@@ -74,8 +74,9 @@
   "journey.event.doors_not_open": "Doors did not open",
   "journey.event.vehicle_not_stopped": "Vehicle did not stop",
 
-  "journey.event.DEP": "Departure",
+  "journey.event.DEP": "Departure from stop area",
   "journey.event.ARR": "Arrival",
+  "journey.event.DEPARTURE": "Departure",
   "journey.event.TIMING_STOP_ARR": "Arrival at timing stop",
   "journey.event.TERMINAL_ARR": "Arrival at terminus stop",
   "journey.event.PLANNED": "Planned departure",
@@ -84,7 +85,7 @@
   "journey.event.DOC": "Door closed",
   "journey.event.DUE": "Arriving at stop",
   "journey.event.ARS": "Arrived at stop",
-  "journey.event.PDE": "Ready to depart from stop",
+  "journey.event.PDE": "Departure",
   "journey.event.PAS": "Passed stop without stopping",
   "journey.event.WAIT": "Waiting at stop",
   "journey.event.TLR": "Traffic light priority event",
@@ -95,6 +96,13 @@
   "journey.event.BOUT": "Driver signs out of departure block",
   "journey.event.VJA": "Driver signs into departure",
   "journey.event.VJOUT": "Driver signs out of departure",
+
+  "journey.event.short.ALL": "All",
+  "journey.event.short.DEPARTURE": "Departure",
+  "journey.event.short.TIMING_STOP_ARS": "TS arrival",
+  "journey.event.short.TERMINAL_ARS": "Term. arrival",
+  "journey.event.short.PLANNED": "JORE departure",
+  "journey.event.short.CANCELLATION": "Cancellation",
 
   "domain.line": "Line",
   "domain.route": "Route",

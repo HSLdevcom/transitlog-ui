@@ -96,6 +96,13 @@
   "journey.event.VJA": "Kuljettaja kirjautunut lähtöön",
   "journey.event.VJOUT": "Kuljettaja kirjautunut ulos lähdöstä",
 
+  "journey.event.short.ALL": "Alla",
+  "journey.event.short.DEPARTURE": "Avgång",
+  "journey.event.short.TIMING_STOP_ARS": "TJH ankomst",
+  "journey.event.short.TERMINAL_ARS": "Term. ankomst",
+  "journey.event.short.PLANNED": "JORE avgång",
+  "journey.event.short.CANCELLATION": "Peruutus",
+
   "domain.line": "Linje",
   "domain.route": "Rutt",
   "domain.direction": "riktning",
