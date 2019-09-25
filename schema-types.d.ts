@@ -291,6 +291,7 @@ export type Departure = {
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
   isCancelled: Scalars['Boolean'],
+  isOrigin?: Maybe<Scalars['Boolean']>,
   departureEvent?: Maybe<JourneyStopEvent>,
   originDepartureTime?: Maybe<PlannedDeparture>,
   plannedArrivalTime: PlannedArrival,
@@ -309,6 +310,7 @@ export type DepartureFilterInput = {
 export type DepartureJourney = {
    __typename?: 'DepartureJourney',
   id: Scalars['ID'],
+  type: Scalars['String'],
   lineId?: Maybe<Scalars['String']>,
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
@@ -409,6 +411,7 @@ export type JourneyEvent = {
   recordedAt: Scalars['DateTime'],
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
+  stopId?: Maybe<Scalars['String']>,
 };
 
 export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent;
@@ -433,6 +436,7 @@ export type JourneyStopEvent = {
   isTimingStop: Scalars['Boolean'],
   index?: Maybe<Scalars['Int']>,
   stop?: Maybe<Stop>,
+  unplannedStop: Scalars['Boolean'],
 };
 
 export type Line = {
