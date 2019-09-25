@@ -256,13 +256,16 @@ class RouteStop extends React.Component {
     }
 
     const doorDidOpen = departure.doorsOpened;
+    const stopName = get(stop, "name");
+    const stopShortId = get(stop, "shortId", "").replace(/ /g, "");
 
     const stopPopup = (
       <MapPopup key={`stop${stopId}_popup`}>
         <StopPopupContentSection>
           <StopContentWrapper>
             <StopHeading>
-              <strong>{stop.name}</strong> {stopId} ({stop.shortId.replace(/ /g, "")})
+              {stopName && <strong>{stopName}</strong>} {stopId}{" "}
+              {stopShortId && `(${stopShortId})`}
             </StopHeading>
 
             {observedArrivalTime &&
@@ -320,9 +323,10 @@ class RouteStop extends React.Component {
     );
 
     stopTooltip = (
-      <Tooltip key={`stop${stop.stopId}_tooltip`}>
+      <Tooltip key={`stop${stopId}_tooltip`}>
         <StopHeading>
-          <strong>{stop.name}</strong> {stop.stopId} ({stop.shortId.replace(/ /g, "")})
+          {stopName && <strong>{stopName}</strong>} {stopId}{" "}
+          {stopShortId && `(${stopShortId})`}
         </StopHeading>
         {!doorDidOpen && (
           <TooltipParagraph>
@@ -351,7 +355,7 @@ class RouteStop extends React.Component {
 
     return (
       <StopMarker
-        key={`journey_stop_marker_${stop.stopId}`}
+        key={`journey_stop_marker_${stopId}`}
         dashedBorder={!doorDidOpen}
         color={color}
         isTimingStop={get(stop, "isTimingStop", false)}

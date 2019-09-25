@@ -75,7 +75,8 @@ export default (state) => {
         Object.keys(state.journeyEvents).map((key) => {
           // Set the default configuration if deselecting ALL. For others, set the value of ALL.
           const setValue =
-            !events.ALL && ["DEP", "ARS", "TIMING_STOP_ARS", "TERMINAL_ARS"].includes(key)
+            !events.ALL &&
+            ["DEP", "PLANNED", "TIMING_STOP_ARS", "TERMINAL_ARS"].includes(key)
               ? true
               : events.ALL;
 

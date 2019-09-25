@@ -154,8 +154,12 @@ export const JourneyStopEvent = decorate(
       observedTime,
     ]);
 
-    const stop = get(event, "stop", {stopId: ""});
+    let stop = get(event, "stop");
     const color = getModeColor(event.mode);
+
+    if (!stop) {
+      stop = {stopId: get(event, "stopId", "")};
+    }
 
     const selectWithStopId = useCallback(() => onClick(stop.stopId), [stop.stopId]);
     const hoverWithStopId = useCallback(() => onHover(stop.stopId), [stop.stopId]);
@@ -171,9 +175,13 @@ export const JourneyStopEvent = decorate(
       onMouseLeave: hoverReset,
     };
 
-    if (!event || !event.stop) {
+    if (!event) {
       return null;
     }
+
+    const stopId = get(stop, "stopId", event.stopId);
+    const stopName = get(stop, "name");
+    const stopShortId = get(stop, "shortId", "").replace(/ /g, "");
 
     if (event.type === "PLANNED") {
       return (
@@ -189,8 +197,8 @@ export const JourneyStopEvent = decorate(
           </StopElementsWrapper>
           <StopContent {...hoverProps}>
             <EventHeadingButton onClick={onStopClick} {...applyTooltip("Focus on stop")}>
-              <strong>{stop.name}</strong> {stop.stopId} ({stop.shortId.replace(/ /g, "")}
-              )
+              {stopName && <strong>{stopName}</strong>} {stopId}{" "}
+              {stopShortId && `(${stopShortId})`}
             </EventHeadingButton>
             <EventTypeHeading>
               {text(`journey.event.${event.type}`, state.language)}
@@ -224,7 +232,8 @@ export const JourneyStopEvent = decorate(
         </StopElementsWrapper>
         <StopContent {...hoverProps}>
           <EventHeadingButton onClick={onStopClick} {...applyTooltip("Focus on stop")}>
-            <strong>{stop.name}</strong> {stop.stopId} ({stop.shortId.replace(/ /g, "")})
+            {stopName && <strong>{stopName}</strong>} {stopId}{" "}
+            {stopShortId && `(${stopShortId})`}
           </EventHeadingButton>
           <EventTypeHeading>
             {text(`journey.event.${event.type}`, state.language)}
@@ -239,8 +248,7 @@ export const JourneyStopEvent = decorate(
               {text(`journey.event.vehicle_not_stopped`, state.language)}
             </EventTextSmall>
           )}
-          {/* TODO: Show doors opened and stopped status */}
-          {isOrigin && event.type === "ARS" ? (
+          {isOrigin && departure && event.type === "ARS" ? (
             <CalculateTerminalTime date={date} departure={departure} event={event}>
               {({offsetTime, wasLate, diffMinutes, diffSeconds, sign}) => (
                 <>
@@ -267,7 +275,7 @@ export const JourneyStopEvent = decorate(
                 </>
               )}
             </CalculateTerminalTime>
-          ) : isLast && event.type === "ARS" ? (
+          ) : isLast && departure && event.type === "ARS" ? (
             <CalculateTerminalTime
               recovery={true}
               date={date}
@@ -293,7 +301,11 @@ export const JourneyStopEvent = decorate(
             </CalculateTerminalTime>
           ) : (
             <StopTime onClick={selectTime}>
-              <PlainSlot>{getNormalTime(event.plannedTime)}</PlainSlot>
+              <PlainSlot>
+                {event.plannedTime
+                  ? getNormalTime(event.plannedTime)
+                  : text("general.unknown", state.language)}
+              </PlainSlot>
               <ColoredBackgroundSlot
                 color={delayType === "late" ? "var(--dark-grey)" : "white"}
                 backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
