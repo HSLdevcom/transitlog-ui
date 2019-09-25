@@ -74,7 +74,7 @@
   "journey.event.doors_not_open": "Ovet eivät auenneet",
   "journey.event.vehicle_not_stopped": "Ajoneuvo ei pysähtynyt",
 
-  "journey.event.DEP": "Poistuminen pysäkkialueelta",
+  "journey.event.DEP": "Lähtö",
   "journey.event.ARR": "Saapuminen pysäkkialueelle",
   "journey.event.TIMING_STOP_ARR": "Saapuminen pysäkkialueelle",
   "journey.event.TERMINAL_ARR": "Saapuminen pysäkkialueelle",
@@ -84,7 +84,7 @@
   "journey.event.DOC": "Ovi kiinni",
   "journey.event.DUE": "Saapumassa pysäkille",
   "journey.event.ARS": "Saapuminen",
-  "journey.event.PDE": "Lähtö",
+  "journey.event.PDE": "Valmis lähtemään pysäkiltä",
   "journey.event.PAS": "Ajo pysäkin ohi pysähtymättä",
   "journey.event.WAIT": "Odottaa pysäkillä",
   "journey.event.TLR": "Liikennevaloetuus&shy;tapahtuma",
