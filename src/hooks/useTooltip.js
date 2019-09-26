@@ -13,7 +13,7 @@ export const useTooltip = (helpText) => {
     const translatedText = translateHelpText(helpText, selectedLanguage);
 
     return {
-      title: translatedText,
+      title: (translatedText || "").replace("&shy;", ""), // Some texts may have shy linebreaks
     };
   });
 };
@@ -22,6 +22,6 @@ export const applyTooltip = (helpText) => {
   const translatedText = translateHelpText(helpText);
 
   return {
-    title: translatedText.replace("&shy;", ""), // Some texts may have shy linebreaks
+    title: (translatedText || "").replace("&shy;", ""), // Some texts may have shy linebreaks
   };
 };
