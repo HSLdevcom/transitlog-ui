@@ -73,6 +73,9 @@
   "journey.events": "Events",
   "journey.event.doors_not_open": "Doors did not open",
   "journey.event.vehicle_not_stopped": "Vehicle did not stop",
+  "journey.type.deadrun": "Deadrun",
+  "journey.type.signoff": "Signed out",
+  "journey.type.journey": "Journey",
 
   "journey.event.DEP": "Departure from stop area",
   "journey.event.ARR": "Arrival",

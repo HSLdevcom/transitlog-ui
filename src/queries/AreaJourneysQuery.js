@@ -13,6 +13,7 @@ const areaJourneysQuery = gql`
   ) {
     eventsByBbox(minTime: $minTime, maxTime: $maxTime, bbox: $bbox, date: $date) {
       id
+      journeyType
       routeId
       direction
       departureDate

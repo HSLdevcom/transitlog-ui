@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Polyline} from "react-leaflet";
+import {Polyline, CircleMarker} from "react-leaflet";
 import {latLng} from "leaflet";
 import get from "lodash/get";
 import last from "lodash/last";
@@ -10,6 +10,7 @@ import {app} from "mobx-app";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import {observable, action} from "mobx";
 import HfpTooltip from "./HfpTooltip";
+import {visualizeBounds} from "./LeafletMap";
 
 export function getLineChunksByDelay(events) {
   // Get only the events from the same journey and create latLng items for Leaflet.
@@ -121,6 +122,7 @@ class JourneyLayer extends Component {
             </Polyline>
           );
         })}
+        {this.eventAtHover && <CircleMarker center={this.eventAtHover} radius={6} />}
       </>
     );
   }

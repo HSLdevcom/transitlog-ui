@@ -73,6 +73,9 @@
   "journey.events": "Händelser",
   "journey.event.doors_not_open": "Dörrarna öppnades inte",
   "journey.event.vehicle_not_stopped": "Fordonet stannade inte",
+  "journey.type.deadrun": "Inte inloggad",
+  "journey.type.signoff": "Inte inloggad",
+  "journey.type.journey": "Resa",
 
   "journey.event.DEP": "Poistuminen pysäkkialueelta",
   "journey.event.ARR": "Saapuminen pysäkkialueelle",

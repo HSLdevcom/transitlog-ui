@@ -32,14 +32,15 @@ type AreaJourney {
   cancellations: [Cancellation!]!
   departureDate: Date!
   departureTime: Time!
-  direction: Direction!
+  direction: Direction
   headsign: String
   id: ID!
   isCancelled: Boolean!
+  journeyType: String!
   lineId: String
   mode: String
   operatorId: String
-  routeId: String!
+  routeId: String
   uniqueVehicleId: VehicleId
   vehicleId: String
   vehiclePositions: [VehiclePosition]!
@@ -272,9 +273,9 @@ type Query {
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
   departures(date: Date!, filter: DepartureFilterInput, stopId: String!): [Departure]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
-  eventsByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!): [AreaJourney]!
+  eventsByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!, unsignedEvents: Boolean): [AreaJourney]!
   exceptionDays(year: String!): [ExceptionDay]!
-  journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId): Journey
+  journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey
   journeys(departureDate: Date!, direction: Direction!, routeId: String!): [Journey]!
   lines(date: Date, filter: LineFilterInput, includeLinesWithoutRoutes: Boolean = false): [Line]!
   route(date: Date!, direction: Direction!, routeId: String!): Route
@@ -286,7 +287,7 @@ type Query {
   stops(date: Date, filter: StopFilterInput): [Stop]!
   stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [Stop]!
   uiMessage: UIMessage!
-  vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!): [VehicleJourney]!
+  vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
   weeklyDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
 }
 

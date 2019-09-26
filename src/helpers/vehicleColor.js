@@ -8,6 +8,7 @@ const vehicleColors = {
   TRUNK: "var(--orange)",
   SUBWAY: "var(--orange)",
   default: "var(--blue)",
+  unsigned: "var(--grey)",
 };
 
 export function getModeColor(mode = "default") {

@@ -6,6 +6,7 @@ import DivIcon from "./DivIcon";
 import HfpTooltip from "./HfpTooltip";
 import {observable, action} from "mobx";
 import {app} from "mobx-app";
+import get from "lodash/get";
 import getJourneyId from "../../helpers/getJourneyId";
 
 @inject(app("Journey"))
@@ -45,6 +46,7 @@ class HfpMarkerLayer extends Component {
         icon={
           <VehicleMarker
             mode={journey.mode}
+            isUnsigned={get(journey, "journeyType", "journey") !== "journey"}
             isSelectedJourney={isSelectedJourney}
             event={event}
           />
