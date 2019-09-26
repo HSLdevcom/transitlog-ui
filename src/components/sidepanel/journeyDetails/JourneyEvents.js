@@ -136,15 +136,13 @@ const JourneyEvents = decorate(
             })
             .map((event, index, arr) => {
               let Component = JourneyEvent;
-              const departureEvent = event.isOrigin || event.isTimingStop ? "DEP" : "PDE";
 
-              switch (event.type) {
-                case departureEvent:
-                case "ARS":
-                case "PLANNED":
+              switch (event.__typename) {
+                case "PlannedStopEvent":
+                case "JourneyStopEvent":
                   Component = JourneyStopEvent;
                   break;
-                case "CANCELLATION":
+                case "JourneyCancellationEvent":
                   Component = JourneyCancellationEventItem;
                   break;
                 default:
