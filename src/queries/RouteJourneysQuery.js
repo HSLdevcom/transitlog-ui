@@ -12,6 +12,7 @@ export const routeJourneysQuery = gql`
   ) {
     journeys(routeId: $routeId, direction: $direction, departureDate: $departureDate) {
       id
+      journeyType
       lineId
       routeId
       direction

@@ -23,6 +23,7 @@ export const journeyQuery = gql`
       uniqueVehicleId: $uniqueVehicleId
     ) {
       id
+      journeyType
       lineId
       routeId
       originStopId

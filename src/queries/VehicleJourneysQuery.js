@@ -12,6 +12,7 @@ export const hfpQuery = gql`
   query vehicleJourneysQuery($date: Date!, $uniqueVehicleId: VehicleId!) {
     vehicleJourneys(date: $date, uniqueVehicleId: $uniqueVehicleId) {
       id
+      journeyType
       lineId
       routeId
       direction

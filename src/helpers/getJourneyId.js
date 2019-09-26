@@ -19,7 +19,7 @@ const getJourneyId = (journey = null, matchVehicle = true) => {
     journeyItem = getJourneyObject(journey);
   }
 
-  if (journey.journeyType !== "journey") {
+  if (typeof journey.journeyType !== "undefined" && journey.journeyType !== "journey") {
     return `${journey.journeyType}_${journey.uniqueVehicleId}`;
   }
 
