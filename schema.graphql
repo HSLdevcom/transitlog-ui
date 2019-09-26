@@ -398,12 +398,14 @@ type VehiclePosition implements Position {
   doorStatus: Boolean
   heading: Int
   id: ID!
+  journeyType: String!
   lat: Float
   lng: Float
   nextStopId: String
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
+  stop: String
   velocity: Float
 }
 

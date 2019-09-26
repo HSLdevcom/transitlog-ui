@@ -56,6 +56,7 @@ export const journeyQuery = gql`
       }
       vehiclePositions {
         id
+        journeyType
         delay
         doorStatus
         heading

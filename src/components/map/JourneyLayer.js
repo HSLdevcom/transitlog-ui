@@ -17,8 +17,9 @@ export function getLineChunksByDelay(events) {
   return events
     .filter((pos) => !!pos.lat && !!pos.lng)
     .reduce((allChunks, event) => {
+      const isUnsigned = get(event, "journeyType", "journey") !== "journey";
       const eventDelay = get(event, "delay", 0);
-      const delayType = getDelayType(-eventDelay); // "early", "late" or "on-time"
+      const delayType = isUnsigned ? "unsigned" : getDelayType(-eventDelay); // "early", "late" or "on-time"
 
       // If this is the first event, allChunks will be empty.
       // Add it as a new chunk to kick things off.

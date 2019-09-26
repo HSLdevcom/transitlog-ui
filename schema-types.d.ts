@@ -434,6 +434,7 @@ export type JourneyStopEvent = {
   isNextDay?: Maybe<Scalars['Boolean']>,
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
+  isOrigin?: Maybe<Scalars['Boolean']>,
   index?: Maybe<Scalars['Int']>,
   stop?: Maybe<Stop>,
   unplannedStop: Scalars['Boolean'],
@@ -500,6 +501,7 @@ export type PlannedStopEvent = {
   isNextDay?: Maybe<Scalars['Boolean']>,
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
+  isOrigin?: Maybe<Scalars['Boolean']>,
   index?: Maybe<Scalars['Int']>,
   stop?: Maybe<Stop>,
 };
@@ -793,9 +795,11 @@ export type VehicleJourney = {
 export type VehiclePosition = Position & {
    __typename?: 'VehiclePosition',
   id: Scalars['ID'],
+  journeyType: Scalars['String'],
   recordedAt: Scalars['DateTime'],
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
+  stop?: Maybe<Scalars['String']>,
   nextStopId?: Maybe<Scalars['String']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,

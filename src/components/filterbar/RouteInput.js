@@ -95,7 +95,7 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
       cancellations: [],
     };
 
-    filteredRoutes.unshift(unsignedRoute);
+    // filteredRoutes.unshift(unsignedRoute);
   }
 
   return sortBy(filteredRoutes, ({routeId}) => {
