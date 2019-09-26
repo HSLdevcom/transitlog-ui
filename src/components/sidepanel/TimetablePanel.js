@@ -250,9 +250,7 @@ class TimetablePanel extends Component {
     return (
       <div style={style} key={key} data-testid={index === 0 ? "first-timetable" : ""}>
         <TimetableDeparture
-          key={`departure_${departure.departureId}_${departure.routeId}_${
-            departure.direction
-          }_${departureTime}_${instance}`}
+          key={`departure_${departure.departureId}_${departure.routeId}_${departure.direction}_${departureTime}_${instance}`}
           isScrolling={isScrolling}
           isVisible={isVisible}
           departure={departure}

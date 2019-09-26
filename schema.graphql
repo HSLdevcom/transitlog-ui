@@ -10,13 +10,15 @@ interface Position {
   lng: Float
 }
 
+union JourneyEventType = JourneyCancellationEvent | JourneyEvent | JourneyStopEvent | PlannedStopEvent
+
 type Alert {
   affectedId: String!
   category: AlertCategory!
   description: String!
   distribution: AlertDistribution!
   endDateTime: DateTime!
-  id: Int!
+  id: String!
   impact: AlertImpact!
   lastModifiedDateTime: DateTime!
   level: AlertLevel!
@@ -31,7 +33,6 @@ type AreaJourney {
   departureDate: Date!
   departureTime: Time!
   direction: Direction!
-  events: [JourneyEvent]!
   headsign: String
   id: ID!
   isCancelled: Boolean!
@@ -41,6 +42,7 @@ type AreaJourney {
   routeId: String!
   uniqueVehicleId: VehicleId
   vehicleId: String
+  vehiclePositions: [VehiclePosition]!
 }
 
 type Cancellation {
@@ -64,6 +66,7 @@ type Departure {
   cancellations: [Cancellation!]!
   dayType: String!
   departureDate: Date!
+  departureEvent: JourneyStopEvent
   departureId: Int!
   departureTime: Time!
   direction: Direction!
@@ -75,6 +78,7 @@ type Departure {
   index: Int
   isCancelled: Boolean!
   isNextDay: Boolean!
+  isOrigin: Boolean
   isTimingStop: Boolean!
   journey: DepartureJourney
   mode: String!
@@ -86,7 +90,7 @@ type Departure {
   plannedDepartureTime: PlannedDeparture!
   recoveryTime: Int
   routeId: String!
-  stop: RouteSegment!
+  stop: Stop!
   stopId: String!
   terminalTime: Int
 }
@@ -98,13 +102,14 @@ type DepartureJourney {
   departureDate: Date!
   departureTime: Time!
   direction: Direction!
-  events: [JourneyEvent!]
+  events: [VehiclePosition!]
   id: ID!
   isCancelled: Boolean!
   lineId: String
   mode: String
   originStopId: String
   routeId: String!
+  type: String!
   uniqueVehicleId: VehicleId
 }
 
@@ -138,12 +143,12 @@ type ExceptionDay {
 type Journey {
   alerts: [Alert!]!
   cancellations: [Cancellation!]!
+  departure: Departure
   departureDate: Date!
   departureTime: Time!
-  departures: [Departure!]!
   direction: Direction!
   equipment: Equipment
-  events: [JourneyEvent!]!
+  events: [JourneyEventType!]!
   headsign: String
   id: ID!
   isCancelled: Boolean!
@@ -155,21 +160,56 @@ type Journey {
   routeId: String!
   uniqueVehicleId: VehicleId
   vehicleId: String
+  vehiclePositions: [VehiclePosition!]!
 }
 
-type JourneyEvent implements Position {
-  delay: Int
-  doorStatus: Boolean
-  heading: Int
+type JourneyCancellationEvent {
+  cancellationEffect: CancellationEffect!
+  cancellationType: CancellationType!
+  category: AlertCategory!
+  description: String!
   id: ID!
-  lat: Float
-  lng: Float
-  nextStopId: String
-  receivedAt: DateTime!
+  isCancelled: Boolean!
+  plannedDate: Date
+  plannedTime: Time
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
-  velocity: Float
+  subCategory: CancellationSubcategory!
+  title: String!
+  type: String!
+}
+
+type JourneyEvent {
+  id: ID!
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  stopId: String
+  type: String!
+}
+
+type JourneyStopEvent {
+  departureId: Int
+  doorsOpened: Boolean
+  id: ID!
+  index: Int
+  isNextDay: Boolean
+  isOrigin: Boolean
+  isTimingStop: Boolean!
+  nextStopId: String!
+  plannedDate: Date
+  plannedDateTime: DateTime
+  plannedTime: Time
+  plannedTimeDifference: Int
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  stop: Stop
+  stopId: String
+  stopped: Boolean
+  type: String!
+  unplannedStop: Boolean!
 }
 
 type Line {
@@ -183,17 +223,14 @@ type Line {
 type ObservedArrival {
   arrivalDate: Date!
   arrivalDateTime: DateTime!
-  arrivalEvent: JourneyEvent!
   arrivalTime: Time!
   arrivalTimeDifference: Int!
-  doorDidOpen: Boolean!
   id: ID!
 }
 
 type ObservedDeparture {
   departureDate: Date!
   departureDateTime: DateTime!
-  departureEvent: JourneyEvent!
   departureTime: Time!
   departureTimeDifference: Int!
   id: ID!
@@ -215,6 +252,21 @@ type PlannedDeparture {
   isNextDay: Boolean
 }
 
+type PlannedStopEvent {
+  departureId: Int
+  id: ID!
+  index: Int
+  isNextDay: Boolean
+  isOrigin: Boolean
+  isTimingStop: Boolean!
+  plannedDate: Date
+  plannedDateTime: DateTime
+  plannedTime: Time
+  stop: Stop
+  stopId: String
+  type: String!
+}
+
 type Query {
   alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
@@ -231,8 +283,8 @@ type Query {
   routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
   routes(date: Date, filter: RouteFilterInput, line: String): [Route]!
   stop(date: Date!, stopId: String!): Stop
-  stops(date: Date, filter: StopFilterInput): [SimpleStop]!
-  stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [SimpleStop]!
+  stops(date: Date, filter: StopFilterInput): [Stop]!
+  stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [Stop]!
   uiMessage: UIMessage!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!): [VehicleJourney]!
   weeklyDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
@@ -288,29 +340,11 @@ type RouteSegment implements Position {
   stopIndex: Int!
 }
 
-type SimpleRoute {
-  direction: Direction!
-  isTimingStop: Boolean!
-  routeId: String!
-}
-
-type SimpleStop implements Position {
+type Stop implements Position {
   _matchScore: Float
   alerts: [Alert!]!
   id: ID!
-  lat: Float!
-  lng: Float!
-  modes: [String]!
-  name: String
-  radius: Float
-  routes: [SimpleRoute!]!
-  shortId: String!
-  stopId: String!
-}
-
-type Stop implements Position {
-  alerts: [Alert!]!
-  id: ID!
+  isTimingStop: Boolean!
   lat: Float!
   lng: Float!
   modes: [String]!
@@ -350,7 +384,6 @@ type VehicleJourney {
   nextStopId: String!
   operatorId: String
   originStopId: String
-  receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
@@ -360,11 +393,26 @@ type VehicleJourney {
   vehicleId: String
 }
 
+type VehiclePosition implements Position {
+  delay: Int
+  doorStatus: Boolean
+  heading: Int
+  id: ID!
+  lat: Float
+  lng: Float
+  nextStopId: String
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  velocity: Float
+}
+
 enum AlertCategory {
   ACCIDENT
   ASSAULT
   DISTURBANCE
   EARLIER_DISRUPTION
+  HIDDEN
   ITS_SYSTEM_ERROR
   MEDICAL_INCIDENT
   MISPARKED_VEHICLE
@@ -461,6 +509,7 @@ enum CancellationSubcategory {
   FALSE_ALARM
   FAULT_UNKNOWN
   FLUID_LEAKAGE
+  HIDDEN
   INSUFFICIENT_CAPASITY
   INSUFFICIENT_INSTRUCTIONS_BY_AUTHORITY
   INSUFFICIENT_INSTRUCTIONS_BY_OPERATOR

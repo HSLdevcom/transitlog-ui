@@ -7,6 +7,8 @@ import Login from "../icons/Login";
 import {applyTooltip} from "../hooks/useTooltip";
 import {logout, authorize} from "../auth/authService";
 import {redirectToLogin} from "../stores/UrlManager";
+import {withApollo} from "react-apollo";
+import {LoadingDisplay} from "./Loading";
 
 const Root = styled.div`
   position: fixed;
@@ -40,6 +42,10 @@ const Header = styled.div`
   user-select: none;
 `;
 
+const LoadingIndicator = styled(LoadingDisplay)`
+  position: static;
+`;
+
 const LoginButton = styled.button`
   display: flex;
   flex-basis: 50px;
@@ -71,8 +77,13 @@ const Title = styled.h2`
 const allowDevLogin = process.env.REACT_APP_ALLOW_DEV_LOGIN === "true";
 
 @inject(app("UI", "Update"))
+@withApollo
 @observer
 class LoginModal extends React.Component {
+  state = {
+    loading: false,
+  };
+
   onModalClick = (e) => {
     e.stopPropagation();
     if (e.currentTarget.className.includes("Root")) {
@@ -81,11 +92,15 @@ class LoginModal extends React.Component {
   };
 
   onLogoutClick = () => {
-    logout().then((response) => {
+    this.toggleLoginLoading(true);
+
+    logout().then(async (response) => {
       if (response.status === 200) {
         this.props.UI.setUser(null);
-        this.props.Update.update();
+        await this.props.client.resetStore();
       }
+
+      this.toggleLoginLoading(false);
       this.props.UI.toggleLoginModal();
     });
   };
@@ -95,18 +110,28 @@ class LoginModal extends React.Component {
   };
 
   onDevLogin = async () => {
-    const {UI, Update} = this.props;
+    const {UI, client} = this.props;
+    this.toggleLoginLoading(true);
+
     const response = await authorize("dev");
 
     if (response && response.isOk && response.email) {
       UI.setUser(response.email);
-      Update.update();
+      await client.resetStore();
     }
 
+    this.toggleLoginLoading(false);
     UI.toggleLoginModal();
   };
 
+  toggleLoginLoading = (setTo = !this.state.loading) => {
+    this.setState({
+      loading: setTo,
+    });
+  };
+
   render() {
+    const {loading} = this.state;
     const {state} = this.props;
     const {user} = state;
 
@@ -117,39 +142,45 @@ class LoginModal extends React.Component {
             <HSLLogoNoText fill={"white"} height={"80px"} />
             <Title>HSL Transitlog</Title>
           </Header>
-          {user ? (
-            <LoginButton onClick={this.onLogoutClick}>
-              <Login height={"1em"} fill={"#3e3e3e"} />
-              <LoginText>Kirjaudu ulos</LoginText>
-            </LoginButton>
+          {loading ? (
+            <LoadingIndicator loading={true} />
           ) : (
             <>
-              <p>
-                <LoginButton
-                  onClick={this.openAuthForm("login")}
-                  {...applyTooltip("Sign in with HSL-ID")}>
+              {user ? (
+                <LoginButton onClick={this.onLogoutClick}>
                   <Login height={"1em"} fill={"#3e3e3e"} />
-                  <LoginText>Kirjaudu (HSL ID)</LoginText>
+                  <LoginText>Kirjaudu ulos</LoginText>
                 </LoginButton>
-              </p>
-              {allowDevLogin && (
-                <p>
-                  <LoginButton
-                    onClick={this.onDevLogin}
-                    {...applyTooltip("Developer sign in")}>
-                    <Login height={"1em"} fill={"#3e3e3e"} />
-                    <LoginText>Dev login</LoginText>
-                  </LoginButton>
-                </p>
+              ) : (
+                <>
+                  <p>
+                    <LoginButton
+                      onClick={this.openAuthForm("login")}
+                      {...applyTooltip("Sign in with HSL-ID")}>
+                      <Login height={"1em"} fill={"#3e3e3e"} />
+                      <LoginText>Kirjaudu (HSL ID)</LoginText>
+                    </LoginButton>
+                  </p>
+                  {allowDevLogin && (
+                    <p>
+                      <LoginButton
+                        onClick={this.onDevLogin}
+                        {...applyTooltip("Developer sign in")}>
+                        <Login height={"1em"} fill={"#3e3e3e"} />
+                        <LoginText>Dev login</LoginText>
+                      </LoginButton>
+                    </p>
+                  )}
+                  <p>
+                    <LoginButton
+                      onClick={this.openAuthForm("register")}
+                      {...applyTooltip("Create user")}>
+                      <Login height={"1em"} fill={"#3e3e3e"} />
+                      <LoginText>Tee Transitlog-tunnus</LoginText>
+                    </LoginButton>
+                  </p>
+                </>
               )}
-              <p>
-                <LoginButton
-                  onClick={this.openAuthForm("register")}
-                  {...applyTooltip("Create user")}>
-                  <Login height={"1em"} fill={"#3e3e3e"} />
-                  <LoginText>Tee Transitlog-tunnus</LoginText>
-                </LoginButton>
-              </p>
             </>
           )}
         </Wrapper>

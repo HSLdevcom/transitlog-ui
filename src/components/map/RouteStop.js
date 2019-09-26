@@ -29,6 +29,7 @@ import MapPopup from "./MapPopup";
 import {Button} from "../Forms";
 import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import StopMarker from "./StopMarker";
+import {inject} from "../../helpers/inject";
 
 const PopupParagraph = styled(P)`
   font-family: var(--font-family);
@@ -45,11 +46,12 @@ const DepartureTimeGroup = styled.div`
   min-width: 300px;
 `;
 
+@inject("Time")
 @observer
 class RouteStop extends React.Component {
   onClickTime = (time) => (e) => {
     e.preventDefault();
-    this.props.Time2.setTime(time);
+    this.props.Time.setTime(time);
   };
 
   onShowStreetView = () => {
@@ -60,12 +62,15 @@ class RouteStop extends React.Component {
   render() {
     const {
       stop,
+      stopId,
       departure,
+      arrival,
       date,
       firstStop,
       firstTerminal,
       lastTerminal,
       selectedJourney,
+      journey,
       showRadius,
       selected,
       highlighted,
@@ -74,16 +79,16 @@ class RouteStop extends React.Component {
     const isTerminal = firstTerminal || lastTerminal;
 
     let stopTooltip = (
-      <Tooltip key={`stop${stop.stopId}_tooltip`}>
+      <Tooltip key={`stop${stopId}_tooltip`}>
         <StopHeading>
-          <strong>{get(stop, "name", "")}</strong> {get(stop, "stopId", "")} (
+          <strong>{get(stop, "name", "")}</strong> {stopId} (
           {get(stop, "shortId", "").replace(/ /g, "")})
         </StopHeading>
       </Tooltip>
     );
 
     let stopStreetViewPopup = (
-      <MapPopup key={`stop_${stop.stopId}_popup`}>
+      <MapPopup key={`stop_${stopId}_popup`}>
         <StopPopupContent stop={stop} onShowStreetView={this.onShowStreetView} />
       </MapPopup>
     );
@@ -93,12 +98,7 @@ class RouteStop extends React.Component {
     const mode = getPriorityMode(get(stop, "modes", []));
     let color = getModeColor(mode);
 
-    if (
-      !selectedJourney ||
-      !departure ||
-      !departure.observedDepartureTime ||
-      !departure.observedArrivalTime
-    ) {
+    if (!selectedJourney || (!departure && !arrival)) {
       return (
         <StopMarker
           key={`route_stop_marker_${stop.stopId}`}
@@ -114,10 +114,12 @@ class RouteStop extends React.Component {
       );
     }
 
+    const isTimingStop = get(arrival || departure || stop, "isTimingStop", false);
+
     const stopDepartureDateTime = get(
       departure,
-      "observedDepartureTime.departureDateTime",
-      get(departure, "plannedDepartureTime.departureDateTime", date)
+      "recordedAt",
+      get(departure, "plannedDateTime", date)
     );
 
     const stopAlerts = getAlertsInEffect(stop, stopDepartureDateTime);
@@ -125,17 +127,20 @@ class RouteStop extends React.Component {
 
     const firstDeparture = firstStop;
 
-    const departureDiff = departure.observedDepartureTime.departureTimeDifference;
+    const departureDiff = get(departure, "plannedTimeDifference", 0);
     const departureDelayType = getDelayType(departureDiff);
     const departureDiffTime = secondsToTimeObject(departureDiff);
 
-    const arrivalDiff = departure.observedArrivalTime.arrivalTimeDifference;
+    const arrivalDiff = get(arrival, "plannedTimeDifference", 0);
     const arrivalDiffTime = secondsToTimeObject(arrivalDiff);
 
     color = getTimelinessColor(departureDelayType, "var(--light-green)");
 
-    const stopArrivalTime = departure.observedArrivalTime.arrivalTime;
-    const stopDepartureTime = departure.observedDepartureTime.departureTime;
+    const plannedArrivalTime = get(arrival, "plannedTime", "");
+    const plannedDepartureTime = get(departure, "plannedTime", "");
+
+    const stopArrivalTime = get(arrival, "recordedTime", "");
+    const stopDepartureTime = get(departure, "recordedTime", "");
 
     // Calculate the duration values
 
@@ -144,23 +149,14 @@ class RouteStop extends React.Component {
     let durationDiff = 0;
     let durationDiffSign = "";
 
-    const firstDeparturePlannedDepartureTime = get(
-      firstDeparture,
-      "plannedDepartureTime.departureTime",
-      null
-    );
+    const firstDeparturePlannedDepartureTime = get(firstDeparture, "plannedTime", null);
 
     if (firstDeparturePlannedDepartureTime) {
       plannedDuration =
-        timeToSeconds(departure.plannedDepartureTime.departureTime) -
-        timeToSeconds(firstDeparture.plannedDepartureTime.departureTime);
+        timeToSeconds(departure.plannedTime) - timeToSeconds(firstDeparture.plannedTime);
     }
 
-    const firstDepartureObservedTime = get(
-      firstDeparture,
-      "observedDepartureTime.departureTime",
-      ""
-    );
+    const firstDepartureObservedTime = get(firstDeparture, "recordedTime", "");
 
     const firstDepartureObservedSeconds = timeToSeconds(firstDepartureObservedTime);
     const stopDepartureSeconds = timeToSeconds(stopDepartureTime);
@@ -177,9 +173,7 @@ class RouteStop extends React.Component {
 
     const observedDepartureTime = (
       <TagButton onClick={this.onClickTime(stopDepartureTime)}>
-        <PlainSlot>
-          {getNormalTime(departure.plannedDepartureTime.departureTime)}
-        </PlainSlot>
+        <PlainSlot>{getNormalTime(plannedDepartureTime)}</PlainSlot>
         <ColoredBackgroundSlot
           color={departureDelayType === "late" ? "var(--dark-grey)" : "white"}
           backgroundColor={color}>
@@ -194,12 +188,9 @@ class RouteStop extends React.Component {
 
     let observedArrivalTime = null;
 
-    if (firstTerminal) {
+    if (arrival && firstTerminal && journey.departure) {
       observedArrivalTime = (
-        <CalculateTerminalTime
-          date={date}
-          departure={departure}
-          event={departure.observedArrivalTime.arrivalEvent}>
+        <CalculateTerminalTime date={date} departure={journey.departure} event={arrival}>
           {({offsetTime, wasLate, diffHours, diffMinutes, diffSeconds, sign}) => (
             <>
               <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
@@ -227,13 +218,13 @@ class RouteStop extends React.Component {
           )}
         </CalculateTerminalTime>
       );
-    } else if (lastTerminal) {
+    } else if (arrival && lastTerminal && journey.departure) {
       observedArrivalTime = (
         <CalculateTerminalTime
           recovery={true}
           date={date}
-          departure={departure}
-          event={departure.observedArrivalTime.arrivalEvent}>
+          departure={journey.departure}
+          event={arrival}>
           {({offsetTime, wasLate, diffHours, diffMinutes, diffSeconds, sign}) => (
             <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
               <PlainSlot>{offsetTime.format("HH:mm:ss")}</PlainSlot>
@@ -249,10 +240,10 @@ class RouteStop extends React.Component {
           )}
         </CalculateTerminalTime>
       );
-    } else {
+    } else if (arrival) {
       observedArrivalTime = (
         <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
-          <PlainSlot>{getNormalTime(departure.plannedArrivalTime.arrivalTime)}</PlainSlot>
+          <PlainSlot>{getNormalTime(plannedArrivalTime)}</PlainSlot>
           <ColoredBackgroundSlot
             color="var(--dark-grey)"
             backgroundColor="var(--lighter-grey)">
@@ -266,31 +257,37 @@ class RouteStop extends React.Component {
       );
     }
 
-    const doorDidOpen = departure.observedArrivalTime.doorDidOpen;
+    const doorDidOpen = get(arrival || departure, "doorsOpened", false);
+    const stopName = get(stop, "name");
+    const stopShortId = get(stop, "shortId", "").replace(/ /g, "");
 
     const stopPopup = (
-      <MapPopup key={`stop${stop.stopId}_popup`}>
+      <MapPopup key={`stop${stopId}_popup`}>
         <StopPopupContentSection>
           <StopContentWrapper>
             <StopHeading>
-              <strong>{stop.name}</strong> {stop.stopId} ({stop.shortId.replace(/ /g, "")}
-              )
+              {stopName && <strong>{stopName}</strong>} {stopId}{" "}
+              {stopShortId && `(${stopShortId})`}
             </StopHeading>
 
-            {(isTerminal || doorDidOpen) && departure.observedArrivalTime ? (
-              <>
-                <TimeHeading>
-                  <Text>journey.arrival</Text>
-                </TimeHeading>
-                {observedArrivalTime}
-              </>
-            ) : !doorDidOpen ? (
+            {observedArrivalTime &&
+              (isTerminal || isTimingStop) &&
+              departure.recordedTime && (
+                <>
+                  <TimeHeading>
+                    <Text>journey.arrival</Text>
+                  </TimeHeading>
+                  {observedArrivalTime}
+                </>
+              )}
+
+            {!doorDidOpen && (
               <PopupParagraph>
                 <Text>map.stops.doors_not_open</Text>
               </PopupParagraph>
-            ) : null}
+            )}
 
-            {!lastTerminal && (
+            {!lastTerminal && observedDepartureTime && (
               <DepartureTimeGroup>
                 <TimeHeading>
                   <Text>journey.departure</Text>
@@ -330,26 +327,29 @@ class RouteStop extends React.Component {
     );
 
     stopTooltip = (
-      <Tooltip key={`stop${stop.stopId}_tooltip`}>
+      <Tooltip key={`stop${stopId}_tooltip`}>
         <StopHeading>
-          <strong>{stop.name}</strong> {stop.stopId} ({stop.shortId.replace(/ /g, "")})
+          {stopName && <strong>{stopName}</strong>} {stopId}{" "}
+          {stopShortId && `(${stopShortId})`}
         </StopHeading>
         {!doorDidOpen && (
           <TooltipParagraph>
             <Text>map.stops.doors_not_open</Text>
           </TooltipParagraph>
         )}
-        {lastTerminal ? (
+        {(lastTerminal || isTimingStop) && observedArrivalTime && (
           <>
             <TimeHeading>
-              <Text>journey.arrival</Text>
+              <Text>{`journey.event.${arrival.type}`}</Text>
             </TimeHeading>
             {observedArrivalTime}
           </>
-        ) : (
+        )}
+
+        {!lastTerminal && observedDepartureTime && (
           <>
             <TimeHeading>
-              <Text>journey.departure</Text>
+              <Text>{`journey.event.${departure.type}`}</Text>
             </TimeHeading>
             {observedDepartureTime}
           </>
@@ -361,7 +361,7 @@ class RouteStop extends React.Component {
 
     return (
       <StopMarker
-        key={`journey_stop_marker_${stop.stopId}`}
+        key={`journey_stop_marker_${stopId}`}
         dashedBorder={!doorDidOpen}
         color={color}
         isTimingStop={get(stop, "isTimingStop", false)}

@@ -71,7 +71,6 @@ export const routeJourneysQuery = gql`
         arrivalDateTime
         arrivalTime
         arrivalTimeDifference
-        doorDidOpen
       }
       plannedDepartureTime {
         id

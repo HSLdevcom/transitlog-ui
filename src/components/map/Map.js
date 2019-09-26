@@ -196,6 +196,7 @@ class Map extends Component {
         mapRef={this.mapRef}
         className={className}
         onMapChanged={this.onMapChanged}
+        zoom={this.zoom}
         onZoom={this.onZoom}>
         {children({
           setViewerLocation: this.setMapillaryViewerLocation,

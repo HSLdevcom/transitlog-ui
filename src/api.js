@@ -1,14 +1,15 @@
 import {ApolloClient} from "apollo-client";
 import {concat} from "apollo-link";
 import {HttpLink} from "apollo-link-http";
-import {InMemoryCache} from "apollo-cache-inmemory";
+import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import get from "lodash/get";
+import fragmentTypes from "./fragmentTypes";
 
 const serverUrl = process.env.REACT_APP_TRANSITLOG_SERVER_GRAPHQL;
 
 if (!serverUrl) {
-  console.error("Tansitlog server URL not set!");
+  console.error("Transitlog server URL not set!");
 }
 
 function createErrorLink(UIStore) {
@@ -46,8 +47,12 @@ export const getClient = (UIStore) => {
     return createdClient;
   }
 
+  const fragmentMatcher = new IntrospectionFragmentMatcher({
+    introspectionQueryResultData: fragmentTypes,
+  });
+
   const errorLink = createErrorLink(UIStore);
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache({fragmentMatcher});
 
   const httpLink = new HttpLink({
     uri: serverUrl,

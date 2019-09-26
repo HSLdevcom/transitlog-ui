@@ -44,8 +44,8 @@ export function secondsToTime(secondsDuration) {
   return getTimeString(hours, minutes, seconds);
 }
 
-export function getNormalTime(time) {
-  let [hours = 0, minutes = 0, seconds = 0] = time.split(":");
+export function getNormalTime(time = "") {
+  let [hours = 0, minutes = 0, seconds = 0] = (time || "").split(":");
 
   if (parseInt(hours, 10) > 23) {
     hours = hours - 24;
@@ -93,7 +93,10 @@ export const getValidTimeWithinRange = (time, journeys = [], returnRange = false
     // Get the first and last event from each journey. This is used
     // to get the min and max time for the range slider and time input
     const eventsRange = flatten(
-      journeys.map(({events = []}) => [events[0], events[events.length - 1]])
+      journeys.map(({vehiclePositions = []}) => [
+        vehiclePositions[0],
+        vehiclePositions[vehiclePositions.length - 1],
+      ])
     );
 
     const eventsTimeRange = getTimeRangeFromEvents(eventsRange);
@@ -159,18 +162,19 @@ export function journeyStartTime(event, useMoment) {
   return getTimeString(intHours, minutes, seconds);
 }
 
-export function journeyEventTime(event) {
-  if (!event || !event.journey_start_time) {
+export function journeyEventTime(event, date) {
+  if (!event || !event.recordedAt) {
     return "";
   }
 
-  const receivedAtMoment = moment.tz(event.tst, TIMEZONE);
+  const useDate = date || event.departureDate || event.oday;
+  const recordedMoment = moment.tz(event.recordedAt, TIMEZONE);
 
-  let hours = receivedAtMoment.hours();
-  let minutes = receivedAtMoment.minutes();
-  let seconds = receivedAtMoment.seconds();
+  let hours = recordedMoment.hours();
+  let minutes = recordedMoment.minutes();
+  let seconds = recordedMoment.seconds();
 
-  if (event.oday !== receivedAtMoment.format("YYYY-MM-DD")) {
+  if (useDate !== recordedMoment.format("YYYY-MM-DD")) {
     hours = hours + 24;
   }
 

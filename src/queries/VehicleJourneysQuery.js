@@ -23,7 +23,6 @@ export const hfpQuery = gql`
       vehicleId
       headsign
       mode
-      receivedAt
       recordedAt
       recordedAtUnix
       recordedTime

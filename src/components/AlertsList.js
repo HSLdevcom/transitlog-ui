@@ -10,6 +10,7 @@ import Tooltip from "./Tooltip";
 
 const AlertsListWrapper = styled.div`
   padding-bottom: 1rem;
+  overflow-x: hidden;
 `;
 
 const decorate = flow(observer);

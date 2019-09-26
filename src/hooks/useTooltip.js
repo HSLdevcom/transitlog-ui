@@ -22,6 +22,6 @@ export const applyTooltip = (helpText) => {
   const translatedText = translateHelpText(helpText);
 
   return {
-    title: translatedText,
+    title: translatedText.replace("&shy;", ""), // Some texts may have shy linebreaks
   };
 };

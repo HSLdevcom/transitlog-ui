@@ -285,17 +285,19 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                         getJourneyId(focusedJourney, false) ===
                           getJourneyId(journeyId, false);
 
-                      const plannedObservedDiff =
-                        departure.observedDepartureTime.departureTimeDifference;
+                      const plannedObservedDiff = departure.observedDepartureTime
+                        ? departure.observedDepartureTime.departureTimeDifference
+                        : 0;
 
-                      const observedTimeString =
-                        departure.observedDepartureTime.departureTime;
+                      const observedTimeString = departure.observedDepartureTime
+                        ? departure.observedDepartureTime.departureTime
+                        : "";
 
                       const diffTime = secondsToTimeObject(plannedObservedDiff);
                       const delayType = getDelayType(plannedObservedDiff);
                       const multipleInstances = departure.journey._numInstance !== 0;
 
-                      const observedJourney = (
+                      const observedJourney = observedTimeString ? (
                         <>
                           <Tooltip helpText="Journey list diff">
                             <DelaySlot
@@ -314,7 +316,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                             <TimeSlot>{observedTimeString}</TimeSlot>
                           </Tooltip>
                         </>
-                      );
+                      ) : null;
 
                       return (
                         <JourneyListRow

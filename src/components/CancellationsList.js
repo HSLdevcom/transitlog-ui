@@ -11,6 +11,7 @@ import Tooltip from "./Tooltip";
 
 const CancellationsListWrapper = styled.div`
   padding-bottom: 1rem;
+  overflow-x: hidden;
 `;
 
 const decorate = flow(observer);
@@ -22,7 +23,8 @@ const CancellationsList = decorate(
 
     const cancellationGroups = groupBy(
       validCancellations,
-      ({departureDate, journeyStartTime}) => departureDate + journeyStartTime
+      ({departureDate, journeyStartTime, routeId, direction}) =>
+        departureDate + journeyStartTime + routeId + direction
     );
 
     return (

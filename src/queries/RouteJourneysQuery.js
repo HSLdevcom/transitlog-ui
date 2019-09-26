@@ -19,7 +19,7 @@ export const routeJourneysQuery = gql`
       departureTime
       uniqueVehicleId
       mode
-      events {
+      vehiclePositions {
         id
         delay
         doorStatus
@@ -27,7 +27,6 @@ export const routeJourneysQuery = gql`
         lat
         lng
         nextStopId
-        receivedAt
         recordedAt
         recordedAtUnix
         recordedTime

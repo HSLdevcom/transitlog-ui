@@ -1,4 +1,6 @@
 import get from "lodash/get";
+import orderBy from "lodash/orderBy";
+import differenceInMinutes from "date-fns/difference_in_minutes";
 import moment from "moment-timezone";
 import {TIMEZONE} from "../constants";
 
@@ -18,6 +20,8 @@ export const AlertDistribution = {
 
 const timeProps = [
   "recordedAt",
+  "vehiclePositions[0].recordedAt",
+  "journey.vehiclePositions[0].recordedAt",
   "events[0].recordedAt",
   "journey.events[0].recordedAt",
   "observedDepartureTime.departureDateTime",
@@ -57,11 +61,45 @@ export const getAlertsInEffect = (
 
   const alertsInEffect = alerts.filter(filterByDate);
 
+  const sortedAlerts = orderBy(
+    alertsInEffect,
+    [
+      (alert) => {
+        let sortVal = 0;
+
+        if (alert.level === "SEVERE") {
+          sortVal += 1000;
+        }
+
+        if (alert.level === "WARNING") {
+          sortVal += 10;
+        }
+
+        if (alert.distribution === AlertDistribution.Network) {
+          sortVal += 100;
+        }
+
+        if (
+          [AlertDistribution.AllRoutes, AlertDistribution.AllStops].includes(
+            alert.distribution
+          )
+        ) {
+          sortVal += 10;
+        }
+
+        return sortVal;
+      },
+      (alert) => differenceInMinutes(alert.startDateTime, currentMoment.toDate()),
+      (alert) => differenceInMinutes(alert.endDateTime, currentMoment.toDate()),
+    ],
+    ["desc", "asc", "asc"]
+  );
+
   if (Array.isArray(objectWithAlerts)) {
-    return alertsInEffect;
+    return sortedAlerts;
   }
 
-  return alertsInEffect.reduce((alerts, alert) => {
+  return sortedAlerts.reduce((alerts, alert) => {
     if (includeNetworkAlerts && alert.distribution === AlertDistribution.Network) {
       alerts.push(alert);
     } else if (

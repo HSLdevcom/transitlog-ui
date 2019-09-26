@@ -97,7 +97,7 @@ class JourneyLayer extends Component {
 
   render() {
     const {name, journey} = this.props;
-    const eventLines = getLineChunksByDelay(journey.events);
+    const eventLines = getLineChunksByDelay(journey.vehiclePositions);
 
     return (
       <>

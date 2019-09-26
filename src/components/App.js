@@ -118,7 +118,7 @@ function App({route, state, UI}) {
   );
 
   return (
-    <AppFrame>
+    <AppFrame lang={state.language}>
       {loginModalOpen && <LoginModal />}
       <AreaJourneys>
         {({
@@ -257,7 +257,7 @@ function App({route, state, UI}) {
                                                     )}
                                                     events={get(
                                                       selectedJourney,
-                                                      "events",
+                                                      "vehiclePositions",
                                                       []
                                                     )}
                                                     graphExpanded={

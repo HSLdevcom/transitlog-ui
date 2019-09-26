@@ -10,7 +10,7 @@
   "Time increment field": "Aseta kuinka paljon aika muuttuu kun simulointi on käynnissä tai kun käytät aikakentän eteenpäin/taaksepäin nappeja",
   "Search range minutes field": "Aseta aluehaun aikaväli, eli kuinka pitkältä aikaväliltä aluehaku hakee tapahtumia. Aikavälin keskipiste on valittu aika hakuhetkellä.",
   "Select route": "Valitse reitin minkä haluat tutkia.",
-  "Select vehicle": "Etsi HSL-alueen ajoneuvoa rekisterinumerolla, kylkinumerolla tai liikennöitsijän nimellä. Ajoneuvot jotka eivät olleet liikenteessä valittuna päivämääränä näkyvät harmaalla värillä.",
+  "Select vehicle": "Etsi HSL-alueen ajoneuvoa rekisterinumerolla, kylkinumerolla tai liikennöitsijän nimellä. Korostettuina ajoneuvot jotka ovat olleet linja-ajossa kyseisenä päivänä",
   "Select vehicle disabled": "Ajoneuvohaku on suljettu kun sinulla on valittu lähtö. Poista lähtö-valinta niin voit hakea ajoneuvoa.",
   "Select stop": "Etsi pysäkki pysäkkinumerolla, tunnisteella tai nimellä.",
   "Clear vehicle": "Tyhjentää ajoneuvohaku-kenttää. Tiedot mitkä haettiin ajoneuvotiedon pohjalta tyhjentyy myös.",
@@ -50,5 +50,16 @@
   "Developer sign in": "Kirjaudu sisään käyttäen kehittäjätunnuksia.",
   "Create user": "Luo HSL ID-tunnus kirjautuaksesi palveluun.",
   "Focus on stop": "Kohdista pysäkkiin klikkaamalla.",
-  "Show info": "Näytä tai piilota käyttöohjeet."
+  "Show info": "Näytä tai piilota käyttöohjeet.",
+
+  "PDE": "Lähtö, ovet laitettu kiinni.",
+  "DEP": "Lähtö, ajoneuvo poistunut pysäkkialueelta.",
+  "ARS": "Saapuminen, ajoneuvo pysähtynyt pysäkillä.",
+  "ARR": "Saapuminen, ajoneuvo pysäkkialueen sisällä.",
+  "ALL": "Näytä tai piilota kaikki tapahtumat. Piilotus palauttaa filtterit alkuasentoon jolloin näkyy tärkeimmät lähdöt ja saapumiset.",
+  "DEPARTURE": "Lähtö pysäkiltä. Tällä filtterillä näkyy DEP-tapahtuma reitin alkupysäkiltä ja ajantasauspysäkeiltä, ja PDE-tapahtuma muille pysäkeille.",
+  "TIMING_STOP_ARS": "Ajantasauspysäkille saapuminen. Näyttää vain ajantasauspysäkkien ARS-tapahtumat.",
+  "TERMINAL_ARS": "Alku- tai päätypysäkille saapuminen. Näyttää vain näiden pysäkkien ARS-tapahtumat.",
+  "PLANNED": "Suunniteltu lähtö JOREn mukaan.",
+  "CANCELLATION": "Peruutustapahtumat."
 }

@@ -70,6 +70,7 @@ export const PlainSlot = styled.span`
   align-items: center;
   justify-content: left;
   font-size: 0.875rem;
+  hyphens: auto;
 `;
 
 export const PlainSlotSmall = styled.span`

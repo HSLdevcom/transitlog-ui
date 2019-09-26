@@ -495,9 +495,7 @@ const JourneysByWeek = decorate(({state, Time, Filters, Journey, route: propsRou
                               return (
                                 <Tooltip
                                   helpText="Journey list diff"
-                                  key={`departure_day_${
-                                    departure.dayType
-                                  }_${departureTime}`}>
+                                  key={`departure_day_${departure.dayType}_${departureTime}`}>
                                   <TableCellButton
                                     isCancelled={departure.isCancelled}
                                     highlight={idx === currentDayTypeIndex}

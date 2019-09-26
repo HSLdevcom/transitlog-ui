@@ -73,6 +73,7 @@ export const StopContent = styled.div`
   padding: 0 1rem 1.5rem 0.75rem;
   width: 100%;
 `;
+
 export const StopHeading = styled.button`
   margin: 0.2rem 0 0;
   color: var(--dark-grey);

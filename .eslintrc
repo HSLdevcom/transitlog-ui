@@ -4,8 +4,9 @@
   "rules": {
     "import/no-webpack-loader-syntax": 0,
     "import/first": 0,
-    "prettier/prettier": true,
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": 0
+    "react-hooks/rules-of-hooks": 2,
+    "react-hooks/exhaustive-deps": 0,
+    "prettier/prettier": 1,
+    "array-callback-return": 0
   }
 }

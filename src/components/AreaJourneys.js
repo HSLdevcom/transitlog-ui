@@ -97,7 +97,7 @@ const AreaJourneys = decorate((props) => {
   return (
     <AreaJourneysQuery
       skip={!queryVars || skip} // Skip query if some params are falsy
-      {...queryVars || {}}>
+      {...(queryVars || {})}>
       {({journeys, loading, error}) => {
         setAreaLoading(loading);
 
