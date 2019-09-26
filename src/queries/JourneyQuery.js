@@ -68,6 +68,7 @@ export const journeyQuery = gql`
         velocity
       }
       events {
+        __typename
         ... on JourneyCancellationEvent {
           id
           type
