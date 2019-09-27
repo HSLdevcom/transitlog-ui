@@ -84,7 +84,7 @@ const StopLayerContent = ({
         bounds={bounds}
         showRadius={showRadius}
         onViewLocation={onViewLocation}
-        key={`stopcluster_${bounds.toBBoxString()}`}
+        key={`stop_cluster_${stopCluster.map((stop) => stop.stopId).join("_")}`}
         stops={stopCluster}
       />
     );
@@ -98,8 +98,6 @@ const StopLayer = decorate(
     if (zoom < 14 && !selectedStopId) {
       return null;
     }
-
-    console.log("render");
 
     const bbox = getBboxString(bounds);
 

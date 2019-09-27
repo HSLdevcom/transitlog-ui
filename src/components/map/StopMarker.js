@@ -157,7 +157,7 @@ const StopMarker = decorate(
 
     const markerPosition = latLng({lat, lng});
     const stopAlerts =
-      alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.timeMoment);
+      alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.date);
 
     const markerElement = (
       <DivIcon
