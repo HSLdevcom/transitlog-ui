@@ -18,12 +18,19 @@ const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
 
+const RouteEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
+  margin-left: auto;
+  position: relative;
+  top: 5px;
+  right: -10px;
+`;
+
 const decorate = flow(
   observer,
   inject("Filters")
 );
 
-const RouteSettings = decorate(({Filters, state: {route, date}}) => {
+const RouteSettings = decorate(({routeEventsLoading, Filters, state: {route, date}}) => {
   return (
     <RouteOptionsQuery date={date}>
       {({routes = [], loading}) => (
@@ -74,6 +81,7 @@ const RouteSettings = decorate(({Filters, state: {route, date}}) => {
                       <br />
                       {selectedRoute.origin} - {selectedRoute.destination}
                     </SuggestionText>
+                    {routeEventsLoading && <RouteEventsLoading />}
                     {alertsInEffect.length !== 0 && (
                       <SuggestionAlerts alerts={alertsInEffect} />
                     )}

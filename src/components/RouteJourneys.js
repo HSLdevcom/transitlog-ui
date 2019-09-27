@@ -21,7 +21,7 @@ const RouteJourneys = decorate(({children, state}) => {
       routeId={route.routeId}
       direction={route.direction}
       date={date}>
-      {({routeJourneys = [], loading}) => children({routeJourneys, loading})}
+      {children}
     </RouteJourneysQuery>
   );
 });

@@ -29,11 +29,14 @@ const MapEvents = decorate(({areaEventsRouteFilter, children}) => {
 
         return (
           <RouteJourneys>
-            {({routeJourneys}) => (
+            {({routeJourneys, loading: routeEventsLoading = false}) => (
               <SelectedJourneyEvents>
-                {({journey: selectedJourney = null, loading: selectedJourneyLoading}) => (
+                {({
+                  journey: selectedJourney = null,
+                  loading: selectedJourneyLoading = false,
+                }) => (
                   <UnsignedVehicleEvents>
-                    {({unsignedEvents = [], loading: unsignedEventsLoading}) => (
+                    {({unsignedEvents = [], loading: unsignedEventsLoading = false}) => (
                       <MergedJourneys
                         routeJourneys={routeJourneys}
                         areaJourneys={areaJourneys}
@@ -47,6 +50,7 @@ const MapEvents = decorate(({areaEventsRouteFilter, children}) => {
                             routeAndSelected,
                             areaJourneysLoading,
                             unsignedEventsLoading,
+                            routeEventsLoading,
                             selectedJourneyLoading: selectedJourneyLoading,
                             setAreaQueryBounds: setQueryBounds,
                             actualAreaQueryBounds: actualQueryBounds,

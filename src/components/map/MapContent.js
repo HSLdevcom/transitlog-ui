@@ -60,19 +60,14 @@ const MapContent = decorate(
         />
         {/* When a route is NOT selected... */}
         {!hasRoute && (
-          <>
-            <StopLayer
-              showRadius={showStopRadius}
-              onViewLocation={viewLocation}
-              date={date}
-              selectedStop={stop}
-              zoom={zoom}
-              bounds={mapBounds}
-            />
-            {!selectedJourney && unsignedEvents && unsignedEvents.length !== 0 && (
-              <UnsignedEventsLayer unsignedEvents={unsignedEvents} />
-            )}
-          </>
+          <StopLayer
+            showRadius={showStopRadius}
+            onViewLocation={viewLocation}
+            date={date}
+            selectedStop={stop}
+            zoom={zoom}
+            bounds={mapBounds}
+          />
         )}
         {/* When a route IS selected... */}
         {hasRoute && (
@@ -161,6 +156,9 @@ const MapContent = decorate(
                   );
                 })}
           </>
+        )}
+        {!selectedJourney && unsignedEvents && unsignedEvents.length !== 0 && (
+          <UnsignedEventsLayer unsignedEvents={unsignedEvents} />
         )}
         {journeys.length !== 0 &&
           journeys

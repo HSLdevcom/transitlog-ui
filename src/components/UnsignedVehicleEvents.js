@@ -10,8 +10,8 @@ const decorate = flow(
 );
 
 const UnsignedVehicleEvents = decorate(({children, state}) => {
-  const {vehicle, date, user, route, selectedJourney} = state;
-  const shouldSkip = selectedJourney || (route && route.routeId) || !user || !vehicle;
+  const {vehicle, date, user, selectedJourney} = state;
+  const shouldSkip = selectedJourney || !user || !vehicle;
 
   return (
     <UnsignedVehicleEventsQuery skip={shouldSkip} vehicleId={vehicle} date={date}>

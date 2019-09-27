@@ -127,13 +127,19 @@ function App({route, state, UI}) {
           currentJourneys,
           routeAndSelected,
           areaJourneysLoading,
+          unsignedEventsLoading,
+          routeEventsLoading,
           selectedJourneyLoading,
           setAreaQueryBounds,
           actualAreaQueryBounds,
         }) => (
           <AppGrid>
             <ServerMessage />
-            <FilterBar journeys={currentJourneys} />
+            <FilterBar
+              routeEventsLoading={routeEventsLoading}
+              unsignedEventsLoading={unsignedEventsLoading}
+              journeys={currentJourneys}
+            />
             <SidepanelAndMapWrapper>
               <SingleStopQuery date={date} stopId={selectedStopId}>
                 {({stop}) => (
