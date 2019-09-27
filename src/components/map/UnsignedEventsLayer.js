@@ -3,6 +3,7 @@ import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import HfpMarkerLayer from "./HfpMarkerLayer";
+import JourneyLayer from "./JourneyLayer";
 
 const decorate = flow(
   observer,
@@ -15,7 +16,7 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
 
   const currentEvent = useMemo(() => {
     let event = null;
-    let currentTimeDiff = 1200;
+    let currentTimeDiff = 60;
 
     for (const evt of unsignedEvents) {
       const timeDiff = Math.abs(unixTime - evt.recordedAtUnix);
@@ -23,6 +24,10 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
       if (timeDiff < currentTimeDiff) {
         event = evt;
         currentTimeDiff = timeDiff;
+      }
+
+      if (currentTimeDiff < 5) {
+        break;
       }
     }
 
@@ -35,14 +40,34 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
 
   const useEvent = currentEvent || prevEvent.current;
 
-  return currentEvent ? (
-    <HfpMarkerLayer
-      key={`unsigned_event_${useEvent.id}`}
-      currentEvent={useEvent}
-      isSelectedJourney={false}
-      journey={{journeyType: useEvent.journeyType, mode: useEvent.mode}}
-    />
-  ) : null;
+  const journey = useMemo(() => {
+    const journeyEvent = unsignedEvents[0];
+    return journeyEvent
+      ? {
+          journeyType: journeyEvent.journeyType,
+          mode: journeyEvent.mode,
+          uniqueVehicleId: journeyEvent.uniqueVehicleId,
+        }
+      : null;
+  }, [unsignedEvents[0]]);
+
+  return (
+    <>
+      <JourneyLayer
+        key={`unsigned_line_${journey.uniqueVehicleId}`}
+        journey={journey}
+        vehiclePositions={unsignedEvents}
+        name={`unsigned/${journey.uniqueVehicleId}`}
+      />
+      {currentEvent ? (
+        <HfpMarkerLayer
+          currentEvent={useEvent}
+          isSelectedJourney={false}
+          journey={journey}
+        />
+      ) : null}
+    </>
+  );
 });
 
 export default UnsignedEventsLayer;

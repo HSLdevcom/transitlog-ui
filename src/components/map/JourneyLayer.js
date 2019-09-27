@@ -33,15 +33,20 @@ export function getLineChunksByDelay(events) {
       const previousChunk = last(allChunks);
       const previousDelayType = get(previousChunk, "delayType", "on-time");
 
+      const prevTime = get(last(previousChunk.events), "recordedAtUnix", 0);
+      const currentTime = event.recordedAtUnix;
+
+      const isSeparate = Math.abs(currentTime - prevTime) > 60;
+
       // If the delay types are the same, add the event to the last chunk.
-      if (delayType === previousDelayType) {
+      if (delayType === previousDelayType && !isSeparate) {
         previousChunk.events.push(event);
       } else {
         // Otherwise start a new chunk. Include the last element from the
         // previous chunk to eliminate gaps in the line.
         allChunks.push({
           delayType,
-          events: [last(previousChunk.events), event],
+          events: isSeparate ? [event] : [last(previousChunk.events), event],
         });
       }
 
@@ -71,16 +76,12 @@ class JourneyLayer extends Component {
     return eventItem || null;
   };
 
-  onMouseout = (event) => {
-    const line = event.target;
-    line.setStyle({weight: 3});
+  onMouseout = () => {
     this.mouseOver = false;
   };
 
-  onHover = (event) => {
+  onHover = () => {
     this.mouseOver = true;
-    const line = event.target;
-    line.setStyle({weight: 10});
   };
 
   onMousemove = (events) => (event) => {
@@ -97,8 +98,8 @@ class JourneyLayer extends Component {
   };
 
   render() {
-    const {name, journey} = this.props;
-    const eventLines = getLineChunksByDelay(journey.vehiclePositions);
+    const {name, journey, vehiclePositions = journey.vehiclePositions} = this.props;
+    const eventLines = getLineChunksByDelay(vehiclePositions);
 
     return (
       <>

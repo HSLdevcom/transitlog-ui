@@ -99,6 +99,8 @@ const StopLayer = decorate(
       return null;
     }
 
+    console.log("render");
+
     const bbox = getBboxString(bounds);
 
     return (

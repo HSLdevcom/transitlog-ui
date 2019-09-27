@@ -3,6 +3,7 @@ import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
+import {observer} from "mobx-react-lite";
 
 export const unsignedEventsQuery = gql`
   query unsignedEventsQuery($date: Date!, $vehicleId: VehicleId!) {
@@ -27,7 +28,7 @@ export const unsignedEventsQuery = gql`
 
 const updateListenerName = "unsigned vehicle events";
 
-const UnsignedVehicleEventsQuery = (props) => {
+const UnsignedVehicleEventsQuery = observer((props) => {
   const {vehicleId, date, skip, children} = props;
 
   const createRefetcher = useCallback(
@@ -47,7 +48,7 @@ const UnsignedVehicleEventsQuery = (props) => {
   return (
     <Query
       partialRefetch={true}
-      skip={skip || !vehicleId || !date}
+      skip={skip}
       query={unsignedEventsQuery}
       variables={{
         vehicleId,
@@ -64,6 +65,6 @@ const UnsignedVehicleEventsQuery = (props) => {
       }}
     </Query>
   );
-};
+});
 
 export default UnsignedVehicleEventsQuery;
