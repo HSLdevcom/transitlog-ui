@@ -10,7 +10,6 @@ import {app} from "mobx-app";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import {observable, action} from "mobx";
 import HfpTooltip from "./HfpTooltip";
-import {visualizeBounds} from "./LeafletMap";
 
 export function getLineChunksByDelay(events) {
   // Get only the events from the same journey and create latLng items for Leaflet.

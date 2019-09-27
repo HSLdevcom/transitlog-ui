@@ -18,6 +18,7 @@ import WeatherDisplay from "./WeatherDisplay";
 import JourneyStopsLayer from "./JourneyStopsLayer";
 import {WeatherWidget, JourneyWeatherWidget} from "./WeatherWidget";
 import get from "lodash/get";
+import UnsignedEventsLayer from "./UnsignedEventsLayer";
 
 const decorate = flow(
   observer,
@@ -29,6 +30,7 @@ const MapContent = decorate(
     journeys = [],
     routeJourneys = [],
     journeyPositions,
+    unsignedEvents,
     route,
     zoom,
     mapBounds, // The current map view
@@ -58,14 +60,19 @@ const MapContent = decorate(
         />
         {/* When a route is NOT selected... */}
         {!hasRoute && (
-          <StopLayer
-            showRadius={showStopRadius}
-            onViewLocation={viewLocation}
-            date={date}
-            selectedStop={stop}
-            zoom={zoom}
-            bounds={mapBounds}
-          />
+          <>
+            <StopLayer
+              showRadius={showStopRadius}
+              onViewLocation={viewLocation}
+              date={date}
+              selectedStop={stop}
+              zoom={zoom}
+              bounds={mapBounds}
+            />
+            {!selectedJourney && unsignedEvents && unsignedEvents.length !== 0 && (
+              <UnsignedEventsLayer unsignedEvents={unsignedEvents} />
+            )}
+          </>
         )}
         {/* When a route IS selected... */}
         {hasRoute && (

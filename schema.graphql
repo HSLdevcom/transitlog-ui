@@ -289,6 +289,7 @@ type Query {
   stops(date: Date, filter: StopFilterInput): [Stop]!
   stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [Stop]!
   uiMessage: UIMessage!
+  unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
   weeklyDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
 }
@@ -405,11 +406,15 @@ type VehiclePosition implements Position {
   journeyType: String!
   lat: Float
   lng: Float
+  mode: String
   nextStopId: String
+  operatorId: String
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
   stop: String
+  uniqueVehicleId: VehicleId
+  vehicleId: String
   velocity: Float
 }
 
