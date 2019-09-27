@@ -6,8 +6,7 @@ import trim from "lodash/trim";
 import get from "lodash/get";
 import throttle from "lodash/throttle";
 import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
-import {observable, action} from "mobx";
-import {runInAction} from "mobx";
+import {observable, action, runInAction} from "mobx";
 
 const MAP_BOUNDS_URL_KEY = "mapView";
 

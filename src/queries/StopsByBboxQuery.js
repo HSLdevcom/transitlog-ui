@@ -37,15 +37,21 @@ const StopsByBboxQuery = observer((props) => {
   currentlyFetching = bbox;
 
   return (
-    <Query skip={skip} query={stopsByBboxQuery} variables={{bbox}}>
+    <Query skip={skip} query={stopsByBboxQuery} variables={{bbox}} partialRefetch={true}>
       {({loading, data, error}) => {
         if (loading) return children({stops: prevResult.current, loading: true});
         if (error) return children({stops: prevResult.current, loading: false});
 
         const stops = get(data, "stopsByBbox", []);
         // Stop the stops from disappearing while loading
-        prevResult.current = stops;
-        return children({stops, loading: false});
+        if (stops.length !== 0) {
+          prevResult.current = stops;
+        }
+
+        return children({
+          stops: prevResult.current,
+          loading: false,
+        });
       }}
     </Query>
   );

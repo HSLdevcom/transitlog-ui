@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useRef} from "react";
 import {observer} from "mobx-react-lite";
 import StopsByBboxQuery from "../../queries/StopsByBboxQuery";
 import StopMarker from "./StopMarker";
@@ -23,22 +23,18 @@ const getBboxString = (bounds, round = false) => {
     : "";
 };
 
-const StopLayerContent = ({
-  bounds,
-  stops,
-  selectedStopId,
-  showRadius,
-  onViewLocation,
-}) => {
+const StopLayerContent = ({stops, selectedStopId, showRadius, onViewLocation}) => {
+  const prevStopAreas = useRef([]);
+
   const stopAreas = useMemo(() => {
+    if (stops.length === 0) {
+      return [];
+    }
+
     const currentAreas = new Map();
 
     for (const stop of stops) {
       const pos = latLng(stop.lat, stop.lng);
-
-      if (!bounds.contains(pos)) {
-        continue;
-      }
 
       let groupBounds;
 
@@ -62,12 +58,14 @@ const StopLayerContent = ({
       currentAreas.set(groupBounds, stopGroup);
     }
 
-    return currentAreas;
-  }, [stops, bounds]);
+    return Array.from(currentAreas.entries());
+  }, [stops]);
 
-  const arrayAreas = Array.from(stopAreas.entries());
+  if (stopAreas.length !== 0) {
+    prevStopAreas.current = stopAreas;
+  }
 
-  return arrayAreas.map(([bounds, stopCluster]) => {
+  return prevStopAreas.current.map(([bounds, stopCluster]) => {
     const clusterIsSelected = stopCluster.some(({stopId}) => stopId === selectedStopId);
 
     return stopCluster.length === 1 ? (
@@ -118,7 +116,6 @@ const StopLayer = decorate(
 
           return (
             <StopLayerContent
-              bounds={bounds}
               stops={stops}
               selectedStopId={selectedStopId}
               showRadius={showRadius}
