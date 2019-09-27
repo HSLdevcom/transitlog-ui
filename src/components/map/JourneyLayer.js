@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Polyline, CircleMarker} from "react-leaflet";
+import React, {Component, useMemo} from "react";
+import {Polyline, CircleMarker, FeatureGroup} from "react-leaflet";
 import {latLng} from "leaflet";
 import get from "lodash/get";
 import last from "lodash/last";
@@ -61,6 +61,7 @@ class JourneyLayer extends Component {
   eventAtHover = null;
 
   mouseOver = false;
+  mouseOut = false;
 
   setEventAtHover = action((event) => {
     this.eventAtHover = event;
@@ -77,19 +78,23 @@ class JourneyLayer extends Component {
   };
 
   onMouseout = () => {
-    this.mouseOver = false;
+    this.mouseOut = true;
+
+    setTimeout(() => {
+      if (this.mouseOut) {
+        this.mouseOut = false;
+        this.mouseOver = false;
+        this.setEventAtHover(null);
+      }
+    }, 1000);
   };
 
   onHover = () => {
+    this.mouseOut = false;
     this.mouseOver = true;
   };
 
   onMousemove = (events) => (event) => {
-    if (!this.mouseOver) {
-      this.setEventAtHover(null);
-      return;
-    }
-
     const eventItem = this.findHfpItem(events, event.latlng);
 
     if (eventItem) {
@@ -102,28 +107,39 @@ class JourneyLayer extends Component {
     const eventLines = getLineChunksByDelay(vehiclePositions);
 
     return (
-      <>
+      <FeatureGroup
+        onMousemove={this.onMousemove(vehiclePositions)}
+        onMouseover={this.onHover}
+        onMouseout={this.onMouseout}>
         {eventLines.map((delayChunk, index) => {
           const chunkDelayType = get(delayChunk, "delayType", "on-time");
           const chunkEvents = get(delayChunk, "events", []);
           const points = chunkEvents.map((pos) => latLng([pos.lat, pos.lng]));
 
           return (
-            <Polyline
-              key={`event_polyline_${name}_chunk_${index}`}
-              onMousemove={this.onMousemove(chunkEvents)}
-              onMouseover={this.onHover}
-              onMouseout={this.onMouseout}
-              pane="event-lines"
-              weight={3}
-              color={getTimelinessColor(chunkDelayType, "var(--light-green)")}
-              positions={points}>
-              <HfpTooltip journey={journey} event={this.eventAtHover} />
-            </Polyline>
+            <React.Fragment key={`event_polyline_${name}_chunk_${index}`}>
+              <Polyline
+                pane="event-lines"
+                weight={3}
+                color={getTimelinessColor(chunkDelayType, "var(--light-green)")}
+                positions={points}
+                interactive={false}
+              />
+              <Polyline
+                pane="event-hover"
+                weight={50}
+                color="transparent"
+                positions={points}
+              />
+            </React.Fragment>
           );
         })}
-        {this.eventAtHover && <CircleMarker center={this.eventAtHover} radius={6} />}
-      </>
+        {this.eventAtHover && (
+          <CircleMarker interactive={false} center={this.eventAtHover} radius={6}>
+            <HfpTooltip permanent={true} journey={journey} event={this.eventAtHover} />
+          </CircleMarker>
+        )}
+      </FeatureGroup>
     );
   }
 }
