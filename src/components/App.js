@@ -121,6 +121,7 @@ function App({route, state, UI}) {
       {loginModalOpen && <LoginModal />}
       <MapEvents areaEventsRouteFilter={areaEventsRouteFilter}>
         {({
+          selectedJourney,
           routeJourneys,
           areaJourneys,
           unsignedEvents,

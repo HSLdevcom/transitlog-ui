@@ -43,6 +43,7 @@ const MapEvents = decorate(({areaEventsRouteFilter, children}) => {
                         selectedJourney={selectedJourney}>
                         {({currentJourneys = [], routeAndSelected = []}) =>
                           children({
+                            selectedJourney,
                             routeJourneys,
                             areaJourneys,
                             unsignedEvents,
