@@ -8,6 +8,7 @@ import {
   FeatureGroup,
   ScaleControl,
   Rectangle,
+  CircleMarker,
 } from "react-leaflet";
 import {latLng} from "leaflet";
 import get from "lodash/get";
@@ -40,11 +41,18 @@ const MapillaryView = styled(MapillaryViewer)`
   position: relative;
 `;
 
-const visualLog = observable({bounds: null}, {bounds: observable.ref});
+const visualLog = observable(
+  {bounds: [], points: []},
+  {bounds: observable.ref, points: observable.ref}
+);
 
 // Call this to visualize bounds anywhere in the app. Dev tool.
-export const visualizeBounds = action((bounds) => {
-  visualLog.bounds = bounds;
+export const visualizeBounds = action((boundsOrPoint) => {
+  if (boundsOrPoint.lat) {
+    visualLog.points.push(boundsOrPoint);
+  } else {
+    visualLog.bounds.push(boundsOrPoint);
+  }
 });
 
 @inject(app("UI"))
@@ -167,13 +175,21 @@ class LeafletMap extends Component {
           <Pane name="event-lines" style={{zIndex: 420}} />
           <Pane name="stop-radius" style={{zIndex: 440}} />
           <Pane name="selected-stop-radius" style={{zIndex: 445}} />
-          <Pane name="stops" style={{zIndex: 450}} />
+          <Pane name="event-hover" style={{zIndex: 450}} />
+          <Pane name="stops" style={{zIndex: 475}} />
           <Pane name="hfp-markers" style={{zIndex: 500}} />
           <Pane name="hfp-markers-primary" style={{zIndex: 550}} />
           <Pane name="popups" style={{zIndex: 600}} />
           <ZoomControl position="topright" />
           <ScaleControl position="bottomleft" imperial={false} />
-          {visualLog.bounds && <Rectangle bounds={visualLog.bounds} />}
+          {visualLog.bounds.length !== 0 &&
+            visualLog.bounds.map((bounds, index) => (
+              <Rectangle key={`bounds_${index}`} bounds={bounds} />
+            ))}
+          {visualLog.points.length !== 0 &&
+            visualLog.points.map((point, index) => (
+              <CircleMarker key={`points_${index}`} center={point} radius={10} />
+            ))}
           {children}
         </Map>
         {currentMapillaryViewerLocation && (

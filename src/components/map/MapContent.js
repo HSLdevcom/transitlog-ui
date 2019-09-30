@@ -18,6 +18,7 @@ import WeatherDisplay from "./WeatherDisplay";
 import JourneyStopsLayer from "./JourneyStopsLayer";
 import {WeatherWidget, JourneyWeatherWidget} from "./WeatherWidget";
 import get from "lodash/get";
+import UnsignedEventsLayer from "./UnsignedEventsLayer";
 
 const decorate = flow(
   observer,
@@ -29,6 +30,7 @@ const MapContent = decorate(
     journeys = [],
     routeJourneys = [],
     journeyPositions,
+    unsignedEvents,
     route,
     zoom,
     mapBounds, // The current map view
@@ -154,6 +156,9 @@ const MapContent = decorate(
                   );
                 })}
           </>
+        )}
+        {!selectedJourney && unsignedEvents && unsignedEvents.length !== 0 && (
+          <UnsignedEventsLayer unsignedEvents={unsignedEvents} />
         )}
         {journeys.length !== 0 &&
           journeys

@@ -46,6 +46,7 @@ export const departuresQuery = gql`
       }
       journey {
         id
+        journeyType
         type
         routeId
         lineId

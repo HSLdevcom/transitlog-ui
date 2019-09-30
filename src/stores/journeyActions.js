@@ -34,7 +34,18 @@ export default (state) => {
   const filters = filterActions(state);
   const time = timeActions(state);
 
+  // TODO: Enable unsigned journey select
   const setSelectedJourney = action("Set selected journey", (journeyItem = null) => {
+    if (
+      journeyItem &&
+      typeof journeyItem.journeyType !== "undefined" &&
+      journeyItem.journeyType !== "journey"
+    ) {
+      // Prevents the app from crashing if accidentally selecting an unsigned journey
+      // before they are implemented.
+      return;
+    }
+
     if (!journeyItem) {
       state.selectedJourney = null;
       setPathName("/");

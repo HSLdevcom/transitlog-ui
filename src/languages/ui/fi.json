@@ -73,6 +73,9 @@
   "journey.events": "Tapahtumat",
   "journey.event.doors_not_open": "Ovet eivät auenneet",
   "journey.event.vehicle_not_stopped": "Ajoneuvo ei pysähtynyt",
+  "journey.type.deadrun": "Kirjautumaton",
+  "journey.type.signoff": "Kirjautumaton",
+  "journey.type.journey": "Lähtö",
 
   "journey.event.ALL": "Kaikki tapahtumat",
   "journey.event.DEP": "Lähtö pysäkkialueelta",

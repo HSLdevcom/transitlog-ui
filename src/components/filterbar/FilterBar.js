@@ -54,7 +54,12 @@ class FilterBar extends Component {
   calendarRootRef = React.createRef();
 
   render() {
-    const {className, journeys = []} = this.props;
+    const {
+      className,
+      journeys = [],
+      unsignedEventsLoading,
+      routeEventsLoading,
+    } = this.props;
 
     return (
       <FilterBarWrapper className={className}>
@@ -71,10 +76,10 @@ class FilterBar extends Component {
            */}
           <CalendarRoot ref={this.calendarRootRef} />
           <FilterSection>
-            <RouteSettings />
+            <RouteSettings routeEventsLoading={routeEventsLoading} />
           </FilterSection>
           <FilterSection>
-            <VehicleSettings />
+            <VehicleSettings unsignedEventsLoading={unsignedEventsLoading} />
           </FilterSection>
           <FilterSection>
             <StopSettings />

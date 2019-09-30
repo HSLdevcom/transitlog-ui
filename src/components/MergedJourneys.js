@@ -14,11 +14,11 @@ const MergedJourneys = ({
     return mergeJourneys(compact([selectedJourney, ...areaJourneys]));
   }, [areaJourneys, selectedJourney]);
 
-  const withRouteJourneys = useMemo(() => {
+  const routeAndSelected = useMemo(() => {
     return currentJourneys.concat(routeJourneys);
   }, [currentJourneys, routeJourneys]);
 
-  return children({currentJourneys, withRouteJourneys});
+  return children({currentJourneys, routeAndSelected});
 };
 
 export default MergedJourneys;

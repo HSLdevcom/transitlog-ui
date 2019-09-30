@@ -26,6 +26,7 @@ export const SuggestionContent = styled.div`
   color: ${({isHighlighted = false}) => (isHighlighted ? "white" : "var(--dark-grey)")};
   padding: 0.25rem 0.5rem;
   position: relative;
+  width: 100%;
 
   ${({withIcon = false}) =>
     withIcon
@@ -49,7 +50,7 @@ export const SuggestionText = styled.div`
 export const SelectedOptionDisplay = styled(SuggestionContent)`
   font-size: 0.875rem;
   padding-left: 0;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 export const SuggestionSectionTitle = styled.div`

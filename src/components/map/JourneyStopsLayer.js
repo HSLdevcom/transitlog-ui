@@ -2,9 +2,12 @@ import React from "react";
 import flow from "lodash/flow";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
+import get from "lodash/get";
 import RouteStop from "./RouteStop";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
+import {TIMEZONE} from "../../constants";
+import moment from "moment-timezone";
 
 const decorate = flow(
   observer,
@@ -26,19 +29,49 @@ const JourneyStopsLayer = decorate(
 
       const stopGroups = orderBy(
         Object.values(groupBy(stopEvents, "stopId")),
-        (events) => events[0].recordedAtUnix,
+        (events) => {
+          const eventIndex = get(
+            events.find((evt) => typeof evt.index !== "undefined"),
+            "index",
+            1
+          );
+
+          let eventUnix = get(
+            events.find((evt) => typeof evt.recordedAtUnix !== "undefined"),
+            "recordedAtUnix",
+            false
+          );
+
+          if (!eventUnix) {
+            eventUnix = moment
+              .tz(
+                get(
+                  events.find((evt) => typeof evt.plannedDateTime !== "undefined"),
+                  "plannedDateTime",
+                  ""
+                ),
+                TIMEZONE
+              )
+              .unix();
+          }
+
+          // Order by event stop index and unix time.
+          return eventUnix * Math.max(eventIndex, 1);
+        },
         "asc"
       );
 
       return stopGroups.map((events, index, arr) => {
-        const isFirst = index === 0;
+        const isFirst = events.some(
+          (evt) => typeof evt.isOrigin !== "undefined" && evt.isOrigin
+        );
+
         const isLast = index === arr.length - 1;
 
         let useEvent;
+        const useDEP = events.some((evt) => !!(evt.isTimingStop || evt.isOrigin));
 
         const arrival = events.find((evt) => evt.type === "ARS");
-
-        const useDEP = events.some((evt) => !!(evt.isTimingStop || evt.isOrigin));
         let departure =
           events.find((evt) => evt.type === (useDEP ? "DEP" : "PDE")) || arrival;
 

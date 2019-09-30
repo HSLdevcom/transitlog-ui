@@ -75,39 +75,41 @@ const HeadingArrow = styled.span`
   z-index: 0;
 `;
 
-const VehicleMarker = observer(({event, mode = "BUS", isSelectedJourney = false}) => {
-  const color = getModeColor(mode.toUpperCase());
-  // The velocity value can be a bit flaky, so I decided that under 2 m/s is stopped enough.
-  const isStopped = event.velocity < 2;
+const VehicleMarker = observer(
+  ({event, mode = "BUS", isSelectedJourney = false, isUnsigned = false}) => {
+    const color = getModeColor(isUnsigned ? "unsigned" : mode.toUpperCase());
+    // The velocity value can be a bit flaky, so I decided that under 2 m/s is stopped enough.
+    const isStopped = event.velocity < 2;
 
-  return (
-    <IconWrapper
-      translucent={!isSelectedJourney}
-      color={color}
-      isStopped={isStopped}
-      data-testid="hfp-marker-icon">
-      <Icon
+    return (
+      <IconWrapper
+        translucent={!isSelectedJourney}
         color={color}
-        data-testid="icon-icon"
-        // The mode className applies the vehicle icon
-        className={mode.toUpperCase()}
-      />
-      <RotationWrapper
-        color={color}
-        rotation={get(event, "heading", 0)}
-        data-testid="icon-rotation">
-        {event.doorStatus && <Indicator position="right" color="var(--dark-blue)" />}
-        {event.full && <Indicator position="left" color="var(--red)" />}
-        {!isStopped && (
-          <HeadingArrow
-            small={!isSelectedJourney}
-            className="hfp-marker-heading"
-            color={color}
-          />
-        )}
-      </RotationWrapper>
-    </IconWrapper>
-  );
-});
+        isStopped={isStopped}
+        data-testid="hfp-marker-icon">
+        <Icon
+          color={color}
+          data-testid="icon-icon"
+          // The mode className applies the vehicle icon
+          className={mode.toUpperCase()}
+        />
+        <RotationWrapper
+          color={color}
+          rotation={get(event, "heading", 0)}
+          data-testid="icon-rotation">
+          {event.doorStatus && <Indicator position="right" color="var(--dark-blue)" />}
+          {event.full && <Indicator position="left" color="var(--red)" />}
+          {!isStopped && (
+            <HeadingArrow
+              small={!isSelectedJourney}
+              className="hfp-marker-heading"
+              color={color}
+            />
+          )}
+        </RotationWrapper>
+      </IconWrapper>
+    );
+  }
+);
 
 export default VehicleMarker;

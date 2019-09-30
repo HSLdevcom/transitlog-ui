@@ -16,12 +16,19 @@ const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
 
+const UnsignedEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
+  margin-left: auto;
+  position: relative;
+  top: 5px;
+  right: -10px;
+`;
+
 const decorate = flow(
   observer,
   inject("Filters")
 );
 
-const VehicleSettings = decorate(({Filters, state}) => {
+const VehicleSettings = decorate(({Filters, state, unsignedEventsLoading}) => {
   const onSelectVehicle = useCallback((value) => Filters.setVehicle(value), [Filters]);
 
   const {vehicle = "", date, selectedJourney} = state;
@@ -72,6 +79,7 @@ const VehicleSettings = decorate(({Filters, state}) => {
                       <br />
                       {selectedVehicle.operatorName}
                     </SuggestionText>
+                    {unsignedEventsLoading && <UnsignedEventsLoading />}
                   </SelectedOptionDisplay>
                 )}
               </>

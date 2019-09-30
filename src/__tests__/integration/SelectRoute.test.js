@@ -156,7 +156,7 @@ describe("Route selection and filtering", () => {
 
     // Clear and ensure that the list is unfiltered
     fireEvent.change(routeInput, {target: {value: ""}});
-    expect(suggestions.firstChild).toHaveTextContent(/^1001 suunta 1/);
+    expect(suggestions.firstChild).toHaveTextContent(/^unsigned/);
 
     fireEvent.change(routeInput, {target: {value: "1018/2"}});
 

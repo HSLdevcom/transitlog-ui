@@ -77,7 +77,32 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
           );
         });
 
+  if (
+    (inputLength === 0 || inputValue === "unsigned") &&
+    !filteredRoutes.some((route) => route.routeId === "unsigned")
+  ) {
+    const unsignedRoute = {
+      routeId: "unsigned",
+      direction: 1,
+      id: "unsigned",
+      destination: "",
+      destinationStopId: "",
+      mode: "BUS",
+      name: "Unsigned journeys",
+      origin: "",
+      originStopId: "unknown",
+      alerts: [],
+      cancellations: [],
+    };
+
+    // filteredRoutes.unshift(unsignedRoute);
+  }
+
   return sortBy(filteredRoutes, ({routeId}) => {
+    if (routeId === "unsigned") {
+      return 0;
+    }
+
     const parsedLineId = parseLineNumber(routeId);
     const numericLineId = parsedLineId.replace(/[^0-9]*/g, "");
 

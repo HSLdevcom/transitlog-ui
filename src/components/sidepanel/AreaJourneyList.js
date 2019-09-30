@@ -97,6 +97,7 @@ const AreaJourneyList = decorate(
     loading,
     Journey,
     UI,
+    Time,
     state: {selectedJourney, areaEventsStyle, areaEventsRouteFilter},
   }) => {
     const selectedJourneyId = useMemo(() => getJourneyId(selectedJourney), [
@@ -105,7 +106,8 @@ const AreaJourneyList = decorate(
 
     const selectJourney = useCallback(
       (journey) => {
-        if (journey) {
+        // Select the journey if truthy and not unsigned.
+        if (journey && journey.journeyType === "journey") {
           const journeyId = getJourneyId(journey);
 
           // Only set these if the journey is truthy and was not already selected
@@ -113,6 +115,14 @@ const AreaJourneyList = decorate(
             Journey.setSelectedJourney(journey);
           } else {
             Journey.setSelectedJourney(null);
+          }
+          // If unsigned, just set the time to the start of the vehiclePositions.
+        } else if (journey.journeyType !== "journey") {
+          // TODO: Select as unsigned journey
+          const time = get(journey, "vehiclePositions[0].recordedTime");
+
+          if (time) {
+            Time.setTime(time);
           }
         }
       },
@@ -186,7 +196,16 @@ const AreaJourneyList = decorate(
                 selected={journeyIsSelected}
                 onClick={() => selectJourney(journey)}>
                 <JourneyRowLeft>
-                  {routeId} / {direction}
+                  {journey.journeyType !== "journey" ? (
+                    <>
+                      {text(`journey.type.${journey.journeyType}`)}:{" "}
+                      {journey.uniqueVehicleId}
+                    </>
+                  ) : (
+                    <>
+                      {routeId} / {direction}
+                    </>
+                  )}
                 </JourneyRowLeft>
                 <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>
               </JourneyListRow>

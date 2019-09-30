@@ -145,9 +145,10 @@ export type AreaEventsFilterInput = {
 export type AreaJourney = {
    __typename?: 'AreaJourney',
   id: Scalars['ID'],
+  journeyType: Scalars['String'],
   lineId?: Maybe<Scalars['String']>,
-  routeId: Scalars['String'],
-  direction: Scalars['Direction'],
+  routeId?: Maybe<Scalars['String']>,
+  direction?: Maybe<Scalars['Direction']>,
   departureDate: Scalars['Date'],
   departureTime: Scalars['Time'],
   uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
@@ -434,6 +435,7 @@ export type JourneyStopEvent = {
   isNextDay?: Maybe<Scalars['Boolean']>,
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
+  isOrigin?: Maybe<Scalars['Boolean']>,
   index?: Maybe<Scalars['Int']>,
   stop?: Maybe<Stop>,
   unplannedStop: Scalars['Boolean'],
@@ -500,6 +502,7 @@ export type PlannedStopEvent = {
   isNextDay?: Maybe<Scalars['Boolean']>,
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
+  isOrigin?: Maybe<Scalars['Boolean']>,
   index?: Maybe<Scalars['Int']>,
   stop?: Maybe<Stop>,
 };
@@ -628,7 +631,8 @@ export type QueryJourneyArgs = {
   direction: Scalars['Direction'],
   departureTime: Scalars['Time'],
   departureDate: Scalars['Date'],
-  uniqueVehicleId?: Maybe<Scalars['VehicleId']>
+  uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
+  unsignedEvents?: Maybe<Scalars['Boolean']>
 };
 
 
@@ -641,7 +645,8 @@ export type QueryJourneysArgs = {
 
 export type QueryVehicleJourneysArgs = {
   uniqueVehicleId: Scalars['VehicleId'],
-  date: Scalars['Date']
+  date: Scalars['Date'],
+  unsignedEvents?: Maybe<Scalars['Boolean']>
 };
 
 
@@ -650,7 +655,8 @@ export type QueryEventsByBboxArgs = {
   maxTime: Scalars['DateTime'],
   bbox: Scalars['PreciseBBox'],
   date: Scalars['Date'],
-  filters?: Maybe<AreaEventsFilterInput>
+  filters?: Maybe<AreaEventsFilterInput>,
+  unsignedEvents?: Maybe<Scalars['Boolean']>
 };
 
 
@@ -793,9 +799,11 @@ export type VehicleJourney = {
 export type VehiclePosition = Position & {
    __typename?: 'VehiclePosition',
   id: Scalars['ID'],
+  journeyType: Scalars['String'],
   recordedAt: Scalars['DateTime'],
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
+  stop?: Maybe<Scalars['String']>,
   nextStopId?: Maybe<Scalars['String']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,

@@ -12,6 +12,7 @@ export const routeJourneysQuery = gql`
   ) {
     journeys(routeId: $routeId, direction: $direction, departureDate: $departureDate) {
       id
+      journeyType
       lineId
       routeId
       direction
@@ -36,7 +37,7 @@ export const routeJourneysQuery = gql`
   }
 `;
 
-const updateListenerName = "roure journeys";
+const updateListenerName = "route journeys";
 
 const RouteJourneysQuery = (props) => {
   const {routeId, direction, date, skip, children} = props;

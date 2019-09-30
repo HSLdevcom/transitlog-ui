@@ -23,6 +23,7 @@ export const journeyQuery = gql`
       uniqueVehicleId: $uniqueVehicleId
     ) {
       id
+      journeyType
       lineId
       routeId
       originStopId
@@ -56,6 +57,7 @@ export const journeyQuery = gql`
       }
       vehiclePositions {
         id
+        journeyType
         delay
         doorStatus
         heading

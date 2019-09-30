@@ -20,13 +20,11 @@ const decorate = flow(
 );
 
 export const StopMarkerCircle = styled.div`
-  width: ${({isSelected, big}) =>
-    isSelected && big ? "2.75rem" : big ? "2rem" : "1.275rem"};
+  width: ${({isSelected, big}) => (isSelected && big ? "2rem" : big ? "1.5rem" : "1rem")};
   height: ${({isSelected, big}) =>
-    isSelected && big ? "2.75rem" : big ? "2rem" : "1.275rem"};
+    isSelected && big ? "2rem" : big ? "1.5rem" : "1rem"};
   border-radius: 50%;
-  border: ${({thickBorder, isSelected, isTimingStop}) =>
-      isTimingStop && !isSelected ? 0 : thickBorder ? "4px" : "3px"}
+  border: ${({isTimingStop, dashed}) => (isTimingStop && !dashed ? 0 : "3px")}
     ${({dashed}) => (dashed ? "dashed" : "solid")}
     ${({isSelected, color = "var(--blue)"}) => (isSelected ? "var(--blue)" : color)};
   background-color: ${({
@@ -158,7 +156,7 @@ const StopMarker = decorate(
 
     const markerPosition = latLng({lat, lng});
     const stopAlerts =
-      alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.timeMoment);
+      alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.date);
 
     const markerElement = (
       <DivIcon

@@ -1,11 +1,19 @@
 export function getTimelinessColor(timeliness, defaultColor = "", darkYellow = false) {
-  return timeliness === "early"
-    ? "var(--red)"
-    : timeliness === "late"
-    ? darkYellow
-      ? "var(--dark-yellow)"
-      : "var(--yellow)"
-    : timeliness === "on-time"
-    ? "var(--light-green)"
-    : defaultColor;
+  switch (timeliness) {
+    case "on-time":
+      return "var(--light-green)";
+    case "early":
+      return "var(--red)";
+    case "late":
+      if (darkYellow) {
+        return "var(--dark-yellow)";
+      } else {
+        return "var(--yellow)";
+      }
+    case "unsigned":
+      return "var(--grey)";
+    case "planned":
+    default:
+      return defaultColor;
+  }
 }
