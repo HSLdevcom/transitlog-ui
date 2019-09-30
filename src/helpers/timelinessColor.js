@@ -12,6 +12,7 @@ export function getTimelinessColor(timeliness, defaultColor = "", darkYellow = f
       }
     case "unsigned":
       return "var(--grey)";
+    case "planned":
     default:
       return defaultColor;
   }

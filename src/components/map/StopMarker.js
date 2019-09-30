@@ -24,8 +24,7 @@ export const StopMarkerCircle = styled.div`
   height: ${({isSelected, big}) =>
     isSelected && big ? "2rem" : big ? "1.5rem" : "1rem"};
   border-radius: 50%;
-  border: ${({thickBorder, isSelected, isTimingStop}) =>
-      isTimingStop && !isSelected ? 0 : thickBorder ? "4px" : "3px"}
+  border: ${({isTimingStop, dashed}) => (isTimingStop && !dashed ? 0 : "3px")}
     ${({dashed}) => (dashed ? "dashed" : "solid")}
     ${({isSelected, color = "var(--blue)"}) => (isSelected ? "var(--blue)" : color)};
   background-color: ${({
