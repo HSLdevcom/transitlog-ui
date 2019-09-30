@@ -70,7 +70,10 @@ class JourneyLayer extends Component {
   findHfpItem = (events = [], latlng) => {
     const eventItem = orderBy(
       events,
-      (event) => latlng.distanceTo(latLng(event.lat, event.lng)),
+      (event) =>
+        !event.lat || !event.lng
+          ? Infinity
+          : latlng.distanceTo(latLng(event.lat, event.lng)),
       "ASC"
     )[0];
 
