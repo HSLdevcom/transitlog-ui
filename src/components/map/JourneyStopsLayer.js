@@ -55,8 +55,6 @@ const JourneyStopsLayer = decorate(
               .unix();
           }
 
-          console.log(eventIndex);
-
           // Order by event stop index and unix time.
           return eventUnix * Math.max(eventIndex, 1);
         },
