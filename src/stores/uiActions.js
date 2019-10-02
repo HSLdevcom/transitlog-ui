@@ -129,6 +129,19 @@ export default (state) => {
     state.highlightedStop = stopId;
   });
 
+  const onSelectArea = action((bounds) => {
+    state.areaEventsBounds =
+      !bounds || (typeof bounds.isValid === "function" && !bounds.isValid)
+        ? null
+        : bounds;
+
+    if (state.areaEventsBounds) {
+      setUrlValue("areaBounds", state.areaEventsBounds.toBBoxString());
+    } else {
+      setUrlValue("areaBounds", null);
+    }
+  });
+
   return {
     toggleSidePanel,
     toggleJourneyDetails,
@@ -145,5 +158,6 @@ export default (state) => {
     highlightStop,
     setUser,
     setWeeklyObservedTimesType,
+    onSelectArea,
   };
 };

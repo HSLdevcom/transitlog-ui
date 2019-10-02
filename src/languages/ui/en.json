@@ -154,5 +154,6 @@
   "message.emptyview.network": "The data in this view is unavailable due to a network issue. Make sure you are online and try again.",
   "message.emptyview.authentication": "You need to be logged in to get access to the data in this view, or this account is not authorized.",
   "message.emptyview.nodata": "The server did not return any data for this request.",
-  "message.emptyview.unknown": "For some reason, the data in this view is unavailable or does not exist."
+  "message.emptyview.unknown": "For some reason, the data in this view is unavailable or does not exist.",
+  "message.emptyview.noareevents": "The area search did not return any results."
 }

@@ -2,6 +2,7 @@ import {extendObservable, observable, reaction, set} from "mobx";
 import {getUrlValue, onHistoryChange} from "./UrlManager";
 import uiActions from "./uiActions";
 import get from "lodash/get";
+import {boundsFromBBoxString} from "../helpers/boundsFromBBoxString";
 
 export const LANGUAGES = {
   FINNISH: "fi",
@@ -26,24 +27,33 @@ export const weeklyObservedTimeTypes = {
 };
 
 export default (state) => {
-  extendObservable(state, {
-    sidePanelVisible: getUrlValue("sidePanelVisible", true),
-    journeyDetailsOpen: getUrlValue("journeysDetailsOpen", true),
-    journeyGraphOpen: getUrlValue("journeyGraphOpen", false),
-    showInstructions: getUrlValue("showInstructions", false),
-    mapOverlays: getUrlValue("mapOverlays", "").split(","),
-    areaEventsStyle: getUrlValue("areaEventsStyle", areaEventsStyles.MARKERS),
-    areaEventsRouteFilter: getUrlValue("areaEventsRouteFilter", ""),
-    weeklyObservedTimes: getUrlValue(
-      "weeklyObservedTimes",
-      weeklyObservedTimeTypes.FIRST_STOP_DEPARTURE
-    ),
-    highlightedStop: "",
-    language: languageState.language,
-    errors: [],
-    shareModalOpen: false,
-    user: null,
-  });
+  const urlBounds = getUrlValue("areaBounds", null);
+
+  extendObservable(
+    state,
+    {
+      sidePanelVisible: getUrlValue("sidePanelVisible", true),
+      journeyDetailsOpen: getUrlValue("journeysDetailsOpen", true),
+      journeyGraphOpen: getUrlValue("journeyGraphOpen", false),
+      showInstructions: getUrlValue("showInstructions", false),
+      mapOverlays: getUrlValue("mapOverlays", "").split(","),
+      areaEventsStyle: getUrlValue("areaEventsStyle", areaEventsStyles.MARKERS),
+      areaEventsRouteFilter: getUrlValue("areaEventsRouteFilter", ""),
+      areaEventsBounds: urlBounds ? boundsFromBBoxString(urlBounds) : null,
+      weeklyObservedTimes: getUrlValue(
+        "weeklyObservedTimes",
+        weeklyObservedTimeTypes.FIRST_STOP_DEPARTURE
+      ),
+      highlightedStop: "",
+      language: languageState.language,
+      errors: [],
+      shareModalOpen: false,
+      user: null,
+    },
+    {
+      areaEventsBounds: observable.ref,
+    }
+  );
 
   const actions = uiActions(state);
 

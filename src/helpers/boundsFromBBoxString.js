@@ -1,6 +1,10 @@
 import {latLngBounds, latLng} from "leaflet";
 
 export function boundsFromBBoxString(bboxString) {
+  if (!bboxString) {
+    return "";
+  }
+
   if (typeof bboxString !== "string") {
     return bboxString;
   }

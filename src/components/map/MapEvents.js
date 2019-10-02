@@ -12,12 +12,7 @@ const decorate = flow(observer);
 const MapEvents = decorate(({areaEventsRouteFilter, children}) => {
   return (
     <AreaJourneys>
-      {({
-        setQueryBounds,
-        actualQueryBounds,
-        journeys: areaJourneysResult = [],
-        loading: areaJourneysLoading,
-      }) => {
+      {({journeys: areaJourneysResult = [], loading: areaJourneysLoading}) => {
         let areaJourneys = areaJourneysResult;
 
         if (areaEventsRouteFilter) {
@@ -53,8 +48,6 @@ const MapEvents = decorate(({areaEventsRouteFilter, children}) => {
                             unsignedEventsLoading,
                             routeEventsLoading,
                             selectedJourneyLoading: selectedJourneyLoading,
-                            setAreaQueryBounds: setQueryBounds,
-                            actualAreaQueryBounds: actualQueryBounds,
                           })
                         }
                       </MergedJourneys>

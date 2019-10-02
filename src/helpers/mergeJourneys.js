@@ -1,9 +1,10 @@
 import groupBy from "lodash/groupBy";
 import reduce from "lodash/reduce";
+import getJourneyId from "./getJourneyId";
 
 export function mergeJourneys(journeys) {
   return reduce(
-    groupBy(journeys, "id"),
+    groupBy(journeys, getJourneyId),
     (mergedJourneys, journeyGroup) => {
       if (journeyGroup.length === 1) {
         mergedJourneys.push(journeyGroup[0]);
@@ -16,6 +17,7 @@ export function mergeJourneys(journeys) {
       for (const journey of journeyGroup) {
         if (
           !selectedJourney ||
+          (typeof journey.events !== "undefined" && journey.events.length !== 0) ||
           journey.vehiclePositions.length > selectedJourney.vehiclePositions.length
         ) {
           selectedJourney = journey;

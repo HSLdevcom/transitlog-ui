@@ -1,4 +1,4 @@
-import React, {Component, useMemo} from "react";
+import React, {Component} from "react";
 import {Polyline, CircleMarker, FeatureGroup} from "react-leaflet";
 import {latLng} from "leaflet";
 import get from "lodash/get";

@@ -153,5 +153,6 @@
   "message.emptyview.network": "Denna vy är tom på grund av ett nätfel. Försökra dig om att du har en aktiv nätförbindelse och prova sedan igen.",
   "message.emptyview.authentication": "Datan i denna vy kräver inloggning, eller så har ditt konto inte rättighet.",
   "message.emptyview.nodata": "Servern gav inte någon data för denna vy.",
-  "message.emptyview.unknown": "Denna vy är inte tillgänglig på grund av ett okänt fel eller för att datan inte existerar."
+  "message.emptyview.unknown": "Denna vy är inte tillgänglig på grund av ett okänt fel eller för att datan inte existerar.",
+  "message.emptyview.noareevents": "Områdssökningen gav inga resultat."
 }
