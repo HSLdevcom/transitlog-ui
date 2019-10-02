@@ -8,6 +8,7 @@ import Alert from "../icons/Alert";
 import SignIn from "../icons/SignIn";
 import NoConnection from "../icons/NoConnection";
 import {Text} from "../helpers/text";
+import PositionAlert from "../icons/PositionAlert";
 
 const decorate = flow(
   observer,
@@ -54,35 +55,44 @@ const emptyReasons = {
   AUTHENTICATION: "authentication",
 };
 
-const EmptyView = decorate(({error}) => {
+const EmptyView = decorate(({error = null, text}) => {
   const messages = [];
-  let emptyReason = emptyReasons.UNKNOWN;
+  let emptyReason = "";
 
-  if (error.networkError) {
-    messages.push(error.networkError.message);
-    emptyReason = emptyReasons.NETWORK;
-  }
-
-  if (error.graphQLErrors && error.graphQLErrors.length !== 0) {
-    for (const err of error.graphQLErrors) {
-      messages.push(err.message);
+  if (error) {
+    if (error.networkError) {
+      messages.push(error.networkError.message);
+      emptyReason = emptyReasons.NETWORK;
     }
 
-    emptyReason = error.graphQLErrors.some(
-      (err) => err.extensions.code === "UNAUTHENTICATED"
-    )
-      ? emptyReasons.AUTHENTICATION
-      : emptyReasons.UNKNOWN;
-  }
+    if (error.graphQLErrors && error.graphQLErrors.length !== 0) {
+      for (const err of error.graphQLErrors) {
+        messages.push(err.message);
+      }
 
-  if (error.emptyDataError) {
-    messages.push(error.emptyDataError.message);
-    emptyReason = emptyReasons.NODATA;
+      emptyReason = error.graphQLErrors.some(
+        (err) => err.extensions.code === "UNAUTHENTICATED"
+      )
+        ? emptyReasons.AUTHENTICATION
+        : emptyReasons.UNKNOWN;
+    }
+
+    if (error.emptyDataError) {
+      messages.push(error.emptyDataError.message);
+      emptyReason = emptyReasons.NODATA;
+    }
   }
 
   return (
     <EmptyViewWrapper data-testid={`empty-view-${emptyReason}`}>
-      {emptyReason === emptyReasons.NETWORK ? (
+      {text ? (
+        <>
+          <PositionAlert height="5rem" width="5rem" />
+          <p>
+            <Text>{text}</Text>
+          </p>
+        </>
+      ) : emptyReason === emptyReasons.NETWORK ? (
         <>
           <NoConnection fill="var(--alt-grey)" height="5rem" width="5rem" />
           <p>
@@ -111,7 +121,7 @@ const EmptyView = decorate(({error}) => {
           </p>
         </>
       )}
-      {messages.length && (
+      {messages.length !== 0 && (
         <>
           {emptyReason === emptyReasons.NETWORK ? (
             <MessagesHeading>

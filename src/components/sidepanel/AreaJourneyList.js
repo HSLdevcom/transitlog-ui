@@ -12,6 +12,7 @@ import flow from "lodash/flow";
 import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import {Button} from "../Forms";
+import EmptyView from "../EmptyView";
 
 const JourneyListRow = styled.button`
   display: flex;
@@ -185,32 +186,37 @@ const AreaJourneyList = decorate(
           </ListHeader>
         }>
         {(scrollRef) =>
-          journeys.map((journey) => {
-            const {routeId, direction, departureTime, id: journeyId} = journey;
-            const journeyIsSelected = selectedJourney && selectedJourneyId === journeyId;
+          (!journeys || journeys.length === 0) && !loading ? (
+            <EmptyView text="message.emptyview.noareevents" />
+          ) : (
+            journeys.map((journey) => {
+              const {routeId, direction, departureTime, id: journeyId} = journey;
+              const journeyIsSelected =
+                selectedJourney && selectedJourneyId === journeyId;
 
-            return (
-              <JourneyListRow
-                ref={journeyIsSelected ? scrollRef : null}
-                key={`area_event_row_${journeyId}`}
-                selected={journeyIsSelected}
-                onClick={() => selectJourney(journey)}>
-                <JourneyRowLeft>
-                  {journey.journeyType !== "journey" ? (
-                    <>
-                      {text(`journey.type.${journey.journeyType}`)}:{" "}
-                      {journey.uniqueVehicleId}
-                    </>
-                  ) : (
-                    <>
-                      {routeId} / {direction}
-                    </>
-                  )}
-                </JourneyRowLeft>
-                <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>
-              </JourneyListRow>
-            );
-          })
+              return (
+                <JourneyListRow
+                  ref={journeyIsSelected ? scrollRef : null}
+                  key={`area_event_row_${journeyId}`}
+                  selected={journeyIsSelected}
+                  onClick={() => selectJourney(journey)}>
+                  <JourneyRowLeft>
+                    {journey.journeyType !== "journey" ? (
+                      <>
+                        {text(`journey.type.${journey.journeyType}`)}:{" "}
+                        {journey.uniqueVehicleId}
+                      </>
+                    ) : (
+                      <>
+                        {routeId} / {direction}
+                      </>
+                    )}
+                  </JourneyRowLeft>
+                  <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>
+                </JourneyListRow>
+              );
+            })
+          )
         }
       </SidepanelList>
     );

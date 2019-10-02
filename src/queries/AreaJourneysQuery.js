@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import gql from "graphql-tag";
@@ -43,18 +43,11 @@ const areaJourneysQuery = gql`
 const AreaJourneysQuery = observer((props) => {
   const {minTime, maxTime, bbox, date, skip, children} = props;
 
-  const prevResults = useRef([]);
-
   const queryParamsValid = minTime && maxTime && bbox && date;
   const shouldSkip = skip || !queryParamsValid;
 
-  if (shouldSkip && prevResults.current.length !== 0) {
-    prevResults.current = [];
-  }
-
   return (
     <Query
-      partialRefetch={true}
       skip={shouldSkip}
       variables={{
         minTime,
@@ -65,12 +58,10 @@ const AreaJourneysQuery = observer((props) => {
       query={areaJourneysQuery}>
       {({loading, data, error}) => {
         if (!data || loading) {
-          return children({journeys: prevResults.current, loading, error});
+          return children({journeys: [], loading, error});
         }
 
         const journeys = get(data, "eventsByBbox", []);
-        prevResults.current = journeys;
-
         return children({journeys, loading, error});
       }}
     </Query>

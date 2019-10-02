@@ -77,7 +77,7 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
           );
         });
 
-  if (
+  /*if (
     (inputLength === 0 || inputValue === "unsigned") &&
     !filteredRoutes.some((route) => route.routeId === "unsigned")
   ) {
@@ -95,8 +95,8 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
       cancellations: [],
     };
 
-    // filteredRoutes.unshift(unsignedRoute);
-  }
+    filteredRoutes.unshift(unsignedRoute);
+  }*/
 
   return sortBy(filteredRoutes, ({routeId}) => {
     if (routeId === "unsigned") {

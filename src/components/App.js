@@ -84,6 +84,7 @@ function App({route, state, UI}) {
     journeyGraphOpen,
     loginModalOpen,
     areaEventsRouteFilter,
+    areaEventsBounds,
   } = state;
   const selectedJourneyId = getJourneyId(selectedJourney);
   const code = useMemo(() => new URL(window.location.href).searchParams.get("code"), []);
@@ -131,8 +132,6 @@ function App({route, state, UI}) {
           unsignedEventsLoading,
           routeEventsLoading,
           selectedJourneyLoading,
-          setAreaQueryBounds,
-          actualAreaQueryBounds,
         }) => (
           <AppGrid>
             <ServerMessage />
@@ -150,13 +149,8 @@ function App({route, state, UI}) {
                         <SidePanel
                           areaJourneysLoading={!live && areaJourneysLoading}
                           journeyLoading={selectedJourneyLoading}
-                          areaEvents={
-                            areaJourneys.length !== 0
-                              ? areaJourneys
-                              : areaEventsRouteFilter
-                              ? true
-                              : []
-                          }
+                          areaEvents={areaJourneys}
+                          areaSearchActive={!!areaEventsBounds}
                           journey={selectedJourney}
                           stop={stop}
                           route={route}
@@ -209,8 +203,6 @@ function App({route, state, UI}) {
                               </Observer>
                               <MapContent
                                 centerOnRoute={areaJourneys.length === 0}
-                                setQueryBounds={setAreaQueryBounds}
-                                actualQueryBounds={actualAreaQueryBounds}
                                 setMapView={setMapView}
                                 routeJourneys={routeJourneys}
                                 journeys={currentJourneys}

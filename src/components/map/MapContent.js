@@ -37,8 +37,6 @@ const MapContent = decorate(
     stop,
     setMapView,
     viewLocation,
-    setQueryBounds,
-    actualQueryBounds,
     centerOnRoute = true,
     state: {selectedJourney, date, mapOverlays, areaEventsStyle, unixTime},
   }) => {
@@ -53,11 +51,7 @@ const MapContent = decorate(
 
     return (
       <>
-        <AreaSelect
-          enabled={zoom > 12}
-          usingBounds={actualQueryBounds}
-          onSelectArea={setQueryBounds}
-        />
+        <AreaSelect enabled={zoom > 12} />
         {/* When a route is NOT selected... */}
         {!hasRoute && (
           <StopLayer
