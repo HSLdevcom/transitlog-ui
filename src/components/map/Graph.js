@@ -73,10 +73,12 @@ const decorate = flow(
 );
 
 const Graph = decorate((props) => {
-  const {departures, events, graphExpanded, UI, Filters, width} = props;
+  const {events, vehiclePositions, graphExpanded, UI, Filters, width} = props;
 
-  const diffs = useMemo(() => getJourneyStopDiffs(departures), [departures]);
-  const speeds = useMemo(() => getJourneySpeeds(events, diffs.length - 1), [events]);
+  const diffs = useMemo(() => getJourneyStopDiffs(events), [events]);
+  const speeds = useMemo(() => getJourneySpeeds(vehiclePositions, diffs.length - 1), [
+    events,
+  ]);
 
   const [highlight, setHighlight] = useState({x: 0, y: 0});
   const [speed, setSpeed] = useState({x: 0, y: 0});
