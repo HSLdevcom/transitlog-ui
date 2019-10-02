@@ -6,7 +6,9 @@
 
   if (allowedEngines.indexOf(engine) === -1) {
     window.alert(
-      "Your browser is not supported. Please use Transitlog with Chrome or Firefox."
+      `Selaimesi ei ole tuettu. Käytä Reittilokia Chromen tai Firefoxin kanssa.\n
+Din webbläsare stöds inte av Rettiloki. Använd Chrome eller Firefox.\n
+Your browser is not supported. Please use Reittiloki with Chrome or Firefox.`
     );
   }
 })();
