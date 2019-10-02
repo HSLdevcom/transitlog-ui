@@ -217,13 +217,17 @@ function App({route, state, UI}) {
                               {selectedJourney && (
                                 <GraphContainer
                                   journeyGraphOpen={
-                                    get(selectedJourney, "departures", []).length !== 0 &&
-                                    journeyGraphOpen
+                                    get(selectedJourney, "vehiclePositions", [])
+                                      .length !== 0 && journeyGraphOpen
                                   }>
                                   <Graph
                                     width={530}
-                                    departures={get(selectedJourney, "departures", [])}
-                                    events={get(selectedJourney, "vehiclePositions", [])}
+                                    events={get(selectedJourney, "events", [])}
+                                    vehiclePositions={get(
+                                      selectedJourney,
+                                      "vehiclePositions",
+                                      []
+                                    )}
                                     graphExpanded={
                                       get(selectedJourney, "departures", []) !== 0 &&
                                       journeyGraphOpen
