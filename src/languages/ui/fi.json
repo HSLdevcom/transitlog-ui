@@ -156,5 +156,6 @@
   "message.emptyview.authentication": "Tämän näkymän tiedot vaatii kirjautumista, tai tililläsi ei ole vaadittu oikeustaso.",
   "message.emptyview.nodata": "Palvelin ei palauttanut yhtään tietoja tälle näkymälle.",
   "message.emptyview.unknown": "Jonkun ongelman takia tämän näkymän tiedot ei ole saatavilla tai se ei ole olemassa.",
-  "message.emptyview.noareevents": "Aluehaku ei palauttanut tuloksia."
+  "message.emptyview.noareevents": "Aluehaku ei palauttanut tuloksia.",
+  "message.emptyview.vehicleauth": "Lähtöketjuhaku vaatii kirjautumista."
 }

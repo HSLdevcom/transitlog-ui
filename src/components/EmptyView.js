@@ -85,7 +85,7 @@ const EmptyView = decorate(({error = null, text}) => {
 
   return (
     <EmptyViewWrapper data-testid={`empty-view-${emptyReason}`}>
-      {text ? (
+      {text && !error ? (
         <>
           <PositionAlert height="5rem" width="5rem" />
           <p>

@@ -23,6 +23,7 @@ import {secondsToTimeObject} from "../../helpers/time";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import AlertIcons from "../AlertIcons";
 import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
+import EmptyView from "../EmptyView";
 
 const JourneyListRow = styled.div`
   position: relative;
@@ -159,7 +160,7 @@ class VehicleJourneys extends Component {
 
     return (
       <VehicleJourneysQuery vehicleId={vehicle} date={date}>
-        {({journeys = [], loading}) => {
+        {({journeys = [], loading, error}) => {
           this.journeys = journeys;
 
           return (
@@ -188,56 +189,61 @@ class VehicleJourneys extends Component {
                 </>
               }>
               {(scrollRef) =>
-                journeys.map((journey, journeyIndex) => {
-                  const journeyId = getJourneyId(journey, false);
+                (!journeys || journeys.length === 0) && !loading ? (
+                  <EmptyView error={error} text="message.emptyview.vehicleauth" />
+                ) : (
+                  journeys.map((journey, journeyIndex) => {
+                    const journeyId = getJourneyId(journey, false);
 
-                  const mode = get(journey, "mode", "").toUpperCase();
-                  const journeyTime = get(journey, "departureTime", "");
-                  const lineNumber = parseLineNumber(get(journey, "routeId", ""));
+                    const mode = get(journey, "mode", "").toUpperCase();
+                    const journeyTime = get(journey, "departureTime", "");
+                    const lineNumber = parseLineNumber(get(journey, "routeId", ""));
 
-                  const plannedObservedDiff = journey.timeDifference;
-                  const observedTimeString = journey.recordedTime;
-                  const diffTime = secondsToTimeObject(plannedObservedDiff);
-                  const delayType = getDelayType(plannedObservedDiff);
+                    const plannedObservedDiff = journey.timeDifference;
+                    const observedTimeString = journey.recordedTime;
+                    const diffTime = secondsToTimeObject(plannedObservedDiff);
+                    const delayType = getDelayType(plannedObservedDiff);
 
-                  const journeyIsSelected =
-                    selectedJourney && selectedJourneyId === journeyId;
+                    const journeyIsSelected =
+                      selectedJourney && selectedJourneyId === journeyId;
 
-                  if (journeyIsSelected) {
-                    this.selectedJourneyIndex = journeyIndex;
-                  }
+                    if (journeyIsSelected) {
+                      this.selectedJourneyIndex = journeyIndex;
+                    }
 
-                  return (
-                    <JourneyListRow
-                      selected={journeyIsSelected}
-                      key={`vehicle_journey_row_${journeyId}`}
-                      ref={journeyIsSelected ? scrollRef : null}>
-                      <TagButton
+                    return (
+                      <JourneyListRow
                         selected={journeyIsSelected}
-                        onClick={this.onSelectJourney(journey)}>
-                        <HeadsignSlot
-                          color={get(transportColor, mode, "var(--light-grey)")}>
-                          {lineNumber}/{journey.direction}
-                        </HeadsignSlot>
-                        <TimeSlot>{journeyTime.slice(0, -3)}</TimeSlot>
-                        <ColoredBackgroundSlot
-                          color={delayType === "late" ? "var(--dark-grey)" : "white"}
-                          backgroundColor={getTimelinessColor(
-                            delayType,
-                            "var(--light-green)"
-                          )}>
-                          {plannedObservedDiff < 0 ? "-" : ""}
-                          {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
-                          {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
-                        </ColoredBackgroundSlot>
-                        <PlainSlotSmall>{observedTimeString}</PlainSlotSmall>
-                      </TagButton>
-                      {get(journey, "alerts", []).length !== 0 && (
-                        <AlertIcons alerts={getAlertsInEffect(journey)} />
-                      )}
-                    </JourneyListRow>
-                  );
-                })
+                        key={`vehicle_journey_row_${journeyId}`}
+                        ref={journeyIsSelected ? scrollRef : null}>
+                        <TagButton
+                          selected={journeyIsSelected}
+                          onClick={this.onSelectJourney(journey)}>
+                          <HeadsignSlot
+                            color={get(transportColor, mode, "var(--light-grey)")}>
+                            {lineNumber}/{journey.direction}
+                          </HeadsignSlot>
+                          <TimeSlot>{journeyTime.slice(0, -3)}</TimeSlot>
+                          <ColoredBackgroundSlot
+                            color={delayType === "late" ? "var(--dark-grey)" : "white"}
+                            backgroundColor={getTimelinessColor(
+                              delayType,
+                              "var(--light-green)"
+                            )}>
+                            {plannedObservedDiff < 0 ? "-" : ""}
+                            {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
+                            {doubleDigit(diffTime.minutes)}:
+                            {doubleDigit(diffTime.seconds)}
+                          </ColoredBackgroundSlot>
+                          <PlainSlotSmall>{observedTimeString}</PlainSlotSmall>
+                        </TagButton>
+                        {get(journey, "alerts", []).length !== 0 && (
+                          <AlertIcons alerts={getAlertsInEffect(journey)} />
+                        )}
+                      </JourneyListRow>
+                    );
+                  })
+                )
               }
             </SidepanelList>
           );

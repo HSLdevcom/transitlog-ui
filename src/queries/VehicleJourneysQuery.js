@@ -69,7 +69,7 @@ const VehicleJourneysQuery = observer((props) => {
         date,
         uniqueVehicleId,
       }}>
-      {({data, loading, refetch}) => {
+      {({data, loading, refetch, error}) => {
         if (!loading) {
           setUpdateListener(updateListenerName, createRefetcher(refetch));
         }
@@ -78,7 +78,7 @@ const VehicleJourneysQuery = observer((props) => {
           timeToSeconds(departureTime)
         );
 
-        return children({journeys, loading});
+        return children({journeys, loading, error});
       }}
     </Query>
   );
