@@ -62,6 +62,11 @@ const Values = styled.div`
   > * {
     white-space: nowrap;
     flex-wrap: nowrap;
+    border-radius: 4px;
+    line-height: 1;
+    padding: 4px 0.5rem;
+    border: 1px solid var(--lighter-grey);
+    margin-left: 0.5rem;
   }
 `;
 
@@ -76,6 +81,7 @@ const ObservedValue = styled.span`
   color: ${({color = "var(--dark-grey)"}) => color};
   margin-left: 0.5rem;
   font-family: "Courier New", Courier, monospace;
+  border-color: transparent;
 `;
 
 export default observer(({journey, date}) => {
@@ -93,59 +99,66 @@ export default observer(({journey, date}) => {
   const originArrivalEvent = journey.events.find((evt) => evt.type === "ARS");
   const destinationArrivalEvent = findLast(journey.events, (evt) => evt.type === "ARS");
 
+  const terminalTime = get(departure, "terminalTime", null);
+  const recoveryTime = get(departure, "recoveryTime", null);
+
   return (
     <JourneyInfo>
-      <JourneyInfoRow>
-        <Line>
-          <LineHeading>
-            <Text>journey.terminal_time</Text>
-          </LineHeading>
-          <Values>
-            <span>{get(departure, "terminalTime", 0)} min</span>
-            {originArrivalEvent && (
-              <CalculateTerminalTime
-                date={date}
-                departure={departure}
-                event={originArrivalEvent}>
-                {({diffMinutes, diffSeconds, sign, wasLate}) => (
-                  <ObservedValue
-                    color={wasLate ? "white" : "var(--dark-grey)"}
-                    backgroundColor={wasLate ? "var(--red)" : "var(--lighter-grey)"}>
-                    {sign === "-" ? "-" : ""}
-                    {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
-                  </ObservedValue>
-                )}
-              </CalculateTerminalTime>
-            )}
-          </Values>
-        </Line>
-      </JourneyInfoRow>
-      <JourneyInfoRow>
-        <Line>
-          <LineHeading>
-            <Text>journey.recovery_time</Text>
-          </LineHeading>
-          <Values>
-            <span>{get(departure, "recoveryTime", 0)} min</span>
-            {destinationArrivalEvent && (
-              <CalculateTerminalTime
-                recovery={true}
-                date={date}
-                departure={departure}
-                event={destinationArrivalEvent}>
-                {({diffMinutes, diffSeconds, wasLate, sign}) => (
-                  <ObservedValue
-                    color={wasLate ? "white" : "var(--dark-grey)"}
-                    backgroundColor={wasLate ? "var(--red)" : "var(--lighter-grey)"}>
-                    {sign === "-" ? "-" : ""}
-                    {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
-                  </ObservedValue>
-                )}
-              </CalculateTerminalTime>
-            )}
-          </Values>
-        </Line>
-      </JourneyInfoRow>
+      {terminalTime !== null && (
+        <JourneyInfoRow>
+          <Line>
+            <LineHeading>
+              <Text>journey.terminal_time</Text>
+            </LineHeading>
+            <Values>
+              <span>{terminalTime} min</span>
+              {originArrivalEvent && (
+                <CalculateTerminalTime
+                  date={date}
+                  departure={departure}
+                  event={originArrivalEvent}>
+                  {({diffMinutes, diffSeconds, sign, wasLate}) => (
+                    <ObservedValue
+                      color={wasLate ? "white" : "var(--dark-grey)"}
+                      backgroundColor={wasLate ? "var(--red)" : "var(--lighter-grey)"}>
+                      {sign === "-" ? "-" : ""}
+                      {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
+                    </ObservedValue>
+                  )}
+                </CalculateTerminalTime>
+              )}
+            </Values>
+          </Line>
+        </JourneyInfoRow>
+      )}
+      {recoveryTime !== null && (
+        <JourneyInfoRow>
+          <Line>
+            <LineHeading>
+              <Text>journey.recovery_time</Text>
+            </LineHeading>
+            <Values>
+              <span>{get(departure, "recoveryTime", 0)} min</span>
+              {destinationArrivalEvent && (
+                <CalculateTerminalTime
+                  recovery={true}
+                  date={date}
+                  departure={departure}
+                  event={destinationArrivalEvent}>
+                  {({diffMinutes, diffSeconds, wasLate, sign}) => (
+                    <ObservedValue
+                      color={wasLate ? "white" : "var(--dark-grey)"}
+                      backgroundColor={wasLate ? "var(--red)" : "var(--lighter-grey)"}>
+                      {sign === "-" ? "-" : ""}
+                      {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
+                    </ObservedValue>
+                  )}
+                </CalculateTerminalTime>
+              )}
+            </Values>
+          </Line>
+        </JourneyInfoRow>
+      )}
       {journey.uniqueVehicleId && (
         <JourneyInfoRow>
           <Line>
@@ -204,48 +217,50 @@ export default observer(({journey, date}) => {
               </Values>
             </Line>
           </JourneyInfoRow>
-          <JourneyInfoRow>
-            <Line>
-              <LineHeading>
-                <Text>journey.requested_equipment</Text>
-              </LineHeading>
-              <Values>
-                <span>
-                  {equipmentType
-                    ? equipmentType
-                    : equipmentCode
-                    ? equipmentCode
-                    : text("general.no_type")}
-                  {get(departure, "equipmentColor", "")}
-                </span>
-              </Values>
-            </Line>
-            <Line right>
-              <Values>
-                {validateEquipment(departure, journey.equipment).map((prop) => {
-                  const propVal = prop.observed;
-                  let propValShort = propVal.slice(0, 11).trim();
-
-                  if (propValShort < propVal) {
-                    propValShort += ".";
-                  }
-
-                  return (
-                    prop.observed && (
-                      <ObservedValue
-                        key={`equipment_prop_${prop.name}`}
-                        backgroundColor={prop.color}
-                        color={prop.required !== false ? "white" : "var(--dark-grey)"}>
-                        {propValShort}
-                      </ObservedValue>
-                    )
-                  );
-                })}
-              </Values>
-            </Line>
-          </JourneyInfoRow>
         </>
       )}
+      <JourneyInfoRow>
+        <Line>
+          <LineHeading>
+            <Text>journey.requested_equipment</Text>
+          </LineHeading>
+          <Values>
+            <span>
+              {equipmentType
+                ? equipmentType
+                : equipmentCode
+                ? equipmentCode
+                : text("general.no_type")}
+            </span>
+            <span>{get(departure, "equipmentColor", "")}</span>
+          </Values>
+        </Line>
+        {!!journey.equipment && (
+          <Line right>
+            <Values>
+              {validateEquipment(departure, journey.equipment).map((prop) => {
+                const propVal = prop.observed;
+                let propValShort = propVal.slice(0, 11).trim();
+
+                if (propValShort < propVal) {
+                  propValShort += ".";
+                }
+
+                return (
+                  prop.observed && (
+                    <ObservedValue
+                      key={`equipment_prop_${prop.name}`}
+                      backgroundColor={prop.color}
+                      color={prop.required !== false ? "white" : "var(--dark-grey)"}>
+                      {propValShort}
+                    </ObservedValue>
+                  )
+                );
+              })}
+            </Values>
+          </Line>
+        )}
+      </JourneyInfoRow>
     </JourneyInfo>
   );
 });
