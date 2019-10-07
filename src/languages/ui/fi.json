@@ -119,6 +119,10 @@
   "domain.alerts.subset": "Poikkeustiedotteet",
   "domain.cancelled": "Peruutettu",
 
+  "auth.login": "Kirjaudu (HSL ID)",
+  "auth.logout": "Kirjaudu ulos",
+  "auth.create_account": "Tee Reittiloki-tunnus",
+
   "general.minutes": "minuutteja",
   "general.hour": "tunti",
   "general.year": "vuosi",
@@ -157,5 +161,7 @@
   "message.emptyview.nodata": "Palvelin ei palauttanut yhtään tietoja tälle näkymälle.",
   "message.emptyview.unknown": "Jonkun ongelman takia tämän näkymän tiedot ei ole saatavilla tai se ei ole olemassa.",
   "message.emptyview.noareevents": "Aluehaku ei palauttanut tuloksia.",
-  "message.emptyview.vehicleauth": "Lähtöketjuhaku vaatii kirjautumista."
+  "message.emptyview.vehicleauth": "Lähtöketjuhaku vaatii kirjautumista.",
+  "message.emptyview.noalerts": "Ei poikkeustiedotteita.",
+  "message.emptyview.nocancellations": "Ei peruutuksia."
 }

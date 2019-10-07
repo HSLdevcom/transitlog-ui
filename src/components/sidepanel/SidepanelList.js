@@ -155,8 +155,8 @@ class SidepanelList extends Component {
             <ScrollContainer>
               {children(this.scrollPositionRef, this.updateScrollOffset)}
             </ScrollContainer>
-            {!live && <LoadingDisplay loading={loading} />}
           </ListRows>
+          {!live && <LoadingDisplay loading={loading} />}
         </ListContainer>
       </ListWrapper>
     );

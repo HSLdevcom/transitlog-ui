@@ -9,6 +9,7 @@ import {logout, authorize} from "../auth/authService";
 import {redirectToLogin} from "../stores/UrlManager";
 import {withApollo} from "react-apollo";
 import {LoadingDisplay} from "./Loading";
+import {text, Text} from "../helpers/text";
 
 const Root = styled.div`
   position: fixed;
@@ -140,7 +141,7 @@ class LoginModal extends React.Component {
         <Wrapper onClick={(e) => this.onModalClick(e)}>
           <Header>
             <HSLLogoNoText fill={"white"} height={"80px"} />
-            <Title>HSL Transitlog</Title>
+            <Title>HSL {text("filterpanel.heading")}</Title>
           </Header>
           {loading ? (
             <LoadingIndicator loading={true} />
@@ -149,7 +150,9 @@ class LoginModal extends React.Component {
               {user ? (
                 <LoginButton onClick={this.onLogoutClick}>
                   <Login height={"1em"} fill={"#3e3e3e"} />
-                  <LoginText>Kirjaudu ulos</LoginText>
+                  <LoginText>
+                    <Text>auth.logout</Text>
+                  </LoginText>
                 </LoginButton>
               ) : (
                 <>
@@ -158,7 +161,9 @@ class LoginModal extends React.Component {
                       onClick={this.openAuthForm("login")}
                       {...applyTooltip("Sign in with HSL-ID")}>
                       <Login height={"1em"} fill={"#3e3e3e"} />
-                      <LoginText>Kirjaudu (HSL ID)</LoginText>
+                      <LoginText>
+                        <Text>auth.login</Text>
+                      </LoginText>
                     </LoginButton>
                   </p>
                   {allowDevLogin && (
@@ -176,7 +181,9 @@ class LoginModal extends React.Component {
                       onClick={this.openAuthForm("register")}
                       {...applyTooltip("Create user")}>
                       <Login height={"1em"} fill={"#3e3e3e"} />
-                      <LoginText>Tee Transitlog-tunnus</LoginText>
+                      <LoginText>
+                        <Text>auth.create_account</Text>
+                      </LoginText>
                     </LoginButton>
                   </p>
                 </>

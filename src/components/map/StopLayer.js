@@ -23,7 +23,8 @@ const getBboxString = (bounds, round = false) => {
     : "";
 };
 
-const StopLayerContent = ({stops, selectedStopId, showRadius, onViewLocation}) => {
+const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) => {
+  const selectedStopId = state.stop;
   const prevStopAreas = useRef([]);
 
   const stopAreas = useMemo(() => {
@@ -65,50 +66,72 @@ const StopLayerContent = ({stops, selectedStopId, showRadius, onViewLocation}) =
     prevStopAreas.current = stopAreas;
   }
 
-  return prevStopAreas.current.map(([bounds, stopCluster]) => {
-    const clusterIsSelected = stopCluster.some(({stopId}) => stopId === selectedStopId);
+  return (
+    <>
+      {prevStopAreas.current.map(([bounds, stopCluster]) => {
+        const clusterIsSelected = stopCluster.some(
+          ({stopId}) => stopId === selectedStopId
+        );
 
-    return stopCluster.length === 1 ? (
-      <StopMarker
-        popupOpen={clusterIsSelected}
-        showRadius={showRadius}
-        onViewLocation={onViewLocation}
-        key={`stops_${stopCluster[0].stopId}`}
-        stop={stopCluster[0]}
-      />
-    ) : (
-      <CompoundStopMarker
-        popupOpen={clusterIsSelected}
-        bounds={bounds}
-        showRadius={showRadius}
-        onViewLocation={onViewLocation}
-        key={`stop_cluster_${stopCluster.map((stop) => stop.stopId).join("_")}`}
-        stops={stopCluster}
-      />
-    );
-  });
-};
+        return (
+          <React.Fragment
+            key={`stop_cluster_${stopCluster
+              .map((stop) => stop.stopId)
+              .sort()
+              .join("_")}`}>
+            {stopCluster.length === 1 ? (
+              <StopMarker
+                selected={clusterIsSelected}
+                showRadius={showRadius}
+                onViewLocation={onViewLocation}
+                stop={stopCluster[0]}
+              />
+            ) : (
+              <CompoundStopMarker
+                selected={clusterIsSelected}
+                bounds={bounds}
+                showRadius={showRadius}
+                onViewLocation={onViewLocation}
+                stops={stopCluster}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+});
 
 const StopLayer = decorate(
   ({bounds, onViewLocation, showRadius, state, selectedStop, zoom = 13}) => {
-    const {stop: selectedStopId, date} = state;
+    const {date} = state;
 
-    if (zoom < 14 && !selectedStopId) {
-      return null;
+    const boundsAreValid =
+      !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
+
+    const currentBounds = useRef(null);
+    let queryBounds = bounds;
+
+    if (currentBounds.current && boundsAreValid) {
+      queryBounds = currentBounds.current.contains(bounds)
+        ? currentBounds.current
+        : bounds;
+    } else if (boundsAreValid) {
+      currentBounds.current = bounds;
     }
 
-    const bbox = getBboxString(bounds);
+    const bbox = getBboxString(queryBounds, true);
 
     return (
-      <StopsByBboxQuery skip={!bbox} bbox={bbox}>
+      <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>
         {({stops = []}) => {
-          if ((stops.length === 0 || zoom < 14) && selectedStopId) {
+          if (selectedStop && (zoom < 14 || stops.length === 0)) {
             return (
               <StopMarker
+                selected={true}
                 showRadius={showRadius}
                 stop={selectedStop}
                 onViewLocation={onViewLocation}
-                popupOpen={true}
                 date={date}
               />
             );
@@ -116,8 +139,8 @@ const StopLayer = decorate(
 
           return (
             <StopLayerContent
+              key="stop layer content"
               stops={stops}
-              selectedStopId={selectedStopId}
               showRadius={showRadius}
               onViewLocation={onViewLocation}
             />

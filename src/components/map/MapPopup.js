@@ -32,7 +32,7 @@ const PopupStyle = createGlobalStyle`
   }
 `;
 
-const MapPopup = ({className, children, onClose}) => {
+const MapPopup = ({className, children, onClose, onOpen}) => {
   return (
     <>
       <PopupStyle />
@@ -42,6 +42,7 @@ const MapPopup = ({className, children, onClose}) => {
         autoClose={false}
         autoPan={false}
         keepInView={false}
+        onOpen={onOpen}
         onClose={onClose}
         offset={[0, -10]}
         minWidth={350}
