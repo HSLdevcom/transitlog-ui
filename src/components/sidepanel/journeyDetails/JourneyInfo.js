@@ -93,6 +93,7 @@ export default observer(({journey, date}) => {
 
   const equipmentCode = get(departure, "equipmentType", "");
   const equipmentType = getEquipmentType(equipmentCode);
+  const plannedColor = get(departure, "equipmentColor", "");
   const operatorName = getOperatorName(departure.operatorId);
   const observedOperatorName = getOperatorName(journey.operatorId);
 
@@ -232,7 +233,7 @@ export default observer(({journey, date}) => {
                 ? equipmentCode
                 : text("general.no_type")}
             </span>
-            <span>{get(departure, "equipmentColor", "")}</span>
+            {plannedColor && <span>{plannedColor}</span>}
           </Values>
         </Line>
         {!!journey.equipment && (
