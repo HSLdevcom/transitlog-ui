@@ -27,73 +27,77 @@ const RouteEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
 
 const decorate = flow(
   observer,
-  inject("Filters")
+  inject("Filters", "Journey")
 );
 
-const RouteSettings = decorate(({routeEventsLoading, Filters, state: {route, date}}) => {
-  return (
-    <RouteOptionsQuery date={date}>
-      {({routes = [], loading}) => (
-        <Observer>
-          {() => {
-            const selectedRoute = getFullRoute(routes, route);
+const RouteSettings = decorate(
+  ({routeEventsLoading, Filters, Journey, state: {route, date}}) => {
+    return (
+      <RouteOptionsQuery date={date}>
+        {({routes = [], loading}) => (
+          <Observer>
+            {() => {
+              const selectedRoute = getFullRoute(routes, route);
 
-            if (loading) {
-              return <LoadingSpinner inline={true} />;
-            }
+              if (loading) {
+                return <LoadingSpinner inline={true} />;
+              }
 
-            const alertsInEffect = !selectedRoute
-              ? []
-              : getAlertsInEffect(selectedRoute, date);
+              const alertsInEffect = !selectedRoute
+                ? []
+                : getAlertsInEffect(selectedRoute, date);
 
-            return (
-              <>
-                <ControlGroup>
-                  <Input
-                    helpText="Select route"
-                    label={text("filterpanel.find_line_route")}
-                    animatedLabel={false}>
-                    <RouteInput route={route} routes={routes} />
-                  </Input>
-                  {route && route.routeId && (
-                    <Tooltip>
-                      <ClearButton
-                        helpText={text("filterpanel.remove_route")}
-                        onClick={() =>
-                          Filters.setRoute({
-                            routeId: "",
-                            direction: "",
-                            originStopId: "",
-                          })
-                        }
-                      />
-                    </Tooltip>
-                  )}
-                </ControlGroup>
-                {selectedRoute && (
-                  <SelectedOptionDisplay
-                    data-testid="selected-route-display"
-                    withIcon={true}
-                    className={getTransportType(selectedRoute.routeId || "")}>
-                    <SuggestionText withIcon={true}>
-                      <strong>{selectedRoute.routeId}</strong>{" "}
-                      <Text>domain.direction</Text> {selectedRoute.direction}
-                      <br />
-                      {selectedRoute.origin} - {selectedRoute.destination}
-                    </SuggestionText>
-                    {routeEventsLoading && <RouteEventsLoading />}
-                    {alertsInEffect.length !== 0 && (
-                      <SuggestionAlerts alerts={alertsInEffect} />
+              return (
+                <>
+                  <ControlGroup>
+                    <Input
+                      helpText="Select route"
+                      label={text("filterpanel.find_line_route")}
+                      animatedLabel={false}>
+                      <RouteInput route={route} routes={routes} />
+                    </Input>
+                    {route && route.routeId && (
+                      <Tooltip>
+                        <ClearButton
+                          helpText={text("filterpanel.remove_route")}
+                          onClick={() => {
+                            Filters.setRoute({
+                              routeId: "",
+                              direction: "",
+                              originStopId: "",
+                            });
+
+                            Journey.setSelectedJourney(null);
+                          }}
+                        />
+                      </Tooltip>
                     )}
-                  </SelectedOptionDisplay>
-                )}
-              </>
-            );
-          }}
-        </Observer>
-      )}
-    </RouteOptionsQuery>
-  );
-});
+                  </ControlGroup>
+                  {selectedRoute && (
+                    <SelectedOptionDisplay
+                      data-testid="selected-route-display"
+                      withIcon={true}
+                      className={getTransportType(selectedRoute.routeId || "")}>
+                      <SuggestionText withIcon={true}>
+                        <strong>{selectedRoute.routeId}</strong>{" "}
+                        <Text>domain.direction</Text> {selectedRoute.direction}
+                        <br />
+                        {selectedRoute.origin} - {selectedRoute.destination}
+                      </SuggestionText>
+                      {routeEventsLoading && <RouteEventsLoading />}
+                      {alertsInEffect.length !== 0 && (
+                        <SuggestionAlerts alerts={alertsInEffect} />
+                      )}
+                    </SelectedOptionDisplay>
+                  )}
+                </>
+              );
+            }}
+          </Observer>
+        )}
+      </RouteOptionsQuery>
+    );
+  }
+);
 
 export default RouteSettings;

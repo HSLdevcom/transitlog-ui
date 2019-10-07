@@ -100,7 +100,7 @@ const StopLayer = decorate(
     const bbox = getBboxString(bounds);
 
     return (
-      <StopsByBboxQuery skip={!bbox} bbox={bbox}>
+      <StopsByBboxQuery skip={!bbox} bbox={bbox} date={date}>
         {({stops = []}) => {
           if ((stops.length === 0 || zoom < 14) && selectedStopId) {
             return (

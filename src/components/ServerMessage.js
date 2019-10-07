@@ -18,11 +18,11 @@ const messageQuery = gql`
 
 const MessageWrapper = styled.div`
   padding: 0.25rem 0.875rem;
-  background: var(--lightest-grey);
+  background: var(--dark-grey);
   display: flex;
   align-items: center;
   font-size: 0.875rem;
-  color: var(--dark-grey);
+  color: white;
 
   svg {
     display: inline-block;
@@ -34,7 +34,7 @@ const MessageText = styled.span``;
 
 const MessageDate = styled.span`
   margin-left: auto;
-  color: var(--grey);
+  color: var(--lighter-grey);
   font-size: 0.75rem;
 `;
 
@@ -50,7 +50,7 @@ const ServerMessage = () => {
 
         return (
           <MessageWrapper>
-            <Info fill="var(--dark-grey)" width="1rem" />
+            <Info fill="var(--light-grey)" width="1rem" />
             <MessageText>{message}</MessageText>
             <MessageDate>{moment.tz(date, TIMEZONE).format("D.M.YYYY")}</MessageDate>
           </MessageWrapper>

@@ -6,8 +6,8 @@ import gql from "graphql-tag";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 
 export const stopsByBboxQuery = gql`
-  query stopsByBboxQuery($bbox: PreciseBBox!) {
-    stopsByBbox(bbox: $bbox) {
+  query stopsByBboxQuery($bbox: PreciseBBox!, $date: Date!) {
+    stopsByBbox(bbox: $bbox, date: $date) {
       id
       stopId
       shortId
@@ -27,7 +27,7 @@ export const stopsByBboxQuery = gql`
 let currentlyFetching = "";
 
 const StopsByBboxQuery = observer((props) => {
-  const {children, bbox, skip} = props;
+  const {children, bbox, date, skip} = props;
   const prevResult = useRef([]);
 
   if (currentlyFetching === bbox) {
@@ -37,7 +37,10 @@ const StopsByBboxQuery = observer((props) => {
   currentlyFetching = bbox;
 
   return (
-    <Query skip={skip} query={stopsByBboxQuery} variables={{bbox}} partialRefetch={true}>
+    <Query
+      skip={skip || !bbox || !date}
+      query={stopsByBboxQuery}
+      variables={{bbox, date}}>
       {({loading, data, error}) => {
         if (loading) return children({stops: prevResult.current, loading: true});
         if (error) return children({stops: prevResult.current, loading: false});

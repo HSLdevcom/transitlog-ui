@@ -287,7 +287,7 @@ type Query {
   routes(date: Date, filter: RouteFilterInput, line: String): [Route]!
   stop(date: Date!, stopId: String!): Stop
   stops(date: Date, filter: StopFilterInput): [Stop]!
-  stopsByBbox(bbox: PreciseBBox!, filter: StopFilterInput): [Stop]!
+  stopsByBbox(bbox: PreciseBBox!, date: Date!, filter: StopFilterInput): [Stop]!
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
@@ -357,6 +357,7 @@ type Stop implements Position {
   routes: [StopRoute!]!
   shortId: String!
   stopId: String!
+  stopIndex: Int
 }
 
 type StopRoute {
