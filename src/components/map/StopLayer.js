@@ -7,7 +7,6 @@ import CompoundStopMarker from "./CompoundStopMarker";
 import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import {getRoundedBbox} from "../../helpers/getRoundedBbox";
-import {deepObserve} from "mobx-utils";
 
 const decorate = flow(
   observer,
@@ -67,37 +66,61 @@ const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) =
     prevStopAreas.current = stopAreas;
   }
 
-  return prevStopAreas.current.map(([bounds, stopCluster]) => {
-    const clusterIsSelected = stopCluster.some(({stopId}) => stopId === selectedStopId);
+  return (
+    <>
+      {prevStopAreas.current.map(([bounds, stopCluster]) => {
+        const clusterIsSelected = stopCluster.some(
+          ({stopId}) => stopId === selectedStopId
+        );
 
-    return stopCluster.length === 1 ? (
-      <StopMarker
-        selected={clusterIsSelected}
-        showRadius={showRadius}
-        onViewLocation={onViewLocation}
-        key={`stop_${stopCluster[0].stopId}`}
-        stop={stopCluster[0]}
-      />
-    ) : (
-      <CompoundStopMarker
-        selected={clusterIsSelected}
-        bounds={bounds}
-        showRadius={showRadius}
-        onViewLocation={onViewLocation}
-        key={`stop_cluster_${stopCluster
-          .map((stop) => stop.stopId)
-          .sort()
-          .join("_")}`}
-        stops={stopCluster}
-      />
-    );
-  });
+        return (
+          <React.Fragment
+            key={`stop_cluster_${stopCluster
+              .map((stop) => stop.stopId)
+              .sort()
+              .join("_")}`}>
+            {stopCluster.length === 1 ? (
+              <StopMarker
+                selected={clusterIsSelected}
+                showRadius={showRadius}
+                onViewLocation={onViewLocation}
+                stop={stopCluster[0]}
+              />
+            ) : (
+              <CompoundStopMarker
+                selected={clusterIsSelected}
+                bounds={bounds}
+                showRadius={showRadius}
+                onViewLocation={onViewLocation}
+                stops={stopCluster}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
 });
 
 const StopLayer = decorate(
   ({bounds, onViewLocation, showRadius, state, selectedStop, zoom = 13}) => {
     const {date} = state;
-    const bbox = getBboxString(bounds);
+
+    const boundsAreValid =
+      !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
+
+    const currentBounds = useRef(null);
+    let queryBounds = bounds;
+
+    if (currentBounds.current && boundsAreValid) {
+      queryBounds = currentBounds.current.contains(bounds)
+        ? currentBounds.current
+        : bounds;
+    } else if (boundsAreValid) {
+      currentBounds.current = bounds;
+    }
+
+    const bbox = getBboxString(queryBounds, true);
 
     return (
       <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>
@@ -116,6 +139,7 @@ const StopLayer = decorate(
 
           return (
             <StopLayerContent
+              key="stop layer content"
               stops={stops}
               showRadius={showRadius}
               onViewLocation={onViewLocation}
