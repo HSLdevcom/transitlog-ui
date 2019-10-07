@@ -8,7 +8,6 @@ import Alert from "../icons/Alert";
 import SignIn from "../icons/SignIn";
 import NoConnection from "../icons/NoConnection";
 import {Text} from "../helpers/text";
-import PositionAlert from "../icons/PositionAlert";
 
 const decorate = flow(
   observer,
@@ -20,6 +19,7 @@ const EmptyViewWrapper = styled.div`
   margin: 1rem;
   border-radius: 10px;
   border: 1px solid var(--alt-grey);
+  text-align: center;
 
   svg {
     display: block;
@@ -55,9 +55,10 @@ const emptyReasons = {
   AUTHENTICATION: "authentication",
 };
 
-const EmptyView = decorate(({error = null, text}) => {
+const EmptyView = decorate(({error = null, text, icon}) => {
   const messages = [];
   let emptyReason = "";
+  const UseIcon = icon || SomethingWrong;
 
   if (error) {
     if (error.networkError) {
@@ -87,7 +88,7 @@ const EmptyView = decorate(({error = null, text}) => {
     <EmptyViewWrapper data-testid={`empty-view-${emptyReason}`}>
       {text && !error ? (
         <>
-          <PositionAlert height="5rem" width="5rem" />
+          <UseIcon fill="var(--light-grey)" height="5rem" width="5rem" />
           <p>
             <Text>{text}</Text>
           </p>

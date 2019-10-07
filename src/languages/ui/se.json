@@ -159,5 +159,7 @@
   "message.emptyview.nodata": "Servern gav inte någon data för denna vy.",
   "message.emptyview.unknown": "Denna vy är inte tillgänglig på grund av ett okänt fel eller för att datan inte existerar.",
   "message.emptyview.noareevents": "Områdssökningen gav inga resultat.",
-  "message.emptyview.vehicleauth": "Avgångskedjelistan kräver autentikation."
+  "message.emptyview.vehicleauth": "Avgångskedjelistan kräver autentikation.",
+  "message.emptyview.noalerts": "Inga undantag.",
+  "message.emptyview.nocancellations": "Inga inställda avgångar."
 }

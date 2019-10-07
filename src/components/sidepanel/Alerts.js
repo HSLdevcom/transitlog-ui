@@ -1,5 +1,6 @@
 import AlertsQuery from "../../queries/AlertsQuery";
 import flow from "lodash/flow";
+import get from "lodash/get";
 import {observer, Observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import React from "react";
@@ -8,6 +9,9 @@ import SidepanelList from "./SidepanelList";
 import AlertsList from "../AlertsList";
 import CancellationsQuery from "../../queries/CancellationsQuery";
 import CancellationsList from "../CancellationsList";
+import EmptyView from "../EmptyView";
+import Checkmark from "../../icons/Checkmark";
+import {text} from "../../helpers/text";
 
 const decorate = flow(
   observer,
@@ -17,17 +21,18 @@ const decorate = flow(
 const Alerts = decorate(({state}) => {
   const searchTime = state.date;
   const language = state.language;
-  const routeId = state.route.routeId;
-  const direction = state.route.direction;
+  const stop = state.stop;
+  const routeId = get(state, "route.routeId", "");
+  const direction = get(state, "route.direction", "");
+
+  const isFiltered = stop || routeId;
 
   const alertSearch = {
-    all: !routeId,
-    allRoutes: !!routeId,
-    route: routeId,
+    all: true,
   };
 
   const cancellationsSearch = {
-    all: !routeId,
+    all: !routeId && !stop,
     routeId: routeId || undefined,
   };
 
@@ -37,31 +42,43 @@ const Alerts = decorate(({state}) => {
 
   return (
     <AlertsQuery time={searchTime} language={language} alertSearch={alertSearch}>
-      {({alerts = [], loading: alertsLoading}) => (
+      {({alerts = [], loading: alertsLoading, error: alertsError}) => (
         <CancellationsQuery date={searchTime} cancellationsSearch={cancellationsSearch}>
-          {({cancellations = [], loading: cancellationsLoading}) => (
+          {({
+            cancellations = [],
+            loading: cancellationsLoading,
+            error: cancellationsError,
+          }) => (
             <Observer>
               {() => {
-                const alertsInEffect = getAlertsInEffect(alerts, state.timeMoment);
+                const alertsInEffect = getAlertsInEffect(
+                  !isFiltered
+                    ? alerts
+                    : {
+                        routeId: routeId || undefined,
+                        stopId: stop || undefined,
+                        alerts,
+                      },
+                  state.timeMoment
+                );
 
                 return (
                   <SidepanelList loading={alertsLoading || cancellationsLoading}>
                     {() => (
                       <>
-                        {alertsInEffect.length !== 0 && (
-                          <AlertsList
-                            helpText="All alerts heading"
-                            showListHeading={true}
-                            alerts={alertsInEffect}
-                          />
-                        )}
-                        {cancellations.length !== 0 && (
-                          <CancellationsList
-                            helpText="All cancellations heading"
-                            showListHeading={true}
-                            cancellations={cancellations}
-                          />
-                        )}
+                        <AlertsList
+                          showEmptyMessage={true}
+                          error={alertsError}
+                          helpText="All alerts heading"
+                          showListHeading={true}
+                          alerts={alertsInEffect}
+                        />
+                        <CancellationsList
+                          showEmptyMessage={!!routeId}
+                          helpText="All cancellations heading"
+                          showListHeading={true}
+                          cancellations={cancellations}
+                        />
                       </>
                     )}
                   </SidepanelList>

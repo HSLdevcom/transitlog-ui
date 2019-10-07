@@ -6,8 +6,10 @@ import {getCancellationKey} from "../helpers/getAlertKey";
 import CancellationItem from "./CancellationItem";
 import {ListHeading} from "./commonComponents";
 import groupBy from "lodash/groupBy";
-import {Text} from "../helpers/text";
+import {Text, text} from "../helpers/text";
 import Tooltip from "./Tooltip";
+import Checkmark from "../icons/Checkmark";
+import EmptyView from "./EmptyView";
 
 const CancellationsListWrapper = styled.div`
   padding-bottom: 1rem;
@@ -17,7 +19,14 @@ const CancellationsListWrapper = styled.div`
 const decorate = flow(observer);
 
 const CancellationsList = decorate(
-  ({className, cancellations = [], showListHeading = false, helpText}) => {
+  ({
+    className,
+    cancellations = [],
+    error,
+    showEmptyMessage = false,
+    showListHeading = false,
+    helpText,
+  }) => {
     const validCancellations =
       cancellations && Array.isArray(cancellations) ? cancellations : [];
 
@@ -36,32 +45,40 @@ const CancellationsList = decorate(
             </ListHeading>
           </Tooltip>
         )}
-        {Object.values(cancellationGroups).map((cancellationGroup) => {
-          const firstCancellation = cancellationGroup[0];
+        {cancellations.length === 0 && showEmptyMessage ? (
+          <EmptyView
+            icon={Checkmark}
+            error={error}
+            text={text("message.emptyview.nocancellations")}
+          />
+        ) : (
+          Object.values(cancellationGroups).map((cancellationGroup) => {
+            const firstCancellation = cancellationGroup[0];
 
-          if (cancellationGroup.length === 1) {
+            if (cancellationGroup.length === 1) {
+              return (
+                <CancellationItem
+                  key={getCancellationKey(firstCancellation)}
+                  cancellation={firstCancellation}
+                />
+              );
+            }
+
             return (
               <CancellationItem
                 key={getCancellationKey(firstCancellation)}
-                cancellation={firstCancellation}
-              />
+                cancellation={firstCancellation}>
+                {cancellationGroup.slice(1).map((cancellation) => (
+                  <CancellationItem
+                    small={true}
+                    key={getCancellationKey(cancellation)}
+                    cancellation={cancellation}
+                  />
+                ))}
+              </CancellationItem>
             );
-          }
-
-          return (
-            <CancellationItem
-              key={getCancellationKey(firstCancellation)}
-              cancellation={firstCancellation}>
-              {cancellationGroup.slice(1).map((cancellation) => (
-                <CancellationItem
-                  small={true}
-                  key={getCancellationKey(cancellation)}
-                  cancellation={cancellation}
-                />
-              ))}
-            </CancellationItem>
-          );
-        })}
+          })
+        )}
       </CancellationsListWrapper>
     );
   }
