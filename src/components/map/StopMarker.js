@@ -77,41 +77,48 @@ export const MarkerIcons = styled(AlertIcons)`
 
 const StopMarker = decorate(
   ({
-    popupOpen,
     stop,
     position = null,
     mode = "BUS",
-    selected,
     color,
     dashedBorder = false,
     state,
     showRadius = true,
     isTerminal = false,
     isTimingStop = false,
-    highlighted,
     onViewLocation,
     Filters,
     alerts = [],
     children,
     iconChildren,
     markerRef: ref,
+    selected,
   }) => {
-    const didAutoOpen = useRef(false);
+    const popupOpen = useRef(false);
     const defaultRef = useRef(null);
     const markerRef = ref || defaultRef;
 
+    const {stop: selectedStop, highlightedStop} = state;
+
+    const isSelected =
+      typeof selected !== "undefined" ? !!selected : stop && selectedStop === stop.stopId;
+
+    const isHighlighted = stop && highlightedStop === stop.stopId;
+
     useEffect(() => {
-      if (ref) {
+      // If this component was supplied a ref, that means that the popup
+      // opening logic is handled in the parent.
+      if (ref || children || !markerRef.current) {
         return;
       }
 
-      if (popupOpen && markerRef.current) {
+      if (isSelected && !popupOpen.current) {
         markerRef.current.leafletElement.openPopup();
-        didAutoOpen.current = true;
-      } else if (didAutoOpen.current && markerRef.current) {
+        popupOpen.current = true;
+      } else if (!isSelected && popupOpen.current) {
         markerRef.current.leafletElement.closePopup();
       }
-    }, [ref, popupOpen]);
+    }, [children, ref, isSelected, markerRef.current, popupOpen.current]);
 
     const selectRoute = useCallback(
       (route) => () => {
@@ -134,9 +141,6 @@ const StopMarker = decorate(
       return null;
     }
 
-    const {stop: selectedStop} = state;
-
-    const isSelected = selected || (stop && selectedStop === stop.stopId);
     const stopIsTimingStop = isTimingStop || !!get(stop, "isTimingStop", false);
     const stopMode = !stop ? mode : getPriorityMode(get(stop, "modes", []));
     const stopColor = color ? color : getModeColor(stopMode);
@@ -144,7 +148,9 @@ const StopMarker = decorate(
     const popupElement = children ? (
       children
     ) : stop ? (
-      <MapPopup onClose={() => (didAutoOpen.current = false)}>
+      <MapPopup
+        onClose={() => (popupOpen.current = false)}
+        onOpen={() => (popupOpen.current = true)}>
         <StopPopupContent
           stop={stop}
           color={stopColor}
@@ -168,7 +174,7 @@ const StopMarker = decorate(
             <StopMarkerCircle
               thickBorder={isTerminal}
               isSelected={isSelected}
-              isHighlighted={highlighted}
+              isHighlighted={isHighlighted}
               isTimingStop={stopIsTimingStop}
               dashed={dashedBorder}
               big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}

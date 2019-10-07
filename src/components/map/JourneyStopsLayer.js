@@ -86,14 +86,9 @@ const JourneyStopsLayer = decorate(
           useEvent = departure;
         }
 
-        const isSelected = useEvent.stopId === selectedStop;
-        const isHighlighted = useEvent.stopId === highlightedStop;
-
         return (
           <RouteStop
             key={`journey_stop_marker_${useEvent.stopId}_${useEvent.index}_${useEvent.id}`}
-            selected={isSelected}
-            highlighted={isHighlighted}
             firstTerminal={isFirst}
             lastTerminal={isLast}
             selectedJourney={selectedJourney}

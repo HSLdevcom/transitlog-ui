@@ -4,6 +4,7 @@ import get from "lodash/get";
 import {Query} from "react-apollo";
 import gql from "graphql-tag";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
+import uniqBy from "lodash/uniqBy";
 
 export const stopsByBboxQuery = gql`
   query stopsByBboxQuery($bbox: PreciseBBox!, $date: Date!) {
@@ -38,6 +39,7 @@ const StopsByBboxQuery = observer((props) => {
 
   return (
     <Query
+      partialRefetch={true}
       skip={skip || !bbox || !date}
       query={stopsByBboxQuery}
       variables={{bbox, date}}>

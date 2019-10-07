@@ -42,26 +42,22 @@ const decorate = flow(
 );
 
 const CompoundStopMarker = decorate(
-  ({
-    popupOpen,
-    stops = [],
-    state,
-    showRadius = true,
-    bounds,
-    onViewLocation,
-    Filters,
-  }) => {
-    const didAutoOpen = useRef(false);
+  ({selected, stops = [], state, showRadius = true, bounds, onViewLocation, Filters}) => {
+    const popupOpen = useRef(false);
     const markerRef = useRef(null);
 
     useEffect(() => {
-      if (popupOpen && markerRef.current) {
+      if (!markerRef.current) {
+        return;
+      }
+
+      if (selected && !popupOpen.current) {
         markerRef.current.leafletElement.openPopup();
-        didAutoOpen.current = true;
-      } else if (didAutoOpen.current && markerRef.current) {
+        popupOpen.current = true;
+      } else if (!selected && popupOpen.current) {
         markerRef.current.leafletElement.closePopup();
       }
-    }, [popupOpen]);
+    }, [selected, markerRef.current, popupOpen.current]);
 
     const selectRoute = useCallback(
       (route) => () => {
@@ -113,7 +109,6 @@ const CompoundStopMarker = decorate(
 
     return (
       <StopMarker
-        popupOpen={popupOpen}
         position={markerPosition}
         mode={mode}
         showRadius={showRadius}
@@ -122,7 +117,9 @@ const CompoundStopMarker = decorate(
         alerts={alertsInCluster}
         stop={selectedStopObj}
         iconChildren={stops.length}>
-        <MapPopup onClose={() => (didAutoOpen.current = false)}>
+        <MapPopup
+          onClose={() => (popupOpen.current = false)}
+          onOpen={() => (popupOpen.current = true)}>
           <StopPopupContentSection>
             <ChooseStopHeading>
               <Text>map.stops.select_stop</Text>

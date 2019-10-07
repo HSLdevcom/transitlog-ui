@@ -7,6 +7,7 @@ import CompoundStopMarker from "./CompoundStopMarker";
 import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import {getRoundedBbox} from "../../helpers/getRoundedBbox";
+import {deepObserve} from "mobx-utils";
 
 const decorate = flow(
   observer,
@@ -23,7 +24,8 @@ const getBboxString = (bounds, round = false) => {
     : "";
 };
 
-const StopLayerContent = ({stops, selectedStopId, showRadius, onViewLocation}) => {
+const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) => {
+  const selectedStopId = state.stop;
   const prevStopAreas = useRef([]);
 
   const stopAreas = useMemo(() => {
@@ -70,45 +72,43 @@ const StopLayerContent = ({stops, selectedStopId, showRadius, onViewLocation}) =
 
     return stopCluster.length === 1 ? (
       <StopMarker
-        popupOpen={clusterIsSelected}
+        selected={clusterIsSelected}
         showRadius={showRadius}
         onViewLocation={onViewLocation}
-        key={`stops_${stopCluster[0].stopId}`}
+        key={`stop_${stopCluster[0].stopId}`}
         stop={stopCluster[0]}
       />
     ) : (
       <CompoundStopMarker
-        popupOpen={clusterIsSelected}
+        selected={clusterIsSelected}
         bounds={bounds}
         showRadius={showRadius}
         onViewLocation={onViewLocation}
-        key={`stop_cluster_${stopCluster.map((stop) => stop.stopId).join("_")}`}
+        key={`stop_cluster_${stopCluster
+          .map((stop) => stop.stopId)
+          .sort()
+          .join("_")}`}
         stops={stopCluster}
       />
     );
   });
-};
+});
 
 const StopLayer = decorate(
   ({bounds, onViewLocation, showRadius, state, selectedStop, zoom = 13}) => {
-    const {stop: selectedStopId, date} = state;
-
-    if (zoom < 14 && !selectedStopId) {
-      return null;
-    }
-
+    const {date} = state;
     const bbox = getBboxString(bounds);
 
     return (
-      <StopsByBboxQuery skip={!bbox} bbox={bbox} date={date}>
+      <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>
         {({stops = []}) => {
-          if ((stops.length === 0 || zoom < 14) && selectedStopId) {
+          if (selectedStop && (zoom < 14 || stops.length === 0)) {
             return (
               <StopMarker
+                selected={true}
                 showRadius={showRadius}
                 stop={selectedStop}
                 onViewLocation={onViewLocation}
-                popupOpen={true}
                 date={date}
               />
             );
@@ -117,7 +117,6 @@ const StopLayer = decorate(
           return (
             <StopLayerContent
               stops={stops}
-              selectedStopId={selectedStopId}
               showRadius={showRadius}
               onViewLocation={onViewLocation}
             />

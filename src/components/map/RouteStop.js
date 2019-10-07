@@ -72,8 +72,6 @@ class RouteStop extends React.Component {
       selectedJourney,
       journey,
       showRadius,
-      selected,
-      highlighted,
     } = this.props;
 
     const isTerminal = firstTerminal || lastTerminal;
@@ -106,9 +104,7 @@ class RouteStop extends React.Component {
           isTerminal={isTerminal}
           stop={stop}
           isTimingStop={get(stop, "isTimingStop", false)}
-          showRadius={showRadius}
-          highlighted={highlighted}
-          selected={selected}>
+          showRadius={showRadius}>
           {markerChildren}
         </StopMarker>
       );
@@ -373,9 +369,7 @@ class RouteStop extends React.Component {
         isTerminal={isTerminal}
         stop={stop}
         alerts={stopAlerts}
-        showRadius={showRadius}
-        highlighted={highlighted}
-        selected={selected}>
+        showRadius={showRadius}>
         {markerChildren}
       </StopMarker>
     );
