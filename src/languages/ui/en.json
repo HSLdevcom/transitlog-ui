@@ -118,6 +118,10 @@
   "domain.alerts.subset": "Alerts",
   "domain.cancelled": "Cancelled",
 
+  "auth.login": "Log in (HSL ID)",
+  "auth.logout": "Log out",
+  "auth.create_account": "Create Reittiloki account",
+
   "general.minutes": "minutes",
   "general.hour": "hour",
   "general.year": "year",

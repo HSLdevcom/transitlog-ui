@@ -117,6 +117,10 @@
   "domain.alerts.subset": "Undantagsinformation",
   "domain.cancelled": "Annullerad",
 
+  "auth.login": "Logga in (HSL ID)",
+  "auth.logout": "Logga ut",
+  "auth.create_account": "Skapa Reittiloki account",
+
   "general.minutes": "minuter",
   "general.hour": "timme",
   "general.year": "år",
