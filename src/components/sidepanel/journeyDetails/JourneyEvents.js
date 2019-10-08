@@ -60,7 +60,7 @@ const JourneyEvents = decorate(
       (nextState) => {
         Journey.setJourneyEventFilter(nextState);
       },
-      [Journey, state.journeyEvents]
+      [Journey, state.journeyEventFilters]
     );
 
     const onClickTime = useCallback(
@@ -92,9 +92,9 @@ const JourneyEvents = decorate(
 
     return (
       <EventsListWrapper>
-        <EventFilters onChange={onFilterChange} filterState={state.journeyEvents} />
+        <EventFilters onChange={onFilterChange} filterState={state.journeyEventFilters} />
         <EventsList>
-          {uniqBy(events, "id")
+          {events
             .filter((event, index, arr) => {
               const eventsOfType = arr.filter((evt) => evt.type === event.type);
               // The origin stop is the PLANNED origin stop, not necessarily always
@@ -132,7 +132,7 @@ const JourneyEvents = decorate(
                 types.push("TERMINAL_ARS");
               }
 
-              return types.some((type) => state.journeyEvents[type]);
+              return types.some((type) => state.journeyEventFilters[type]);
             })
             .map((event, index, arr) => {
               let Component = JourneyEvent;

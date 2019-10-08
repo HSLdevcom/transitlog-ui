@@ -177,6 +177,8 @@ class LeafletMap extends Component {
           <Pane name="selected-stop-radius" style={{zIndex: 445}} />
           <Pane name="event-hover" style={{zIndex: 450}} />
           <Pane name="stops" style={{zIndex: 475}} />
+          <Pane name="hfp-events" style={{zIndex: 480}} />
+          <Pane name="hfp-events-2" style={{zIndex: 485}} />
           <Pane name="hfp-markers" style={{zIndex: 500}} />
           <Pane name="hfp-markers-primary" style={{zIndex: 550}} />
           <Pane name="popups" style={{zIndex: 600}} />

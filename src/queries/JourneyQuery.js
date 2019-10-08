@@ -108,6 +108,8 @@ export const journeyQuery = gql`
           type
           isOrigin
           isTimingStop
+          lat
+          lng
           stop {
             id
             isTimingStop
@@ -158,6 +160,8 @@ export const journeyQuery = gql`
           recordedTime
           type
           stopId
+          lat
+          lng
         }
       }
       departure {

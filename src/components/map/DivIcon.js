@@ -1,29 +1,35 @@
 // Stolen from https://github.com/jgimbel/react-leaflet-div-icon/blob/master/div-icon.js
 import React from "react";
-import {render} from "react-dom";
+import {createPortal} from "react-dom";
 import {DivIcon as LeafletDivIcon, Marker as LeafletMarker} from "leaflet";
 import PropTypes from "prop-types";
 import {withLeaflet, MapLayer, LeafletProvider} from "react-leaflet";
+import {observer} from "mobx-react";
 
 @withLeaflet
+@observer
 class DivIcon extends MapLayer {
   static propTypes = {
     opacity: PropTypes.number,
     zIndexOffset: PropTypes.number,
   };
 
+  state = {
+    icon: null,
+  };
+
   // See https://github.com/PaulLeCam/react-leaflet/issues/275
   createLeafletElement(newProps) {
     const {icon, position, className, html = "", iconSize, pane, ...props} = newProps;
-    this.icon = new LeafletDivIcon({className, html, iconSize});
+    const leafletDivIcon = new LeafletDivIcon({className, html, iconSize});
 
     this.leafletElement = new LeafletMarker(position, {
       ...this.getOptions({...props, pane}),
-      icon: this.icon,
+      icon: leafletDivIcon,
     });
 
     setTimeout(() => {
-      this.renderComponent(newProps);
+      this.setState((prev) => (prev.icon !== icon ? {icon} : null));
     }, 1);
 
     this.contextValue = {...props.leaflet, popupContainer: this.leafletElement};
@@ -48,22 +54,28 @@ class DivIcon extends MapLayer {
       }
     }
 
-    this.renderComponent(toProps);
-  }
-
-  renderComponent(props) {
-    const container = this.leafletElement._icon;
-    const component = props.icon;
-
-    if (container) {
-      render(component, container);
-    }
+    this.setState((prev) => (prev.icon !== toProps.icon ? {icon: toProps.icon} : null));
   }
 
   render() {
     const {children} = this.props;
-    return children == null || this.contextValue == null ? null : (
-      <LeafletProvider value={this.contextValue}>{children}</LeafletProvider>
+    const {icon} = this.state;
+    const portalContainer = this.leafletElement._icon;
+
+    const context =
+      !children || !this.contextValue ? null : (
+        <LeafletProvider value={this.contextValue}>{children}</LeafletProvider>
+      );
+
+    if (!portalContainer && !context) {
+      return null;
+    }
+
+    return (
+      <>
+        {portalContainer && createPortal(icon, portalContainer)}
+        {context}
+      </>
     );
   }
 }
