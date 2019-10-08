@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react";
 import Journeys from "../../components/sidepanel/Journeys";
 import {MockedProvider} from "react-apollo/test-utils";
-import {routeJourneysQuery} from "../../queries/JourneysByDateQuery";
+import {routeJourneysQuery} from "../../queries/RouteDeparturesQuery";
 import mockJourneysResponse from "../route_journeys_response";
 import mockRouteOptionsResponse from "../route_options_response";
 import {MobxProviders} from "../util/MobxProviders";

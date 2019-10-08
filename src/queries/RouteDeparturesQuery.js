@@ -95,7 +95,7 @@ export const routeJourneysQuery = gql`
 
 const updateListenerName = "journey list query";
 
-const JourneysByDateQuery = observer(({children, route, date, skip}) => {
+const RouteDeparturesQuery = observer(({children, route, date, skip}) => {
   const createRefetcher = useCallback(
     (refetch) => () => {
       const {routeId, direction, originStopId} = route;
@@ -106,6 +106,7 @@ const JourneysByDateQuery = observer(({children, route, date, skip}) => {
           direction: parseInt(direction, 10),
           stopId: originStopId,
           date,
+          _cache: false,
         });
       }
     },
@@ -139,4 +140,4 @@ const JourneysByDateQuery = observer(({children, route, date, skip}) => {
   );
 });
 
-export default JourneysByDateQuery;
+export default RouteDeparturesQuery;

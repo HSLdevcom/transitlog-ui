@@ -1,10 +1,12 @@
 import {ApolloClient} from "apollo-client";
-import {concat} from "apollo-link";
+import {ApolloLink} from "apollo-link";
 import {HttpLink} from "apollo-link-http";
 import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
+import {setContext} from "apollo-link-context";
 import get from "lodash/get";
 import fragmentTypes from "./fragmentTypes";
+import {opera} from "leaflet/src/core/Browser";
 
 const serverUrl = process.env.REACT_APP_TRANSITLOG_SERVER_GRAPHQL;
 
@@ -52,6 +54,23 @@ export const getClient = (UIStore) => {
   });
 
   const errorLink = createErrorLink(UIStore);
+
+  const contextLink = setContext((operation, prevContext) => {
+    const {headers} = prevContext;
+
+    if (typeof operation.variables._cache !== "undefined") {
+      delete operation.variables._cache;
+
+      return {
+        ...prevContext,
+        headers: {
+          ...headers,
+          "x-skip-cache": "true",
+        },
+      };
+    }
+  });
+
   const cache = new InMemoryCache({fragmentMatcher});
 
   const httpLink = new HttpLink({
@@ -60,7 +79,7 @@ export const getClient = (UIStore) => {
   });
 
   createdClient = new ApolloClient({
-    link: concat(errorLink, httpLink),
+    link: ApolloLink.from([errorLink, contextLink, httpLink]),
     cache: cache,
   });
 

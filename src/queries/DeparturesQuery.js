@@ -89,6 +89,7 @@ const DeparturesQuery = observer(
             routeId,
             minHour,
             maxHour,
+            _cache: false,
           });
         }
       },

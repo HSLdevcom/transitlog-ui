@@ -15,7 +15,7 @@ import Tooltip from "../Tooltip";
 import {applyTooltip} from "../../hooks/useTooltip";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
-import JourneysByDateQuery from "../../queries/JourneysByDateQuery";
+import RouteDeparturesQuery from "../../queries/RouteDeparturesQuery";
 import {createCompositeJourney} from "../../stores/journeyActions";
 import doubleDigit from "../../helpers/doubleDigit";
 import {dayTypes, getDayTypeFromDate} from "../../helpers/getDayTypeFromDate";
@@ -141,7 +141,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
   });
 
   return (
-    <JourneysByDateQuery route={route} date={date}>
+    <RouteDeparturesQuery route={route} date={date}>
       {({departures, loading, error, skipped}) => {
         return error || (!loading && !skipped && departures.length === 0) ? (
           <EmptyView
@@ -363,7 +363,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
           </Observer>
         );
       }}
-    </JourneysByDateQuery>
+    </RouteDeparturesQuery>
   );
 });
 
