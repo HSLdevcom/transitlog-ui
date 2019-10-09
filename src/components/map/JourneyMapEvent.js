@@ -31,15 +31,6 @@ const JourneyMapEvent = decorate(({eventGroup}) => {
   return (
     <Marker icon={icon} position={center} pane="hfp-events">
       <Tooltip>
-        <div
-          style={{
-            width: "100%",
-            marginBottom: "0.25rem",
-            paddingBottom: "0.25rem",
-            borderBottom: "1px solid var(--lighter-grey)",
-          }}>
-          {moment.tz(orderedEvents[0].recordedAt, TIMEZONE).format("DD.MM.Y")}
-        </div>
         {orderedEvents.map((event) => (
           <div key={`${event.type}_${event.recordedAtUnix}`}>
             <span style={{marginRight: "0.5rem"}}>
