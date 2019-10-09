@@ -28,12 +28,17 @@ class DivIcon extends MapLayer {
       icon: leafletDivIcon,
     });
 
-    setTimeout(() => {
-      this.setState((prev) => (prev.icon !== icon ? {icon} : null));
-    }, 1);
-
     this.contextValue = {...props.leaflet, popupContainer: this.leafletElement};
     return this.leafletElement;
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    const {icon} = this.props;
+
+    if (icon) {
+      this.setState((prev) => (prev.icon !== icon ? {icon} : null));
+    }
   }
 
   updateLeafletElement(fromProps, toProps) {

@@ -10,16 +10,21 @@ import {TIMEZONE} from "../../constants";
 
 const decorate = flow(observer);
 
-const JourneyMapEvent = decorate(({eventGroup}) => {
+const stopEvents = ["DEP", "PDE", "PAS", "ARR", "ARS", "DUE", "WAIT"];
+
+const JourneyMapEvent = decorate(({eventGroup, rightText = true}) => {
+  const isStopEvent = eventGroup.events.some(({type}) => stopEvents.includes(type));
   const orderedEvents = orderBy(eventGroup.events, "recordedAtUnix");
 
-  const eventTypesContent = `<span>${orderedEvents
-    .map(({type}) => type)
-    .join("<br />")}</span>`;
+  const eventTypesContent = `<span class="${
+    rightText ? "right" : "left"
+  }">${orderedEvents.map(({type}) => type).join("<br />")}</span>`;
+
+  const color = isStopEvent ? "var(--light-blue)" : "var(--dark-blue)";
 
   const icon = divIcon({
-    html: `<div class="event-icon">${eventTypesContent}</div>`,
-    iconSize: [15, 15],
+    html: `<div class="event-icon" style="background-color: ${color}">${eventTypesContent}</div>`,
+    iconSize: [12, 12],
   });
 
   const center =
@@ -29,7 +34,10 @@ const JourneyMapEvent = decorate(({eventGroup}) => {
 
   return (
     <Marker icon={icon} position={center} pane="hfp-events">
-      <Tooltip>
+      <Tooltip
+        direction={rightText ? "left" : "right"}
+        interactive={false}
+        offset={[rightText ? -10 : 10, 0]}>
         {orderedEvents.map((event) => (
           <div key={`${event.type}_${event.recordedAtUnix}`}>
             <span style={{marginRight: "0.5rem"}}>

@@ -14,28 +14,30 @@ const decorate = flow(
 const IconStyle = createGlobalStyle`
   .event-icon {
     text-indent: 0;
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--light-blue);
     line-height: 1;
     position: relative;
+    transition: transform 0.2s ease-out;
+    
+    &:hover {
+      transform: scale(1.15);
+    }
     
     span {
       font-size: 11px;
       font-weight: bold;
-      text-align: center;
-      margin-top: 12px;
       position: absolute;
-      top: 5px;
-      left: calc(50% - 7.5px);
-      margin-left: -3.5px;
-    }
-  }
-  
-  .event-icon.offsetIcon {
-    span {
-      top: 20px;
+      top: 1px;
+      left: 16px;
+      
+      &.left {
+        left: auto;
+        text-align: right;
+        right: 16px;
+      }
     }
   }
 `;
@@ -89,8 +91,12 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
   return (
     <>
       <IconStyle />
-      {Array.from(eventGroups.values()).map((eventGroup) => (
-        <JourneyMapEvent key={eventGroup.id} eventGroup={eventGroup} />
+      {Array.from(eventGroups.values()).map((eventGroup, i) => (
+        <JourneyMapEvent
+          key={`event_group_${eventGroup.id}`}
+          eventGroup={eventGroup}
+          rightText={i % 2 === 0}
+        />
       ))}
     </>
   );
