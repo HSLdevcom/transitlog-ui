@@ -13,12 +13,14 @@ export const routeJourneysByWeekQuery = gql`
     $direction: Direction!
     $date: Date!
     $stopId: String!
+    $lastStopArrival: Boolean
   ) {
     weeklyDepartures(
       routeId: $routeId
       direction: $direction
       date: $date
       stopId: $stopId
+      lastStopArrival: $lastStopArrival
     ) {
       id
       index
@@ -64,12 +66,26 @@ export const routeJourneysByWeekQuery = gql`
         departureTime
         isNextDay
       }
+      plannedArrivalTime {
+        id
+        arrivalDate
+        arrivalDateTime
+        arrivalTime
+        isNextDay
+      }
       observedDepartureTime {
         id
         departureDate
         departureDateTime
         departureTime
         departureTimeDifference
+      }
+      observedArrivalTime {
+        id
+        arrivalDate
+        arrivalDateTime
+        arrivalTime
+        arrivalTimeDifference
       }
     }
   }
@@ -79,52 +95,55 @@ export const routeJourneysByWeekQuery = gql`
 
 const updateListenerName = "journey weel query";
 
-const JourneysByWeekQuery = observer(({children, route, date, skip}) => {
-  const prevResults = useRef([]);
+const JourneysByWeekQuery = observer(
+  ({children, route, date, lastStopArrival = false, skip}) => {
+    const prevResults = useRef([]);
 
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      const {routeId, direction, originStopId} = route;
+    const createRefetcher = useCallback(
+      (refetch) => () => {
+        const {routeId, direction, originStopId} = route;
 
-      if (refetch && route && route.routeId && !skip) {
-        refetch({
-          routeId,
+        if (refetch && route && route.routeId && !skip) {
+          refetch({
+            routeId,
+            direction: parseInt(direction, 10),
+            stopId: originStopId,
+            lastStopArrival,
+            date,
+          });
+        }
+      },
+      [route, date]
+    );
+
+    useEffect(() => () => removeUpdateListener(updateListenerName), []);
+    const {routeId, direction, originStopId} = route;
+
+    return (
+      <Query
+        query={routeJourneysByWeekQuery}
+        variables={{
+          lastStopArrival,
+          routeId: routeId,
           direction: parseInt(direction, 10),
           stopId: originStopId,
           date,
-        });
-      }
-    },
-    [route, date]
-  );
+        }}>
+        {({data, error, loading, refetch}) => {
+          if (!data || loading) {
+            return children({departures: prevResults.current, loading, error});
+          }
 
-  useEffect(() => () => removeUpdateListener(updateListenerName), []);
-  const {routeId, direction, originStopId} = route;
+          const departures = get(data, "weeklyDepartures", []);
 
-  return (
-    <Query
-      fetchPolicy="cache-and-network"
-      query={routeJourneysByWeekQuery}
-      variables={{
-        routeId: routeId,
-        direction: parseInt(direction, 10),
-        stopId: originStopId,
-        date,
-      }}>
-      {({data, error, loading, refetch}) => {
-        if (!data || loading) {
-          return children({departures: prevResults.current, loading, error});
-        }
+          setUpdateListener(updateListenerName, createRefetcher(refetch), false);
 
-        const departures = get(data, "weeklyDepartures", []);
-
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
-
-        prevResults.current = departures;
-        return children({departures, loading, error});
-      }}
-    </Query>
-  );
-});
+          prevResults.current = departures;
+          return children({departures, loading, error});
+        }}
+      </Query>
+    );
+  }
+);
 
 export default JourneysByWeekQuery;

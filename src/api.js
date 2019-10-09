@@ -6,7 +6,6 @@ import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
 import get from "lodash/get";
 import fragmentTypes from "./fragmentTypes";
-import {opera} from "leaflet/src/core/Browser";
 
 const serverUrl = process.env.REACT_APP_TRANSITLOG_SERVER_GRAPHQL;
 

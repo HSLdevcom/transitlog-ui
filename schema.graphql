@@ -295,7 +295,7 @@ type Query {
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
-  weeklyDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
+  weeklyDepartures(date: Date!, direction: Direction!, lastStopArrival: Boolean, routeId: String!, stopId: String!): [Departure]!
 }
 
 type Route {
