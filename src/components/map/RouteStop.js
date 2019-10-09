@@ -77,11 +77,15 @@ class RouteStop extends React.Component {
     const isTerminal = firstTerminal || lastTerminal;
 
     let stopTooltip = (
-      <Tooltip key={`stop${stopId}_tooltip`}>
-        <StopHeading>
-          <strong>{get(stop, "name", "")}</strong> {stopId} (
-          {get(stop, "shortId", "").replace(/ /g, "")})
-        </StopHeading>
+      <Tooltip
+        key={`stop${stopId}_tooltip`}
+        offset={[15, 0]}
+        interactive={false}
+        direction="right">
+        <div>
+          <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
+        </div>
+        <div style={{fontSize: "1rem"}}>{stop.name}</div>
       </Tooltip>
     );
 
@@ -329,10 +333,10 @@ class RouteStop extends React.Component {
 
     stopTooltip = (
       <Tooltip key={`stop${stopId}_tooltip`}>
-        <StopHeading>
-          {stopName && <strong>{stopName}</strong>} {stopId}{" "}
-          {stopShortId && `(${stopShortId})`}
-        </StopHeading>
+        <div>
+          <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
+        </div>
+        <div style={{fontSize: "1rem"}}>{stop.name}</div>
         {!isPlanned && !doorDidOpen && (
           <TooltipParagraph>
             <Text>map.stops.doors_not_open</Text>

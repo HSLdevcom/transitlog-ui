@@ -13,6 +13,7 @@ import DivIcon from "./DivIcon";
 import AlertIcons from "../AlertIcons";
 import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import TimingStop from "../../icons/TimingStop";
+import {Tooltip} from "react-leaflet";
 
 const decorate = flow(
   observer,
@@ -164,29 +165,39 @@ const StopMarker = decorate(
     const stopAlerts =
       alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.date);
 
+    const markerIcon = (
+      <IconWrapper>
+        <StopMarkerCircle
+          thickBorder={isTerminal}
+          isSelected={isSelected}
+          isHighlighted={isHighlighted}
+          isTimingStop={stopIsTimingStop}
+          dashed={dashedBorder}
+          big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
+          color={stopColor}>
+          {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
+        </StopMarkerCircle>
+        {stopAlerts.length !== 0 && (
+          <MarkerIcons iconSize="0.875rem" alerts={stopAlerts} />
+        )}
+      </IconWrapper>
+    );
+
     const markerElement = (
       <DivIcon
         ref={markerRef}
         pane="stops"
         position={markerPosition}
-        icon={
-          <IconWrapper>
-            <StopMarkerCircle
-              thickBorder={isTerminal}
-              isSelected={isSelected}
-              isHighlighted={isHighlighted}
-              isTimingStop={stopIsTimingStop}
-              dashed={dashedBorder}
-              big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
-              color={stopColor}>
-              {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
-            </StopMarkerCircle>
-            {stopAlerts.length !== 0 && (
-              <MarkerIcons iconSize="0.875rem" alerts={stopAlerts} />
-            )}
-          </IconWrapper>
-        }
+        icon={markerIcon}
         onClick={selectStop}>
+        {stop && (
+          <Tooltip offset={[15, 0]} interactive={false} direction="right">
+            <div>
+              <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
+            </div>
+            <div style={{fontSize: "1rem"}}>{stop.name}</div>
+          </Tooltip>
+        )}
         {popupElement}
       </DivIcon>
     );

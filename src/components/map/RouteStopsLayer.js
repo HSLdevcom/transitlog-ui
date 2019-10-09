@@ -31,6 +31,7 @@ const RouteStopsLayer = decorate(
                 lastTerminal={isLast}
                 selectedJourney={selectedJourney}
                 firstStop={arr[0]}
+                stopId={stop.stopId}
                 stop={stop}
                 date={date}
                 onViewLocation={onViewLocation}
