@@ -14,8 +14,8 @@ const decorate = flow(
 const IconStyle = createGlobalStyle`
   .event-icon {
     text-indent: 0;
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--light-blue);
     line-height: 1;
@@ -23,20 +23,21 @@ const IconStyle = createGlobalStyle`
     transition: transform 0.2s ease-out;
     
     &:hover {
-      transform: scale(1.15);
+      transform: scale(1.2);
     }
     
     span {
-      font-size: 11px;
+      font-size: 9px;
       font-weight: bold;
       position: absolute;
-      top: 1px;
-      left: 16px;
+      top: 0;
+      left: 11px;
+      color: var(--grey);
       
       &.left {
         left: auto;
         text-align: right;
-        right: 16px;
+        right: 11px;
       }
     }
   }
@@ -80,7 +81,7 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
     currentGroup.positions.push(point);
     currentGroup.events.push(event);
     currentGroup.id = currentGroup.events
-      .map(({id}) => id)
+      .map(({id}, idx) => id + idx)
       .sort()
       .join("_");
 

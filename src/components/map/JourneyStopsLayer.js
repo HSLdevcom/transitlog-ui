@@ -15,17 +15,11 @@ const decorate = flow(
 );
 
 const JourneyStopsLayer = decorate(
-  ({
-    state: {date, stop: selectedStop, highlightedStop, selectedJourney},
-    onViewLocation,
-    showRadius,
-    journey = null,
-  }) => {
+  ({state: {date, selectedJourney}, onViewLocation, showRadius, journey = null}) => {
     if (journey && journey.events) {
-      const stopEvents = journey.events.filter((evt) => {
-        const useDEP = evt.isTimingStop || evt.isOrigin;
-        return ["ARS", "PLANNED", useDEP ? "DEP" : "PDE"].includes(evt.type);
-      });
+      const stopEvents = journey.events.filter(
+        (evt) => evt.__typename === "JourneyStopEvent"
+      );
 
       const stopGroups = orderBy(
         Object.values(groupBy(stopEvents, "stopId")),

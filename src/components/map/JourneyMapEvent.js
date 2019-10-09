@@ -6,14 +6,12 @@ import {Marker, Tooltip} from "react-leaflet";
 import {divIcon, latLngBounds} from "leaflet";
 import {text} from "../../helpers/text";
 import moment from "moment-timezone";
-import {TIMEZONE} from "../../constants";
+import {TIMEZONE, STOP_EVENTS} from "../../constants";
 
 const decorate = flow(observer);
 
-const stopEvents = ["DEP", "PDE", "PAS", "ARR", "ARS", "DUE", "WAIT"];
-
 const JourneyMapEvent = decorate(({eventGroup, rightText = true}) => {
-  const isStopEvent = eventGroup.events.some(({type}) => stopEvents.includes(type));
+  const isStopEvent = eventGroup.events.some(({type}) => STOP_EVENTS.includes(type));
   const orderedEvents = orderBy(eventGroup.events, "recordedAtUnix");
 
   const eventTypesContent = `<span class="${
@@ -24,7 +22,7 @@ const JourneyMapEvent = decorate(({eventGroup, rightText = true}) => {
 
   const icon = divIcon({
     html: `<div class="event-icon" style="background-color: ${color}">${eventTypesContent}</div>`,
-    iconSize: [12, 12],
+    iconSize: [8, 8],
   });
 
   const center =
@@ -38,8 +36,8 @@ const JourneyMapEvent = decorate(({eventGroup, rightText = true}) => {
         direction={rightText ? "left" : "right"}
         interactive={false}
         offset={[rightText ? -10 : 10, 0]}>
-        {orderedEvents.map((event) => (
-          <div key={`${event.type}_${event.recordedAtUnix}`}>
+        {orderedEvents.map((event, idx) => (
+          <div key={`${event.type}_${event.recordedAtUnix}_${idx}`}>
             <span style={{marginRight: "0.5rem"}}>
               {moment.tz(event.recordedAt, TIMEZONE).format("HH:mm:ss")}
             </span>

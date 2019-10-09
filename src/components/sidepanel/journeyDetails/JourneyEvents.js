@@ -90,80 +90,80 @@ const JourneyEvents = decorate(
       return null;
     }
 
+    const visibleEvents = events.filter((event, index, arr) => {
+      const eventsOfType = arr.filter((evt) => evt.type === event.type);
+      const isLastOfType = last(eventsOfType) === event;
+
+      // The origin stop is the PLANNED origin stop, not necessarily always
+      // the first stop that the vehicle arrived at.
+      const isOrigin = event.isOrigin === true;
+      const isTimingStop = event.isTimingStop === true;
+
+      const isTimingStopArr = event.isTimingStop && event.type === "ARS";
+      const isTerminalArr = (isOrigin || isLastOfType) && event.type === "ARS";
+
+      const types = [event.type];
+
+      // Special departure filter for the relevant departure event for this stop.
+      // DEP for origins and timing stops, PDE for everything else.
+      if (
+        (typeof event.isOrigin !== "undefined" &&
+          (isOrigin || isTimingStop) &&
+          event.type === "DEP") ||
+        (typeof event.isOrigin !== "undefined" &&
+          !(isOrigin || isTimingStop) &&
+          event.type === "PDE")
+      ) {
+        types.push("DEPARTURE");
+      }
+
+      // Show ARR for timing stops
+      if (isTimingStopArr) {
+        types.push("TIMING_STOP_ARS");
+      }
+
+      // Show ARR for first and last stop
+      if (isTerminalArr) {
+        types.push("TERMINAL_ARS");
+      }
+
+      return types.some((type) => state.journeyEventFilters[type]);
+    });
+
     return (
       <EventsListWrapper>
         <EventFilters onChange={onFilterChange} filterState={state.journeyEventFilters} />
         <EventsList>
-          {events
-            .filter((event, index, arr) => {
-              const eventsOfType = arr.filter((evt) => evt.type === event.type);
-              // The origin stop is the PLANNED origin stop, not necessarily always
-              // the first stop that the vehicle arrived at.
-              const isOrigin = event.isOrigin === true;
-              const isTimingStop = event.isTimingStop === true;
+          {uniqBy(visibleEvents, "id").map((event, index, arr) => {
+            let Component = JourneyEvent;
 
-              const isLastOfType = last(eventsOfType) === event;
+            switch (event.__typename) {
+              case "PlannedStopEvent":
+              case "JourneyStopEvent":
+                Component = JourneyStopEvent;
+                break;
+              case "JourneyCancellationEvent":
+                Component = JourneyCancellationEventItem;
+                break;
+              default:
+                Component = JourneyEvent;
+            }
 
-              const isTimingStopArr = event.isTimingStop && event.type === "ARS";
-              const isTerminalArr = (isOrigin || isLastOfType) && event.type === "ARS";
-
-              const types = [event.type];
-
-              // Special departure filter for the relevant departure event for this stop.
-              // DEP for origins and timing stops, PDE for everything else.
-              if (
-                (typeof event.isOrigin !== "undefined" &&
-                  (isOrigin || isTimingStop) &&
-                  event.type === "DEP") ||
-                (typeof event.isOrigin !== "undefined" &&
-                  !(isOrigin || isTimingStop) &&
-                  event.type === "PDE")
-              ) {
-                types.push("DEPARTURE");
-              }
-
-              // Show ARR for timing stops
-              if (isTimingStopArr) {
-                types.push("TIMING_STOP_ARS");
-              }
-
-              // Show ARR for first and last stop
-              if (isTerminalArr) {
-                types.push("TERMINAL_ARS");
-              }
-
-              return types.some((type) => state.journeyEventFilters[type]);
-            })
-            .map((event, index, arr) => {
-              let Component = JourneyEvent;
-
-              switch (event.__typename) {
-                case "PlannedStopEvent":
-                case "JourneyStopEvent":
-                  Component = JourneyStopEvent;
-                  break;
-                case "JourneyCancellationEvent":
-                  Component = JourneyCancellationEventItem;
-                  break;
-                default:
-                  Component = JourneyEvent;
-              }
-
-              return (
-                <Component
-                  isOrigin={originDeparture.stopId === event.stopId}
-                  isFirst={index === 0}
-                  isLast={index === arr.length - 1}
-                  key={event.id}
-                  onHover={onHover}
-                  onClick={onClick}
-                  event={event}
-                  date={date}
-                  departure={originDeparture}
-                  onSelectTime={onClickTime}
-                />
-              );
-            })}
+            return (
+              <Component
+                isOrigin={originDeparture.stopId === event.stopId}
+                isFirst={index === 0}
+                isLast={index === arr.length - 1}
+                key={event.id}
+                onHover={onHover}
+                onClick={onClick}
+                event={event}
+                date={date}
+                departure={originDeparture}
+                onSelectTime={onClickTime}
+              />
+            );
+          })}
         </EventsList>
       </EventsListWrapper>
     );
