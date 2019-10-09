@@ -185,6 +185,8 @@ type JourneyCancellationEvent {
 
 type JourneyEvent {
   id: ID!
+  lat: Float
+  lng: Float
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
@@ -200,6 +202,8 @@ type JourneyStopEvent {
   isNextDay: Boolean
   isOrigin: Boolean
   isTimingStop: Boolean!
+  lat: Float
+  lng: Float
   nextStopId: String!
   plannedDate: Date
   plannedDateTime: DateTime

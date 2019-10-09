@@ -19,6 +19,7 @@ import JourneyStopsLayer from "./JourneyStopsLayer";
 import {WeatherWidget, JourneyWeatherWidget} from "./WeatherWidget";
 import get from "lodash/get";
 import UnsignedEventsLayer from "./UnsignedEventsLayer";
+import JourneyEventsLayer from "./JourneyEventsLayer";
 
 const decorate = flow(
   observer,
@@ -118,6 +119,10 @@ const MapContent = decorate(
                     showRadius={showStopRadius}
                     onViewLocation={viewLocation}
                     key={`journey_stops_${journey.id}`}
+                    journey={journey}
+                  />,
+                  <JourneyEventsLayer
+                    key={`journey_map_events_${journey.id}`}
                     journey={journey}
                   />,
                   currentPosition ? (
