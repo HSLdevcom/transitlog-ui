@@ -18,8 +18,7 @@ const JourneyMapEvent = decorate(({eventGroup}) => {
     .join("<br />")}</span>`;
 
   const icon = divIcon({
-    html: eventTypesContent,
-    className: `event-icon`,
+    html: `<div class="event-icon">${eventTypesContent}</div>`,
     iconSize: [15, 15],
   });
 

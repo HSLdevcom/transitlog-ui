@@ -18,8 +18,8 @@ const IconStyle = createGlobalStyle`
     height: 15px;
     border-radius: 50%;
     background: var(--light-blue);
-    position: relative;
     line-height: 1;
+    position: relative;
     
     span {
       font-size: 11px;
