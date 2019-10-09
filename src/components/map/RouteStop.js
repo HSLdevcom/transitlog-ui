@@ -333,10 +333,10 @@ class RouteStop extends React.Component {
 
     stopTooltip = (
       <Tooltip key={`stop${stopId}_tooltip`}>
-        <StopHeading>
-          {stopName && <strong>{stopName}</strong>} {stopId}{" "}
-          {stopShortId && `(${stopShortId})`}
-        </StopHeading>
+        <div>
+          <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
+        </div>
+        <div style={{fontSize: "1rem"}}>{stop.name}</div>
         {!isPlanned && !doorDidOpen && (
           <TooltipParagraph>
             <Text>map.stops.doors_not_open</Text>
