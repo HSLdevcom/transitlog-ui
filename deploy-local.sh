@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PS3='Select an environment:'
+PS3='Select an environment: '
 option_labels=("Local" "Development" "Staging" "Production" "Prod" "Old")
 select opt in "${option_labels[@]}"; do
   case $opt in
