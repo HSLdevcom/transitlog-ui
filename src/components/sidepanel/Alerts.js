@@ -9,9 +9,6 @@ import SidepanelList from "./SidepanelList";
 import AlertsList from "../AlertsList";
 import CancellationsQuery from "../../queries/CancellationsQuery";
 import CancellationsList from "../CancellationsList";
-import EmptyView from "../EmptyView";
-import Checkmark from "../../icons/Checkmark";
-import {text} from "../../helpers/text";
 
 const decorate = flow(
   observer,

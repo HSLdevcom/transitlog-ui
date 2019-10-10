@@ -29,6 +29,8 @@
 
   "sidepanel.tabs.journeys": "Resor",
   "sidepanel.tabs.week_journeys": "Reseveckan",
+  "sidepanel.tabs.week_journeys.first_stop_depart": "avgång",
+  "sidepanel.tabs.week_journeys.last_stop_arrive": "ankomst",
   "sidepanel.tabs.timetables": "Tidtabeller",
   "sidepanel.tabs.vehicle_journeys": "Fordonsresor",
   "sidepanel.tabs.area_events": "Områdets resor",
@@ -121,6 +123,7 @@
   "auth.logout": "Logga ut",
   "auth.create_account": "Skapa Reittiloki account",
 
+  "general.time": "Tid",
   "general.minutes": "minuter",
   "general.hour": "timme",
   "general.year": "år",

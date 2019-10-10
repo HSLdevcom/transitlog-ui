@@ -29,6 +29,8 @@
 
   "sidepanel.tabs.journeys": "Lähdöt",
   "sidepanel.tabs.week_journeys": "Viikon lähdöt",
+  "sidepanel.tabs.week_journeys.first_stop_depart": "lähtö",
+  "sidepanel.tabs.week_journeys.last_stop_arrive": "saapuminen",
   "sidepanel.tabs.timetables": "Aikataulut",
   "sidepanel.tabs.vehicle_journeys": "Lähtöketju",
   "sidepanel.tabs.area_events": "Alueen matkat",
@@ -123,6 +125,7 @@
   "auth.logout": "Kirjaudu ulos",
   "auth.create_account": "Tee Reittiloki-tunnus",
 
+  "general.time": "Aika",
   "general.minutes": "minuutteja",
   "general.hour": "tunti",
   "general.year": "vuosi",
