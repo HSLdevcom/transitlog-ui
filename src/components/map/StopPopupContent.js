@@ -43,34 +43,33 @@ export const StopStreetViewWrapper = styled(StopPopupContentSection)`
 
 const decorate = flow(
   observer,
-  inject("state")
+  inject("UI")
 );
 
-const StopPopupContent = decorate(
-  ({state, color, stop, onSelectRoute, onShowStreetView}) => {
-    return (
-      <StopContentWrapper>
-        <StopPopupContentSection>
-          <Heading level={4}>
-            {stop.name}, {stop.shortId.replace(/ /g, "")} ({stop.stopId})
-          </Heading>
-          {onSelectRoute && (
-            <StopRouteSelect
-              color={color}
-              onSelectRoute={onSelectRoute}
-              stopId={stop.stopId}
-            />
-          )}
-        </StopPopupContentSection>
-        {stop && <StopAlerts alerts={getAlertsInEffect(stop, state.timeMoment)} />}
-        <StopStreetViewWrapper>
-          <Button onClick={() => onShowStreetView(latLng([stop.lat, stop.lng]))}>
-            <Text>map.stops.show_in_streetview</Text>
-          </Button>
-        </StopStreetViewWrapper>
-      </StopContentWrapper>
-    );
-  }
-);
+const StopPopupContent = decorate(({state, UI, color, stop, onSelectRoute}) => {
+  return (
+    <StopContentWrapper>
+      <StopPopupContentSection>
+        <Heading level={4}>
+          {stop.name}, {stop.shortId.replace(/ /g, "")} ({stop.stopId})
+        </Heading>
+        {onSelectRoute && (
+          <StopRouteSelect
+            color={color}
+            onSelectRoute={onSelectRoute}
+            stopId={stop.stopId}
+          />
+        )}
+      </StopPopupContentSection>
+      {stop && <StopAlerts alerts={getAlertsInEffect(stop, state.timeMoment)} />}
+      <StopStreetViewWrapper>
+        <Button
+          onClick={() => UI.setMapillaryViewerLocation(latLng([stop.lat, stop.lng]))}>
+          <Text>map.stops.show_in_streetview</Text>
+        </Button>
+      </StopStreetViewWrapper>
+    </StopContentWrapper>
+  );
+});
 
 export default StopPopupContent;

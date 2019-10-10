@@ -86,7 +86,6 @@ const StopMarker = decorate(
     showRadius = true,
     isTerminal = false,
     isTimingStop = false,
-    onViewLocation,
     Filters,
     alerts = [],
     children,
@@ -151,12 +150,7 @@ const StopMarker = decorate(
       <MapPopup
         onClose={() => (popupOpen.current = false)}
         onOpen={() => (popupOpen.current = true)}>
-        <StopPopupContent
-          stop={stop}
-          color={stopColor}
-          onSelectRoute={selectRoute}
-          onShowStreetView={onViewLocation}
-        />
+        <StopPopupContent stop={stop} color={stopColor} onSelectRoute={selectRoute} />
       </MapPopup>
     ) : null;
 

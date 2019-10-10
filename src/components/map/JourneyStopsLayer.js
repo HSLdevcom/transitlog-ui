@@ -15,7 +15,7 @@ const decorate = flow(
 );
 
 const JourneyStopsLayer = decorate(
-  ({state: {date, selectedJourney}, onViewLocation, showRadius, journey = null}) => {
+  ({state: {date, selectedJourney}, showRadius, journey = null}) => {
     if (journey && journey.events) {
       const stopEvents = journey.events.filter(
         (evt) => evt.__typename === "JourneyStopEvent"
@@ -93,7 +93,6 @@ const JourneyStopsLayer = decorate(
             departure={departure}
             arrival={arrival}
             date={date}
-            onViewLocation={onViewLocation}
             showRadius={showRadius}
           />
         );

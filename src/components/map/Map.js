@@ -18,10 +18,6 @@ const MAP_BOUNDS_URL_KEY = "mapView";
 @inject(app("Journey"))
 @observer
 class Map extends Component {
-  static defaultProps = {
-    onViewChanged: () => {},
-  };
-
   canSetView = false;
   prevCenter = null;
 
@@ -34,13 +30,6 @@ class Map extends Component {
 
   @observable.ref
   mapView = null;
-
-  @observable
-  currentMapillaryViewerLocation = false;
-
-  setMapillaryViewerLocation = action((location) => {
-    this.currentMapillaryViewerLocation = location;
-  });
 
   setMapZoom = action((zoom) => {
     this.zoom = zoom;
@@ -190,15 +179,12 @@ class Map extends Component {
 
     return (
       <LeafletMap
-        setMapillaryViewerLocation={this.setMapillaryViewerLocation}
-        currentMapillaryViewerLocation={this.currentMapillaryViewerLocation}
         mapRef={this.mapRef}
         className={className}
         onMapChanged={this.onMapChanged}
         zoom={this.zoom}
         onZoom={this.onZoom}>
         {children({
-          setViewerLocation: this.setMapillaryViewerLocation,
           zoom: this.zoom,
           getMapView: this.getMapView,
           setMapView: this.setMapView,

@@ -8,6 +8,7 @@ import {
 } from "../../helpers/closestPoint";
 import subYears from "date-fns/sub_years";
 import format from "date-fns/format";
+import {visualizeBounds} from "./LeafletMap";
 
 class MapillaryGeoJSONLayer extends React.PureComponent {
   static defaultProps = {

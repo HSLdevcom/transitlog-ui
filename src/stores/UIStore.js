@@ -49,9 +49,13 @@ export default (state) => {
       errors: [],
       shareModalOpen: false,
       user: null,
+      currentMapillaryViewerLocation: null,
+      currentMapillaryMapLocation: null,
     },
     {
       areaEventsBounds: observable.ref,
+      currentMapillaryViewerLocation: observable.ref,
+      currentMapillaryMapLocation: observable.ref,
     }
   );
 

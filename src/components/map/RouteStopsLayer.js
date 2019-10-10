@@ -11,12 +11,7 @@ const decorate = flow(
 );
 
 const RouteStopsLayer = decorate(
-  ({
-    state: {date, stop: selectedStop, highlightedStop, selectedJourney},
-    route,
-    onViewLocation,
-    showRadius,
-  }) => {
+  ({state: {date, selectedJourney}, route, showRadius}) => {
     return (
       <StopsByRouteQuery date={date} route={route} skip={!route}>
         {({stops}) => {
@@ -34,7 +29,6 @@ const RouteStopsLayer = decorate(
                 stopId={stop.stopId}
                 stop={stop}
                 date={date}
-                onViewLocation={onViewLocation}
                 showRadius={showRadius}
               />
             );
