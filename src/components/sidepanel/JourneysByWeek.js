@@ -179,6 +179,7 @@ const JourneysByWeek = decorate(
 
     const {date, route: stateRoute, selectedJourney} = state;
     const route = propsRoute || stateRoute;
+    const {originStopId = "", destinationStopId = ""} = route;
 
     const selectedJourneyId = getJourneyId(selectedJourney);
 
@@ -275,8 +276,12 @@ const JourneysByWeek = decorate(
                         onChange={onChangeObservedTimeType}
                         name="observed_times_type"
                         isSwitch={true}
-                        preLabel={text("map.stops.depart")}
-                        label={text("map.stops.arrive")}
+                        preLabel={`${originStopId} ${text(
+                          "sidepanel.tabs.week_journeys.first_stop_depart"
+                        )}`}
+                        label={`${destinationStopId} ${text(
+                          "sidepanel.tabs.week_journeys.last_stop_arrive"
+                        )}`}
                         checked={
                           weeklyObservedTimes !==
                           weeklyObservedTimeTypes.FIRST_STOP_DEPARTURE

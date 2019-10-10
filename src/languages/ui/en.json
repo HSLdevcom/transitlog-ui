@@ -29,6 +29,8 @@
 
   "sidepanel.tabs.journeys": "Journeys",
   "sidepanel.tabs.week_journeys": "Week",
+  "sidepanel.tabs.week_journeys.first_stop_depart": "departure",
+  "sidepanel.tabs.week_journeys.last_stop_arrive": "arrival",
   "sidepanel.tabs.timetables": "Stop",
   "sidepanel.tabs.vehicle_journeys": "Vehicle",
   "sidepanel.tabs.area_events": "Area",
