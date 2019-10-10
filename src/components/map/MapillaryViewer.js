@@ -78,16 +78,12 @@ class MapillaryViewer extends React.Component {
     this.mly.setFilter(["==", "organizationKey", "mstFdbqROWkgC2sNNU2tZ1"]);
     this.mly.on(Mapillary.Viewer.nodechanged, this.onNavigation);
 
-    this.mly.on(Mapillary.Viewer.moveend, () => {
-      this.mly.getCenter().then((center) => console.log(center));
-    });
-
     window.addEventListener("resize", this.onResize);
   }
 
   onNavigation = (evt) => {
     const {onNavigation} = this.props;
-    this.mly.setCenter([0.5, 0.65]);
+    this.mly.setCenter([0.5, 0.675]);
     onNavigation(evt);
   };
 
