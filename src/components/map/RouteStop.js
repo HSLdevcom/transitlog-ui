@@ -46,7 +46,7 @@ const DepartureTimeGroup = styled.div`
   min-width: 300px;
 `;
 
-@inject("Time")
+@inject("Time", "UI")
 @observer
 class RouteStop extends React.Component {
   onClickTime = (time) => (e) => {
@@ -55,8 +55,8 @@ class RouteStop extends React.Component {
   };
 
   onShowStreetView = () => {
-    const {onViewLocation, stop} = this.props;
-    onViewLocation(latLng({lat: stop.lat, lng: stop.lng}));
+    const {UI, stop} = this.props;
+    UI.setMapillaryViewerLocation(latLng({lat: stop.lat, lng: stop.lng}));
   };
 
   render() {

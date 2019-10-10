@@ -10,7 +10,7 @@ import {getRoundedBbox} from "../../helpers/getRoundedBbox";
 
 const decorate = flow(
   observer,
-  inject("UI")
+  inject("state")
 );
 
 const getBboxString = (bounds, round = false) => {
@@ -23,7 +23,7 @@ const getBboxString = (bounds, round = false) => {
     : "";
 };
 
-const StopLayerContent = decorate(({stops, showRadius, state, UI}) => {
+const StopLayerContent = decorate(({stops, showRadius, state}) => {
   const selectedStopId = state.stop;
   const prevStopAreas = useRef([]);
 
@@ -83,7 +83,6 @@ const StopLayerContent = decorate(({stops, showRadius, state, UI}) => {
               <StopMarker
                 selected={clusterIsSelected}
                 showRadius={showRadius}
-                onViewLocation={UI.setMapillaryViewerLocation}
                 stop={stopCluster[0]}
               />
             ) : (
@@ -91,7 +90,6 @@ const StopLayerContent = decorate(({stops, showRadius, state, UI}) => {
                 selected={clusterIsSelected}
                 bounds={bounds}
                 showRadius={showRadius}
-                onViewLocation={UI.setMapillaryViewerLocation}
                 stops={stopCluster}
               />
             )}
@@ -102,7 +100,7 @@ const StopLayerContent = decorate(({stops, showRadius, state, UI}) => {
   );
 });
 
-const StopLayer = decorate(({bounds, showRadius, state, UI, selectedStop, zoom = 13}) => {
+const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}) => {
   const {date} = state;
 
   const boundsAreValid =
@@ -128,7 +126,6 @@ const StopLayer = decorate(({bounds, showRadius, state, UI, selectedStop, zoom =
               selected={true}
               showRadius={showRadius}
               stop={selectedStop}
-              onViewLocation={UI.setMapillaryViewerLocation}
               date={date}
             />
           );
@@ -139,7 +136,6 @@ const StopLayer = decorate(({bounds, showRadius, state, UI, selectedStop, zoom =
             key="stop layer content"
             stops={stops}
             showRadius={showRadius}
-            onViewLocation={UI.setMapillaryViewerLocation}
           />
         );
       }}

@@ -43,7 +43,7 @@ const decorate = flow(
 );
 
 const CompoundStopMarker = decorate(
-  ({selected, stops = [], state, showRadius = true, bounds, onViewLocation, Filters}) => {
+  ({selected, stops = [], state, showRadius = true, bounds, Filters}) => {
     const popupOpen = useRef(false);
     const markerRef = useRef(null);
 
@@ -113,7 +113,6 @@ const CompoundStopMarker = decorate(
         position={markerPosition}
         mode={mode}
         showRadius={showRadius}
-        onViewLocation={onViewLocation}
         markerRef={markerRef}
         alerts={alertsInCluster}
         stop={selectedStopObj}
@@ -144,7 +143,6 @@ const CompoundStopMarker = decorate(
               stop={selectedStopObj}
               color={stopColor}
               onSelectRoute={selectRoute}
-              onShowStreetView={() => onViewLocation(markerPosition)}
             />
           )}
         </MapPopup>
