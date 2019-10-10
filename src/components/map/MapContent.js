@@ -39,7 +39,14 @@ const MapContent = decorate(
     setMapView,
     viewLocation,
     centerOnRoute = true,
-    state: {selectedJourney, date, mapOverlays, areaEventsStyle, unixTime},
+    state: {
+      selectedJourney,
+      date,
+      mapOverlays,
+      areaEventsStyle,
+      unixTime,
+      areaSearchRangeMinutes,
+    },
   }) => {
     const hasRoute = !!route && !!route.routeId;
     const showStopRadius = expr(() => mapOverlays.indexOf("Stop radius") !== -1);
@@ -52,7 +59,7 @@ const MapContent = decorate(
 
     return (
       <>
-        <AreaSelect enabled={zoom > 12} />
+        <AreaSelect enabled={zoom > 12 && areaSearchRangeMinutes} />
         {/* When a route is NOT selected... */}
         {!hasRoute && (
           <StopLayer
