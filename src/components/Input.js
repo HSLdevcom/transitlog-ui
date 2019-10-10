@@ -65,9 +65,9 @@ class Input extends Component {
 
     return (
       <InputWrapper animatedLabel={animatedLabel} className={className}>
-        {!animatedLabel && <Label animated={false}>{label}</Label>}
+        {label && !animatedLabel && <Label animated={false}>{label}</Label>}
         {inputComponent}
-        {animatedLabel && <Label animated={true}>{label}</Label>}
+        {label && animatedLabel && <Label animated={true}>{label}</Label>}
       </InputWrapper>
     );
   }

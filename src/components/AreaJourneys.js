@@ -16,7 +16,13 @@ const updateListenerName = "area hfp query";
 
 const AreaJourneys = decorate((props) => {
   const {children, skip, state} = props;
-  const {isLiveAndCurrent, areaSearchRangeMinutes, time, date, areaEventsBounds} = state;
+  const {
+    isLiveAndCurrent,
+    areaSearchRangeMinutes = "",
+    time,
+    date,
+    areaEventsBounds,
+  } = state;
 
   const [minTime, setMinTime] = useState(null);
   const [maxTime, setMaxTime] = useState(null);
@@ -32,7 +38,7 @@ const AreaJourneys = decorate((props) => {
 
   // Combine all values in a query vars object.
   useEffect(() => {
-    if (!areaEventsBounds) {
+    if (!areaEventsBounds || !areaSearchRangeMinutes) {
       resetAreaQuery();
       return;
     }

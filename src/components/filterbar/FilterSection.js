@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {observer} from "mobx-react";
+import React from "react";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 
 const SectionContent = styled.div`
@@ -17,17 +17,10 @@ const FilterSectionWrapper = styled.div`
     scrollable ? `overflow-y: auto; overflow-x: hidden;` : "overflow: visible;"};
 `;
 
-@observer
-class FilterSection extends Component {
-  render() {
-    const {className, children, scrollable} = this.props;
-
-    return (
-      <FilterSectionWrapper scrollable={scrollable} className={className}>
-        <SectionContent>{children}</SectionContent>
-      </FilterSectionWrapper>
-    );
-  }
-}
+const FilterSection = observer(({className, children, scrollable, style}) => (
+  <FilterSectionWrapper scrollable={scrollable} className={className}>
+    <SectionContent style={style}>{children}</SectionContent>
+  </FilterSectionWrapper>
+));
 
 export default FilterSection;
