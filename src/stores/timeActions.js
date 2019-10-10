@@ -25,11 +25,11 @@ const timeActions = (state) => {
     setUrlValue("time_increment", state.timeIncrement);
   });
 
-  const setAreaSearchMinutes = action("Set area search minutes", (searchValue = 0) => {
-    state.areaSearchRangeMinutes = Math.max(
-      Math.min(intval(searchValue || 0), 60 * 12),
-      5
-    );
+  const setAreaSearchMinutes = action("Set area search minutes", (searchValue = 60) => {
+    const intValue = !searchValue ? 0 : parseInt(searchValue, 10);
+    const notNan = isNaN(intValue) ? 5 : intValue;
+
+    state.areaSearchRangeMinutes = Math.max(Math.min(notNan, 60 * 12), 5);
     setUrlValue("area_search_minutes", state.areaSearchRangeMinutes);
   });
 

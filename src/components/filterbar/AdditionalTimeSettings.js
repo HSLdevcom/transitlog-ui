@@ -42,7 +42,7 @@ const AdditionalTimeSettings = decorate(({state, Time}) => {
           helpText="Search range minutes field"
           label={text("filterpanel.area_search_range")}
           type="number"
-          max={60 * 12}
+          max={60}
           min={5}
           maxLength={2}
           value={areaSearchRangeMinutes}
@@ -51,7 +51,7 @@ const AdditionalTimeSettings = decorate(({state, Time}) => {
         <input
           {...useTooltip("Search range minutes field")}
           type="range"
-          max={60 * 12}
+          max={60}
           min={5}
           value={areaSearchRangeMinutes}
           onChange={(e) => Time.setAreaSearchMinutes(e.target.value)}
