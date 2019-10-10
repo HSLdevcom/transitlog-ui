@@ -123,6 +123,7 @@
   "auth.logout": "Kirjaudu ulos",
   "auth.create_account": "Tee Reittiloki-tunnus",
 
+  "general.time": "Aika",
   "general.minutes": "minuutteja",
   "general.hour": "tunti",
   "general.year": "vuosi",

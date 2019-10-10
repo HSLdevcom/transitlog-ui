@@ -87,6 +87,13 @@ export const routeJourneysByWeekQuery = gql`
         arrivalTime
         arrivalTimeDifference
       }
+      originDepartureTime {
+        id
+        departureDate
+        departureDateTime
+        departureTime
+        isNextDay
+      }
     }
   }
   ${AlertFieldsFragment}
@@ -101,13 +108,13 @@ const JourneysByWeekQuery = observer(
 
     const createRefetcher = useCallback(
       (refetch) => () => {
-        const {routeId, direction, originStopId} = route;
+        const {routeId, direction, originStopId, destinationStopId} = route;
 
         if (refetch && route && route.routeId && !skip) {
           refetch({
             routeId,
             direction: parseInt(direction, 10),
-            stopId: originStopId,
+            stopId: lastStopArrival ? destinationStopId : originStopId,
             lastStopArrival,
             date,
           });
@@ -117,16 +124,21 @@ const JourneysByWeekQuery = observer(
     );
 
     useEffect(() => () => removeUpdateListener(updateListenerName), []);
-    const {routeId, direction, originStopId} = route;
+
+    const {routeId, direction, originStopId, destinationStopId} = route;
+
+    const shouldSkip =
+      skip || !routeId || !originStopId || (lastStopArrival && !destinationStopId);
 
     return (
       <Query
+        skip={shouldSkip}
         query={routeJourneysByWeekQuery}
         variables={{
           lastStopArrival,
           routeId: routeId,
           direction: parseInt(direction, 10),
-          stopId: originStopId,
+          stopId: lastStopArrival ? destinationStopId : originStopId,
           date,
         }}>
         {({data, error, loading, refetch}) => {

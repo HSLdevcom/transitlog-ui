@@ -122,6 +122,7 @@
   "auth.logout": "Log out",
   "auth.create_account": "Create Reittiloki account",
 
+  "general.time": "Time",
   "general.minutes": "minutes",
   "general.hour": "hour",
   "general.year": "year",

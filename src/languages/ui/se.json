@@ -121,6 +121,7 @@
   "auth.logout": "Logga ut",
   "auth.create_account": "Skapa Reittiloki account",
 
+  "general.time": "Tid",
   "general.minutes": "minuter",
   "general.hour": "timme",
   "general.year": "år",

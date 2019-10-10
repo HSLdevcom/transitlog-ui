@@ -1,5 +1,6 @@
 import {getJourneyObject} from "./getJourneyObject";
 import {createCompositeJourney} from "../stores/journeyActions";
+import get from "lodash/get";
 
 const getJourneyId = (journey = null, matchVehicle = true) => {
   if (!journey) {
@@ -54,14 +55,20 @@ const getJourneyIdFromJourney = (journey = {}, matchVehicle = true) => {
 export default getJourneyId;
 
 export function createDepartureJourneyId(departure, departureTime) {
-  if (!departure) {
+  const originDepartureTime = get(
+    departure,
+    "originDepartureTime",
+    get(departure, "plannedDepartureTime", null)
+  );
+
+  if (!originDepartureTime) {
     return "";
   }
 
   const compositeJourney = createCompositeJourney(
-    departure.plannedDepartureTime.departureDate,
+    originDepartureTime.departureDate,
     departure,
-    departureTime ? departureTime : departure.plannedDepartureTime.departureTime
+    departureTime ? departureTime : originDepartureTime.departureTime
   );
 
   return getJourneyId(compositeJourney, false);

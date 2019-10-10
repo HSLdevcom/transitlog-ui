@@ -275,10 +275,10 @@ const JourneysByWeek = decorate(
                         onChange={onChangeObservedTimeType}
                         name="observed_times_type"
                         isSwitch={true}
-                        preLabel={text("map.stops.arrive")}
-                        label={text("map.stops.depart")}
+                        preLabel={text("map.stops.depart")}
+                        label={text("map.stops.arrive")}
                         checked={
-                          weeklyObservedTimes ===
+                          weeklyObservedTimes !==
                           weeklyObservedTimeTypes.FIRST_STOP_DEPARTURE
                         }
                         value={weeklyObservedTimes}
@@ -325,7 +325,9 @@ const JourneysByWeek = decorate(
                   }
                   floatingListHeader={
                     <TableHeader>
-                      <TableCell>Time</TableCell>
+                      <TableCell>
+                        <Text>general.time</Text>
+                      </TableCell>
                       {selectedDates.map((day, idx) => (
                         <TableCell
                           highlight={idx === currentDayTypeIndex}
@@ -340,7 +342,7 @@ const JourneysByWeek = decorate(
                       <TableBody>
                         {map(departuresByTime, (departuresAtTime, plannedTime) => {
                           const departureDatePath = showLastStopArrival
-                            ? "plannedArrivalTime.arrivalDate"
+                            ? "originDepartureTime.departureDate"
                             : "plannedDepartureTime.departureDate";
 
                           const selectedDayDepartures = orderBy(
@@ -370,7 +372,7 @@ const JourneysByWeek = decorate(
                             if (dep) {
                               const journeyId = createDepartureJourneyId(
                                 dep,
-                                plannedTime
+                                showLastStopArrival ? false : plannedTime
                               );
 
                               if (
