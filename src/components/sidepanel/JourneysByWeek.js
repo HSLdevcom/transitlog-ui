@@ -149,18 +149,46 @@ const JourneysByWeek = decorate(
   ({state, Time, UI, Filters, Journey, route: propsRoute}) => {
     const {weeklyObservedTimes} = state;
 
-    const selectJourney = useCallback((journey, matchVehicle = true) => {
+    const selectJourney = useCallback((journeyOrDeparture, matchVehicle = true) => {
       let journeyToSelect = null;
+      let journeyId = "";
+      let departureTime = "";
+      let departureDate = "";
 
-      if (journey) {
-        const journeyId = getJourneyId(journey, matchVehicle);
+      if (journeyOrDeparture) {
+        if (journeyOrDeparture.originDepartureTime) {
+          journeyId = createDepartureJourneyId(journeyOrDeparture);
+
+          departureTime = get(
+            journeyOrDeparture,
+            "originDepartureTime.departureTime",
+            ""
+          );
+
+          departureDate = get(
+            journeyOrDeparture,
+            "originDepartureTime.departureDate",
+            ""
+          );
+        } else {
+          journeyId = getJourneyId(journeyOrDeparture, matchVehicle);
+          departureTime = journeyOrDeparture.departureTime;
+          departureDate = journeyOrDeparture.departureDate;
+        }
+
         const selectedJourneyId = getJourneyId(state.selectedJourney, matchVehicle);
 
         // Only set these if the journey is truthy and was not already selected
         if (journeyId && selectedJourneyId !== journeyId) {
-          Time.setTime(journey.departureTime);
-          Filters.setDate(journey.departureDate);
-          journeyToSelect = journey;
+          Time.setTime(departureTime);
+          Filters.setDate(departureDate);
+          journeyToSelect = {
+            departureDate,
+            departureTime,
+            direction: journeyOrDeparture.direction,
+            routeId: journeyOrDeparture.routeId,
+            uniqueVehicleId: journeyOrDeparture.uniqueVehicleId || "",
+          };
         }
       }
 
@@ -459,6 +487,9 @@ const JourneysByWeek = decorate(
 
                                   const departureIsSelected =
                                     departure &&
+                                    ((showLastStopArrival &&
+                                      departure.originDepartureTime) ||
+                                      !showLastStopArrival) &&
                                     getJourneyId(selectedJourney, false) ===
                                       createDepartureJourneyId(departure);
 
