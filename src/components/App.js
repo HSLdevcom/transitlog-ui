@@ -160,7 +160,7 @@ function App({route, state, UI}) {
                         <MapPanel
                           detailsOpen={detailsAreOpen}
                           sidePanelOpen={sidePanelIsOpen}>
-                          {({zoom, setMapView, getMapView, setViewerLocation}) => (
+                          {({zoom, setMapView, getMapView}) => (
                             <>
                               <Observer>
                                 {() => {
@@ -186,12 +186,15 @@ function App({route, state, UI}) {
                                     // journey position if available.
                                     // Else use the selected stop
                                     // position if available.
-                                    const centerPosition =
-                                      lat && lng && selectedJourney
-                                        ? latLng([lat, lng])
-                                        : !selectedJourney
-                                        ? stopPosition
-                                        : false;
+                                    let centerPosition = false;
+
+                                    if (state.currentMapillaryMapLocation) {
+                                      centerPosition = state.currentMapillaryMapLocation;
+                                    } else if (lat && lng && selectedJourney) {
+                                      centerPosition = latLng([lat, lng]);
+                                    } else if (!selectedJourney) {
+                                      centerPosition = stopPosition;
+                                    }
 
                                     if (centerPosition) {
                                       setMapView(centerPosition);
@@ -211,7 +214,6 @@ function App({route, state, UI}) {
                                 route={route}
                                 stop={stop}
                                 zoom={zoom}
-                                viewLocation={setViewerLocation}
                                 mapBounds={getMapView()}
                               />
                               {selectedJourney && (

@@ -37,8 +37,8 @@ const MapContent = decorate(
     mapBounds, // The current map view
     stop,
     setMapView,
-    viewLocation,
     centerOnRoute = true,
+    UI,
     state: {
       selectedJourney,
       date,
@@ -64,7 +64,6 @@ const MapContent = decorate(
         {!hasRoute && (
           <StopLayer
             showRadius={showStopRadius}
-            onViewLocation={viewLocation}
             date={date}
             selectedStop={stop}
             zoom={zoom}
@@ -97,11 +96,7 @@ const MapContent = decorate(
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (
-              <RouteStopsLayer
-                showRadius={showStopRadius}
-                onViewLocation={viewLocation}
-                route={route}
-              />
+              <RouteStopsLayer showRadius={showStopRadius} route={route} />
             )}
 
             {journeys.length !== 0 &&
@@ -124,7 +119,6 @@ const MapContent = decorate(
                   />,
                   <JourneyStopsLayer
                     showRadius={showStopRadius}
-                    onViewLocation={viewLocation}
                     key={`journey_stops_${journey.id}`}
                     journey={journey}
                   />,

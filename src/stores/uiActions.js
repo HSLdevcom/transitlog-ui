@@ -6,6 +6,7 @@ import {
   areaEventsStyles,
   weeklyObservedTimeTypes,
 } from "./UIStore";
+import {latLng} from "leaflet";
 
 export default (state) => {
   const toggleShareModal = action((setTo = !state.shareModalOpen) => {
@@ -142,6 +143,15 @@ export default (state) => {
     }
   });
 
+  const setMapillaryViewerLocation = action((location) => {
+    state.currentMapillaryViewerLocation = location;
+  });
+
+  const setMapillaryMapLocation = action(({latLon: {lat, lon}}) => {
+    const location = latLng({lat, lng: lon});
+    state.currentMapillaryMapLocation = location;
+  });
+
   return {
     toggleSidePanel,
     toggleJourneyDetails,
@@ -159,5 +169,7 @@ export default (state) => {
     setUser,
     setWeeklyObservedTimesType,
     onSelectArea,
+    setMapillaryViewerLocation,
+    setMapillaryMapLocation,
   };
 };

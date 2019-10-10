@@ -11,11 +11,11 @@ import moment from "moment-timezone";
 
 const decorate = flow(
   observer,
-  inject("state")
+  inject("UI")
 );
 
 const JourneyStopsLayer = decorate(
-  ({state: {date, selectedJourney}, onViewLocation, showRadius, journey = null}) => {
+  ({state: {date, selectedJourney}, UI, showRadius, journey = null}) => {
     if (journey && journey.events) {
       const stopEvents = journey.events.filter(
         (evt) => evt.__typename === "JourneyStopEvent"
@@ -93,7 +93,7 @@ const JourneyStopsLayer = decorate(
             departure={departure}
             arrival={arrival}
             date={date}
-            onViewLocation={onViewLocation}
+            onViewLocation={UI.setMapillaryViewerLocation}
             showRadius={showRadius}
           />
         );

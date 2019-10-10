@@ -7,14 +7,14 @@ import {inject} from "../../helpers/inject";
 
 const decorate = flow(
   observer,
-  inject("state")
+  inject("UI")
 );
 
 const RouteStopsLayer = decorate(
   ({
+    UI,
     state: {date, stop: selectedStop, highlightedStop, selectedJourney},
     route,
-    onViewLocation,
     showRadius,
   }) => {
     return (
@@ -34,7 +34,7 @@ const RouteStopsLayer = decorate(
                 stopId={stop.stopId}
                 stop={stop}
                 date={date}
-                onViewLocation={onViewLocation}
+                onViewLocation={UI.setMapillaryViewerLocation}
                 showRadius={showRadius}
               />
             );

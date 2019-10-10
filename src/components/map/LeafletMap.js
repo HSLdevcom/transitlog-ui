@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import {
   Map,
   TileLayer,
@@ -10,16 +10,17 @@ import {
   Rectangle,
   CircleMarker,
 } from "react-leaflet";
-import {latLng} from "leaflet";
 import get from "lodash/get";
+import flow from "lodash/flow";
 import MapillaryViewer from "./MapillaryViewer";
 import styled from "styled-components";
-import "leaflet/dist/leaflet.css";
 import MapillaryGeoJSONLayer from "./MapillaryGeoJSONLayer";
 import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
-import {observer, inject} from "mobx-react";
-import {app} from "mobx-app";
+import {observer} from "mobx-react-lite";
 import {observable, action} from "mobx";
+import {inject} from "../../helpers/inject";
+
+import "leaflet/dist/leaflet.css";
 
 const MapContainer = styled.div`
   overflow: hidden;
@@ -55,42 +56,39 @@ export const visualizeBounds = action((boundsOrPoint) => {
   }
 });
 
-@inject(app("UI"))
-@observer
-class LeafletMap extends Component {
-  state = {
-    currentBaseLayer: getUrlValue("mapBaseLayer", "Digitransit"),
-    currentMapillaryMapLocation: false,
-  };
+const decorate = flow(
+  observer,
+  inject("UI")
+);
 
-  onChangeBaseLayer = ({name}) => {
-    setUrlValue("mapBaseLayer", name);
+const LeafletMap = decorate(
+  ({
+    state: {mapOverlays, currentMapillaryViewerLocation, currentMapillaryMapLocation},
+    UI: {changeOverlay, setMapillaryViewerLocation, setMapillaryMapLocation},
+    mapRef,
+    children,
+    className,
+    onZoom = () => {},
+    onMapChanged = () => {},
+  }) => {
+    const [currentBaseLayer, setCurrentBaseLayer] = useState(
+      getUrlValue("mapBaseLayer", "Digitransit")
+    );
 
-    this.setState({
-      currentBaseLayer: name,
+    const onChangeBaseLayer = useCallback(({name}) => {
+      setUrlValue("mapBaseLayer", name);
+      setCurrentBaseLayer(name);
     });
-  };
 
-  onMapillaryNavigation = ({latLon: {lat, lon}}) => {
-    const location = latLng({lat, lng: lon});
+    useEffect(() => {
+      if (!mapRef.current) {
+        return;
+      }
 
-    this.setState({
-      currentMapillaryMapLocation: location,
-    });
-  };
-
-  render() {
-    const {
-      state: {mapOverlays},
-      UI: {changeOverlay},
-      mapRef,
-      children,
-      className,
-      currentMapillaryViewerLocation,
-      setMapillaryViewerLocation,
-      onZoom = () => {},
-      onMapChanged = () => {},
-    } = this.props;
+      // Fix leaflet map size so that markers will show correctly when toggling
+      // the mapillary viewer.
+      mapRef.current.leafletElement.invalidateSize();
+    }, [currentMapillaryViewerLocation]);
 
     let mapView = null;
 
@@ -98,19 +96,16 @@ class LeafletMap extends Component {
       mapView = mapRef.current.leafletElement.getBounds();
     }
 
-    const {currentBaseLayer, currentMapillaryMapLocation} = this.state;
-
     return (
       <MapContainer className={className}>
         <Map
-          key="the-map"
           ref={mapRef}
           maxZoom={18}
           zoomSnap={1}
           wheelPxPerZoomLevel={50}
           selectArea={true}
           zoomControl={false}
-          onBaselayerchange={this.onChangeBaseLayer}
+          onBaselayerchange={onChangeBaseLayer}
           onOverlayadd={changeOverlay("add")}
           onOverlayremove={changeOverlay("remove")}
           onZoomend={onZoom}
@@ -198,13 +193,13 @@ class LeafletMap extends Component {
           <MapillaryView
             onCloseViewer={() => setMapillaryViewerLocation(false)}
             elementId="mapillary-viewer"
-            onNavigation={this.onMapillaryNavigation}
+            onNavigation={setMapillaryMapLocation}
             location={currentMapillaryViewerLocation}
           />
         )}
       </MapContainer>
     );
   }
-}
+);
 
 export default LeafletMap;

@@ -10,7 +10,7 @@ import {getRoundedBbox} from "../../helpers/getRoundedBbox";
 
 const decorate = flow(
   observer,
-  inject("state")
+  inject("UI")
 );
 
 const getBboxString = (bounds, round = false) => {
@@ -23,7 +23,7 @@ const getBboxString = (bounds, round = false) => {
     : "";
 };
 
-const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) => {
+const StopLayerContent = decorate(({stops, showRadius, state, UI}) => {
   const selectedStopId = state.stop;
   const prevStopAreas = useRef([]);
 
@@ -83,7 +83,7 @@ const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) =
               <StopMarker
                 selected={clusterIsSelected}
                 showRadius={showRadius}
-                onViewLocation={onViewLocation}
+                onViewLocation={UI.setMapillaryViewerLocation}
                 stop={stopCluster[0]}
               />
             ) : (
@@ -91,7 +91,7 @@ const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) =
                 selected={clusterIsSelected}
                 bounds={bounds}
                 showRadius={showRadius}
-                onViewLocation={onViewLocation}
+                onViewLocation={UI.setMapillaryViewerLocation}
                 stops={stopCluster}
               />
             )}
@@ -102,53 +102,49 @@ const StopLayerContent = decorate(({stops, showRadius, onViewLocation, state}) =
   );
 });
 
-const StopLayer = decorate(
-  ({bounds, onViewLocation, showRadius, state, selectedStop, zoom = 13}) => {
-    const {date} = state;
+const StopLayer = decorate(({bounds, showRadius, state, UI, selectedStop, zoom = 13}) => {
+  const {date} = state;
 
-    const boundsAreValid =
-      !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
+  const boundsAreValid =
+    !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
 
-    const currentBounds = useRef(null);
-    let queryBounds = bounds;
+  const currentBounds = useRef(null);
+  let queryBounds = bounds;
 
-    if (currentBounds.current && boundsAreValid) {
-      queryBounds = currentBounds.current.contains(bounds)
-        ? currentBounds.current
-        : bounds;
-    } else if (boundsAreValid) {
-      currentBounds.current = bounds;
-    }
+  if (currentBounds.current && boundsAreValid) {
+    queryBounds = currentBounds.current.contains(bounds) ? currentBounds.current : bounds;
+  } else if (boundsAreValid) {
+    currentBounds.current = bounds;
+  }
 
-    const bbox = getBboxString(queryBounds, true);
+  const bbox = getBboxString(queryBounds, true);
 
-    return (
-      <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>
-        {({stops = []}) => {
-          if (selectedStop && (zoom < 14 || stops.length === 0)) {
-            return (
-              <StopMarker
-                selected={true}
-                showRadius={showRadius}
-                stop={selectedStop}
-                onViewLocation={onViewLocation}
-                date={date}
-              />
-            );
-          }
-
+  return (
+    <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>
+      {({stops = []}) => {
+        if (selectedStop && (zoom < 14 || stops.length === 0)) {
           return (
-            <StopLayerContent
-              key="stop layer content"
-              stops={stops}
+            <StopMarker
+              selected={true}
               showRadius={showRadius}
-              onViewLocation={onViewLocation}
+              stop={selectedStop}
+              onViewLocation={UI.setMapillaryViewerLocation}
+              date={date}
             />
           );
-        }}
-      </StopsByBboxQuery>
-    );
-  }
-);
+        }
+
+        return (
+          <StopLayerContent
+            key="stop layer content"
+            stops={stops}
+            showRadius={showRadius}
+            onViewLocation={UI.setMapillaryViewerLocation}
+          />
+        );
+      }}
+    </StopsByBboxQuery>
+  );
+});
 
 export default StopLayer;
