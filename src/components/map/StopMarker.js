@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef, useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {latLng} from "leaflet";
@@ -11,7 +11,6 @@ import StopPopupContent from "./StopPopupContent";
 import MapPopup from "./MapPopup";
 import DivIcon from "./DivIcon";
 import AlertIcons from "../AlertIcons";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import TimingStop from "../../icons/TimingStop";
 import {Tooltip} from "react-leaflet";
 
@@ -162,8 +161,19 @@ const StopMarker = decorate(
     ) : null;
 
     const markerPosition = latLng({lat, lng});
-    const stopAlerts =
-      alerts && alerts.length !== 0 ? alerts : getAlertsInEffect(stop, state.date);
+
+    const tooltip = useMemo(
+      () =>
+        stop ? (
+          <Tooltip offset={[15, 0]} interactive={false} direction="right">
+            <div>
+              <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
+            </div>
+            <div style={{fontSize: "1rem"}}>{stop.name}</div>
+          </Tooltip>
+        ) : null,
+      [stop]
+    );
 
     const markerIcon = (
       <IconWrapper>
@@ -177,9 +187,6 @@ const StopMarker = decorate(
           color={stopColor}>
           {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
         </StopMarkerCircle>
-        {stopAlerts.length !== 0 && (
-          <MarkerIcons iconSize="0.875rem" alerts={stopAlerts} />
-        )}
       </IconWrapper>
     );
 
@@ -190,14 +197,7 @@ const StopMarker = decorate(
         position={markerPosition}
         icon={markerIcon}
         onClick={selectStop}>
-        {stop && (
-          <Tooltip offset={[15, 0]} interactive={false} direction="right">
-            <div>
-              <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
-            </div>
-            <div style={{fontSize: "1rem"}}>{stop.name}</div>
-          </Tooltip>
-        )}
+        {tooltip}
         {popupElement}
       </DivIcon>
     );

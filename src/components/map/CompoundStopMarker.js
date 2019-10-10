@@ -14,6 +14,7 @@ import StopPopupContent, {StopPopupContentSection} from "./StopPopupContent";
 import MapPopup from "./MapPopup";
 import StopMarker from "./StopMarker";
 import {Text} from "../../helpers/text";
+import {Tooltip} from "react-leaflet";
 
 const StopOptionButton = styled.button`
   text-decoration: none;
@@ -147,6 +148,21 @@ const CompoundStopMarker = decorate(
             />
           )}
         </MapPopup>
+        {!selectedStopObj && (
+          <Tooltip offset={[15, 0]} interactive={false} direction="right">
+            {stops.map((stopInGroup, idx) => (
+              <div
+                key={`stop_tooltip_${stopInGroup.id}`}
+                style={{marginTop: idx === 0 ? 0 : "1rem"}}>
+                <div>
+                  <strong>{stopInGroup.shortId.replace(/\s*/g, "")}</strong>{" "}
+                  {stopInGroup.stopId}
+                </div>
+                <div style={{fontSize: "1rem"}}>{stopInGroup.name}</div>
+              </div>
+            ))}
+          </Tooltip>
+        )}
       </StopMarker>
     );
   }
