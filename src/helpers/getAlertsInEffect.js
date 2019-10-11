@@ -1,8 +1,10 @@
 import get from "lodash/get";
 import orderBy from "lodash/orderBy";
-import differenceInMinutes from "date-fns/difference_in_minutes";
+import differenceInMinutes from "date-fns/differenceInMinutes";
 import moment from "moment-timezone";
 import {TIMEZONE} from "../constants";
+
+import {legacyParse} from "@date-fns/upgrade/v2";
 
 export const AlertLevel = {
   Info: "INFO",
@@ -89,8 +91,16 @@ export const getAlertsInEffect = (
 
         return sortVal;
       },
-      (alert) => differenceInMinutes(alert.startDateTime, currentMoment.toDate()),
-      (alert) => differenceInMinutes(alert.endDateTime, currentMoment.toDate()),
+      (alert) =>
+        differenceInMinutes(
+          legacyParse(alert.startDateTime),
+          legacyParse(currentMoment.toDate())
+        ),
+      (alert) =>
+        differenceInMinutes(
+          legacyParse(alert.endDateTime),
+          legacyParse(currentMoment.toDate())
+        ),
     ],
     ["desc", "asc", "asc"]
   );

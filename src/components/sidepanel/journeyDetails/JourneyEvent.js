@@ -52,6 +52,8 @@ import {getModeColor} from "../../../helpers/vehicleColor";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../../icons/RoutesFail";
 
+import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+
 const StopWrapper = styled(DefaultStopWrapper)`
   padding: 0;
 `;
@@ -367,12 +369,14 @@ export const JourneyCancellationEventItem = decorate(({event, isFirst, isLast}) 
               <>
                 <CancellationTitle>{event.title}</CancellationTitle>
                 <CancellationTime>
-                  {format(event.plannedDate, "DD/MM")} {event.plannedTime}
+                  {format(legacyParse(event.plannedDate), convertTokens("DD/MM"))}{" "}
+                  {event.plannedTime}
                 </CancellationTime>
               </>
             ) : (
               <CancellationTitle>
-                {format(event.plannedDate, "DD/MM")} {event.plannedTime}
+                {format(legacyParse(event.plannedDate), convertTokens("DD/MM"))}{" "}
+                {event.plannedTime}
               </CancellationTitle>
             )}
           </Row>

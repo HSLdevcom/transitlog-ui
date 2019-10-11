@@ -9,7 +9,9 @@ import difference from "lodash/difference";
 import {TIMEZONE} from "../constants";
 import {useDebouncedValue} from "./useDebouncedValue";
 import {getRoundedBbox} from "../helpers/getRoundedBbox";
-import isValid from "date-fns/is_valid";
+import isValid from "date-fns/isValid";
+
+import {legacyParse} from "@date-fns/upgrade/v2";
 
 export function getWeatherSamplePoint(location) {
   let validPoint = location || null;
@@ -132,8 +134,8 @@ export const useWeather = (location, endTime, startTime = null, which = "display
     if (
       weatherLoading.current ||
       !querySites ||
-      (!queryStartTime || !isValid(queryStartTime)) ||
-      (!queryEndTime || !isValid(queryEndTime))
+      (!queryStartTime || !isValid(legacyParse(queryStartTime))) ||
+      (!queryEndTime || !isValid(legacyParse(queryEndTime)))
     ) {
       return () => {};
     }
@@ -168,8 +170,8 @@ export const useWeather = (location, endTime, startTime = null, which = "display
     // Bail directly if it is loading or we don't have all the data we need yet.
     if (
       roadLoading.current ||
-      (!queryStartTime || !isValid(queryStartTime)) ||
-      (!queryEndTime || !isValid(queryEndTime))
+      (!queryStartTime || !isValid(legacyParse(queryStartTime))) ||
+      (!queryEndTime || !isValid(legacyParse(queryEndTime)))
     ) {
       return () => {};
     }

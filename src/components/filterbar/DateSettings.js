@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import {createPortal} from "react-dom";
 import moment from "moment-timezone";
 import {observer} from "mobx-react-lite";
-import DatePicker from "react-datepicker";
+import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
 import {format} from "date-fns";
 import {text} from "../../helpers/text";
 import {InputBase, ControlGroup} from "../Forms";
@@ -16,6 +16,11 @@ import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import ExceptionDaysQuery from "../../queries/ExceptionDaysQuery";
 import Tooltip from "../Tooltip";
+import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import fi from "date-fns/locale/fi";
+
+registerLocale("fi", fi);
+setDefaultLocale("fi");
 
 const DateControlGroup = styled(ControlGroup)`
   margin-bottom: 0.6rem;
@@ -90,7 +95,10 @@ const CalendarStyles = createGlobalStyle`
 `;
 
 const renderDay = (exceptionData) => (dayNumber, date) => {
-  const exception = get(exceptionData, format(date, "YYYY-MM-DD"));
+  const exception = get(
+    exceptionData,
+    format(legacyParse(date), convertTokens("YYYY-MM-DD"))
+  );
 
   if (!exception) {
     return <Day>{dayNumber}</Day>;
@@ -169,7 +177,12 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
             <ExceptionDaysQuery>
               {({exceptionDays = []}) => {
                 const dates = exceptionDays.reduce((collection, exception) => {
-                  collection[format(exception.exceptionDate, "YYYY-MM-DD")] = exception;
+                  collection[
+                    format(
+                      legacyParse(exception.exceptionDate),
+                      convertTokens("YYYY-MM-DD")
+                    )
+                  ] = exception;
                   return collection;
                 }, {});
 
@@ -182,7 +195,9 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
                     dateFormat="yyyy-MM-dd"
                     selected={moment.tz(date, TIMEZONE).toDate()}
                     onChange={setDate}
+                    todayButton={text("general.today")}
                     className="calendar"
+                    locale="fi"
                     highlightDates={highlightedDates}
                     // Z-indexing is tricky in the filterbar, so the calendarcontainer mounts
                     // a portal in a better place for the datepicker.

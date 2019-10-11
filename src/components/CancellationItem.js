@@ -11,6 +11,7 @@ import CrossThick from "../icons/CrossThick";
 import Checkmark2 from "../icons/Checkmark2";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
+import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 
 const CancellationComponent = styled.div`
   font-family: var(--font-family);
@@ -189,7 +190,12 @@ const CancellationItem = decorate(
                   </CancellationType>
                 )}
                 <CancellationTime>
-                  <span>{format(cancellation.departureDate, "DD/MM")} </span>
+                  <span>
+                    {format(
+                      legacyParse(cancellation.departureDate),
+                      convertTokens("DD/MM")
+                    )}{" "}
+                  </span>
                   <strong>{cancellation.journeyStartTime}</strong>
                 </CancellationTime>
               </Row>

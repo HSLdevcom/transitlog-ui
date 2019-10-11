@@ -136,6 +136,7 @@
   "general.sunday": "Sun",
   "general.day": "day",
   "general.week": "week",
+  "general.today": "Today",
   "general.seconds.short": "sec.",
   "general.loading": "Loading",
   "general.error": "Error",
