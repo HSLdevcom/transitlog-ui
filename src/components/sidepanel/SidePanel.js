@@ -20,7 +20,6 @@ import JourneysByWeek from "./JourneysByWeek";
 import getWeek from "date-fns/getISOWeek";
 import getJourneyId from "../../helpers/getJourneyId";
 import Alerts from "./Alerts";
-
 import {legacyParse} from "@date-fns/upgrade/v2";
 
 const SidePanelContainer = styled.div`
