@@ -165,6 +165,7 @@
   "message.emptyview.unknown": "Jonkun ongelman takia tämän näkymän tiedot ei ole saatavilla tai se ei ole olemassa.",
   "message.emptyview.noareevents": "Aluehaku ei palauttanut tuloksia.",
   "message.emptyview.vehicleauth": "Lähtöketjuhaku vaatii kirjautumista.",
+  "message.emptyview.novehicleevents": "Ajoneuvolla ei ole lähtöjä tai tililläsi ei ole valtuuksia nähdä niitä.",
   "message.emptyview.noalerts": "Ei poikkeustiedotteita.",
   "message.emptyview.nocancellations": "Ei peruutuksia."
 }

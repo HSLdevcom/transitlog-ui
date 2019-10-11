@@ -152,7 +152,7 @@ class VehicleJourneys extends Component {
 
   render() {
     const {
-      state: {selectedJourney, date, vehicle},
+      state: {selectedJourney, date, vehicle, user},
     } = this.props;
 
     const selectedJourneyId = getJourneyId(selectedJourney, false);
@@ -190,7 +190,14 @@ class VehicleJourneys extends Component {
               }>
               {(scrollRef) =>
                 (!journeys || journeys.length === 0) && !loading ? (
-                  <EmptyView error={error} text="message.emptyview.vehicleauth" />
+                  <EmptyView
+                    error={error}
+                    text={
+                      user
+                        ? "message.emptyview.novehicleevents"
+                        : "message.emptyview.vehicleauth"
+                    }
+                  />
                 ) : (
                   journeys.map((journey, journeyIndex) => {
                     const journeyId = getJourneyId(journey, false);

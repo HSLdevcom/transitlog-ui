@@ -163,6 +163,7 @@
   "message.emptyview.unknown": "Denna vy är inte tillgänglig på grund av ett okänt fel eller för att datan inte existerar.",
   "message.emptyview.noareevents": "Områdssökningen gav inga resultat.",
   "message.emptyview.vehicleauth": "Avgångskedjelistan kräver autentikation.",
+  "message.emptyview.novehicleevents": "Inga resor för fordonet hittade. Ditt konto är kanske inte auktoriserat att se dem.",
   "message.emptyview.noalerts": "Inga undantag.",
   "message.emptyview.nocancellations": "Inga inställda avgångar."
 }
