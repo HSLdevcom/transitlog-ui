@@ -182,6 +182,7 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
                     dateFormat="yyyy-MM-dd"
                     selected={moment.tz(date, TIMEZONE).toDate()}
                     onChange={setDate}
+                    todayButton={text("general.today")}
                     className="calendar"
                     highlightDates={highlightedDates}
                     // Z-indexing is tricky in the filterbar, so the calendarcontainer mounts
