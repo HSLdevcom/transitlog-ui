@@ -17,9 +17,11 @@ import Tooltip from "../Tooltip";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import JourneysByWeek from "./JourneysByWeek";
-import getWeek from "date-fns/get_iso_week";
+import getWeek from "date-fns/getISOWeek";
 import getJourneyId from "../../helpers/getJourneyId";
 import Alerts from "./Alerts";
+
+import {legacyParse} from "@date-fns/upgrade/v2";
 
 const SidePanelContainer = styled.div`
   background: var(--lightest-grey);
@@ -183,7 +185,9 @@ const SidePanel = decorate((props) => {
             {hasRoute && (
               <JourneysByWeek
                 helpText="Weekly journeys tab"
-                key={`route_journeys_week_${createRouteId(route, true)}_${getWeek(date)}`}
+                key={`route_journeys_week_${createRouteId(route, true)}_${getWeek(
+                  legacyParse(date)
+                )}`}
                 route={route}
                 name="journeys_by_week"
                 label={text("sidepanel.tabs.week_journeys")}

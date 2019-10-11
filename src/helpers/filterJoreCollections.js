@@ -6,9 +6,11 @@ import get from "lodash/get";
 import first from "lodash/first";
 import last from "lodash/last";
 import flatten from "lodash/flatten";
-import diffHours from "date-fns/difference_in_hours";
-import diffDays from "date-fns/difference_in_days";
+import diffHours from "date-fns/differenceInHours";
+import diffDays from "date-fns/differenceInDays";
 import {MAX_JORE_YEAR} from "../constants";
+
+import {legacyParse} from "@date-fns/upgrade/v2";
 
 export function filterActive(items, date) {
   if (!date) {
@@ -49,10 +51,14 @@ export function getValidItemsByDateChains(groups, date, log = false) {
 
         for (const candidate of dateEndOrdered) {
           const hoursDiff = diffHours(
-            // To get a positive number, put the date we presume to be LATER first.
-            get(item, "dateBegin", MAX_JORE_YEAR + "-12-31"),
-            // and put the date we presume to be EARLIER second.
-            get(candidate, "dateEnd", MAX_JORE_YEAR + "-12-31")
+            legacyParse(
+              // To get a positive number, put the date we presume to be LATER first.
+              get(item, "dateBegin", MAX_JORE_YEAR + "-12-31")
+            ),
+            legacyParse(
+              // and put the date we presume to be EARLIER second.
+              get(candidate, "dateEnd", MAX_JORE_YEAR + "-12-31")
+            )
           );
 
           // If the candidate's dateEnd is roughly one day before our item's dateBegin,
@@ -156,7 +162,7 @@ export function getValidItemsByDateChains(groups, date, log = false) {
               let days = 0;
 
               for (const item of chain) {
-                days += diffDays(item.dateEnd, item.dateBegin);
+                days += diffDays(legacyParse(item.dateEnd), legacyParse(item.dateBegin));
               }
 
               return days;

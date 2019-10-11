@@ -6,9 +6,11 @@ import {
   closestPointCompareReducer,
   closestPointInGeometry,
 } from "../../helpers/closestPoint";
-import subYears from "date-fns/sub_years";
+import subYears from "date-fns/subYears";
 import format from "date-fns/format";
 import {visualizeBounds} from "./LeafletMap";
+
+import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 
 class MapillaryGeoJSONLayer extends React.PureComponent {
   static defaultProps = {
@@ -124,7 +126,10 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
     }
 
     this.prevFetchedBbox = bboxStr;
-    const minTime = format(subYears(new Date(), 2), "YYYY-MM-DD");
+    const minTime = format(
+      legacyParse(subYears(legacyParse(new Date()), 2)),
+      convertTokens("YYYY-MM-DD")
+    );
 
     const url = `https://a.mapillary.com/v3/sequences?bbox=${bboxStr}&client_id=V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw&per_page=500&start_time=${minTime}&organization_keys=mstFdbqROWkgC2sNNU2tZ1`;
 

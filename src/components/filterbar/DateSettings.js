@@ -16,6 +16,7 @@ import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import ExceptionDaysQuery from "../../queries/ExceptionDaysQuery";
 import Tooltip from "../Tooltip";
+import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 
 const DateControlGroup = styled(ControlGroup)`
   margin-bottom: 0.6rem;
@@ -90,7 +91,10 @@ const CalendarStyles = createGlobalStyle`
 `;
 
 const renderDay = (exceptionData) => (dayNumber, date) => {
-  const exception = get(exceptionData, format(date, "YYYY-MM-DD"));
+  const exception = get(
+    exceptionData,
+    format(legacyParse(date), convertTokens("YYYY-MM-DD"))
+  );
 
   if (!exception) {
     return <Day>{dayNumber}</Day>;
@@ -169,7 +173,12 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
             <ExceptionDaysQuery>
               {({exceptionDays = []}) => {
                 const dates = exceptionDays.reduce((collection, exception) => {
-                  collection[format(exception.exceptionDate, "YYYY-MM-DD")] = exception;
+                  collection[
+                    format(
+                      legacyParse(exception.exceptionDate),
+                      convertTokens("YYYY-MM-DD")
+                    )
+                  ] = exception;
                   return collection;
                 }, {});
 
