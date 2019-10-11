@@ -73,6 +73,8 @@ export default (state, initialState = {}) => {
   hydrateFromUrl(initialState, true);
   onHistoryChange(hydrateFromUrl);
 
+  actions.setDate(state.date);
+
   return {
     ...actions,
     reset,
