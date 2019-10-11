@@ -107,6 +107,11 @@ const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}
     !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
 
   const currentBounds = useRef(null);
+
+  if (zoom < 14 && !selectedStop) {
+    return null;
+  }
+
   let queryBounds = bounds;
 
   if (currentBounds.current && boundsAreValid) {
@@ -115,7 +120,7 @@ const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}
     currentBounds.current = bounds;
   }
 
-  const bbox = getBboxString(queryBounds, true);
+  const bbox = getBboxString(queryBounds);
 
   return (
     <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>

@@ -47,6 +47,7 @@ const StopsByBboxQuery = observer((props) => {
         if (error) return children({stops: prevResult.current, loading: false});
 
         const stops = get(data, "stopsByBbox", []);
+
         // Stop the stops from disappearing while loading
         if (stops.length !== 0) {
           prevResult.current = stops;

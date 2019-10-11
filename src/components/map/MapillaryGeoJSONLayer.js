@@ -8,7 +8,6 @@ import {
 } from "../../helpers/closestPoint";
 import subYears from "date-fns/subYears";
 import format from "date-fns/format";
-import {visualizeBounds} from "./LeafletMap";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 
