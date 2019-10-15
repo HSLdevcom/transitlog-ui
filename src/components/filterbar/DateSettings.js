@@ -95,10 +95,7 @@ const CalendarStyles = createGlobalStyle`
 `;
 
 const renderDay = (exceptionData) => (dayNumber, date) => {
-  const exception = get(
-    exceptionData,
-    format(legacyParse(date), convertTokens("YYYY-MM-DD"))
-  );
+  const exception = get(exceptionData, format(date, convertTokens("YYYY-MM-DD")));
 
   if (!exception) {
     return <Day>{dayNumber}</Day>;
@@ -192,7 +189,7 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
                   <DatePicker
                     dropdownMode="select"
                     customInput={<CalendarInput helpText="Select date field" />}
-                    dateFormat="yyyy-MM-dd"
+                    dateFormat={"yyyy-MM-dd"}
                     selected={moment.tz(date, TIMEZONE).toDate()}
                     onChange={setDate}
                     todayButton={text("general.today")}
