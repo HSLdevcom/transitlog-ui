@@ -17,7 +17,7 @@ function timeRangeFromEvents(events) {
   return [{time: firstTime, event: firstEvent}, {time: lastTime, event: lastEvent}];
 }
 
-const MAX_TIME_DIFF = 60;
+const MAX_TIME_DIFF = 300;
 
 const matchLiveEvents = (time, journeys) => {
   return journeys.reduce((journeysMap, journey) => {
