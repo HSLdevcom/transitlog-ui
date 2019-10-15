@@ -117,6 +117,7 @@ const RouteDeparturesQuery = observer(({children, route, date, skip}) => {
 
   const {routeId, direction, originStopId} = route;
   const shouldSkip = skip || !route || !routeId || !direction || !originStopId;
+
   const queryVars = {
     routeId: routeId,
     direction: parseInt(direction, 10),

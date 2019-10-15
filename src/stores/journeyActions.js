@@ -52,7 +52,11 @@ export default (state) => {
     } else if (journeyItem) {
       const oldVehicle = get(state, "vehicle", "");
       state.selectedJourney = getJourneyObject(journeyItem);
-      filters.setRoute(journeyItem);
+
+      filters.setRoute({
+        routeId: get(journeyItem, "routeId", ""),
+        direction: get(journeyItem, "direction", ""),
+      });
 
       if (journeyItem.uniqueVehicleId !== oldVehicle) {
         filters.setVehicle(journeyItem.uniqueVehicleId);
