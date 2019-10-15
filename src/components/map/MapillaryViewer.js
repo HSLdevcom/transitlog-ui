@@ -62,7 +62,7 @@ class MapillaryViewer extends React.Component {
   }
 
   initMapillary() {
-    const {onNavigation = () => {}, elementId} = this.props;
+    const {elementId} = this.props;
 
     this.mly = new Mapillary.Viewer(
       elementId,
