@@ -34,7 +34,6 @@ export default (state) => {
   const filters = filterActions(state);
   const time = timeActions(state);
 
-  // TODO: Enable unsigned journey select
   const setSelectedJourney = action("Set selected journey", (journeyItem = null) => {
     if (
       journeyItem &&
@@ -53,10 +52,18 @@ export default (state) => {
       const oldVehicle = get(state, "vehicle", "");
       state.selectedJourney = getJourneyObject(journeyItem);
 
-      filters.setRoute({
+      const journeyRoute = {
         routeId: get(journeyItem, "routeId", ""),
         direction: get(journeyItem, "direction", ""),
-      });
+      };
+
+      if (
+        !state.route ||
+        !state.route.routeId ||
+        state.route.routeId !== journeyRoute.routeId
+      ) {
+        filters.setRoute(journeyRoute);
+      }
 
       if (journeyItem.uniqueVehicleId !== oldVehicle) {
         filters.setVehicle(journeyItem.uniqueVehicleId);
