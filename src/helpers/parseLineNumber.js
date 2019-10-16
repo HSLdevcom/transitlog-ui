@@ -7,7 +7,7 @@ export const parseLineNumber = (lineId) => {
     return lineStr.replace(/\d+/, "");
   }
 
-  if (lineStr.startsWith("31M")) {
+  if (lineStr.toLowerCase().startsWith("31m")) {
     return lineStr.substr(2);
   }
 

@@ -1,6 +1,7 @@
 import React, {useCallback, useState, useMemo} from "react";
 import {createRouteId} from "../../helpers/keys";
 import flow from "lodash/flow";
+import orderBy from "lodash/orderBy";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import SuggestionInput, {
@@ -58,61 +59,108 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
   const filteredRoutes =
     inputLength === 0
       ? routes
-      : routes.filter(({mode, routeId, direction, originStopId}) => {
+      : routes.filter(({routeId, direction}) => {
           const matchRouteId = routeId
             .trim()
             .replace(/\s/g, "")
             .toLowerCase();
 
-          const matchMode = mode.toLowerCase();
+          let matches = 0;
 
-          return (
-            (searchDirection &&
-              direction === searchDirection &&
-              matchRouteId.includes(searchRouteId)) ||
-            (!searchDirection && matchRouteId.includes(searchRouteId)) ||
-            parseLineNumber(matchRouteId).includes(searchRouteId.slice(0, inputLength)) ||
-            matchMode.startsWith(searchRouteId) ||
-            originStopId.startsWith(searchRouteId)
-          );
+          if (matchRouteId.includes(searchRouteId)) {
+            matches++;
+          }
+
+          if (parseLineNumber(matchRouteId).startsWith(searchRouteId)) {
+            matches++;
+          }
+
+          if (searchDirection && direction === searchDirection) {
+            matches++;
+          } else if (searchDirection) {
+            matches = 0;
+          }
+
+          return matches > 0;
         });
 
-  /*if (
-    (inputLength === 0 || inputValue === "unsigned") &&
-    !filteredRoutes.some((route) => route.routeId === "unsigned")
-  ) {
-    const unsignedRoute = {
-      routeId: "unsigned",
-      direction: 1,
-      id: "unsigned",
-      destination: "",
-      destinationStopId: "",
-      mode: "BUS",
-      name: "Unsigned journeys",
-      origin: "",
-      originStopId: "unknown",
-      alerts: [],
-      cancellations: [],
-    };
+  if (inputLength === 0) {
+    return sortBy(filteredRoutes, ({routeId}) => {
+      const parsedLineId = parseLineNumber(routeId);
+      const numericLineId = parsedLineId.replace(/[^0-9]*/g, "");
+      const numericMode = getTransportType(routeId, true);
 
-    filteredRoutes.unshift(unsignedRoute);
-  }*/
+      if (!numericLineId) {
+        return numericMode;
+      }
 
-  return sortBy(filteredRoutes, ({routeId}) => {
-    if (routeId === "unsigned") {
-      return 0;
-    }
+      const lineNum = parseInt(numericLineId, 10);
+      return numericMode + lineNum;
+    });
+  }
 
-    const parsedLineId = parseLineNumber(routeId);
-    const numericLineId = parsedLineId.replace(/[^0-9]*/g, "");
+  return orderBy(
+    filteredRoutes,
+    ({routeId, direction}) => {
+      let matchScore = 0;
 
-    if (!numericLineId) {
-      return getTransportType(routeId, true);
-    }
+      const cleanRouteId = routeId.trim().toLowerCase();
 
-    const lineNum = parseInt(numericLineId, 10);
-    return getTransportType(routeId, true) + lineNum;
-  });
+      if (/\s+|h+/g.test(cleanRouteId)) {
+        matchScore = matchScore - 100;
+      }
+
+      const lineId = parseLineNumber(cleanRouteId);
+      let checkValue = "";
+
+      let charIdx = 0;
+
+      if (cleanRouteId[0] === searchRouteId[0]) {
+        charIdx = 1;
+        matchScore = matchScore + 10;
+        checkValue = cleanRouteId;
+      } else if (lineId[0] === searchRouteId[0]) {
+        charIdx = 1;
+        matchScore = matchScore + 10;
+        checkValue = lineId;
+      }
+
+      if (checkValue) {
+        // Loop through the given search term and match it
+        // to a route or line ID, letter by letter.
+        for (charIdx; charIdx < searchRouteId.length; charIdx++) {
+          // Get the search char and set the index
+          const char = searchRouteId[charIdx];
+          let checkIdx = charIdx;
+
+          // Loop through the route ID
+          for (checkIdx; checkIdx < checkValue.length; checkIdx++) {
+            const checkChar = checkValue[charIdx];
+            // Reduce the given score by how far into the route ID we are from the current index.
+            // 0 is a perfect match, more means a mismatch between the char indices.
+            const distancePenalty = Math.abs(checkIdx - charIdx);
+
+            if (char === checkChar) {
+              // Increase the match score by the length of the search term and reduce by the penalty.
+              matchScore = matchScore + (searchRouteId.length - distancePenalty);
+              break; // Go to the next letter if this was a match!
+            } else {
+              // If no match, reduce the score.
+              matchScore = matchScore - charIdx;
+            }
+          }
+        }
+      }
+
+      // If we have an exact match, add the score for the direction if applicable.
+      if (checkValue && matchScore > 10 && searchDirection === direction) {
+        matchScore = matchScore + 1000;
+      }
+
+      return matchScore;
+    },
+    "desc"
+  );
 };
 
 export const getFullRoute = (routes, selectedRoute) => {
