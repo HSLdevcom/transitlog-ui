@@ -138,7 +138,7 @@ const SidePanel = decorate((props) => {
     },
   } = props;
 
-  const hasRoute = route && route.routeId;
+  const hasRoute = (stateRoute && stateRoute.routeId) || (route && route.routeId);
   // Figure out which tab is suggested. It will not be outright selected, but
   // if it appears and nothing else is selected then it will be.
   let suggestedTab = "";
