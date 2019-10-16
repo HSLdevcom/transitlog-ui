@@ -19,7 +19,10 @@ const SelectedJourneyEvents = decorate(({children, state}) => {
     !!selectedJourney && createRouteId(route) === createRouteId(selectedJourney);
 
   return (
-    <JourneyQuery skip={!selectedJourneyValid} journey={selectedJourney}>
+    <JourneyQuery
+      skip={!selectedJourneyValid}
+      journey={selectedJourney}
+      includeUnsigned={!!state.user}>
       {({journey = null, loading}) => (
         <EnsureJourneySelection journey={journey} loading={loading}>
           {children}

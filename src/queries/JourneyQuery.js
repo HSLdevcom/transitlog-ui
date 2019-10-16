@@ -1,11 +1,13 @@
 import React, {useEffect, useCallback, useMemo} from "react";
 import get from "lodash/get";
 import pick from "lodash/pick";
+import flow from "lodash/flow";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
+import {observer} from "mobx-react-lite";
 
 export const journeyQuery = gql`
   query journeyQuery(
@@ -14,6 +16,7 @@ export const journeyQuery = gql`
     $departureTime: Time!
     $direction: Direction!
     $uniqueVehicleId: VehicleId!
+    $unsignedEvents: Boolean
   ) {
     journey(
       routeId: $routeId
@@ -21,6 +24,7 @@ export const journeyQuery = gql`
       departureTime: $departureTime
       departureDate: $departureDate
       uniqueVehicleId: $uniqueVehicleId
+      unsignedEvents: $unsignedEvents
     ) {
       id
       journeyType
@@ -236,53 +240,55 @@ export const journeyQuery = gql`
 
 const updateListenerName = "selected journey";
 
-const JourneyQuery = (props) => {
-  const queryVars = useMemo(
-    () =>
-      pick(
-        get(props, "journey", {}),
-        "routeId",
-        "direction",
-        "departureDate",
-        "departureTime",
-        "uniqueVehicleId"
-      ),
-    [props.journey]
-  );
+const decorate = flow(observer);
 
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      const {skip, journey} = props;
+const JourneyQuery = decorate(
+  ({skip, children, journey = {}, includeUnsigned = false}) => {
+    const queryVars = useMemo(
+      () => ({
+        ...pick(
+          journey,
+          "routeId",
+          "direction",
+          "departureDate",
+          "departureTime",
+          "uniqueVehicleId"
+        ),
+        unsignedEvents: includeUnsigned,
+      }),
+      [journey, includeUnsigned]
+    );
 
-      if (journey && !skip) {
-        refetch(queryVars);
-      }
-    },
-    [props.skip, queryVars]
-  );
-
-  useEffect(() => () => removeUpdateListener(updateListenerName), []);
-
-  const {skip, journey, children} = props;
-
-  return (
-    <Query
-      partialRefetch={true}
-      skip={skip || !journey}
-      query={journeyQuery}
-      variables={queryVars}>
-      {({data, loading, error, refetch}) => {
-        if (!data || loading) {
-          return children({journey: null, loading, error});
+    const createRefetcher = useCallback(
+      (refetch) => () => {
+        if (journey && !skip) {
+          refetch(queryVars);
         }
+      },
+      [skip, queryVars]
+    );
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch));
-        const journey = get(data, "journey", null);
+    useEffect(() => () => removeUpdateListener(updateListenerName), []);
 
-        return children({journey, loading, error});
-      }}
-    </Query>
-  );
-};
+    return (
+      <Query
+        partialRefetch={true}
+        skip={skip || !journey}
+        query={journeyQuery}
+        variables={queryVars}>
+        {({data, loading, error, refetch}) => {
+          if (!data || loading) {
+            return children({journey: null, loading, error});
+          }
+
+          setUpdateListener(updateListenerName, createRefetcher(refetch));
+          const journey = get(data, "journey", null);
+
+          return children({journey, loading, error});
+        }}
+      </Query>
+    );
+  }
+);
 
 export default JourneyQuery;
