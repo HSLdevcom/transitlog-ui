@@ -83,7 +83,10 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
 
           let matches = 0;
 
-          if (matchShortId.startsWith(inputValue)) {
+          if (
+            matchShortId.startsWith(inputValue) ||
+            matchShortId.substring(1).startsWith(inputValue)
+          ) {
             matches++;
           }
 
@@ -128,7 +131,7 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
       let charIdx = 0;
       const firstInputChar = inputValue[0];
 
-      if (cleanShortId[0] === firstInputChar) {
+      if ([cleanShortId[0], cleanShortId[1]].includes(firstInputChar)) {
         charIdx = 1;
         matchScore = matchScore + 100;
         checkValue = cleanShortId;
