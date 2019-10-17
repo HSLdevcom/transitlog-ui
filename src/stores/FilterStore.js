@@ -40,6 +40,7 @@ export default (state, initialState = {}) => {
     // Recurse through the passed object and assign each value to the respective state value.
     function resetStateWith(obj) {
       Object.entries(obj).forEach(([key, value]) => {
+        console.log(key);
         state[key] = value;
       });
     }
@@ -53,6 +54,7 @@ export default (state, initialState = {}) => {
     });
 
     resetUrlState(true);
+    actions.setDate(state.date); // Keep the date in the URL.
   });
 
   const hydrateFromUrl = (initialStateOrUrlState = initialState, extend = false) => {
