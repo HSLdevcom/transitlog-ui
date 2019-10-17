@@ -225,13 +225,15 @@ class TimetablePanel extends Component {
       Time.setTime(currentTime);
     }
 
-    const journey =
-      departure.journey ||
-      createCompositeJourney(
-        departure.plannedDepartureTime.departureDate,
+    let journey = departure.journey || null;
+
+    if (departure.originDepartureTime) {
+      journey = createCompositeJourney(
+        departure.originDepartureTime.departureDate,
         departure,
-        departure.plannedDepartureTime.departureTime
+        departure.originDepartureTime.departureTime
       );
+    }
 
     const selectedJourneyId = getJourneyId(selectedJourney, false);
 

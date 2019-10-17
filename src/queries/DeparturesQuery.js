@@ -57,6 +57,13 @@ export const departuresQuery = gql`
         uniqueVehicleId
         _numInstance
       }
+      originDepartureTime {
+        departureDate
+        departureDateTime
+        departureTime
+        id
+        isNextDay
+      }
       observedDepartureTime {
         id
         departureDate
