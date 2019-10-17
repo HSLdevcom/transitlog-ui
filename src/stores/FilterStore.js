@@ -32,6 +32,11 @@ export default (state, initialState = {}) => {
       direction: "",
       originStopId: "",
     },
+    timetableFilters: {
+      route: {current: "", pending: ""},
+      minHour: {current: "", pending: ""},
+      maxHour: {current: "", pending: ""},
+    },
   };
 
   const actions = filterActions(state);
@@ -40,7 +45,6 @@ export default (state, initialState = {}) => {
     // Recurse through the passed object and assign each value to the respective state value.
     function resetStateWith(obj) {
       Object.entries(obj).forEach(([key, value]) => {
-        console.log(key);
         state[key] = value;
       });
     }
