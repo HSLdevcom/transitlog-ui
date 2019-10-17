@@ -1,4 +1,4 @@
-import {action} from "mobx";
+import {action, set} from "mobx";
 import moment from "moment-timezone";
 import get from "lodash/get";
 import {setUrlValue} from "./UrlManager";
@@ -48,12 +48,45 @@ const filterActions = (state) => {
     setUrlValue("route.originStopId", state.route.originStopId);
   });
 
+  const setTimetableFilter = action((filter, value) => {
+    if (typeof state.timetableFilters[filter] === "undefined") {
+      return;
+    }
+
+    state.timetableFilters[filter].pending = value;
+    setUrlValue(`timetableFilters.${filter}.pending`, value);
+  });
+
+  const applyTimetableFilters = action(() => {
+    for (const filterKey of Object.keys(state.timetableFilters)) {
+      const pendingValue = state.timetableFilters[filterKey].pending;
+      state.timetableFilters[filterKey].current = pendingValue;
+      setUrlValue(`timetableFilters.${filterKey}.current`, pendingValue);
+    }
+  });
+
+  const clearTimetableFilters = action(() => {
+    set(state.timetableFilters, {
+      route: {current: "", pending: ""},
+      minHour: {current: "", pending: ""},
+      maxHour: {current: "", pending: ""},
+    });
+
+    for (const filterKey of Object.keys(state.timetableFilters)) {
+      setUrlValue(`timetableFilters.${filterKey}.pending`, "");
+      setUrlValue(`timetableFilters.${filterKey}.current`, "");
+    }
+  });
+
   return {
     setDate,
     setStop,
     setVehicle,
     setLine,
     setRoute,
+    setTimetableFilter,
+    applyTimetableFilters,
+    clearTimetableFilters,
   };
 };
 
