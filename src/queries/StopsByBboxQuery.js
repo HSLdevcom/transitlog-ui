@@ -24,21 +24,12 @@ export const stopsByBboxQuery = gql`
   ${AlertFieldsFragment}
 `;
 
-let currentlyFetching = "";
-
 const StopsByBboxQuery = observer((props) => {
   const {children, bbox, date, skip} = props;
   const prevResult = useRef([]);
 
-  if (currentlyFetching === bbox) {
-    return children({stops: prevResult.current, loading: false});
-  }
-
-  currentlyFetching = bbox;
-
   return (
     <Query
-      partialRefetch={true}
       skip={skip || !bbox || !date}
       query={stopsByBboxQuery}
       variables={{bbox, date}}>
@@ -54,7 +45,7 @@ const StopsByBboxQuery = observer((props) => {
         }
 
         return children({
-          stops: prevResult.current,
+          stops,
           loading: false,
         });
       }}
