@@ -10,9 +10,7 @@ import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import styled from "styled-components";
 import Loading from "../Loading";
 import {applyTooltip} from "../../hooks/useTooltip";
-import {parseLineNumber} from "../../helpers/parseLineNumber";
 import sortBy from "lodash/sortBy";
-import getTransportType from "../../helpers/getTransportType";
 import orderBy from "lodash/orderBy";
 import {intval} from "../../helpers/isWithinRange";
 
