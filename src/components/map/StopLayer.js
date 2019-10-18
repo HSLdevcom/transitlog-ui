@@ -89,8 +89,8 @@ const StopLayerContent = decorate(({stops, showRadius, state}) => {
   );
 });
 
-const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}) => {
-  const {date} = state;
+const StopLayer = decorate(({showRadius, state, selectedStop}) => {
+  const {date, mapBounds: bounds, mapZoom: zoom, route} = state;
 
   const boundsAreValid =
     !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
@@ -98,7 +98,11 @@ const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}
   return (
     <AllStopsQuery date={date}>
       {({stops = []}) => {
-        const hideStops = zoom < 14 || stops.length === 0 || !boundsAreValid;
+        const hideStops =
+          zoom < 14 ||
+          stops.length === 0 ||
+          !boundsAreValid ||
+          (!!route && !!route.routeId);
 
         if (hideStops && !selectedStop) {
           return null;

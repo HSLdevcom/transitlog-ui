@@ -1,9 +1,11 @@
 import React, {Component} from "react";
 import {Polyline} from "react-leaflet";
 import calculateBoundsFromPositions from "../../helpers/calculateBoundsFromPositions";
-import {observer} from "mobx-react";
+import {observer, inject} from "mobx-react";
 import {getModeColor} from "../../helpers/vehicleColor";
+import {app} from "mobx-app";
 
+@inject(app("UI"))
 @observer
 class RouteLayer extends Component {
   currentRouteId = "";
@@ -26,7 +28,7 @@ class RouteLayer extends Component {
   };
 
   setBounds() {
-    const {canCenterOnRoute = true, coordinates, setMapView = () => {}} = this.props;
+    const {canCenterOnRoute = true, coordinates, UI} = this.props;
 
     if (!canCenterOnRoute || coordinates.length === 0) {
       return;
@@ -35,7 +37,7 @@ class RouteLayer extends Component {
     const bounds = calculateBoundsFromPositions(coordinates);
 
     if (bounds && bounds.isValid()) {
-      setMapView(bounds);
+      UI.setMapView(bounds);
     }
   }
 

@@ -123,7 +123,6 @@ const SidePanel = decorate((props) => {
     areaJourneysLoading = false,
     stop,
     route,
-    sidePanelOpen,
     detailsOpen,
     areaSearchActive = false,
     state: {
@@ -154,7 +153,7 @@ const SidePanel = decorate((props) => {
   const detailsCanOpen = getJourneyId(selectedJourney) || route;
 
   return (
-    <SidePanelContainer data-testid="sidepanel" visible={sidePanelOpen}>
+    <SidePanelContainer data-testid="sidepanel" visible={sidePanelVisible}>
       <MainSidePanel>
         {showInstructions ? (
           <UsageInstructions language={language} />

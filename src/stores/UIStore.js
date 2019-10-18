@@ -2,7 +2,10 @@ import {extendObservable, observable, reaction, set} from "mobx";
 import {getUrlValue, onHistoryChange} from "./UrlManager";
 import uiActions from "./uiActions";
 import get from "lodash/get";
+import trim from "lodash/trim";
 import {boundsFromBBoxString} from "../helpers/boundsFromBBoxString";
+import {latLng} from "leaflet";
+import {intval} from "../helpers/isWithinRange";
 
 export const LANGUAGES = {
   FINNISH: "fi",
@@ -27,6 +30,19 @@ export const weeklyObservedTimeTypes = {
 };
 
 export default (state) => {
+  const urlCenter = getUrlValue("mapView");
+  const urlZoom = getUrlValue("mapZoom");
+
+  let [lat = "", lng = ""] = urlCenter.split(",");
+
+  // Use default coordinates if parsing or validation fails.
+  if (!lat || !trim(lat) || !parseInt(lat)) {
+    lat = 60.170988;
+  }
+  if (!lng || !trim(lng) || !parseInt(lng)) {
+    lng = 24.940842;
+  }
+
   const urlBounds = getUrlValue("areaBounds", null);
 
   extendObservable(
@@ -51,11 +67,16 @@ export default (state) => {
       user: null,
       currentMapillaryViewerLocation: null,
       currentMapillaryMapLocation: null,
+      mapView: latLng([lat, lng]),
+      mapZoom: intval(urlZoom) || 13,
+      mapBounds: null,
     },
     {
       areaEventsBounds: observable.ref,
       currentMapillaryViewerLocation: observable.ref,
       currentMapillaryMapLocation: observable.ref,
+      mapView: observable.ref,
+      mapBounds: observable.ref,
     }
   );
 

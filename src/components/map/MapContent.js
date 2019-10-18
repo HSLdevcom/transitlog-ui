@@ -33,12 +33,8 @@ const MapContent = decorate(
     journeyPositions,
     unsignedEvents,
     route,
-    zoom,
-    mapBounds, // The current map view
     stop,
-    setMapView,
     centerOnRoute = true,
-    UI,
     state: {
       selectedJourney,
       date,
@@ -46,6 +42,8 @@ const MapContent = decorate(
       areaEventsStyle,
       unixTime,
       areaSearchRangeMinutes,
+      mapView,
+      mapZoom,
     },
   }) => {
     const hasRoute = !!route && !!route.routeId;
@@ -59,17 +57,9 @@ const MapContent = decorate(
 
     return (
       <>
-        <AreaSelect enabled={zoom > 12 && areaSearchRangeMinutes} />
+        <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
         {/* When a route is NOT selected... */}
-        {!hasRoute && (
-          <StopLayer
-            showRadius={showStopRadius}
-            date={date}
-            selectedStop={stop}
-            zoom={zoom}
-            bounds={mapBounds}
-          />
-        )}
+        <StopLayer showRadius={showStopRadius} date={date} selectedStop={stop} />
         {/* When a route IS selected... */}
         {hasRoute && (
           <>
@@ -86,7 +76,6 @@ const MapContent = decorate(
                     mode={routeGeometry.mode || "BUS"}
                     coordinates={routeGeometry.coordinates}
                     canCenterOnRoute={centerOnRoute}
-                    setMapView={setMapView}
                     key={`route_line_${createRouteId(route, true)}`}
                   />
                 ) : null
@@ -183,7 +172,7 @@ const MapContent = decorate(
 
               return (
                 <SimpleHfpLayer
-                  zoom={zoom}
+                  zoom={mapZoom}
                   name={journey.id}
                   key={`hfp_polyline_${journey.id}`}
                   events={journey.vehiclePositions}
@@ -191,11 +180,11 @@ const MapContent = decorate(
               );
             })}
         {mapOverlays.includes("Weather") && (
-          <WeatherDisplay key="weather_map" position={mapBounds} />
+          <WeatherDisplay key="weather_map" position={mapView} />
         )}
         {mapOverlays.includes("Weather") &&
           (!selectedJourneyId ? (
-            <WeatherWidget key="map_weather" position={mapBounds} />
+            <WeatherWidget key="map_weather" position={mapView} />
           ) : (
             <JourneyWeatherWidget
               time={unixTime}

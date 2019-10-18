@@ -6,9 +6,59 @@ import {
   areaEventsStyles,
   weeklyObservedTimeTypes,
 } from "./UIStore";
-import {latLng} from "leaflet";
+import {latLng, LatLng, LatLngBounds} from "leaflet";
+import {intval} from "../helpers/isWithinRange";
+import {validBounds} from "../helpers/validBounds";
 
 export default (state) => {
+  const setMapZoom = action((value) => {
+    const nextZoom = intval(value) || 13;
+
+    if (nextZoom !== state.mapZoom) {
+      state.mapZoom = nextZoom;
+    }
+  });
+
+  const setMapView = action((location) => {
+    let center = null;
+
+    if (
+      !!location &&
+      typeof location.toBBoxString === "function" &&
+      validBounds(location)
+    ) {
+      center = location;
+    } else if (!!location) {
+      center = latLng(location);
+    }
+
+    let equals = false;
+
+    if (
+      (state.mapView instanceof LatLngBounds && center instanceof LatLngBounds) ||
+      (state.mapView instanceof LatLng && center instanceof LatLng)
+    ) {
+      equals = state.mapView.equals(center);
+    }
+
+    if (center && (!state.mapView || !equals)) {
+      state.mapView = center;
+    }
+  });
+
+  const setMapBounds = action((bounds) => {
+    if (
+      !!bounds &&
+      typeof bounds.toBBoxString === "function" &&
+      typeof bounds.isValid === "function" &&
+      bounds.isValid()
+    ) {
+      state.mapBounds = bounds;
+    } else if (!bounds) {
+      state.mapBounds = null;
+    }
+  });
+
   const toggleShareModal = action((setTo = !state.shareModalOpen) => {
     state.shareModalOpen = setTo;
   });
@@ -171,5 +221,8 @@ export default (state) => {
     onSelectArea,
     setMapillaryViewerLocation,
     setMapillaryMapLocation,
+    setMapZoom,
+    setMapView,
+    setMapBounds,
   };
 };
