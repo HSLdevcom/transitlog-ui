@@ -6,22 +6,12 @@ import {latLng} from "leaflet";
 import CompoundStopMarker from "./CompoundStopMarker";
 import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
-import {getRoundedBbox} from "../../helpers/getRoundedBbox";
+import AllStopsQuery from "../../queries/AllStopsQuery";
 
 const decorate = flow(
   observer,
   inject("state")
 );
-
-const getBboxString = (bounds, round = false) => {
-  return bounds && typeof bounds.toBBoxString === "function"
-    ? round
-      ? getRoundedBbox(bounds).toBBoxString()
-      : bounds.toBBoxString()
-    : typeof bounds === "string"
-    ? bounds
-    : "";
-};
 
 const StopLayerContent = decorate(({stops, showRadius, state}) => {
   const selectedStopId = state.stop;
@@ -106,26 +96,16 @@ const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}
   const boundsAreValid =
     !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
 
-  const currentBounds = useRef(null);
-
-  if (zoom < 14 && !selectedStop) {
-    return null;
-  }
-
-  let queryBounds = bounds;
-
-  if (currentBounds.current && boundsAreValid) {
-    queryBounds = currentBounds.current.contains(bounds) ? currentBounds.current : bounds;
-  } else if (boundsAreValid) {
-    currentBounds.current = bounds;
-  }
-
-  const bbox = getBboxString(queryBounds);
-
   return (
-    <StopsByBboxQuery skip={!bbox || zoom < 14} bbox={bbox} date={date}>
+    <AllStopsQuery date={date}>
       {({stops = []}) => {
-        if (selectedStop && (zoom < 14 || stops.length === 0)) {
+        const hideStops = zoom < 14 || stops.length === 0 || !boundsAreValid;
+
+        if (hideStops && !selectedStop) {
+          return null;
+        }
+
+        if (hideStops && selectedStop) {
           return (
             <StopMarker
               selected={true}
@@ -136,15 +116,17 @@ const StopLayer = decorate(({bounds, showRadius, state, selectedStop, zoom = 13}
           );
         }
 
+        const stopsInArea = stops.filter(({lat, lng}) => bounds.contains([lat, lng]));
+
         return (
           <StopLayerContent
             key="stop layer content"
-            stops={stops}
+            stops={stopsInArea}
             showRadius={showRadius}
           />
         );
       }}
-    </StopsByBboxQuery>
+    </AllStopsQuery>
   );
 });
 

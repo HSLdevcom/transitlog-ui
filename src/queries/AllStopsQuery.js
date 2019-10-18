@@ -18,6 +18,8 @@ export const allStopsQuery = gql`
         routeId
         direction
         isTimingStop
+        originStopId
+        mode
       }
       alerts {
         level
