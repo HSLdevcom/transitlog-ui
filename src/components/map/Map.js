@@ -1,196 +1,271 @@
-import React, {Component} from "react";
-import {inject, observer} from "mobx-react";
-import LeafletMap from "./LeafletMap";
-import {app} from "mobx-app";
-import trim from "lodash/trim";
+import React, {useEffect, useState, useCallback, useMemo, useRef} from "react";
+import {
+  Map as LeafletMap,
+  TileLayer,
+  ZoomControl,
+  Pane,
+  LayersControl,
+  FeatureGroup,
+  ScaleControl,
+  Rectangle,
+  CircleMarker,
+} from "react-leaflet";
 import get from "lodash/get";
-import throttle from "lodash/throttle";
+import flow from "lodash/flow";
+import MapillaryViewer from "./MapillaryViewer";
+import styled from "styled-components";
+import MapillaryGeoJSONLayer from "./MapillaryGeoJSONLayer";
 import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
-import {observable, action, runInAction} from "mobx";
+import {observer} from "mobx-react-lite";
+import {observable, action, reaction} from "mobx";
+import {inject} from "../../helpers/inject";
+import "leaflet/dist/leaflet.css";
+import {validBounds} from "../../helpers/validBounds";
+import {LatLngBounds, LatLng} from "leaflet";
 
-const MAP_BOUNDS_URL_KEY = "mapView";
+const MapContainer = styled.div`
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
-/**
- * This component contains app-specific logic and functions. It wraps LeafletMap,
- * which contains leaflet-specific setup and components.
- */
-
-@inject(app("Journey"))
-@observer
-class Map extends Component {
-  canSetView = false;
-  prevCenter = null;
-
-  disposeSidePanelReaction = () => {};
-
-  mapRef = React.createRef();
-
-  @observable
-  zoom = 13;
-
-  @observable.ref
-  mapView = null;
-
-  setMapZoom = action((zoom) => {
-    this.zoom = zoom;
-  });
-
-  getLeaflet = () => {
-    return get(this.mapRef, "current.leafletElement", null);
-  };
-
-  componentDidMount() {
-    const map = this.getLeaflet();
-
-    // Center the map on the enter position provided through the URL.
-    let urlCenter = "";
-
-    if (map) {
-      urlCenter = getUrlValue(MAP_BOUNDS_URL_KEY);
-      let [lat = "", lng = "", zoom = this.zoom] = urlCenter.split(",");
-
-      // Use default coordinates if parsing or validation fails.
-      if (!lat || !trim(lat) || !parseInt(lat)) {
-        lat = 60.170988;
-      }
-      if (!lng || !trim(lng) || !parseInt(lng)) {
-        lng = 24.940842;
-      }
-
-      map.setView({lat, lng}, zoom);
-    }
-
-    // To prevent the map from moving away from the view shared in the URL, allow
-    // view changes only after a timeout. Feel free to adjust if this value doesn't work.
-    setTimeout(() => (this.canSetView = true), urlCenter ? 3000 : 0);
+  > .leaflet-container {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    flex: 1 1 50%;
   }
+`;
 
-  componentDidUpdate({sidePanelOpen: prevSidePanelOpen, detailsOpen: prevDetailsOpen}) {
-    const {sidePanelOpen, detailsOpen} = this.props;
+const MapillaryView = styled(MapillaryViewer)`
+  width: 100%;
+  height: 100%;
+  flex: 1 1 50%;
+  position: relative;
+`;
 
-    if (sidePanelOpen !== prevSidePanelOpen || detailsOpen !== prevDetailsOpen) {
-      setTimeout(() => {
-        const leafletMap = this.getLeaflet();
+const visualLog = observable(
+  {bounds: [], points: []},
+  {bounds: observable.ref, points: observable.ref}
+);
 
-        if (leafletMap) {
-          leafletMap.invalidateSize(true);
-        }
-      }, 300);
-    }
+// Call this to visualize bounds anywhere in the app. Dev tool.
+export const visualizeBounds = action((boundsOrPoint) => {
+  if (boundsOrPoint.lat) {
+    visualLog.points.push(boundsOrPoint);
+  } else {
+    visualLog.bounds.push(boundsOrPoint);
   }
+});
 
-  /**
-   * This method focuses the Leaflet map on the provided location. Center is either
-   * LatLng compatible data or a latLngBounds. Sets the center directly on the Leaflet
-   * map, bypassing both state and React-Leaflet. This yields the best performance.
-   * @param center LatLng or LatLngBounds representing the location that the map should
-   *   center on.
-   */
-  setMapView = (center) => {
-    const map = this.getLeaflet();
+const decorate = flow(
+  observer,
+  inject("UI")
+);
 
-    // Bail if we're not allowed to set the view yet (after mount when the position
-    // is set from the url) or if there are other problems.
-    if (!this.canSetView || !center || !map) {
-      return;
-    }
+const Map = decorate(({state, UI, children, className, detailsOpen}) => {
+  const {
+    mapOverlays,
+    currentMapillaryViewerLocation,
+    currentMapillaryMapLocation,
+    sidePanelVisible,
+  } = state;
 
-    const prevCenter = this.prevCenter;
-    let useCenter = center;
-    let bounds = null;
+  const {
+    changeOverlay,
+    setMapillaryViewerLocation,
+    setMapillaryMapLocation,
+    setMapView,
+    setMapZoom,
+    setMapBounds,
+  } = UI;
 
-    // If we got passed a bounds, get the center from it for validating against
-    // prevCenter, but also save the bounds.
-    if (typeof useCenter.toBBoxString === "function") {
-      useCenter = center.getCenter();
-      bounds = center;
-    } else {
-      useCenter = center;
-      bounds = null;
-    }
+  const mapRef = useRef(null);
+  const [canSetView, setCanSetView] = useState(true);
 
-    // We don't want to set invalid centers or centers that were set previously.
-    if (
-      (!prevCenter && useCenter) ||
-      (prevCenter && useCenter && !useCenter.equals(prevCenter))
-    ) {
-      this.prevCenter = useCenter;
+  const leafletMap = useMemo(() => {
+    return get(mapRef, "current.leafletElement", null);
+  }, [mapRef.current]);
 
-      // If we have a bounds we might as well use it.
-      if (bounds) {
-        map.fitBounds(bounds);
-      } else {
-        map.setView(useCenter);
-      }
-    }
-  };
-
-  componentWillUnmount() {
-    this.disposeSidePanelReaction();
-  }
-
-  // Debounced method that sets the current map position into the URL state when
-  // it changes.
-  setMapUrlState = throttle(
-    (center, zoom) =>
-      center.lat &&
-      center.lng &&
-      zoom &&
-      setUrlValue(MAP_BOUNDS_URL_KEY, `${center.lat},${center.lng},${zoom}`),
-    500
+  const [currentBaseLayer, setCurrentBaseLayer] = useState(
+    getUrlValue("mapBaseLayer", "Digitransit")
   );
 
-  onMapChanged = () => {
-    const map = this.getLeaflet();
-    this.setMapUrlState(map.getCenter(), map.getZoom());
-    this.setMapViewState(map);
-  };
+  const onChangeBaseLayer = useCallback(({name}) => {
+    setUrlValue("mapBaseLayer", name);
+    setCurrentBaseLayer(name);
+  });
 
-  // This method sets the observable map view props of this component. This method is
-  // called AFTER the view has been changed and it will NOT center the map or change
-  // the view, the state is just passed on to children.
-  setMapViewState = throttle((map) => {
-    if (!map) {
-      return;
-    }
+  const onMapChange = useCallback(
+    (e) => {
+      const nextCenter = e.target.getCenter();
 
-    const bounds = map.getBounds();
-    const {mapView} = this;
+      if (canSetView) {
+        setMapView(nextCenter);
+      }
+    },
+    [canSetView]
+  );
 
-    if (mapView && bounds.equals(mapView)) {
-      return;
-    }
+  const onMapChanged = useCallback((e) => {
+    const center = e.target.getCenter();
+    const nextBounds = e.target.getBounds();
 
-    requestAnimationFrame(() => {
-      runInAction(() => (this.mapView = bounds));
-    });
-  }, 100);
+    setMapBounds(nextBounds);
+    setUrlValue("mapView", `${center.lat},${center.lng}`);
+  }, []);
 
-  onZoom = (event) => {
+  const onMapZoomed = useCallback((event) => {
     const zoom = event.target.getZoom();
-    this.setMapZoom(zoom);
-  };
+    setMapZoom(zoom);
+    setUrlValue("mapZoom", zoom);
+    setCanSetView(true);
+  }, []);
 
-  // The state is provided through a function to not trigger unwanted re-renders in consumers.
-  getMapView = () => this.mapView;
+  // Invalidate map size to refresh map items layout
+  useEffect(() => {
+    if (leafletMap) {
+      setTimeout(() => {
+        leafletMap.invalidateSize(true);
+      }, 300);
+    }
+  }, [leafletMap, detailsOpen, sidePanelVisible, currentMapillaryViewerLocation]);
 
-  render() {
-    const {children, className} = this.props;
+  // De-observed initial map state
+  const initialViewport = useMemo(() => {
+    const {mapView, mapZoom} = state;
+    return [mapView, mapZoom];
+  }, []);
 
-    return (
-      <LeafletMap
-        mapRef={this.mapRef}
-        className={className}
-        onMapChanged={this.onMapChanged}
-        zoom={this.zoom}
-        onZoom={this.onZoom}>
-        {children({
-          zoom: this.zoom,
-          getMapView: this.getMapView,
-          setMapView: this.setMapView,
-        })}
-      </LeafletMap>
+  useEffect(() => {
+    return reaction(
+      () => [state.mapView, state.mapZoom],
+      ([currentView, currentZoom]) => {
+        if (leafletMap) {
+          if (
+            currentView instanceof LatLngBounds &&
+            validBounds(currentView) &&
+            !leafletMap.getBounds().equals(currentView)
+          ) {
+            leafletMap.fitBounds(currentView);
+            setCanSetView(false);
+          } else if (
+            currentView instanceof LatLng &&
+            !leafletMap.getCenter().equals(currentView)
+          ) {
+            leafletMap.setView(currentView, currentZoom, {animate: false});
+          }
+        }
+      },
+      {name: "map view reaction", fireImmediately: true}
     );
-  }
-}
+  }, [leafletMap]);
+
+  useEffect(() => {
+    if (canSetView === false) {
+      setTimeout(() => setCanSetView(true), 3000);
+    }
+  }, [canSetView]);
+
+  return (
+    <MapContainer className={className}>
+      <LeafletMap
+        center={initialViewport[0]}
+        zoom={initialViewport[1]}
+        ref={mapRef}
+        maxZoom={18}
+        selectArea={true}
+        zoomControl={false}
+        onBaselayerchange={onChangeBaseLayer}
+        onOverlayadd={changeOverlay("add")}
+        onOverlayremove={changeOverlay("remove")}
+        onZoomend={onMapZoomed}
+        onMove={onMapChange}
+        onMoveend={onMapChanged}>
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer
+            name="Digitransit"
+            checked={currentBaseLayer === "Digitransit"}>
+            <TileLayer
+              attribution={
+                'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors '
+              }
+              url="https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}@2x.png"
+              tileSize={512}
+              zoomOffset={-1}
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name="Aerial" checked={currentBaseLayer === "Aerial"}>
+            <TileLayer
+              tileSize={256}
+              attribution="© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY"
+              url="https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg"
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.Overlay
+            name="Mapillary"
+            checked={mapOverlays.includes("Mapillary")}>
+            <MapillaryGeoJSONLayer
+              map={get(mapRef, "current.leafletElement", null)}
+              viewBbox={state.mapView}
+              location={currentMapillaryMapLocation}
+              layerIsActive={mapOverlays.includes("Mapillary")}
+              onSelectLocation={setMapillaryViewerLocation}
+            />
+          </LayersControl.Overlay>
+          <LayersControl.Overlay
+            name="Stop radius"
+            checked={mapOverlays.includes("Stop radius")}>
+            <FeatureGroup>
+              {/*
+                  The stop radius is rendered in the StopMarker component. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay name="Weather" checked={mapOverlays.includes("Weather")}>
+            <FeatureGroup>
+              {/*
+                  The weather display is rendered in MapContent. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
+        </LayersControl>
+        <Pane name="mapillary-lines" style={{zIndex: 390}} />
+        <Pane name="mapillary-location" style={{zIndex: 400}} />
+        <Pane name="route-lines" style={{zIndex: 410}} />
+        <Pane name="event-lines" style={{zIndex: 420}} />
+        <Pane name="stop-radius" style={{zIndex: 440}} />
+        <Pane name="selected-stop-radius" style={{zIndex: 445}} />
+        <Pane name="event-hover" style={{zIndex: 450}} />
+        <Pane name="stops" style={{zIndex: 475}} />
+        <Pane name="hfp-events" style={{zIndex: 480}} />
+        <Pane name="hfp-events-2" style={{zIndex: 485}} />
+        <Pane name="hfp-markers" style={{zIndex: 500}} />
+        <Pane name="hfp-markers-primary" style={{zIndex: 550}} />
+        <Pane name="popups" style={{zIndex: 600}} />
+        <ZoomControl position="topright" />
+        <ScaleControl position="bottomleft" imperial={false} />
+        {visualLog.bounds.length !== 0 &&
+          visualLog.bounds.map((bounds, index) => (
+            <Rectangle key={`bounds_${index}`} bounds={bounds} />
+          ))}
+        {visualLog.points.length !== 0 &&
+          visualLog.points.map((point, index) => (
+            <CircleMarker key={`points_${index}`} center={point} radius={10} />
+          ))}
+        {children}
+      </LeafletMap>
+      {currentMapillaryViewerLocation && (
+        <MapillaryView
+          onCloseViewer={() => setMapillaryViewerLocation(false)}
+          elementId="mapillary-viewer"
+          onNavigation={setMapillaryMapLocation}
+          location={currentMapillaryViewerLocation}
+        />
+      )}
+    </MapContainer>
+  );
+});
+
 export default Map;
