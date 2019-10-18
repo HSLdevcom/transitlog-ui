@@ -1,6 +1,5 @@
 import React, {useMemo, useRef} from "react";
 import {observer} from "mobx-react-lite";
-import StopsByBboxQuery from "../../queries/StopsByBboxQuery";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
 import CompoundStopMarker from "./CompoundStopMarker";
