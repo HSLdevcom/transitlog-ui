@@ -27,25 +27,6 @@ type Alert {
   url: String
 }
 
-type AreaJourney {
-  alerts: [Alert!]!
-  cancellations: [Cancellation!]!
-  departureDate: Date!
-  departureTime: Time!
-  direction: Direction
-  headsign: String
-  id: ID!
-  isCancelled: Boolean!
-  journeyType: String!
-  lineId: String
-  mode: String
-  operatorId: String
-  routeId: String
-  uniqueVehicleId: VehicleId
-  vehicleId: String
-  vehiclePositions: [VehiclePosition]!
-}
-
 type Cancellation {
   cancellationEffect: CancellationEffect!
   cancellationType: CancellationType!
@@ -155,7 +136,6 @@ type Journey {
   id: ID!
   isCancelled: Boolean!
   journeyType: String!
-  lineId: String
   mode: String
   name: String
   operatorId: String
@@ -279,10 +259,10 @@ type Query {
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
   departures(date: Date!, filter: DepartureFilterInput, stopId: String!): [Departure]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
-  eventsByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!, unsignedEvents: Boolean): [AreaJourney]!
   exceptionDays(year: String!): [ExceptionDay]!
   journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey
   journeys(departureDate: Date!, direction: Direction!, routeId: String!): [Journey]!
+  journeysByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!, unsignedEvents: Boolean): [Journey]!
   lines(date: Date, filter: LineFilterInput, includeLinesWithoutRoutes: Boolean = false): [Line]!
   route(date: Date!, direction: Direction!, routeId: String!): Route
   routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
@@ -391,9 +371,7 @@ type VehicleJourney {
   journeyType: String!
   lineId: String
   mode: String
-  nextStopId: String
   operatorId: String
-  originStopId: String
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!

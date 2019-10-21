@@ -142,26 +142,6 @@ export type AreaEventsFilterInput = {
   direction?: Maybe<Scalars['Direction']>,
 };
 
-export type AreaJourney = {
-   __typename?: 'AreaJourney',
-  id: Scalars['ID'],
-  journeyType: Scalars['String'],
-  lineId?: Maybe<Scalars['String']>,
-  routeId?: Maybe<Scalars['String']>,
-  direction?: Maybe<Scalars['Direction']>,
-  departureDate: Scalars['Date'],
-  departureTime: Scalars['Time'],
-  uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
-  operatorId?: Maybe<Scalars['String']>,
-  vehicleId?: Maybe<Scalars['String']>,
-  headsign?: Maybe<Scalars['String']>,
-  mode?: Maybe<Scalars['String']>,
-  vehiclePositions: Array<Maybe<VehiclePosition>>,
-  alerts: Array<Alert>,
-  cancellations: Array<Cancellation>,
-  isCancelled: Scalars['Boolean'],
-};
-
 
 export enum CacheControlScope {
   Public = 'PUBLIC',
@@ -311,10 +291,11 @@ export type DepartureFilterInput = {
 export type DepartureJourney = {
    __typename?: 'DepartureJourney',
   id: Scalars['ID'],
+  journeyType: Scalars['String'],
   type: Scalars['String'],
   lineId?: Maybe<Scalars['String']>,
-  routeId: Scalars['String'],
-  direction: Scalars['Direction'],
+  routeId?: Maybe<Scalars['String']>,
+  direction?: Maybe<Scalars['Direction']>,
   originStopId?: Maybe<Scalars['String']>,
   departureDate: Scalars['Date'],
   departureTime: Scalars['Time'],
@@ -366,9 +347,9 @@ export type ExceptionDay = {
 export type Journey = {
    __typename?: 'Journey',
   id: Scalars['ID'],
-  lineId?: Maybe<Scalars['String']>,
-  routeId: Scalars['String'],
-  direction: Scalars['Direction'],
+  journeyType: Scalars['String'],
+  routeId?: Maybe<Scalars['String']>,
+  direction?: Maybe<Scalars['Direction']>,
   originStopId?: Maybe<Scalars['String']>,
   departureDate: Scalars['Date'],
   departureTime: Scalars['Time'],
@@ -413,6 +394,8 @@ export type JourneyEvent = {
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
   stopId?: Maybe<Scalars['String']>,
+  lat?: Maybe<Scalars['Float']>,
+  lng?: Maybe<Scalars['Float']>,
 };
 
 export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent;
@@ -438,6 +421,8 @@ export type JourneyStopEvent = {
   isOrigin?: Maybe<Scalars['Boolean']>,
   index?: Maybe<Scalars['Int']>,
   stop?: Maybe<Stop>,
+  lat?: Maybe<Scalars['Float']>,
+  lng?: Maybe<Scalars['Float']>,
   unplannedStop: Scalars['Boolean'],
 };
 
@@ -532,7 +517,8 @@ export type Query = {
   journey?: Maybe<Journey>,
   journeys: Array<Maybe<Journey>>,
   vehicleJourneys: Array<Maybe<VehicleJourney>>,
-  eventsByBbox: Array<Maybe<AreaJourney>>,
+  journeysByBbox: Array<Maybe<Journey>>,
+  unsignedVehicleEvents: Array<Maybe<VehiclePosition>>,
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
   uiMessage: UiMessage,
@@ -559,7 +545,8 @@ export type QueryStopsArgs = {
 
 export type QueryStopsByBboxArgs = {
   filter?: Maybe<StopFilterInput>,
-  bbox: Scalars['PreciseBBox']
+  bbox: Scalars['PreciseBBox'],
+  date: Scalars['Date']
 };
 
 
@@ -617,7 +604,8 @@ export type QueryWeeklyDeparturesArgs = {
   stopId: Scalars['String'],
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
-  date: Scalars['Date']
+  date: Scalars['Date'],
+  lastStopArrival?: Maybe<Scalars['Boolean']>
 };
 
 
@@ -650,13 +638,19 @@ export type QueryVehicleJourneysArgs = {
 };
 
 
-export type QueryEventsByBboxArgs = {
+export type QueryJourneysByBboxArgs = {
   minTime: Scalars['DateTime'],
   maxTime: Scalars['DateTime'],
   bbox: Scalars['PreciseBBox'],
   date: Scalars['Date'],
   filters?: Maybe<AreaEventsFilterInput>,
   unsignedEvents?: Maybe<Scalars['Boolean']>
+};
+
+
+export type QueryUnsignedVehicleEventsArgs = {
+  uniqueVehicleId: Scalars['VehicleId'],
+  date: Scalars['Date']
 };
 
 
@@ -744,6 +738,7 @@ export type Stop = Position & {
   routes: Array<StopRoute>,
   modes: Array<Maybe<Scalars['String']>>,
   isTimingStop: Scalars['Boolean'],
+  stopIndex?: Maybe<Scalars['Int']>,
   _matchScore?: Maybe<Scalars['Float']>,
   alerts: Array<Alert>,
 };
@@ -775,10 +770,10 @@ export type UiMessage = {
 export type VehicleJourney = {
    __typename?: 'VehicleJourney',
   id: Scalars['ID'],
+  journeyType: Scalars['String'],
   lineId?: Maybe<Scalars['String']>,
-  routeId: Scalars['String'],
-  direction: Scalars['Direction'],
-  originStopId?: Maybe<Scalars['String']>,
+  routeId?: Maybe<Scalars['String']>,
+  direction?: Maybe<Scalars['Direction']>,
   departureDate: Scalars['Date'],
   departureTime: Scalars['Time'],
   uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
@@ -790,7 +785,6 @@ export type VehicleJourney = {
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
   timeDifference: Scalars['Int'],
-  nextStopId: Scalars['String'],
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
   isCancelled: Scalars['Boolean'],
@@ -805,10 +799,14 @@ export type VehiclePosition = Position & {
   recordedTime: Scalars['Time'],
   stop?: Maybe<Scalars['String']>,
   nextStopId?: Maybe<Scalars['String']>,
+  uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
+  operatorId?: Maybe<Scalars['String']>,
+  vehicleId?: Maybe<Scalars['String']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
   velocity?: Maybe<Scalars['Float']>,
   doorStatus?: Maybe<Scalars['Boolean']>,
   delay?: Maybe<Scalars['Int']>,
   heading?: Maybe<Scalars['Int']>,
+  mode?: Maybe<Scalars['String']>,
 };

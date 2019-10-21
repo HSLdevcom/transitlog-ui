@@ -16,7 +16,6 @@ export const hfpQuery = gql`
       lineId
       routeId
       direction
-      originStopId
       departureDate
       departureTime
       uniqueVehicleId
@@ -28,7 +27,6 @@ export const hfpQuery = gql`
       recordedAtUnix
       recordedTime
       timeDifference
-      nextStopId
       alerts {
         ...AlertFieldsFragment
       }
