@@ -28,7 +28,6 @@ export const journeyQuery = gql`
     ) {
       id
       journeyType
-      lineId
       routeId
       originStopId
       direction

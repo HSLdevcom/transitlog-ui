@@ -11,7 +11,7 @@ const areaJourneysQuery = gql`
     $bbox: PreciseBBox!
     $date: Date!
   ) {
-    eventsByBbox(minTime: $minTime, maxTime: $maxTime, bbox: $bbox, date: $date) {
+    journeysByBbox(minTime: $minTime, maxTime: $maxTime, bbox: $bbox, date: $date) {
       id
       journeyType
       routeId
@@ -61,7 +61,7 @@ const AreaJourneysQuery = observer((props) => {
           return children({journeys: [], loading, error});
         }
 
-        const journeys = get(data, "eventsByBbox", []);
+        const journeys = get(data, "journeysByBbox", []);
         return children({journeys, loading, error});
       }}
     </Query>
