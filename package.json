@@ -132,6 +132,7 @@
     "@graphql-codegen/introspection": "^1.2.1",
     "@graphql-codegen/typescript": "^1.2.1",
     "babel-plugin-styled-components": "^1.10.1",
+    "cypress": "^3.4.1",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react-hooks": "^2.0.1",
