@@ -4,8 +4,8 @@ import {HttpLink} from "apollo-link-http";
 import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
-import get from "lodash/get";
 import fragmentTypes from "./fragmentTypes";
+import uniqBy from "lodash/uniqBy";
 
 const serverUrl = process.env.REACT_APP_TRANSITLOG_SERVER_GRAPHQL;
 
@@ -23,18 +23,14 @@ function createErrorLink(UIStore) {
   }
 
   return onError(({graphQLErrors, networkError, operation}) => {
-    if (graphQLErrors && process.env.NODE_ENV === "development") {
-      graphQLErrors.map((err) => console.warn(err.message));
+    if (graphQLErrors) {
+      uniqBy(graphQLErrors, (err) => err.message).map((err) => console.error(err));
     }
 
     if (networkError) {
       notifyError(
         "Network",
-        get(
-          networkError,
-          "message",
-          JSON.stringify(get(networkError, "result", networkError))
-        ),
+        "Network error. Please refresh the page to try again, or contact the Reittiloki team if the error persists.",
         operation.operationName
       );
     }
