@@ -49,7 +49,6 @@ export const departuresQuery = gql`
         journeyType
         type
         routeId
-        lineId
         direction
         originStopId
         departureDate

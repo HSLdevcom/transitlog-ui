@@ -9,7 +9,6 @@ const stopsByRouteQuery = gql`
   query routeSegments($routeId: String!, $direction: Direction!, $date: Date!) {
     routeSegments(routeId: $routeId, direction: $direction, date: $date) {
       id
-      lineId
       routeId
       direction
       originStopId
