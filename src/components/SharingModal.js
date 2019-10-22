@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {Button} from "./Forms";
 import copy from "copy-text-to-clipboard";
 import {observable, action, runInAction} from "mobx";
-import {observer} from "mobx-react";
+import {observer, inject} from "mobx-react";
 import Checkmark from "../icons/Checkmark";
 
 const ShareModal = StyledModal.styled`
@@ -58,6 +58,7 @@ const ButtonRow = styled.div`
 `;
 
 @observer
+@inject("state")
 class SharingModal extends React.Component {
   @observable
   copied = "";
@@ -71,9 +72,9 @@ class SharingModal extends React.Component {
   });
 
   componentDidUpdate({isOpen: prevOpen}) {
-    const {isOpen} = this.props;
+    const {shareModalOpen} = this.props.state;
 
-    if (isOpen && !prevOpen) {
+    if (shareModalOpen && !prevOpen) {
       this.createShareUrl();
     }
   }
@@ -102,11 +103,15 @@ class SharingModal extends React.Component {
   }
 
   render() {
-    const {isOpen, onClose} = this.props;
+    const {state, onClose} = this.props;
+    const {shareModalOpen} = state;
     const {shareUrl} = this;
 
     return (
-      <ShareModal isOpen={isOpen} onBackgroundClick={onClose} onEscapeKeydown={onClose}>
+      <ShareModal
+        isOpen={shareModalOpen}
+        onBackgroundClick={onClose}
+        onEscapeKeydown={onClose}>
         <ModalContent>
           <UrlDisplay resizeable={false} rows={4} value={shareUrl} disabled={true} />
           <ButtonRow>

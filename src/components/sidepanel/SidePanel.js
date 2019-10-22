@@ -124,7 +124,6 @@ const SidePanel = decorate((props) => {
     stop,
     route,
     detailsOpen,
-    areaSearchActive = false,
     state: {
       language,
       date,
@@ -134,8 +133,11 @@ const SidePanel = decorate((props) => {
       selectedJourney,
       sidePanelVisible,
       showInstructions = false,
+      areaEventsBounds,
     },
   } = props;
+
+  const areaSearchActive = !!areaEventsBounds;
 
   const hasRoute = (stateRoute && stateRoute.routeId) || (route && route.routeId);
   // Figure out which tab is suggested. It will not be outright selected, but
