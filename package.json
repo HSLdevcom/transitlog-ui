@@ -63,7 +63,7 @@
     "mobx": "^5.10.1",
     "mobx-app": "^1.0.3",
     "mobx-react": "^6.0.4",
-    "mobx-react-lite": "^1.4.0",
+    "mobx-react-lite": "^1.5.0",
     "mobx-utils": "^5.4.1",
     "moment": "^2.23.0",
     "moment-timezone": "^0.5.25",

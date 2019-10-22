@@ -17,7 +17,7 @@ import styled from "styled-components";
 import MapillaryGeoJSONLayer from "./MapillaryGeoJSONLayer";
 import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
 import {observer} from "mobx-react-lite";
-import {observable, action, reaction} from "mobx";
+import {observable, action, reaction, trace} from "mobx";
 import {inject} from "../../helpers/inject";
 import "leaflet/dist/leaflet.css";
 import {validBounds} from "../../helpers/validBounds";
@@ -95,20 +95,13 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     setCurrentBaseLayer(name);
   });
 
-  const onMapChange = useCallback(
-    (e) => {
-      const nextCenter = e.target.getCenter();
-
-      if (canSetView) {
-        setMapView(nextCenter);
-      }
-    },
-    [canSetView]
-  );
-
-  const onMapChanged = useCallback((e) => {
+  const onMapMoved = useCallback((e) => {
     const center = e.target.getCenter();
     const nextBounds = e.target.getBounds();
+
+    if (canSetView) {
+      setMapView(center);
+    }
 
     setMapBounds(nextBounds);
     setUrlValue("mapView", `${center.lat},${center.lng}`);
@@ -118,7 +111,6 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     const zoom = event.target.getZoom();
     setMapZoom(zoom);
     setUrlValue("mapZoom", zoom);
-    setCanSetView(true);
   }, []);
 
   // Invalidate map size to refresh map items layout
@@ -179,8 +171,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         onOverlayadd={changeOverlay("add")}
         onOverlayremove={changeOverlay("remove")}
         onZoomend={onMapZoomed}
-        onMove={onMapChange}
-        onMoveend={onMapChanged}>
+        onDragend={onMapMoved}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer
             name="Digitransit"

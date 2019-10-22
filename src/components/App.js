@@ -83,7 +83,6 @@ function App({route, state, UI}) {
     loginModalOpen,
     areaEventsRouteFilter,
     areaEventsBounds,
-    mapZoom,
     journeyDetailsOpen,
   } = state;
   const selectedJourneyId = getJourneyId(selectedJourney);
@@ -206,7 +205,6 @@ function App({route, state, UI}) {
                               unsignedEvents={unsignedEvents}
                               route={route}
                               stop={stop}
-                              zoom={mapZoom}
                             />
                             {selectedJourney && (
                               <GraphContainer
