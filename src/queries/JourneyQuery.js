@@ -270,11 +270,7 @@ const JourneyQuery = decorate(
     useEffect(() => () => removeUpdateListener(updateListenerName), []);
 
     return (
-      <Query
-        partialRefetch={true}
-        skip={skip || !journey}
-        query={journeyQuery}
-        variables={queryVars}>
+      <Query skip={skip || !journey} query={journeyQuery} variables={queryVars}>
         {({data, loading, error, refetch}) => {
           if (!data || loading) {
             return children({journey: null, loading, error});
