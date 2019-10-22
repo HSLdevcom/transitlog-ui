@@ -76,15 +76,14 @@ function App({route, state, UI}) {
   const {
     date,
     stop: selectedStopId,
-    shareModalOpen,
     selectedJourney,
     live,
     journeyGraphOpen,
     loginModalOpen,
-    areaEventsRouteFilter,
-    areaEventsBounds,
+    language,
     journeyDetailsOpen,
   } = state;
+
   const selectedJourneyId = getJourneyId(selectedJourney);
   const code = useMemo(() => new URL(window.location.href).searchParams.get("code"), []);
 
@@ -116,9 +115,9 @@ function App({route, state, UI}) {
   );
 
   return (
-    <AppFrame lang={state.language}>
+    <AppFrame lang={language}>
       {loginModalOpen && <LoginModal />}
-      <MapEvents areaEventsRouteFilter={areaEventsRouteFilter}>
+      <MapEvents>
         {({
           selectedJourney,
           routeJourneys,
@@ -148,7 +147,6 @@ function App({route, state, UI}) {
                           areaJourneysLoading={!live && areaJourneysLoading}
                           journeyLoading={selectedJourneyLoading}
                           areaEvents={areaJourneys}
-                          areaSearchActive={!!areaEventsBounds}
                           journey={selectedJourney}
                           stop={stop}
                           route={route}
@@ -239,7 +237,7 @@ function App({route, state, UI}) {
         )}
       </MapEvents>
       <ErrorMessages />
-      <SharingModal isOpen={shareModalOpen} onClose={() => UI.toggleShareModal(false)} />
+      <SharingModal onClose={() => UI.toggleShareModal(false)} />
     </AppFrame>
   );
 }

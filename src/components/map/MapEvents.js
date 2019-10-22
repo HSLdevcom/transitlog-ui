@@ -5,10 +5,16 @@ import AreaJourneys from "../AreaJourneys";
 import SelectedJourneyEvents from "../SelectedJourneyEvents";
 import MergedJourneys from "../MergedJourneys";
 import UnsignedVehicleEvents from "../UnsignedVehicleEvents";
+import {inject} from "../../helpers/inject";
 
-const decorate = flow(observer);
+const decorate = flow(
+  observer,
+  inject("state")
+);
 
-const MapEvents = decorate(({areaEventsRouteFilter, children}) => {
+const MapEvents = decorate(({children, state}) => {
+  const {areaEventsRouteFilter} = state;
+
   return (
     <AreaJourneys>
       {({journeys: areaJourneysResult = [], loading: areaJourneysLoading}) => {
