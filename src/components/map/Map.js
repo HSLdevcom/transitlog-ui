@@ -130,8 +130,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
 
   useEffect(() => {
     return reaction(
-      () => [state.mapView, state.mapZoom],
-      ([currentView, currentZoom]) => {
+      () => state.mapView,
+      (currentView) => {
         if (leafletMap) {
           if (
             currentView instanceof LatLngBounds &&
@@ -144,7 +144,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             currentView instanceof LatLng &&
             !leafletMap.getCenter().equals(currentView)
           ) {
-            leafletMap.setView(currentView, currentZoom, {animate: false});
+            leafletMap.setView(currentView, state.mapZoom, {animate: false});
           }
         }
       },
@@ -171,7 +171,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         onOverlayadd={changeOverlay("add")}
         onOverlayremove={changeOverlay("remove")}
         onZoomend={onMapZoomed}
-        onDragend={onMapMoved}>
+        onMoveend={onMapMoved}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer
             name="Digitransit"
