@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import React, {Component, useRef} from "react";
 import DateSettings from "./DateSettings";
 import TimeSettings from "./TimeSettings";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import TimeSlider from "./TimeSlider";
 import AdditionalTimeSettings from "./AdditionalTimeSettings";
@@ -10,6 +10,8 @@ import FilterSection from "./FilterSection";
 import Header from "./Header";
 import VehicleSettings from "./VehicleSettings";
 import StopSettings from "./StopSettings";
+import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
 
 const SiteHeader = styled(Header)`
   flex: 0 0 auto;
@@ -49,24 +51,22 @@ const CalendarRoot = styled.div`
   margin-left: 2.5rem;
 `;
 
-@observer
-class FilterBar extends Component {
-  calendarRootRef = React.createRef();
+const decorate = flow(
+  observer,
+  inject("state")
+);
 
-  render() {
-    const {
-      className,
-      journeys = [],
-      unsignedEventsLoading,
-      routeEventsLoading,
-    } = this.props;
+const FilterBar = decorate(
+  ({className, journeys = [], unsignedEventsLoading, routeEventsLoading, state}) => {
+    const calendarRootRef = useRef(null);
+    const user = state.user;
 
     return (
       <FilterBarWrapper className={className}>
         <SiteHeader />
         <FilterBarGrid>
           <FilterSection scrollable={true} style={{paddingBottom: "0.5rem"}}>
-            <DateSettings calendarRootRef={this.calendarRootRef} />
+            <DateSettings calendarRootRef={calendarRootRef} />
             <TimeSettings journeys={journeys} />
             <AdditionalTimeSettings />
           </FilterSection>
@@ -74,13 +74,15 @@ class FilterBar extends Component {
             The datepicker calendar needs to be outside the scrollable filtersection.
             The CalendarRoot is the mount point for the calendar portal.
            */}
-          <CalendarRoot ref={this.calendarRootRef} />
+          <CalendarRoot ref={calendarRootRef} />
           <FilterSection>
             <RouteSettings routeEventsLoading={routeEventsLoading} />
           </FilterSection>
-          <FilterSection>
-            <VehicleSettings unsignedEventsLoading={unsignedEventsLoading} />
-          </FilterSection>
+          {user && (
+            <FilterSection>
+              <VehicleSettings unsignedEventsLoading={unsignedEventsLoading} />
+            </FilterSection>
+          )}
           <FilterSection>
             <StopSettings />
           </FilterSection>
@@ -89,6 +91,6 @@ class FilterBar extends Component {
       </FilterBarWrapper>
     );
   }
-}
+);
 
 export default FilterBar;
