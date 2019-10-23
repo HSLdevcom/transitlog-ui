@@ -18,7 +18,9 @@ const JourneyStopsLayer = decorate(
   ({state: {date, selectedJourney}, showRadius, journey = null}) => {
     if (journey && journey.events) {
       const stopEvents = journey.events.filter(
-        (evt) => evt.__typename === "JourneyStopEvent" && !!evt.stop
+        (evt) =>
+          ["JourneyStopEvent", "PlannedStopEvent"].includes(evt.__typename) &&
+          !!evt.stopId
       );
 
       const stopGroups = orderBy(

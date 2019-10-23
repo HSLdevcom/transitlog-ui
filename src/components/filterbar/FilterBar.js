@@ -1,4 +1,4 @@
-import React, {Component, useRef} from "react";
+import React, {useRef} from "react";
 import DateSettings from "./DateSettings";
 import TimeSettings from "./TimeSettings";
 import {observer} from "mobx-react-lite";

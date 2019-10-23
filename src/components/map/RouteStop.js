@@ -333,7 +333,7 @@ class RouteStop extends React.Component {
 
     stopTooltip = (
       <Tooltip key={`stop${stopId}_tooltip`}>
-        <div>
+        <div style={{minWidth: 250}}>
           <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
         </div>
         <div style={{fontSize: "1rem"}}>{stop.name}</div>

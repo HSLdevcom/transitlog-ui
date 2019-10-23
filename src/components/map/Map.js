@@ -17,7 +17,7 @@ import styled from "styled-components";
 import MapillaryGeoJSONLayer from "./MapillaryGeoJSONLayer";
 import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
 import {observer} from "mobx-react-lite";
-import {observable, action, reaction, trace} from "mobx";
+import {observable, action, reaction} from "mobx";
 import {inject} from "../../helpers/inject";
 import "leaflet/dist/leaflet.css";
 import {validBounds} from "../../helpers/validBounds";
