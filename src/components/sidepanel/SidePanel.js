@@ -134,6 +134,7 @@ const SidePanel = decorate((props) => {
       sidePanelVisible,
       showInstructions = false,
       areaEventsBounds,
+      user,
     },
   } = props;
 
@@ -146,7 +147,7 @@ const SidePanel = decorate((props) => {
 
   if (areaSearchActive) suggestedTab = "area-journeys";
   if (hasRoute) suggestedTab = "journeys";
-  if (vehicle) suggestedTab = "vehicle-journeys";
+  if (user && vehicle) suggestedTab = "vehicle-journeys";
   if (selectedJourney) suggestedTab = "journeys";
   if (stateStop) suggestedTab = "timetables";
 
@@ -193,7 +194,7 @@ const SidePanel = decorate((props) => {
                 label={text("sidepanel.tabs.week_journeys")}
               />
             )}
-            {vehicle && (
+            {user && vehicle && (
               <VehicleJourneys
                 helpText="Vehicle journeys tab"
                 name="vehicle-journeys"
