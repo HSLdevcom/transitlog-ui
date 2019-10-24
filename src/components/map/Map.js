@@ -230,7 +230,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             checked={mapOverlays.includes("Mapillary")}>
             <MapillaryGeoJSONLayer
               map={get(mapRef, "current.leafletElement", null)}
-              viewBbox={state.mapView}
+              viewBbox={state.mapBounds}
               location={currentMapillaryMapLocation}
               layerIsActive={mapOverlays.includes("Mapillary")}
               onSelectLocation={setMapillaryViewerLocation}
