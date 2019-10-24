@@ -57,8 +57,8 @@ const ButtonRow = styled.div`
   justify-content: space-between;
 `;
 
-@observer
 @inject("state")
+@observer
 class SharingModal extends React.Component {
   @observable
   copied = "";

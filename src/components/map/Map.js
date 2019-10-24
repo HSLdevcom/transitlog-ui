@@ -22,6 +22,7 @@ import {inject} from "../../helpers/inject";
 import "leaflet/dist/leaflet.css";
 import {validBounds} from "../../helpers/validBounds";
 import {LatLngBounds, LatLng} from "leaflet";
+import {useEffectOnce} from "../../hooks/useEffectOnce";
 
 const MapContainer = styled.div`
   overflow: hidden;
@@ -79,12 +80,13 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     setMapBounds,
   } = UI;
 
+  const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
   const [canSetView, setCanSetView] = useState(true);
 
   const leafletMap = useMemo(() => {
     return get(mapRef, "current.leafletElement", null);
-  }, [mapRef.current]);
+  }, [mapRef.current, mapReady]);
 
   const [currentBaseLayer, setCurrentBaseLayer] = useState(
     getUrlValue("mapBaseLayer", "Digitransit")
@@ -95,22 +97,36 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     setCurrentBaseLayer(name);
   });
 
-  const onMapMoved = useCallback((e) => {
-    const center = e.target.getCenter();
-    const nextBounds = e.target.getBounds();
+  const setMapState = useCallback(
+    (mapObj) => {
+      const center = mapObj.getCenter();
+      const nextBounds = mapObj.getBounds();
 
-    if (canSetView) {
-      setMapView(center);
-    }
+      if (canSetView) {
+        setMapView(center);
+      }
 
-    setMapBounds(nextBounds);
-    setUrlValue("mapView", `${center.lat},${center.lng}`);
-  }, []);
+      setMapBounds(nextBounds);
+      setUrlValue("mapView", `${center.lat},${center.lng}`);
+    },
+    [canSetView]
+  );
 
-  const onMapZoomed = useCallback((event) => {
-    const zoom = event.target.getZoom();
+  const setMapZoomState = useCallback((mapObj) => {
+    const zoom = mapObj.getZoom();
     setMapZoom(zoom);
     setUrlValue("mapZoom", zoom);
+  }, []);
+
+  const onMapMoved = useCallback(
+    (event) => {
+      setMapState(event.target);
+    },
+    [setMapState]
+  );
+
+  const onMapZoomed = useCallback((event) => {
+    setMapZoomState(event.target);
   }, []);
 
   // Invalidate map size to refresh map items layout
@@ -127,6 +143,16 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     const {mapView, mapZoom} = state;
     return [mapView, mapZoom];
   }, []);
+
+  useEffectOnce(() => {
+    if (leafletMap) {
+      setMapBounds(leafletMap.getBounds());
+      setMapZoom(initialViewport[1]);
+      return true;
+    }
+
+    return false;
+  }, [leafletMap]);
 
   useEffect(() => {
     return reaction(
@@ -177,6 +203,10 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             name="Digitransit"
             checked={currentBaseLayer === "Digitransit"}>
             <TileLayer
+              onLoad={() => {
+                /* onLoad does not work on the <Map>, but it works here. */
+                setMapReady(true);
+              }}
               attribution={
                 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors '
               }

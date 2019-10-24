@@ -13,6 +13,7 @@ const decorate = flow(
 );
 
 const StopLayerContent = decorate(({stops, showRadius, state}) => {
+  console.time("group stops");
   const selectedStopId = state.stop;
   const prevStopAreas = useRef([]);
 
@@ -54,6 +55,8 @@ const StopLayerContent = decorate(({stops, showRadius, state}) => {
   if (stopAreas.length !== 0) {
     prevStopAreas.current = stopAreas;
   }
+
+  console.timeEnd("group stops");
 
   return (
     <>
