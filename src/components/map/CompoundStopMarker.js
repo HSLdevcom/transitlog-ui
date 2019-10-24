@@ -4,12 +4,9 @@ import {Heading} from "../Typography";
 import get from "lodash/get";
 import compact from "lodash/compact";
 import uniq from "lodash/uniq";
-import flow from "lodash/flow";
-import flatten from "lodash/flatten";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
-import {inject} from "../../helpers/inject";
 import StopPopupContent, {StopPopupContentSection} from "./StopPopupContent";
 import MapPopup from "./MapPopup";
 import StopMarker from "./StopMarker";
@@ -37,12 +34,7 @@ const ChooseStopHeading = styled(Heading).attrs({level: 4})`
   margin-bottom: 0.5rem;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
-
-const CompoundStopMarker = decorate(
+const CompoundStopMarker = observer(
   ({
     selected,
     stops = [],
