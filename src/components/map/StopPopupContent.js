@@ -5,7 +5,6 @@ import React from "react";
 import styled from "styled-components";
 import AlertsList from "../AlertsList";
 import {StopContent} from "../StopElements";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import {Button} from "../Forms";
 import {observer} from "mobx-react-lite";
 import {flow} from "lodash";

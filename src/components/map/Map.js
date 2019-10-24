@@ -12,6 +12,7 @@ import {
 } from "react-leaflet";
 import get from "lodash/get";
 import flow from "lodash/flow";
+import debounce from "lodash/debounce";
 import MapillaryViewer from "./MapillaryViewer";
 import styled from "styled-components";
 import MapillaryGeoJSONLayer from "./MapillaryGeoJSONLayer";
@@ -63,6 +64,8 @@ const decorate = flow(
   inject("UI")
 );
 
+const debouncedSetUrlValue = debounce(setUrlValue, 500);
+
 const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   const {
     mapOverlays,
@@ -107,7 +110,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
       }
 
       setMapBounds(nextBounds);
-      setUrlValue("mapView", `${center.lat},${center.lng}`);
+      debouncedSetUrlValue("mapView", `${center.lat},${center.lng}`);
     },
     [canSetView]
   );
@@ -260,6 +263,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         <Pane name="selected-stop-radius" style={{zIndex: 445}} />
         <Pane name="event-hover" style={{zIndex: 450}} />
         <Pane name="stops" style={{zIndex: 475}} />
+        <Pane name="stopped-markers" style={{zIndex: 476}} />
         <Pane name="hfp-events" style={{zIndex: 480}} />
         <Pane name="hfp-events-2" style={{zIndex: 485}} />
         <Pane name="hfp-markers" style={{zIndex: 500}} />
