@@ -9,12 +9,12 @@ import AllStopsQuery from "../../queries/AllStopsQuery";
 
 const decorate = flow(
   observer,
-  inject("state")
+  inject("Filters")
 );
 
-const StopLayerContent = decorate(({stops, showRadius, state}) => {
-  console.time("group stops");
-  const selectedStopId = state.stop;
+const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
+  const {stop: selectedStopId, highlightedStop} = state;
+
   const prevStopAreas = useRef([]);
 
   const stopAreas = useMemo(() => {
@@ -56,8 +56,6 @@ const StopLayerContent = decorate(({stops, showRadius, state}) => {
     prevStopAreas.current = stopAreas;
   }
 
-  console.timeEnd("group stops");
-
   return (
     <>
       {prevStopAreas.current.map(([bounds, stopCluster]) => {
@@ -76,6 +74,10 @@ const StopLayerContent = decorate(({stops, showRadius, state}) => {
                 selected={clusterIsSelected}
                 showRadius={showRadius}
                 stop={stopCluster[0]}
+                selectedStop={selectedStopId}
+                highlightedStop={highlightedStop}
+                setRoute={Filters.setRoute}
+                setStop={Filters.setStop}
               />
             ) : (
               <CompoundStopMarker
@@ -83,6 +85,10 @@ const StopLayerContent = decorate(({stops, showRadius, state}) => {
                 bounds={bounds}
                 showRadius={showRadius}
                 stops={stopCluster}
+                selectedStop={selectedStopId}
+                highlightedStop={highlightedStop}
+                setRoute={Filters.setRoute}
+                setStop={Filters.setStop}
               />
             )}
           </React.Fragment>

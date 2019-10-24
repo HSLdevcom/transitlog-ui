@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import flow from "lodash/flow";
@@ -36,10 +36,14 @@ function cleanRouteId(routeId) {
 const decorate = flow(
   observer,
   withStop,
-  inject("state")
+  inject("Filters")
 );
 
-export const StopRouteSelect = decorate(({stop, stopLoading, color, onSelectRoute}) => {
+export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters}) => {
+  const onSelectRoute = useCallback((route) => {
+    return () => route && Filters.setRoute(route);
+  }, []);
+
   return stopLoading
     ? "loading"
     : get(stop, "routes", []).map((route) => (

@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useCallback} from "react";
+import React, {useRef, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {Heading} from "../Typography";
 import get from "lodash/get";
@@ -43,7 +43,16 @@ const decorate = flow(
 );
 
 const CompoundStopMarker = decorate(
-  ({selected, stops = [], state, showRadius = true, bounds, Filters}) => {
+  ({
+    selected,
+    stops = [],
+    selectedStop,
+    highlightedStop,
+    showRadius = true,
+    bounds,
+    setRoute,
+    setStop,
+  }) => {
     const popupOpen = useRef(false);
     const markerRef = useRef(null);
 
@@ -60,23 +69,6 @@ const CompoundStopMarker = decorate(
       }
     }, [selected, markerRef.current, popupOpen.current]);
 
-    const selectRoute = useCallback(
-      (route) => () => {
-        if (route) {
-          Filters.setRoute(route);
-        }
-      },
-      []
-    );
-
-    const selectStop = useCallback((stopId) => {
-      if (stopId) {
-        Filters.setStop(stopId);
-      }
-    }, []);
-
-    const {stop: selectedStop} = state;
-
     const selectedStopObj =
       selectedStop && stops.length !== 0
         ? stops.find((stop) => stop.stopId === selectedStop)
@@ -84,10 +76,6 @@ const CompoundStopMarker = decorate(
 
     const modesInCluster = uniq(
       compact(stops.map((stop) => getPriorityMode(get(stop, "modes", ["BUS"]))))
-    );
-
-    const alertsInCluster = flatten(
-      stops.map(({alerts = []}) => (alerts && Array.isArray(alerts) ? alerts : []))
     );
 
     let mode =
@@ -114,8 +102,11 @@ const CompoundStopMarker = decorate(
         mode={mode}
         showRadius={showRadius}
         markerRef={markerRef}
-        alerts={alertsInCluster}
         stop={selectedStopObj}
+        selectedStop={selectedStop}
+        highlightedStop={highlightedStop}
+        setRoute={setRoute}
+        setStop={setStop}
         iconChildren={stops.length}>
         <MapPopup
           onClose={() => (popupOpen.current = false)}
@@ -131,7 +122,7 @@ const CompoundStopMarker = decorate(
               return (
                 <StopOptionButton
                   color={stopColor}
-                  onClick={() => selectStop(stopInGroup.stopId)}
+                  onClick={() => setStop(stopInGroup.stopId)}
                   key={`stop_select_${stopInGroup.stopId}`}>
                   {stopInGroup.stopId} - {stopInGroup.name}
                 </StopOptionButton>
@@ -142,7 +133,7 @@ const CompoundStopMarker = decorate(
             <StopPopupContent
               stop={selectedStopObj}
               color={stopColor}
-              onSelectRoute={selectRoute}
+              onSelectRoute={setRoute}
             />
           )}
         </MapPopup>

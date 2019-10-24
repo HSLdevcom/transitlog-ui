@@ -46,7 +46,7 @@ const DepartureTimeGroup = styled.div`
   min-width: 300px;
 `;
 
-@inject("Time", "UI")
+@inject("Time", "UI", "Filters")
 @observer
 class RouteStop extends React.Component {
   onClickTime = (time) => (e) => {
@@ -72,6 +72,8 @@ class RouteStop extends React.Component {
       selectedJourney,
       journey,
       showRadius,
+      state,
+      Filters,
     } = this.props;
 
     const isTerminal = firstTerminal || lastTerminal;
@@ -104,6 +106,10 @@ class RouteStop extends React.Component {
       return (
         <StopMarker
           key={`route_stop_marker_${stop.stopId}`}
+          selectedStop={state.stop}
+          highlightedStop={state.highlightedStop}
+          setRoute={Filters.setRoute}
+          setStop={Filters.setStop}
           color={color}
           isTerminal={isTerminal}
           stop={stop}
@@ -369,6 +375,10 @@ class RouteStop extends React.Component {
         key={`journey_stop_marker_${stopId}`}
         dashedBorder={!isPlanned && !doorDidOpen}
         color={color}
+        selectedStop={state.stop}
+        highlightedStop={state.highlightedStop}
+        setRoute={Filters.setRoute}
+        setStop={Filters.setStop}
         isTimingStop={get(stop, "isTimingStop", false)}
         isTerminal={isTerminal}
         stop={stop}
