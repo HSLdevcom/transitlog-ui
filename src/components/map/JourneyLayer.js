@@ -62,7 +62,7 @@ const decorate = flow(
 );
 
 const JourneyLayer = decorate(
-  ({name, journey, vehiclePositions = journey.vehiclePositions}) => {
+  ({name, journey, state, vehiclePositions = journey.vehiclePositions}) => {
     const eventLines = useMemo(() => getLineChunksByDelay(vehiclePositions), [
       vehiclePositions,
     ]);
@@ -198,18 +198,19 @@ const JourneyLayer = decorate(
             </React.Fragment>
           );
         })}
-        {stoppedAtPositions.map(({event, duration}) => (
-          <Marker
-            icon={stoppedMarkerIcon}
-            pane="stopped-markers"
-            key={`stopped_at_${event.recordedAtUnix}_${duration}`}
-            position={latLng([event.lat, event.lng])}>
-            <Tooltip>
-              <Text>map.vehicle_stopped_duration_label</Text> {Math.round(duration / 60)}{" "}
-              min
-            </Tooltip>
-          </Marker>
-        ))}
+        {state.mapOverlays.includes("Stopped vehicle") &&
+          stoppedAtPositions.map(({event, duration}) => (
+            <Marker
+              icon={stoppedMarkerIcon}
+              pane="stopped-markers"
+              key={`stopped_at_${event.recordedAtUnix}_${duration}`}
+              position={latLng([event.lat, event.lng])}>
+              <Tooltip>
+                <Text>map.vehicle_stopped_duration_label</Text>{" "}
+                {Math.round(duration / 60)} min
+              </Tooltip>
+            </Marker>
+          ))}
         {eventAtHover && (
           <CircleMarker interactive={false} center={eventAtHover} radius={6}>
             <HfpTooltip permanent={true} journey={journey} event={eventAtHover} />

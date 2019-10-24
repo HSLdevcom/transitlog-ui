@@ -254,6 +254,16 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
                 */}
             </FeatureGroup>
           </LayersControl.Overlay>
+          <LayersControl.Overlay
+            name="Stopped vehicle"
+            checked={mapOverlays.includes("Stopped vehicle")}>
+            <FeatureGroup>
+              {/*
+                  The stopped vehicle markers are rendered in JourneyLayer. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
         </LayersControl>
         <Pane name="mapillary-lines" style={{zIndex: 390}} />
         <Pane name="mapillary-location" style={{zIndex: 400}} />
