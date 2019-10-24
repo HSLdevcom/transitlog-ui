@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useCallback} from "react";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import get from "lodash/get";
@@ -103,6 +103,12 @@ const StopMarker = observer(
       }
     }, [children, ref, isSelected, markerRef.current, popupOpen.current]);
 
+    const onSelectStop = useCallback(() => {
+      if (stop) {
+        setStop(stop.stopId);
+      }
+    }, [stop]);
+
     const {lat, lng} = stop || position || {};
 
     if (!stop && !position) {
@@ -154,6 +160,8 @@ const StopMarker = observer(
       </>
     );
 
+    // Render a divicon if we need to show stuff in the marker.
+    // Otherwise we can render a leaflet-native CircleMarker.
     const markerElement =
       stopIsTimingStop || iconChildren ? (
         <DivIcon
@@ -161,7 +169,7 @@ const StopMarker = observer(
           pane="stops"
           position={markerPosition}
           icon={markerIcon}
-          onClick={() => stop && setStop(stop.stopId)}>
+          onClick={onSelectStop}>
           {markerChildren}
         </DivIcon>
       ) : (
@@ -171,11 +179,11 @@ const StopMarker = observer(
           weight={3}
           color={stopColor}
           fill={true}
-          fillColor={selected ? "var(--blue)" : "white"}
+          fillColor={selected ? "var(--blue)" : isHighlighted ? "var(--grey)" : "white"}
           fillOpacity={1}
           pane="stops"
           center={markerPosition}
-          onClick={() => stop && setStop(stop.stopId)}>
+          onClick={onSelectStop}>
           {markerChildren}
         </CircleMarker>
       );
