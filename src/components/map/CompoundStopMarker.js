@@ -134,7 +134,7 @@ const CompoundStopMarker = observer(
             {stops.map((stopInGroup, idx) => (
               <div
                 key={`stop_tooltip_${stopInGroup.id}`}
-                style={{marginTop: idx === 0 ? 0 : "1rem"}}>
+                style={{marginTop: idx === 0 ? 0 : "0.5rem"}}>
                 <div>
                   <strong>{stopInGroup.shortId.replace(/\s*/g, "")}</strong>{" "}
                   {stopInGroup.stopId}

@@ -148,7 +148,7 @@ const StopMarker = observer(
 
     const markerChildren = (
       <>
-        {stop && (
+        {stop && !children && (
           <Tooltip offset={[15, 0]} interactive={false} direction="right">
             <div>
               <strong>{(stop.shortId || "").replace(/\s*/g, "")}</strong> {stop.stopId}
