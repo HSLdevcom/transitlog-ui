@@ -48,6 +48,7 @@
   "map.aerial": "Luftbild",
   "map.weather": "Väder",
   "map.stop_radius": "Hållplatsradie",
+  "map.vehicle_stopped_duration_label": "På plats i",
 
   "vehicle.next_stop": "Nästa hållplats",
   "vehicle.speed": "Hastighet",

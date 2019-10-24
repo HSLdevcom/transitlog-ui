@@ -48,6 +48,7 @@
   "map.aerial": "Ilmakartta",
   "map.weather": "Sää",
   "map.stop_radius": "Pysäkkisäde",
+  "map.vehicle_stopped_duration_label": "Pysähtynyt",
 
   "vehicle.next_stop": "Seuraava pysäkki",
   "vehicle.speed": "Nopeus",

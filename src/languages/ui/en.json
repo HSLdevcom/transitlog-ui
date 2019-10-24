@@ -48,6 +48,7 @@
   "map.aerial": "Aerial map",
   "map.weather": "Weather",
   "map.stop_radius": "Stop radius",
+  "map.vehicle_stopped_duration_label": "Stopped for",
 
   "vehicle.next_stop": "Next stop",
   "vehicle.speed": "Speed",

@@ -175,7 +175,7 @@ const StopMarker = observer(
       ) : (
         <CircleMarker
           ref={markerRef}
-          radius={selected ? 10 : 6}
+          radius={selected ? 10 : 7}
           weight={3}
           color={stopColor}
           fill={true}
