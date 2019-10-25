@@ -205,7 +205,7 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
                 header={
                   <Observer>
                     {() => (
-                      <TimetableFilters>
+                      <TimetableFilters data-testid="timetable-filters">
                         <RouteFilterContainer>
                           <Input
                             value={route.pending}
