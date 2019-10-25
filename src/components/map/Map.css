@@ -19,8 +19,8 @@
 }
 
 .leaflet-div-icon {
-  border: 0;
-  background: transparent;
+  border: 0 !important;
+  background: transparent !important;
   width: 25px;
   height: 25px;
   font-size: 0;
