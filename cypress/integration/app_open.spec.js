@@ -1,20 +1,20 @@
 describe("App opening smoke tests", () => {
   beforeEach(() => {
-    cy.visit("/");
-
-    cy.window().then((win) => {
-      cy.spy(win.console, "error");
+    cy.visit("/", {
+      onBeforeLoad: (win) => {
+        cy.spy(win.console, "error").as("consoleError");
+      },
     });
   });
 
   it("Opens the app", () => {
-    cy.contains("Reittiloki");
-
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(5000);
+    cy.wait(5000); // Wait for the initial requests to finish
 
-    cy.window().then((win) => {
-      expect(win.console.error).to.have.callCount(0);
-    });
+    cy.get("@consoleError", {timeout: 0}).should((errorLog) =>
+      expect(errorLog).to.have.callCount(0)
+    );
+
+    cy.contains("Reittiloki");
   });
 });
