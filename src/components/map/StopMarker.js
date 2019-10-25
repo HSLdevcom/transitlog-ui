@@ -1,28 +1,21 @@
-import React, {useCallback, useEffect, useRef, useMemo} from "react";
-import {observer} from "mobx-react-lite";
+import React, {useEffect, useRef, useCallback} from "react";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import get from "lodash/get";
 import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
 import {StopRadius} from "./StopRadius";
-import {flow} from "lodash";
-import {inject} from "../../helpers/inject";
 import StopPopupContent from "./StopPopupContent";
 import MapPopup from "./MapPopup";
 import DivIcon from "./DivIcon";
-import AlertIcons from "../AlertIcons";
 import TimingStop from "../../icons/TimingStop";
-import {Tooltip} from "react-leaflet";
-
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
+import {observer} from "mobx-react-lite";
+import {Tooltip, CircleMarker} from "react-leaflet";
 
 export const StopMarkerCircle = styled.div`
-  width: ${({isSelected, big}) => (isSelected && big ? "2rem" : big ? "1.5rem" : "1rem")};
+  width: ${({isSelected, big}) =>
+    isSelected && big ? "2.1rem" : big ? "1.5rem" : "1rem"};
   height: ${({isSelected, big}) =>
-    isSelected && big ? "2rem" : big ? "1.5rem" : "1rem"};
+    isSelected && big ? "2.1rem" : big ? "1.5rem" : "1rem"};
   border-radius: 50%;
   border: ${({isTimingStop, dashed}) => (isTimingStop && !dashed ? 0 : "3px")}
     ${({dashed}) => (dashed ? "dashed" : "solid")}
@@ -68,36 +61,28 @@ export const IconWrapper = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-export const MarkerIcons = styled(AlertIcons)`
-  display: flex;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 100%);
-`;
-
-const StopMarker = decorate(
+const StopMarker = observer(
   ({
     stop,
     position = null,
     mode = "BUS",
     color,
     dashedBorder = false,
-    state,
     showRadius = true,
     isTerminal = false,
     isTimingStop = false,
-    Filters,
-    alerts = [],
     children,
     iconChildren,
     markerRef: ref,
     selected,
+    setRoute,
+    setStop,
+    selectedStop,
+    highlightedStop,
   }) => {
     const popupOpen = useRef(false);
     const defaultRef = useRef(null);
     const markerRef = ref || defaultRef;
-
-    const {stop: selectedStop, highlightedStop} = state;
 
     const isSelected =
       typeof selected !== "undefined" ? !!selected : stop && selectedStop === stop.stopId;
@@ -119,18 +104,9 @@ const StopMarker = decorate(
       }
     }, [children, ref, isSelected, markerRef.current, popupOpen.current]);
 
-    const selectRoute = useCallback(
-      (route) => () => {
-        if (route) {
-          Filters.setRoute(route);
-        }
-      },
-      []
-    );
-
-    const selectStop = useCallback(() => {
+    const onSelectStop = useCallback(() => {
       if (stop) {
-        Filters.setStop(stop.stopId);
+        setStop(stop.stopId);
       }
     }, [stop]);
 
@@ -150,24 +126,11 @@ const StopMarker = decorate(
       <MapPopup
         onClose={() => (popupOpen.current = false)}
         onOpen={() => (popupOpen.current = true)}>
-        <StopPopupContent stop={stop} color={stopColor} onSelectRoute={selectRoute} />
+        <StopPopupContent stop={stop} color={stopColor} onSelectRoute={setRoute} />
       </MapPopup>
     ) : null;
 
     const markerPosition = latLng({lat, lng});
-
-    const tooltip = useMemo(
-      () =>
-        stop ? (
-          <Tooltip offset={[15, 0]} interactive={false} direction="right">
-            <div>
-              <strong>{stop.shortId.replace(/\s*/g, "")}</strong> {stop.stopId}
-            </div>
-            <div style={{fontSize: "1rem"}}>{stop.name}</div>
-          </Tooltip>
-        ) : null,
-      [stop]
-    );
 
     const markerIcon = (
       <IconWrapper>
@@ -184,17 +147,48 @@ const StopMarker = decorate(
       </IconWrapper>
     );
 
-    const markerElement = (
-      <DivIcon
-        ref={markerRef}
-        pane="stops"
-        position={markerPosition}
-        icon={markerIcon}
-        onClick={selectStop}>
-        {tooltip}
+    const markerChildren = (
+      <>
+        {stop && !children && (
+          <Tooltip offset={[15, 0]} interactive={false} direction="right">
+            <div>
+              <strong>{(stop.shortId || "").replace(/\s*/g, "")}</strong> {stop.stopId}
+            </div>
+            <div style={{fontSize: "1rem"}}>{stop.name}</div>
+          </Tooltip>
+        )}
         {popupElement}
-      </DivIcon>
+      </>
     );
+
+    // Render a divicon if we need to show stuff in the marker.
+    // Otherwise we can render a leaflet-native CircleMarker.
+    const markerElement =
+      stopIsTimingStop || iconChildren ? (
+        <DivIcon
+          ref={markerRef}
+          pane="stops"
+          position={markerPosition}
+          icon={markerIcon}
+          onClick={onSelectStop}>
+          {markerChildren}
+        </DivIcon>
+      ) : (
+        <CircleMarker
+          ref={markerRef}
+          radius={selected ? 10 : isTerminal ? 9 : 7}
+          weight={3}
+          color={stopColor}
+          fill={true}
+          dashArray={dashedBorder ? "2 5" : null}
+          fillColor={selected ? "var(--blue)" : isHighlighted ? "var(--grey)" : "white"}
+          fillOpacity={1}
+          pane="stops"
+          center={markerPosition}
+          onClick={onSelectStop}>
+          {markerChildren}
+        </CircleMarker>
+      );
 
     return showRadius ? (
       <StopRadius

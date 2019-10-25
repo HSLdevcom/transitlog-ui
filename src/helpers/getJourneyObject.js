@@ -5,12 +5,8 @@ export function getJourneyObject(journeyItem) {
     return {};
   }
 
-  return pickPropsFromJourney(journeyItem);
-}
-
-function pickPropsFromJourney(journey) {
   return pick(
-    {uniqueVehicleId: "", ...journey},
+    {uniqueVehicleId: "", ...journeyItem},
     "departureDate",
     "departureTime",
     "direction",

@@ -124,7 +124,6 @@ const SidePanel = decorate((props) => {
     stop,
     route,
     detailsOpen,
-    areaSearchActive = false,
     state: {
       language,
       date,
@@ -134,8 +133,12 @@ const SidePanel = decorate((props) => {
       selectedJourney,
       sidePanelVisible,
       showInstructions = false,
+      areaEventsBounds,
+      user,
     },
   } = props;
+
+  const areaSearchActive = !!areaEventsBounds;
 
   const hasRoute = (stateRoute && stateRoute.routeId) || (route && route.routeId);
   // Figure out which tab is suggested. It will not be outright selected, but
@@ -144,7 +147,7 @@ const SidePanel = decorate((props) => {
 
   if (areaSearchActive) suggestedTab = "area-journeys";
   if (hasRoute) suggestedTab = "journeys";
-  if (vehicle) suggestedTab = "vehicle-journeys";
+  if (user && vehicle) suggestedTab = "vehicle-journeys";
   if (selectedJourney) suggestedTab = "journeys";
   if (stateStop) suggestedTab = "timetables";
 
@@ -191,7 +194,7 @@ const SidePanel = decorate((props) => {
                 label={text("sidepanel.tabs.week_journeys")}
               />
             )}
-            {vehicle && (
+            {user && vehicle && (
               <VehicleJourneys
                 helpText="Vehicle journeys tab"
                 name="vehicle-journeys"

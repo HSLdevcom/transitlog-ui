@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import get from "lodash/get";
+import flow from "lodash/flow";
 import findLast from "lodash/findLast";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import doubleDigit from "../../../helpers/doubleDigit";
@@ -8,6 +9,7 @@ import {getEquipmentType, validateEquipment} from "./equipmentType";
 import {Text, text} from "../../../helpers/text";
 import {getOperatorName} from "../../../helpers/getOperatorNameById";
 import {observer} from "mobx-react-lite";
+import {inject} from "../../../helpers/inject";
 
 const JourneyInfo = styled.div`
   flex: none;
@@ -84,12 +86,19 @@ const ObservedValue = styled.span`
   border-color: transparent;
 `;
 
-export default observer(({journey, date}) => {
+const decorate = flow(
+  observer,
+  inject("state")
+);
+
+export default decorate(({state, journey, date}) => {
   const departure = get(journey, "departure", null);
 
   if (!departure) {
     return null;
   }
+
+  const isLoggedIn = !!state.user;
 
   const equipmentCode = get(departure, "equipmentType", "");
   const equipmentType = getEquipmentType(equipmentCode);
@@ -160,7 +169,7 @@ export default observer(({journey, date}) => {
           </Line>
         </JourneyInfoRow>
       )}
-      {journey.uniqueVehicleId && (
+      {isLoggedIn && journey.uniqueVehicleId && (
         <JourneyInfoRow>
           <Line>
             <LineHeading>

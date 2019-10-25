@@ -8,6 +8,7 @@ moment.tz.setDefault(TIMEZONE);
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import "mobx-react-lite/optimizeForReactDom";
 import Root from "./Root";
 import {Provider} from "mobx-react";
 import {store, StoreContext} from "./stores/StoreContext";
