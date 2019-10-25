@@ -68,7 +68,10 @@ const renderTimetableRow = ({
   const departureTime = get(departure, "plannedDepartureTime.departureDateTime", "");
 
   return (
-    <div style={style} key={key} data-testid={index === 0 ? "first-timetable" : ""}>
+    <div
+      style={style}
+      key={key}
+      data-testid={`${index === 0 ? "first-timetable" : ""} departure-item`}>
       <TimetableDeparture
         key={`departure_${departure.departureId}_${departure.routeId}_${departure.direction}_${departureTime}_${instance}`}
         isScrolling={isScrolling}

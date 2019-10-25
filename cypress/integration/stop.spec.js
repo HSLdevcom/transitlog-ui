@@ -12,6 +12,8 @@ describe("Stop smoke tests", () => {
 
     cy.getTestElement("virtual-list").should("ok");
     cy.getTestElement("timetable-filters").should("ok");
+    cy.getTestElement("departure-item").should("ok");
     cy.getTestElement("stop-popup-1173434").should("ok");
+    cy.get(".test-class-stop-marker-1173434").should("ok");
   });
 });
