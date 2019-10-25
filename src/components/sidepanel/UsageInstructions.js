@@ -35,7 +35,7 @@ const InstructionsList = styled.ul`
 
 export function UsageInstructions({language}) {
   return (
-    <InstructionsWrapper>
+    <InstructionsWrapper data-test="usage-instructions">
       {language !== "fi" ? (
         <div>
           <h3>Usage instructions</h3>
