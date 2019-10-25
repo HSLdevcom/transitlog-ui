@@ -13,12 +13,6 @@ export type Scalars = {
   /** A DateTime string in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). Timezone will be converted to Europe/Helsinki. */
   DateTime: any,
   /** 
- * A string that defines a bounding box. The coordinates should be in the format
-   * `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's
-   * LatLngBounds.toBBoxString() returns. The precise bbox is not rounded.
- **/
-  PreciseBBox: any,
-  /** 
  * Time is seconds from 00:00:00 in format HH:mm:ss. The hours value can be more
    * than 23. The timezone is assumed to be Europe/Helsinki
  **/
@@ -28,6 +22,12 @@ export type Scalars = {
    * ID]/[vehicle ID]. The operator ID is padded to have a length of 4 characters.
  **/
   VehicleId: any,
+  /** 
+ * A string that defines a bounding box. The coordinates should be in the format
+   * `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's
+   * LatLngBounds.toBBoxString() returns. The precise bbox is not rounded.
+ **/
+  PreciseBBox: any,
   /** 
  * A string that defines a bounding box. The coordinates should be in the format
    * `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's
@@ -293,7 +293,6 @@ export type DepartureJourney = {
   id: Scalars['ID'],
   journeyType: Scalars['String'],
   type: Scalars['String'],
-  lineId?: Maybe<Scalars['String']>,
   routeId?: Maybe<Scalars['String']>,
   direction?: Maybe<Scalars['Direction']>,
   originStopId?: Maybe<Scalars['String']>,
@@ -352,7 +351,7 @@ export type Journey = {
   direction?: Maybe<Scalars['Direction']>,
   originStopId?: Maybe<Scalars['String']>,
   departureDate: Scalars['Date'],
-  departureTime: Scalars['Time'],
+  departureTime?: Maybe<Scalars['Time']>,
   uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
   operatorId?: Maybe<Scalars['String']>,
   vehicleId?: Maybe<Scalars['String']>,
@@ -426,20 +425,6 @@ export type JourneyStopEvent = {
   unplannedStop: Scalars['Boolean'],
 };
 
-export type Line = {
-   __typename?: 'Line',
-  id: Scalars['ID'],
-  lineId: Scalars['String'],
-  name?: Maybe<Scalars['String']>,
-  routesCount?: Maybe<Scalars['Int']>,
-  _matchScore?: Maybe<Scalars['Float']>,
-};
-
-export type LineFilterInput = {
-  search?: Maybe<Scalars['String']>,
-  includeLinesWithoutRoutes?: Maybe<Scalars['Boolean']>,
-};
-
 export type ObservedArrival = {
    __typename?: 'ObservedArrival',
   id: Scalars['ID'],
@@ -484,6 +469,7 @@ export type PlannedStopEvent = {
   plannedDate?: Maybe<Scalars['Date']>,
   plannedTime?: Maybe<Scalars['Time']>,
   plannedDateTime?: Maybe<Scalars['DateTime']>,
+  plannedUnix?: Maybe<Scalars['Int']>,
   isNextDay?: Maybe<Scalars['Boolean']>,
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
@@ -504,12 +490,10 @@ export type Query = {
   equipment: Array<Maybe<Equipment>>,
   stop?: Maybe<Stop>,
   stops: Array<Maybe<Stop>>,
-  stopsByBbox: Array<Maybe<Stop>>,
   route?: Maybe<Route>,
   routes: Array<Maybe<Route>>,
   routeGeometry?: Maybe<RouteGeometry>,
   routeSegments: Array<Maybe<RouteSegment>>,
-  lines: Array<Maybe<Line>>,
   departures: Array<Maybe<Departure>>,
   routeDepartures: Array<Maybe<Departure>>,
   weeklyDepartures: Array<Maybe<Departure>>,
@@ -543,13 +527,6 @@ export type QueryStopsArgs = {
 };
 
 
-export type QueryStopsByBboxArgs = {
-  filter?: Maybe<StopFilterInput>,
-  bbox: Scalars['PreciseBBox'],
-  date: Scalars['Date']
-};
-
-
 export type QueryRouteArgs = {
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
@@ -559,7 +536,6 @@ export type QueryRouteArgs = {
 
 export type QueryRoutesArgs = {
   filter?: Maybe<RouteFilterInput>,
-  line?: Maybe<Scalars['String']>,
   date?: Maybe<Scalars['Date']>
 };
 
@@ -575,13 +551,6 @@ export type QueryRouteSegmentsArgs = {
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
   date: Scalars['Date']
-};
-
-
-export type QueryLinesArgs = {
-  filter?: Maybe<LineFilterInput>,
-  date?: Maybe<Scalars['Date']>,
-  includeLinesWithoutRoutes?: Maybe<Scalars['Boolean']>
 };
 
 
@@ -669,7 +638,6 @@ export type QueryCancellationsArgs = {
 export type Route = {
    __typename?: 'Route',
   id: Scalars['ID'],
-  lineId: Scalars['String'],
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
   destination?: Maybe<Scalars['String']>,
@@ -705,7 +673,6 @@ export type RouteGeometryPoint = Position & {
 export type RouteSegment = Position & {
    __typename?: 'RouteSegment',
   id: Scalars['ID'],
-  lineId?: Maybe<Scalars['String']>,
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
   originStopId?: Maybe<Scalars['String']>,
@@ -751,7 +718,6 @@ export type StopRoute = {
    __typename?: 'StopRoute',
   id: Scalars['ID'],
   originStopId?: Maybe<Scalars['String']>,
-  lineId?: Maybe<Scalars['String']>,
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
   isTimingStop: Scalars['Boolean'],
@@ -771,7 +737,6 @@ export type VehicleJourney = {
    __typename?: 'VehicleJourney',
   id: Scalars['ID'],
   journeyType: Scalars['String'],
-  lineId?: Maybe<Scalars['String']>,
   routeId?: Maybe<Scalars['String']>,
   direction?: Maybe<Scalars['Direction']>,
   departureDate: Scalars['Date'],
