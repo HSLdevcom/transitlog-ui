@@ -19,3 +19,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # graphql.config.json
+
+cypress/integration/examples/*.js
+cypress/fixtures/example.json
+
