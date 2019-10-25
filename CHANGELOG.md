@@ -2,7 +2,8 @@
 
 ## Version 1.3.1, deployed 2019-10-25 @ 09:00
 
-- New GraphQL schema
+- New GraphQL schema.
+- Hide vehicle ID in journey details.
 
 ## Version 1.3.0, deployed 2019-10-25 @ 08:00
 

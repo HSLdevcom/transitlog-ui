@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useMemo} from "react";
 import styled from "styled-components";
 import JourneyDetailsHeader from "./JourneyDetailsHeader";
-import {observer, inject} from "mobx-react";
-import {app} from "mobx-app";
+import {observer} from "mobx-react-lite";
 import get from "lodash/get";
+import flow from "lodash/flow";
 import JourneyEvents from "./JourneyEvents";
 import {LoadingDisplay} from "../../Loading";
 import JourneyInfo from "./JourneyInfo";
@@ -13,6 +13,7 @@ import AlertsList from "../../AlertsList";
 import {getAlertsInEffect} from "../../../helpers/getAlertsInEffect";
 import {text} from "../../../helpers/text";
 import CancellationsList from "../../CancellationsList";
+import {inject} from "../../../helpers/inject";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -41,17 +42,13 @@ const JourneyPanelContent = styled.div`
   width: 100%;
 `;
 
-@inject(app("UI", "Time", "Filters"))
-@observer
-class JourneyDetails extends React.Component {
-  render() {
-    const {
-      state: {date, timeMoment},
-      journey = null,
-      route = null,
-      loading = false,
-    } = this.props;
+const decorate = flow(
+  observer,
+  inject("UI", "Time", "Filters")
+);
 
+const JourneyDetails = decorate(
+  ({state: {date, timeMoment, user}, journey = null, route = null, loading = false}) => {
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
     const originDeparture = get(journey, "departure", null);
@@ -61,9 +58,13 @@ class JourneyDetails extends React.Component {
       ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)
       : timeMoment;
 
-    const alerts = getAlertsInEffect(
-      get(journey, "alerts", []).length !== 0 ? journey : route,
-      journeyTime
+    const alerts = useMemo(
+      () =>
+        getAlertsInEffect(
+          get(journey, "alerts", []).length !== 0 ? journey : route,
+          journeyTime
+        ),
+      [journey, route, journeyTime]
     );
 
     const cancellations = get(journey, "cancellations", get(route, "cancellations", []));
@@ -71,7 +72,7 @@ class JourneyDetails extends React.Component {
     return (
       <JourneyPanelWrapper data-testid="journey-details">
         <LoadingDisplay loading={loading} />
-        <JourneyDetailsHeader journey={journey} route={route} />
+        <JourneyDetailsHeader journey={journey} route={route} showVehicleId={!!user} />
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} />
@@ -107,5 +108,6 @@ class JourneyDetails extends React.Component {
       </JourneyPanelWrapper>
     );
   }
-}
+);
+
 export default JourneyDetails;
