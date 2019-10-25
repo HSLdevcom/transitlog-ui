@@ -7,6 +7,7 @@ const vehicleColors = {
   TRAIN: "var(--purple)",
   TRUNK: "var(--orange)",
   SUBWAY: "var(--orange)",
+  METRO: "var(--orange)",
   default: "var(--blue)",
   unsigned: "var(--grey)",
 };

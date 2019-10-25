@@ -25,7 +25,8 @@
   color: var(--light-blue);
 }
 
-.SUBWAY:before {
+.SUBWAY:before,
+.METRO:before {
   background-image: url("../icon-subway.svg");
   color: var(--orange);
 }
