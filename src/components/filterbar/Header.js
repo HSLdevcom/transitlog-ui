@@ -112,7 +112,7 @@ function HeaderComponent({state, UI, className}) {
         <IconButton
           onClick={() => UI.toggleInstructions()}
           helpText={text("Show info")}
-          data-test="open-instructions">
+          data-testid="open-instructions">
           <Info fill="white" width="1.2rem" height="1.2rem" />
         </IconButton>
       </LoginContainer>

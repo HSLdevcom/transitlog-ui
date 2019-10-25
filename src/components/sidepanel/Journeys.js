@@ -199,7 +199,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                   focusKey={focusedJourney}
                   loading={loading || journeyLoading}
                   header={
-                    <JourneyListHeader>
+                    <JourneyListHeader data-testid="journey-list-header">
                       <JourneyRowLeft>
                         <Text>filterpanel.planned_start_time</Text>
                       </JourneyRowLeft>
@@ -321,7 +321,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                       return (
                         <JourneyListRow
                           {...applyTooltip("Journey list row")}
-                          data-testid={`journey-list-row-${departureTime}`}
+                          data-testid={`journey-list-row-${departureTime} observed-journey`}
                           ref={journeyIsFocused ? scrollRef : null}
                           selected={journeyIsSelected}
                           key={`journey_row_${journeyId}_${departure.id}`}
