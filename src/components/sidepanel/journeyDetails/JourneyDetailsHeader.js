@@ -93,7 +93,7 @@ const CancelledAlert = styled.div`
   }
 `;
 
-export default observer(({route, journey}) => {
+export default observer(({route, journey, showVehicleId = false}) => {
   if (!journey && !route) {
     return null;
   }
@@ -112,7 +112,7 @@ export default observer(({route, journey}) => {
             <JourneyPlanner fill="var(--blue)" width="1rem" height="1rem" />
             {routeId}
           </HeaderText>
-          {uniqueVehicleId && (
+          {showVehicleId && uniqueVehicleId && (
             <HeaderText>
               <TransportIcon mode={mode} width={17} height={17} />
               {uniqueVehicleId}
