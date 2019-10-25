@@ -11,6 +11,9 @@ describe("Route smoke tests", () => {
       expect(url).to.include(`route.routeId=2510&route.direction=1`)
     );
     cy.getTestElement("journey-list-header").should("ok");
+    cy.get(".testclass-stop-marker").then((elements) => {
+      expect(elements.length).to.be.least(2);
+    });
   });
 
   it("Selects a journey of the route", () => {
