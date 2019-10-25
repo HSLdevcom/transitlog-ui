@@ -12,16 +12,18 @@ import {
 } from "react-leaflet";
 import get from "lodash/get";
 import flow from "lodash/flow";
+import debounce from "lodash/debounce";
 import MapillaryViewer from "./MapillaryViewer";
 import styled from "styled-components";
 import MapillaryGeoJSONLayer from "./MapillaryGeoJSONLayer";
 import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
 import {observer} from "mobx-react-lite";
-import {observable, action, reaction, trace} from "mobx";
+import {observable, action, reaction} from "mobx";
 import {inject} from "../../helpers/inject";
 import "leaflet/dist/leaflet.css";
 import {validBounds} from "../../helpers/validBounds";
 import {LatLngBounds, LatLng} from "leaflet";
+import {useEffectOnce} from "../../hooks/useEffectOnce";
 
 const MapContainer = styled.div`
   overflow: hidden;
@@ -62,6 +64,8 @@ const decorate = flow(
   inject("UI")
 );
 
+const debouncedSetUrlValue = debounce(setUrlValue, 500);
+
 const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   const {
     mapOverlays,
@@ -79,12 +83,13 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     setMapBounds,
   } = UI;
 
+  const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
   const [canSetView, setCanSetView] = useState(true);
 
   const leafletMap = useMemo(() => {
     return get(mapRef, "current.leafletElement", null);
-  }, [mapRef.current]);
+  }, [mapRef.current, mapReady]);
 
   const [currentBaseLayer, setCurrentBaseLayer] = useState(
     getUrlValue("mapBaseLayer", "Digitransit")
@@ -95,22 +100,36 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     setCurrentBaseLayer(name);
   });
 
-  const onMapMoved = useCallback((e) => {
-    const center = e.target.getCenter();
-    const nextBounds = e.target.getBounds();
+  const setMapState = useCallback(
+    (mapObj) => {
+      const center = mapObj.getCenter();
+      const nextBounds = mapObj.getBounds();
 
-    if (canSetView) {
-      setMapView(center);
-    }
+      if (canSetView) {
+        setMapView(center);
+      }
 
-    setMapBounds(nextBounds);
-    setUrlValue("mapView", `${center.lat},${center.lng}`);
-  }, []);
+      setMapBounds(nextBounds);
+      debouncedSetUrlValue("mapView", `${center.lat},${center.lng}`);
+    },
+    [canSetView]
+  );
 
-  const onMapZoomed = useCallback((event) => {
-    const zoom = event.target.getZoom();
+  const setMapZoomState = useCallback((mapObj) => {
+    const zoom = mapObj.getZoom();
     setMapZoom(zoom);
     setUrlValue("mapZoom", zoom);
+  }, []);
+
+  const onMapMoved = useCallback(
+    (event) => {
+      setMapState(event.target);
+    },
+    [setMapState]
+  );
+
+  const onMapZoomed = useCallback((event) => {
+    setMapZoomState(event.target);
   }, []);
 
   // Invalidate map size to refresh map items layout
@@ -128,10 +147,20 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     return [mapView, mapZoom];
   }, []);
 
+  useEffectOnce(() => {
+    if (leafletMap) {
+      setMapBounds(leafletMap.getBounds());
+      setMapZoom(initialViewport[1]);
+      return true;
+    }
+
+    return false;
+  }, [leafletMap]);
+
   useEffect(() => {
     return reaction(
-      () => [state.mapView, state.mapZoom],
-      ([currentView, currentZoom]) => {
+      () => state.mapView,
+      (currentView) => {
         if (leafletMap) {
           if (
             currentView instanceof LatLngBounds &&
@@ -144,7 +173,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             currentView instanceof LatLng &&
             !leafletMap.getCenter().equals(currentView)
           ) {
-            leafletMap.setView(currentView, currentZoom, {animate: false});
+            leafletMap.setView(currentView, state.mapZoom, {animate: false});
           }
         }
       },
@@ -171,12 +200,16 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         onOverlayadd={changeOverlay("add")}
         onOverlayremove={changeOverlay("remove")}
         onZoomend={onMapZoomed}
-        onDragend={onMapMoved}>
+        onMoveend={onMapMoved}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer
             name="Digitransit"
             checked={currentBaseLayer === "Digitransit"}>
             <TileLayer
+              onLoad={() => {
+                /* onLoad does not work on the <Map>, but it works here. */
+                setMapReady(true);
+              }}
               attribution={
                 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors '
               }
@@ -197,7 +230,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             checked={mapOverlays.includes("Mapillary")}>
             <MapillaryGeoJSONLayer
               map={get(mapRef, "current.leafletElement", null)}
-              viewBbox={state.mapView}
+              viewBbox={state.mapBounds}
               location={currentMapillaryMapLocation}
               layerIsActive={mapOverlays.includes("Mapillary")}
               onSelectLocation={setMapillaryViewerLocation}
@@ -221,6 +254,16 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
                 */}
             </FeatureGroup>
           </LayersControl.Overlay>
+          <LayersControl.Overlay
+            name="Stopped vehicle"
+            checked={mapOverlays.includes("Stopped vehicle")}>
+            <FeatureGroup>
+              {/*
+                  The stopped vehicle markers are rendered in JourneyLayer. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
         </LayersControl>
         <Pane name="mapillary-lines" style={{zIndex: 390}} />
         <Pane name="mapillary-location" style={{zIndex: 400}} />
@@ -230,6 +273,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         <Pane name="selected-stop-radius" style={{zIndex: 445}} />
         <Pane name="event-hover" style={{zIndex: 450}} />
         <Pane name="stops" style={{zIndex: 475}} />
+        <Pane name="stopped-markers" style={{zIndex: 476}} />
         <Pane name="hfp-events" style={{zIndex: 480}} />
         <Pane name="hfp-events-2" style={{zIndex: 485}} />
         <Pane name="hfp-markers" style={{zIndex: 500}} />

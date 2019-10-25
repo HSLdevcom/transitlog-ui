@@ -1,15 +1,17 @@
-import React, {Component} from "react";
-import {Polyline, CircleMarker, FeatureGroup} from "react-leaflet";
-import {latLng} from "leaflet";
+import React, {useCallback, useState, useRef, useMemo} from "react";
+import {Polyline, CircleMarker, FeatureGroup, Tooltip, Marker} from "react-leaflet";
+import {latLng, Icon} from "leaflet";
 import get from "lodash/get";
 import last from "lodash/last";
 import orderBy from "lodash/orderBy";
+import flow from "lodash/flow";
 import getDelayType from "../../helpers/getDelayType";
-import {observer, inject} from "mobx-react";
-import {app} from "mobx-app";
+import {observer} from "mobx-react-lite";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
-import {observable, action} from "mobx";
 import HfpTooltip from "./HfpTooltip";
+import {inject} from "../../helpers/inject";
+import stoppedIcon from "../../img/exclamation.svg";
+import {Text} from "../../helpers/text";
 
 export function getLineChunksByDelay(events) {
   // Get only the events from the same journey and create latLng items for Leaflet.
@@ -54,66 +56,139 @@ export function getLineChunksByDelay(events) {
     }, []);
 }
 
-@inject(app("state"))
-@observer
-class JourneyLayer extends Component {
-  @observable.ref
-  eventAtHover = null;
+const decorate = flow(
+  observer,
+  inject("state")
+);
 
-  mouseOver = false;
-  mouseOut = false;
+const JourneyLayer = decorate(
+  ({name, journey, state, vehiclePositions = journey.vehiclePositions}) => {
+    const eventLines = useMemo(() => getLineChunksByDelay(vehiclePositions), [
+      vehiclePositions,
+    ]);
 
-  setEventAtHover = action((event) => {
-    this.eventAtHover = event;
-  });
+    // Find places during the journey where the vehicle was stopped for
+    // an abnormal duration.
+    const stoppedAtPositions = useMemo(() => {
+      const stopped = [];
+      let prevEvent = null;
+      let firstStationaryEvent = null; // The event that marks the start of the stationary period.
+      let stationaryDuration = 0; // The duration during which the vehicle was stopped.
 
-  findHfpItem = (events = [], latlng) => {
-    const eventItem = orderBy(
-      events,
-      (event) =>
-        !event.lat || !event.lng
-          ? Infinity
-          : latlng.distanceTo(latLng(event.lat, event.lng)),
-      "ASC"
-    )[0];
+      for (const event of vehiclePositions) {
+        if (prevEvent) {
+          let distance = 0; // Distance to the first stopped event or the previous event
+          const eventPosition = latLng([event.lat, event.lng]);
 
-    return eventItem || null;
-  };
+          // Measure the distance between the current event and the start of a potential
+          // stopped stop incident, or the previous event to determine if a stopped incdent
+          // is happening.
+          if (firstStationaryEvent) {
+            distance = eventPosition.distanceTo([
+              firstStationaryEvent.lat,
+              firstStationaryEvent.lng,
+            ]);
+          } else {
+            distance = eventPosition.distanceTo([prevEvent.lat, prevEvent.lng]);
+          }
 
-  onMouseout = () => {
-    this.mouseOut = true;
+          // If the distance is under 10 meters, start counting stopped duration.
+          if (distance <= 10) {
+            // If this event is starting a stopped incident, set it as the place where
+            // the vehicle stopped.
+            if (!firstStationaryEvent) {
+              firstStationaryEvent = event;
+            }
 
-    setTimeout(() => {
-      if (this.mouseOut) {
-        this.mouseOut = false;
-        this.mouseOver = false;
-        this.setEventAtHover(null);
+            // Count how long the vehicle has been stopped by deducting the unix timestamp
+            // of the initial stopped event from the current unix timestamp.
+            stationaryDuration = Math.abs(
+              event.recordedAtUnix - firstStationaryEvent.recordedAtUnix
+            );
+
+            continue;
+          } else if (firstStationaryEvent && stationaryDuration >= 5 * 60) {
+            // If the distance is longer than 10 meters and the stopped duration is more
+            // than 5 minutes, set the current firstStationaryEvent as a stopped event.
+            stopped.push({duration: stationaryDuration, event: firstStationaryEvent});
+          }
+
+          // Clear the tracking variables and be ready to detect the next stopped incident.
+          stationaryDuration = 0;
+          firstStationaryEvent = null;
+        }
+
+        // Set the prevEvent so we have something to measure the distance against.
+        prevEvent = event;
       }
-    }, 1000);
-  };
 
-  onHover = () => {
-    this.mouseOut = false;
-    this.mouseOver = true;
-  };
+      return stopped;
+    }, [vehiclePositions]);
 
-  onMousemove = (events) => (event) => {
-    const eventItem = this.findHfpItem(events, event.latlng);
+    const [eventAtHover, setHoverEvent] = useState(null);
 
-    if (eventItem) {
-      this.setEventAtHover(eventItem);
-    }
-  };
+    const mouseOver = useRef(false);
+    const mouseOut = useRef(false);
 
-  render() {
-    const {name, journey, vehiclePositions = journey.vehiclePositions} = this.props;
-    const eventLines = getLineChunksByDelay(vehiclePositions);
+    const findHfpItem = useCallback(
+      (latlng) => {
+        const eventItem = orderBy(
+          vehiclePositions,
+          (event) =>
+            !event.lat || !event.lng
+              ? Infinity
+              : latlng.distanceTo(latLng(event.lat, event.lng)),
+          "ASC"
+        )[0];
+
+        return eventItem || null;
+      },
+      [vehiclePositions]
+    );
+
+    const onMouseout = useCallback(() => {
+      mouseOut.current = true;
+
+      setTimeout(() => {
+        if (mouseOut.current) {
+          mouseOut.current = false;
+          mouseOver.current = false;
+          setHoverEvent(null);
+        }
+      }, 1000);
+    }, [mouseOut.current]);
+
+    const onHover = useCallback(() => {
+      mouseOut.current = false;
+      mouseOver.current = true;
+    }, []);
+
+    const onMousemove = useCallback(
+      (event) => {
+        const eventItem = findHfpItem(event.latlng);
+
+        if (eventItem) {
+          setHoverEvent(eventItem);
+        }
+      },
+      [vehiclePositions]
+    );
+
+    const stoppedMarkerIcon = useMemo(
+      () =>
+        new Icon({
+          iconUrl: stoppedIcon,
+          iconSize: [8, 32],
+          iconAnchor: [4, 32],
+        }),
+      []
+    );
 
     return (
       <FeatureGroup
-        onMousemove={this.onMousemove(vehiclePositions)}
-        onMouseover={this.onHover}
-        onMouseout={this.onMouseout}>
+        onMousemove={onMousemove}
+        onMouseover={onHover}
+        onMouseout={onMouseout}>
         {eventLines.map((delayChunk, index) => {
           const chunkDelayType = get(delayChunk, "delayType", "on-time");
           const chunkEvents = get(delayChunk, "events", []);
@@ -137,14 +212,27 @@ class JourneyLayer extends Component {
             </React.Fragment>
           );
         })}
-        {this.eventAtHover && (
-          <CircleMarker interactive={false} center={this.eventAtHover} radius={6}>
-            <HfpTooltip permanent={true} journey={journey} event={this.eventAtHover} />
+        {state.mapOverlays.includes("Stopped vehicle") &&
+          stoppedAtPositions.map(({event, duration}) => (
+            <Marker
+              icon={stoppedMarkerIcon}
+              pane="stopped-markers"
+              key={`stopped_at_${event.recordedAtUnix}_${duration}`}
+              position={latLng([event.lat, event.lng])}>
+              <Tooltip>
+                <Text>map.vehicle_stopped_duration_label</Text>{" "}
+                {Math.round(duration / 60)} min
+              </Tooltip>
+            </Marker>
+          ))}
+        {eventAtHover && (
+          <CircleMarker interactive={false} center={eventAtHover} radius={6}>
+            <HfpTooltip permanent={true} journey={journey} event={eventAtHover} />
           </CircleMarker>
         )}
       </FeatureGroup>
     );
   }
-}
+);
 
 export default JourneyLayer;
