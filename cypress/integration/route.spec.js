@@ -1,5 +1,3 @@
-import {departureTime} from "../../src/helpers/time";
-
 describe("Route smoke tests", () => {
   beforeEach(() => {
     cy.visit("/");
