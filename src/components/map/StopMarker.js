@@ -175,10 +175,11 @@ const StopMarker = observer(
       ) : (
         <CircleMarker
           ref={markerRef}
-          radius={selected ? 10 : 7}
+          radius={selected ? 10 : isTerminal ? 9 : 7}
           weight={3}
           color={stopColor}
           fill={true}
+          dashArray={dashedBorder ? "2 5" : null}
           fillColor={selected ? "var(--blue)" : isHighlighted ? "var(--grey)" : "white"}
           fillOpacity={1}
           pane="stops"
