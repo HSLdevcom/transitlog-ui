@@ -1,8 +1,9 @@
 describe("App opening smoke tests", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
+
     cy.window().then((win) => {
-      cy.wrap(cy.spy(win.console, "error")).as("spyWinConsoleError");
+      cy.spy(win.console, "error");
     });
   });
 
@@ -12,6 +13,8 @@ describe("App opening smoke tests", () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(5000);
 
-    expect(cy.get("spyWinConsoleError")).to.have.callCount(0);
+    cy.window().then((win) => {
+      expect(win.console.error).to.have.callCount(0);
+    });
   });
 });
