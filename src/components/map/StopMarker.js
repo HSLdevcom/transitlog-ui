@@ -12,9 +12,10 @@ import {observer} from "mobx-react-lite";
 import {Tooltip, CircleMarker} from "react-leaflet";
 
 export const StopMarkerCircle = styled.div`
-  width: ${({isSelected, big}) => (isSelected && big ? "2rem" : big ? "1.5rem" : "1rem")};
+  width: ${({isSelected, big}) =>
+    isSelected && big ? "2.1rem" : big ? "1.5rem" : "1rem"};
   height: ${({isSelected, big}) =>
-    isSelected && big ? "2rem" : big ? "1.5rem" : "1rem"};
+    isSelected && big ? "2.1rem" : big ? "1.5rem" : "1rem"};
   border-radius: 50%;
   border: ${({isTimingStop, dashed}) => (isTimingStop && !dashed ? 0 : "3px")}
     ${({dashed}) => (dashed ? "dashed" : "solid")}
