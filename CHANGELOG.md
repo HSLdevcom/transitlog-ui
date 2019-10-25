@@ -1,6 +1,6 @@
 # Transitlog UI changelog
 
-## Version 1.3.0, deployed 2019-10-25 @ 09:00
+## Version 1.3.0, deployed 2019-10-25 @ 08:00
 
 - Fix and improve stop rendering.
 - Exclamation mark indicator on the map where the vehicle has stood still for 5 minutes or more.
