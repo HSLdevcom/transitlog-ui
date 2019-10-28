@@ -6,7 +6,7 @@ import getJourneyId from "../../helpers/getJourneyId";
 import ToggleButton from "../ToggleButton";
 import {areaEventsStyles} from "../../stores/UIStore";
 import {text} from "../../helpers/text";
-import {getNormalTime} from "../../helpers/time";
+import {getNormalTime, journeyEventTime} from "../../helpers/time";
 import Input from "../Input";
 import flow from "lodash/flow";
 import get from "lodash/get";
@@ -195,22 +195,26 @@ const AreaJourneyList = decorate(
               const journeyIsSelected =
                 selectedJourney && selectedJourneyId === journeyId;
 
+              const isJourney = journey.journeyType === "journey";
+
+              const subject = !isJourney
+                ? journey.uniqueVehicleId
+                : `${routeId}/${direction}`;
+
               return (
                 <JourneyListRow
+                  data-testid={`area-journey-item-${journey.journeyType} area-journey-item-${subject}`}
                   ref={journeyIsSelected ? scrollRef : null}
                   key={`area_event_row_${journeyId}`}
                   selected={journeyIsSelected}
                   onClick={() => selectJourney(journey)}>
                   <JourneyRowLeft>
-                    {journey.journeyType !== "journey" ? (
+                    {!isJourney ? (
                       <>
-                        {text(`journey.type.${journey.journeyType}`)}:{" "}
-                        {journey.uniqueVehicleId}
+                        {text(`journey.type.${journey.journeyType}`)}: {subject}
                       </>
                     ) : (
-                      <>
-                        {routeId} / {direction}
-                      </>
+                      subject
                     )}
                   </JourneyRowLeft>
                   <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>

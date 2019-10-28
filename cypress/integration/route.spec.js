@@ -9,10 +9,10 @@ describe("Route smoke tests", () => {
     cy.url().should((url) =>
       expect(url).to.include(`route.routeId=2510&route.direction=1`)
     );
+
     cy.getTestElement("journey-list-header").should("exist");
-    cy.get(".test-class-stop-marker").then((elements) => {
-      expect(elements.length).to.be.least(2);
-    });
+    cy.contains(`[data-testid="journey-details-header"]`, "2510");
+    cy.get(".test-class-stop-marker").should("have.length.least", 2);
   });
 
   it("Selects a journey of the route", () => {
