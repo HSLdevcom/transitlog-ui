@@ -11,8 +11,8 @@ describe("Area search", () => {
   }
 
   it("Selects an area by drawing", () => {
-    const drawStart = {x: 830, y: 718};
-    const drawEnd = {x: 841, y: 714};
+    const drawStart = {x: 834, y: 712};
+    const drawEnd = {x: 844, y: 722};
 
     cy.getTestElement("time-input").type("8:00");
     cy.getTestElement("date-day-decrease").click();
@@ -26,11 +26,13 @@ describe("Area search", () => {
   });
 
   it("Selects an area from URL bounds", () => {
-    const currentDate = Cypress.moment().format("YYYY-MM-DD");
+    const currentDate = Cypress.moment()
+      .subtract(1, "day")
+      .format("YYYY-MM-DD");
 
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
-      `/?areaBounds=24.93684053421021%2C60.16994130182097%2C24.938600063323975%2C60.17059215409059&time=08%3A00%3A00&date=${currentDate}`
+      `/?areaBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${currentDate}`
     );
 
     cy.getTestElement("area-journeys-list").should("exist");
