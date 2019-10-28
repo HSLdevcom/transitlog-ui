@@ -1,7 +1,6 @@
 describe("Stop smoke tests", () => {
   beforeEach(() => {
     cy.visit("/");
-    cy.getTestElement("select-lang-fi");
   });
 
   it("Finds a stop and can select it", () => {
@@ -10,10 +9,10 @@ describe("Stop smoke tests", () => {
 
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
 
-    cy.getTestElement("virtual-list").should("ok");
-    cy.getTestElement("timetable-filters").should("ok");
-    cy.getTestElement("departure-item").should("ok");
-    cy.getTestElement("stop-popup-1173434").should("ok");
-    cy.get(".test-class-stop-marker-1173434").should("ok");
+    cy.getTestElement("virtual-list").should("exist");
+    cy.getTestElement("timetable-filters").should("exist");
+    cy.getTestElement("departure-item").should("exist");
+    cy.getTestElement("stop-popup-1173434").should("exist");
+    cy.get(".test-class-stop-marker-1173434").should("exist");
   });
 });

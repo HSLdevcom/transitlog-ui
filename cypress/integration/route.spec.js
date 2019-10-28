@@ -1,7 +1,6 @@
 describe("Route smoke tests", () => {
   beforeEach(() => {
     cy.visit("/");
-    cy.getTestElement("select-lang-fi");
   });
 
   it("Finds a route and can select it", () => {
@@ -10,8 +9,8 @@ describe("Route smoke tests", () => {
     cy.url().should((url) =>
       expect(url).to.include(`route.routeId=2510&route.direction=1`)
     );
-    cy.getTestElement("journey-list-header").should("ok");
-    cy.get(".testclass-stop-marker").then((elements) => {
+    cy.getTestElement("journey-list-header").should("exist");
+    cy.get(".test-class-stop-marker").then((elements) => {
       expect(elements.length).to.be.least(2);
     });
   });
@@ -23,14 +22,13 @@ describe("Route smoke tests", () => {
     cy.getTestElement("observed-journey")
       .first()
       .click()
-      .find(`> span`)
-      .first()
+      .find(`[data-testid="journey-departure-time"]`)
       .text()
       .then((departureTime) => {
         const urlDepartureTime = departureTime.replace(":", "") + "00";
 
         cy.getTestElement("journey-details-header", {timeout: 60000}).contains("2510");
-        cy.getTestElement("journey-stop-event").should("ok");
+        cy.getTestElement("journey-stop-event").should("exist");
 
         const currentDate = Cypress.moment().format("YYYYMMDD");
         cy.url().should("include", `/journey/${currentDate}/${urlDepartureTime}/2510/1`);

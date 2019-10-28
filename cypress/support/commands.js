@@ -27,3 +27,37 @@
 Cypress.Commands.add("getTestElement", (selector) => {
   return cy.get(`[data-testid~="${selector}"]`);
 });
+
+Cypress.Commands.add("hslLogin", (overrides = {}) => {
+  const AUTH_URI = Cypress.env("AUTH_URI");
+  const REDIRECT_URI = Cypress.env("REDIRECT_URI");
+  const CLIENT_ID = Cypress.env("CLIENT_ID");
+  const SCOPE = Cypress.env("SCOPE");
+
+  Cypress.log({
+    name: "HSL ID login",
+  });
+
+  const options = {
+    method: "POST",
+    url: AUTH_URI,
+    qs: {
+      ns: "hsl-transitlog",
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+      response_type: "code",
+      scope: SCOPE,
+      ui_locales: "en",
+    },
+    form: true, // we are submitting a regular form body
+    body: {
+      username: "jane.lane",
+      password: "password123",
+    },
+  };
+
+  // allow us to override defaults with passed in overrides
+  _.extend(options, overrides);
+
+  cy.request(options);
+});

@@ -175,7 +175,7 @@ const StopMarker = observer(
         </DivIcon>
       ) : (
         <CircleMarker
-          className={`testclass-stop-marker testclass-stop-marker-${stop.stopId}`}
+          className={`test-class-stop-marker test-class-stop-marker-${stop.stopId}`}
           ref={markerRef}
           radius={selected ? 10 : isTerminal ? 9 : 7}
           weight={3}

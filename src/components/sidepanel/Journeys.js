@@ -328,6 +328,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
                           isCancelled={isCancelled}
                           onClick={() => selectJourney(departure.journey)}>
                           <JourneyRowLeft
+                            data-testid="journey-departure-time"
                             {...applyTooltip("Planned journey time with data")}>
                             {getNormalTime(departureTime).slice(0, -3)}
                             {multipleInstances && (

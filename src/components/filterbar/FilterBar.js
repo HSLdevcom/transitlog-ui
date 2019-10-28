@@ -79,7 +79,7 @@ const FilterBar = decorate(
             <RouteSettings routeEventsLoading={routeEventsLoading} />
           </FilterSection>
           {user && (
-            <FilterSection>
+            <FilterSection data-testid="vehicle-search">
               <VehicleSettings unsignedEventsLoading={unsignedEventsLoading} />
             </FilterSection>
           )}
