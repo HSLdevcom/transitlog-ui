@@ -152,6 +152,7 @@ const AreaJourneyList = decorate(
 
     return (
       <SidepanelList
+        testIdPrefix="area-journeys"
         focusKey={selectedJourneyId}
         loading={loading}
         header={

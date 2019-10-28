@@ -196,6 +196,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         maxZoom={18}
         selectArea={true}
         zoomControl={false}
+        onClick={(e) => console.log(e)}
         onBaselayerchange={onChangeBaseLayer}
         onOverlayadd={changeOverlay("add")}
         onOverlayremove={changeOverlay("remove")}
