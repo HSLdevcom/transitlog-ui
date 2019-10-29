@@ -190,7 +190,12 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
                 return (
                   <DatePicker
                     dropdownMode="select"
-                    customInput={<CalendarInput helpText="Select date field" />}
+                    customInput={
+                      <CalendarInput
+                        data-testid="date-input"
+                        helpText="Select date field"
+                      />
+                    }
                     dateFormat={"yyyy-MM-dd"}
                     selected={moment.tz(date, TIMEZONE).toDate()}
                     onChange={setDate}

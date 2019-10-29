@@ -303,6 +303,7 @@ const JourneysByWeek = decorate(
                   header={
                     <ListHeader>
                       <TimeTypeButton
+                        testId="observed-times-type-select"
                         type="checkbox"
                         onChange={onChangeObservedTimeType}
                         name="observed_times_type"

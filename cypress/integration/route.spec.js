@@ -5,19 +5,23 @@ describe("Route smoke tests", () => {
 
   function assertRouteSelected() {
     cy.getTestElement("journey-details-header", {timeout: 60000}).contains("2510");
-    cy.get(".test-class-stop-marker").should("have.length.least", 2);
+    cy.get(".test-class-stop-marker", {timeout: 60000}).should("have.length.least", 2);
   }
 
   function assertJourneySelected(departureTime) {
     assertRouteSelected();
     cy.getTestElement("journey-stop-event", {timeout: 60000}).should("exist");
-    const currentDate = yesterday.replace(/-/g, "");
+    cy.getTestElement("date-input")
+      .invoke("val")
+      .then((selectedDate) => {
+        const urlDate = selectedDate.replace(/-/g, "");
 
-    if (departureTime) {
-      cy.url().should("include", `/journey/${currentDate}/${departureTime}/2510/1`);
-    } else {
-      cy.url().should("include", `/journey/${currentDate}`);
-    }
+        if (departureTime) {
+          cy.url().should("include", `/journey/${urlDate}/${departureTime}/2510/1`);
+        } else {
+          cy.url().should("include", `/journey/${urlDate}`);
+        }
+      });
   }
 
   beforeEach(() => {
@@ -54,6 +58,39 @@ describe("Route smoke tests", () => {
       "have.length.least",
       2
     );
+
+    cy.getTestElement("weekly-departure-ok", {timeout: 10000})
+      .first()
+      .click({force: true});
+
+    assertJourneySelected();
+  });
+
+  it("Can select a weekly departure in last stop arrival mode", () => {
+    cy.getTestElement("sidebar-tab-journeys_by_week").click();
+    cy.getTestElement("journeys-by-week-list").should("exist");
+    cy.getTestElement("weekly-departure-time", {timeout: 10000})
+      .should("have.length.least", 2)
+      .first()
+      .text()
+      .as("first-departure-time");
+
+    cy.getTestElement("observed-times-type-select").click();
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(5000);
+
+    cy.getTestElement("weekly-departure-time", {timeout: 10000}).should(
+      "have.length.least",
+      2
+    );
+
+    cy.getTestElement("weekly-departure-time", {timeout: 10000})
+      .first()
+      .text()
+      .then((lastStopArrival) => {
+        cy.get("@first-departure-time").should("not.equal", lastStopArrival);
+      });
 
     cy.getTestElement("weekly-departure-ok", {timeout: 10000})
       .first()
