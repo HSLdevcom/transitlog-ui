@@ -17,14 +17,20 @@ const path = require("path");
 module.exports = (on, config) => {
   const appRoot = fs.realpathSync(process.cwd());
   // TODO: Read env config for current env instead of hardcoded local.
-  const envPath = path.resolve(appRoot, ".env.local");
+  const envPaths = [
+    path.resolve(appRoot, ".env.cypress"),
+    path.resolve(appRoot, ".testsecrets"),
+  ];
 
   // Read env config
-  require("dotenv-expand")(
-    require("dotenv").config({
-      path: envPath,
-    })
-  );
+  envPaths.forEach((envPath) => {
+    console.log(envPath);
+    require("dotenv-expand")(
+      require("dotenv").config({
+        path: envPath,
+      })
+    );
+  });
 
   const REACT_APP = /^REACT_APP_/i;
 
