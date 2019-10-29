@@ -3,27 +3,6 @@ describe("Route smoke tests", () => {
     .subtract(1, "day")
     .format("YYYY-MM-DD");
 
-  function assertRouteSelected() {
-    cy.getTestElement("journey-details-header", {timeout: 60000}).contains("2510");
-    cy.get(".test-class-stop-marker", {timeout: 60000}).should("have.length.least", 2);
-  }
-
-  function assertJourneySelected(departureTime) {
-    assertRouteSelected();
-    cy.getTestElement("journey-stop-event", {timeout: 60000}).should("exist");
-    cy.getTestElement("date-input")
-      .invoke("val")
-      .then((selectedDate) => {
-        const urlDate = selectedDate.replace(/-/g, "");
-
-        if (departureTime) {
-          cy.url().should("include", `/journey/${urlDate}/${departureTime}/2510/1`);
-        } else {
-          cy.url().should("include", `/journey/${urlDate}`);
-        }
-      });
-  }
-
   beforeEach(() => {
     cy.visit(`/?date=${yesterday}`);
     cy.getTestElement("route-input", {timeout: 2000}).type("2510/1");
@@ -36,7 +15,7 @@ describe("Route smoke tests", () => {
     );
 
     cy.getTestElement("journey-list").should("exist");
-    assertRouteSelected();
+    cy.assertRouteSelected("2510");
   });
 
   it("Selects a journey of the route", () => {
@@ -47,7 +26,7 @@ describe("Route smoke tests", () => {
       .text()
       .then((departureTime) => {
         const urlDepartureTime = departureTime.replace(":", "") + "00";
-        assertJourneySelected(urlDepartureTime);
+        cy.assertJourneySelected("2510", urlDepartureTime);
       });
   });
 
@@ -63,7 +42,7 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    assertJourneySelected();
+    cy.assertJourneySelected("2510");
   });
 
   it("Can select a weekly departure in last stop arrival mode", () => {
@@ -96,6 +75,6 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    assertJourneySelected();
+    cy.assertJourneySelected("2510");
   });
 });

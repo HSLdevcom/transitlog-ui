@@ -61,3 +61,24 @@ Cypress.Commands.add("hslLogin", (overrides = {}) => {
 
   cy.request(options);
 });
+
+Cypress.Commands.add("assertRouteSelected", (routeId = "2510") => {
+  cy.getTestElement("journey-details-header", {timeout: 60000}).contains(routeId);
+  cy.get(".test-class-stop-marker", {timeout: 60000}).should("have.length.least", 2);
+});
+
+Cypress.Commands.add("assertJourneySelected", (routeId = "2510", departureTime) => {
+  cy.assertRouteSelected(routeId);
+  cy.getTestElement("journey-stop-event", {timeout: 60000}).should("exist");
+  cy.getTestElement("date-input")
+    .invoke("val")
+    .then((selectedDate) => {
+      const urlDate = selectedDate.replace(/-/g, "");
+
+      if (departureTime) {
+        cy.url().should("include", `/journey/${urlDate}/${departureTime}/${routeId}/1`);
+      } else {
+        cy.url().should("include", `/journey/${urlDate}`);
+      }
+    });
+});
