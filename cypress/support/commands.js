@@ -24,15 +24,21 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+const _ = require("lodash");
+
 Cypress.Commands.add("getTestElement", (selector, options = {}) => {
   return cy.get(`[data-testid~="${selector}"]`, options);
 });
 
 Cypress.Commands.add("hslLogin", (overrides = {}) => {
   const AUTH_URI = Cypress.env("AUTH_URI");
-  const REDIRECT_URI = Cypress.env("REDIRECT_URI");
   const CLIENT_ID = Cypress.env("CLIENT_ID");
-  const SCOPE = Cypress.env("SCOPE");
+  const CLIENT_SECRET = Cypress.env("CLIENT_SECRET");
+  const AUTH_SCOPE = Cypress.env("AUTH_SCOPE");
+  const HSL_TESTING_HSLID_USERNAME = Cypress.env("HSL_TESTING_HSLID_USERNAME");
+  const HSL_TESTING_HSLID_PASSWORD = Cypress.env("HSL_TESTING_HSLID_PASSWORD");
+
+  const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
   Cypress.log({
     name: "HSL ID login",
@@ -41,25 +47,29 @@ Cypress.Commands.add("hslLogin", (overrides = {}) => {
   const options = {
     method: "POST",
     url: AUTH_URI,
-    qs: {
-      ns: "hsl-transitlog",
-      client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
-      response_type: "code",
-      scope: SCOPE,
-      ui_locales: "en",
+    headers: {
+      Authorization: authHeader,
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     form: true, // we are submitting a regular form body
     body: {
-      username: "jane.lane",
-      password: "password123",
+      scope: AUTH_SCOPE,
+      grant_type: "password",
+      username: HSL_TESTING_HSLID_USERNAME,
+      password: HSL_TESTING_HSLID_PASSWORD,
     },
   };
 
   // allow us to override defaults with passed in overrides
   _.extend(options, overrides);
 
-  cy.request(options);
+  cy.request(options).then((response) => {
+    const {access_token} = response.body;
+
+    expect(response.status).to.eq(200);
+    expect(access_token).to.be.ok;
+    cy.visit(`/?code=${access_token}&is_test=true`);
+  });
 });
 
 Cypress.Commands.add("assertRouteSelected", (routeId = "2510") => {

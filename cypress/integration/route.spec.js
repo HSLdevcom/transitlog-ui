@@ -1,4 +1,5 @@
 describe("Route smoke tests", () => {
+  // Yesterday's data is kept in cache for longer which make the tests faster.
   const yesterday = Cypress.moment()
     .subtract(1, "day")
     .format("YYYY-MM-DD");

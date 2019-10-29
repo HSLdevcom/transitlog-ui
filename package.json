@@ -114,6 +114,7 @@
     "docker:build": "docker build -t hsldevcom/transitlog-ui .",
     "docker:run": "docker run -d -p 3000:3000 hsldevcom/transitlog-ui",
     "start": "node scripts/start.js",
+    "start:production": "NODE_ENV=production node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "test:ci": "CI=true node scripts/test.js",

@@ -17,8 +17,8 @@ if (!BACKEND_API_URL.endsWith("/")) {
   BACKEND_API_URL = BACKEND_API_URL + "/";
 }
 
-export const authorize = async (code) => {
-  const requestBody = {code};
+export const authorize = async (code, isTest = false) => {
+  const requestBody = {code, isTest};
   return await sendRequest(RequestMethod.POST, requestBody);
 };
 
