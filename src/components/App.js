@@ -85,7 +85,19 @@ function App({route, state, UI}) {
   } = state;
 
   const selectedJourneyId = getJourneyId(selectedJourney);
-  const code = useMemo(() => new URL(window.location.href).searchParams.get("code"), []);
+  const {code, is_test = "false"} = useMemo(
+    () =>
+      Array.from(new URL(window.location.href).searchParams.entries()).reduce(
+        (params, [key, value]) => {
+          params[key] = value;
+          return params;
+        },
+        {}
+      ),
+    []
+  );
+
+  console.log(code, is_test);
 
   useEffect(() => {
     const auth = async () => {
@@ -95,10 +107,12 @@ function App({route, state, UI}) {
         : UI.setUser(null);
 
       if (code) {
-        const response = await authorize(code);
+        const response = await authorize(code, is_test === "true");
 
         if (response && response.isOk && response.email) {
           UI.setUser(response.email);
+        } else {
+          console.error("Login not successful.");
         }
 
         removeAuthParams();
