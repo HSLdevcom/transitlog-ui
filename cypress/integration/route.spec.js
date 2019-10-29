@@ -26,8 +26,8 @@ describe("Route smoke tests", () => {
 
   beforeEach(() => {
     cy.visit(`/?date=${yesterday}`);
-    cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
+    cy.getTestElement("route-input", {timeout: 2000}).type("2510/1");
+    cy.getTestElement("route-option-2510-1", {timeout: 2000}).click();
   });
 
   it("Finds a route and can select it", () => {
@@ -54,7 +54,7 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure", () => {
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
-    cy.getTestElement("weekly-departure-time", {timeout: 10000}).should(
+    cy.getTestElement("weekly-departure-time", {timeout: 20000}).should(
       "have.length.least",
       2
     );
@@ -69,7 +69,7 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure in last stop arrival mode", () => {
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
-    cy.getTestElement("weekly-departure-time", {timeout: 10000})
+    cy.getTestElement("weekly-departure-time", {timeout: 20000})
       .should("have.length.least", 2)
       .first()
       .text()
