@@ -95,7 +95,7 @@ const TableCell = styled.div`
   }
 `;
 
-const TableCellButton = styled(TableCell.withComponent("button"))`
+const TableCellButton = styled(TableCell)`
   cursor: pointer;
   font-weight: bold;
   display: block;
@@ -297,6 +297,7 @@ const JourneysByWeek = decorate(
 
               return (
                 <SidepanelList
+                  testIdPrefix="journeys-by-week"
                   focusKey={selectedJourneyId}
                   loading={loading}
                   header={
@@ -427,7 +428,9 @@ const JourneysByWeek = decorate(
                               key={`departure_row_${plannedTime}`}
                               isSelected={rowIsSelected}
                               ref={rowIsSelected ? scrollRef : null}>
-                              <TableCell strong={true}>
+                              <TableCell
+                                data-testid="weekly-departure-time"
+                                strong={true}>
                                 {plannedTime.slice(0, -3)}
                               </TableCell>
                               {weekDepartures.map((departure, idx) => {
@@ -500,6 +503,8 @@ const JourneysByWeek = decorate(
                                       helpText={`This departure is not available due to: ${departureStatus}, ${dayType}`}
                                       key={`departure_day_${dayType}_${departureStatus}_${plannedTime}_${idx}`}>
                                       <TableCellButton
+                                        data-testid={`weekly-departure-${departureStatus}`}
+                                        as="button"
                                         color={
                                           departureIsSelected
                                             ? "white"
@@ -559,6 +564,8 @@ const JourneysByWeek = decorate(
                                     helpText="Journey list diff"
                                     key={`departure_day_${departure.dayType}_${plannedTime}`}>
                                     <TableCellButton
+                                      as="button"
+                                      data-testid={`weekly-departure-${departureStatus}`}
                                       isCancelled={departure.isCancelled}
                                       highlight={idx === currentDayTypeIndex}
                                       onClick={() =>

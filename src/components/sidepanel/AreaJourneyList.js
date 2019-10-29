@@ -6,7 +6,7 @@ import getJourneyId from "../../helpers/getJourneyId";
 import ToggleButton from "../ToggleButton";
 import {areaEventsStyles} from "../../stores/UIStore";
 import {text} from "../../helpers/text";
-import {getNormalTime, journeyEventTime} from "../../helpers/time";
+import {getNormalTime} from "../../helpers/time";
 import Input from "../Input";
 import flow from "lodash/flow";
 import get from "lodash/get";

@@ -196,6 +196,7 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
 
               return (
                 <SidepanelList
+                  testIdPrefix="journey"
                   focusKey={focusedJourney}
                   loading={loading || journeyLoading}
                   header={
