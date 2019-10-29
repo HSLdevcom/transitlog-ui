@@ -19,7 +19,7 @@ module.exports = (on, config) => {
   // TODO: Read env config for current env instead of hardcoded values.
   const envPaths = [
     path.resolve(appRoot, ".env.cypress"),
-    path.resolve(appRoot, ".testsecrets"),
+    path.resolve(appRoot, ".testsecret"),
   ];
 
   // Read env config
