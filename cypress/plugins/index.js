@@ -16,7 +16,7 @@ const path = require("path");
 
 module.exports = (on, config) => {
   const appRoot = fs.realpathSync(process.cwd());
-  // TODO: Read env config for current env instead of hardcoded local.
+  // TODO: Read env config for current env instead of hardcoded values.
   const envPaths = [
     path.resolve(appRoot, ".env.cypress"),
     path.resolve(appRoot, ".testsecrets"),
@@ -24,7 +24,12 @@ module.exports = (on, config) => {
 
   // Read env config
   envPaths.forEach((envPath) => {
-    console.log(envPath);
+    if (!fs.existsSync(envPath)) {
+      throw new Error(
+        "Auth secrets for testing not found! Ensure a `.testsecret` file exists in the project root containing the client secret."
+      );
+    }
+
     require("dotenv-expand")(
       require("dotenv").config({
         path: envPath,
