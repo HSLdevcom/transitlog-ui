@@ -218,6 +218,7 @@ function App({route, state, UI}) {
                             />
                             {selectedJourney && (
                               <GraphContainer
+                                data-testid="journey-graph-container"
                                 journeyGraphOpen={
                                   get(selectedJourney, "vehiclePositions", []).length !==
                                     0 && journeyGraphOpen

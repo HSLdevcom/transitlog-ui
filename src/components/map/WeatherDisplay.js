@@ -25,6 +25,7 @@ const decorate = flow(
 
 const WeatherMarker = ({children, location, color}) => (
   <CircleMarker
+    className="test-class-weather-marker"
     radius={7}
     fill={true}
     fillColor={color}

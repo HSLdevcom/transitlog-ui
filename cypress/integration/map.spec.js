@@ -24,6 +24,7 @@ describe("Map smoke tests", () => {
 
     cy.get(".leaflet-control-layers").trigger("mouseover");
     cy.contains("Stop radius").click();
+    cy.url().should("include", "Stop+radius");
 
     cy.get(".test-class-stop-radius")
       .should("exist")
@@ -31,5 +32,36 @@ describe("Map smoke tests", () => {
         const count = stopRadiusElements.length;
         cy.get(".test-class-stop-marker").should("have.length", count);
       });
+  });
+
+  it("Can display Mapillary coverage", () => {
+    cy.get(".leaflet-control-layers").trigger("mouseover");
+    cy.contains("Mapillary").click();
+    cy.url().should("include", "Mapillary");
+
+    cy.get(".leaflet-mapillary-lines-pane")
+      .children()
+      .should("exist");
+  });
+
+  it("Can display the weather", () => {
+    cy.get(".leaflet-control-layers").trigger("mouseover");
+    cy.contains("Weather").click();
+    cy.url().should("include", "Weather");
+
+    cy.get(".test-class-weather-marker").should("exist");
+    cy.getTestElement("weather-widget").should("exist");
+  });
+
+  it("Can display where vehicles stood still", () => {
+    // This won't actually test the "vehicle stopped here" marker
+    // as we can't know which journeys will trigger it. This
+    // tests that we can select it in the layer select.
+    cy.get(".leaflet-control-layers").trigger("mouseover");
+    cy.contains("Stopped vehicle")
+      .click()
+      .click(); // it is selected by default so clicking it once will deselect it.
+
+    cy.url().should("include", "Stopped+vehicle");
   });
 });

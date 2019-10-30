@@ -119,6 +119,7 @@ const Graph = decorate((props) => {
     <div>
       {graphExpanded && width && (
         <GraphPlot
+          className="test-class-journey-graph"
           height={200}
           width={width}
           onClick={() => Filters.setStop(highlight.stopId)}
