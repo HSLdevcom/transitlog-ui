@@ -58,6 +58,7 @@ class ControlBar extends Component {
           <Text>general.update</Text>
         </ControlButton>
         <PollToggle
+          testId="simulation-toggle"
           helpText="Live toggle"
           type="checkbox"
           onChange={this.onToggleLive}
