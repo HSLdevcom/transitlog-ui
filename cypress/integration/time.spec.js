@@ -38,6 +38,7 @@ describe("Time and reset/update smoke tests", () => {
 
     cy.assertJourneySelected("2510");
 
+    // Clicking the vehicle marker will pin the tooltip
     cy.getTestElement("hfp-marker-icon").click();
     cy.getTestElement("hfp-tooltip-content").should("exist");
 

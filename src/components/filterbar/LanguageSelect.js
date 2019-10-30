@@ -53,14 +53,14 @@ class LanguageSelect extends Component {
           Fi
         </LanguageButton>
         <LanguageButton
-          data-testid="select-lang-en"
+          data-testid="select-lang-se"
           helpText="Language select swedish"
           active={language === LANGUAGES.SWEDISH}
           onClick={this.onSelectLanguage(LANGUAGES.SWEDISH)}>
           Se
         </LanguageButton>
         <LanguageButton
-          data-testid="select-lang-se"
+          data-testid="select-lang-en"
           helpText="Language select english"
           active={language === LANGUAGES.ENGLISH}
           onClick={this.onSelectLanguage(LANGUAGES.ENGLISH)}>
