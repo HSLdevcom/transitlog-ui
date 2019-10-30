@@ -1,4 +1,4 @@
-describe("Time and reset/update smoke tests", () => {
+describe("Time smoke tests", () => {
   beforeEach(() => {
     cy.visit("/");
   });
