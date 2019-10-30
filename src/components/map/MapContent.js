@@ -58,9 +58,9 @@ const MapContent = decorate(
     return (
       <>
         <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
-        {/* When a route is NOT selected... */}
-        <StopLayer showRadius={showStopRadius} date={date} selectedStop={stop} />
-        {/* When a route IS selected... */}
+        {!selectedJourney && (
+          <StopLayer showRadius={showStopRadius} date={date} selectedStop={stop} />
+        )}
         {hasRoute && (
           <>
             <RouteGeometryQuery
