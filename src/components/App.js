@@ -97,8 +97,6 @@ function App({route, state, UI}) {
     []
   );
 
-  console.log(code, is_test);
-
   useEffect(() => {
     const auth = async () => {
       const response = await checkExistingSession();

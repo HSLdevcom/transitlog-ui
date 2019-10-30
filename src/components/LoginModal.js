@@ -148,7 +148,7 @@ class LoginModal extends React.Component {
           ) : (
             <>
               {user ? (
-                <LoginButton onClick={this.onLogoutClick}>
+                <LoginButton data-testid="logout-button" onClick={this.onLogoutClick}>
                   <Login height={"1em"} fill={"#3e3e3e"} />
                   <LoginText>
                     <Text>auth.logout</Text>
