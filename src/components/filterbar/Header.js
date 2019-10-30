@@ -106,7 +106,10 @@ function HeaderComponent({state, UI, className}) {
       </LangSelectContainer>
       <LoginContainer>
         {user && <Username data-testid="authenticated-user">{user}</Username>}
-        <IconButton onClick={() => UI.toggleLoginModal()} helpText={text("Sign in")}>
+        <IconButton
+          data-testid="auth-modal-button"
+          onClick={() => UI.toggleLoginModal()}
+          helpText={text("Sign in")}>
           <Login height="1.2rem" fill="white" />
         </IconButton>
         <IconButton
