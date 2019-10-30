@@ -105,6 +105,7 @@ class RouteStop extends React.Component {
     if (!selectedJourney || (!departure && !arrival)) {
       return (
         <StopMarker
+          testId="route-stop"
           key={`route_stop_marker_${stop.stopId}`}
           selectedStop={state.stop}
           highlightedStop={state.highlightedStop}
@@ -372,6 +373,7 @@ class RouteStop extends React.Component {
 
     return (
       <StopMarker
+        testId="route-stop"
         key={`journey_stop_marker_${stopId}`}
         dashedBorder={!isPlanned && !doorDidOpen}
         color={color}

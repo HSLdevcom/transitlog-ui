@@ -199,6 +199,7 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
 
             return (
               <VirtualizedSidepanelList
+                testId="stop-departures-list"
                 date={date}
                 scrollToIndex={focusedIndex !== -1 ? focusedIndex : undefined}
                 list={departures}

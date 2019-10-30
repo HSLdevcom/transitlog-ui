@@ -79,7 +79,7 @@ Cypress.Commands.add("assertRouteSelected", (routeId) => {
     cy.getTestElement("journey-details-header", {timeout: 60000}).should("exist");
   }
 
-  cy.get(".test-class-stop-marker", {timeout: 60000}).should("have.length.least", 2);
+  cy.get(".test-class-route-stop", {timeout: 60000}).should("have.length.least", 2);
 });
 
 Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {

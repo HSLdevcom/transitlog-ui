@@ -8,7 +8,7 @@ describe("Stop smoke tests", () => {
   it("Finds a stop and can select it", () => {
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
 
-    cy.getTestElement("virtual-list").should("exist");
+    cy.getTestElement("stop-departures-list").should("exist");
     cy.getTestElement("timetable-filters").should("exist");
     cy.getTestElement("departure-item").should("exist");
     cy.getTestElement("stop-popup-1173434").should("exist");
@@ -16,6 +16,10 @@ describe("Stop smoke tests", () => {
   });
 
   it("Can select a departure", () => {
-  
+    cy.getTestElement("departure-option")
+      .first()
+      .click();
+
+    cy.assertJourneySelected();
   });
 });
