@@ -134,7 +134,12 @@ const StopMarker = observer(
     const markerPosition = latLng({lat, lng});
 
     const markerIcon = (
-      <IconWrapper className={`test-class-${testId} test-class-${testId}-${stop.stopId}`}>
+      <IconWrapper
+        className={`test-class-${testId} test-class-${testId}-${get(
+          stop,
+          "stopId",
+          ""
+        )}`}>
         <StopMarkerCircle
           thickBorder={isTerminal}
           isSelected={isSelected}
