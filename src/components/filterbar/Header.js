@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../../hsl-logo.png";
-import {Text} from "../../helpers/text";
+import {Text, text} from "../../helpers/text";
 import styled from "styled-components";
 import {Heading} from "../Typography";
 import LanguageSelect from "./LanguageSelect";
@@ -11,7 +11,6 @@ import Login from "../../icons/Login";
 import ControlBar from "../sidepanel/ControlBar";
 import {Button} from "../Forms";
 import Info from "../../icons/Info";
-import {text} from "../../helpers/text";
 
 const Header = styled.header`
   width: 100%;

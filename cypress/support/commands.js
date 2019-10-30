@@ -72,12 +72,17 @@ Cypress.Commands.add("hslLogin", (overrides = {}) => {
   });
 });
 
-Cypress.Commands.add("assertRouteSelected", (routeId = "2510") => {
-  cy.getTestElement("journey-details-header", {timeout: 60000}).contains(routeId);
+Cypress.Commands.add("assertRouteSelected", (routeId) => {
+  if (routeId) {
+    cy.getTestElement("journey-details-header", {timeout: 60000}).contains(routeId);
+  } else {
+    cy.getTestElement("journey-details-header", {timeout: 60000}).should("exist");
+  }
+
   cy.get(".test-class-stop-marker", {timeout: 60000}).should("have.length.least", 2);
 });
 
-Cypress.Commands.add("assertJourneySelected", (routeId = "2510", departureTime) => {
+Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
   cy.assertRouteSelected(routeId);
   cy.getTestElement("journey-stop-event", {timeout: 60000}).should("exist");
   cy.getTestElement("date-input")
@@ -85,7 +90,7 @@ Cypress.Commands.add("assertJourneySelected", (routeId = "2510", departureTime) 
     .then((selectedDate) => {
       const urlDate = selectedDate.replace(/-/g, "");
 
-      if (departureTime) {
+      if (routeId && departureTime) {
         cy.url().should("include", `/journey/${urlDate}/${departureTime}/${routeId}/1`);
       } else {
         cy.url().should("include", `/journey/${urlDate}`);
