@@ -46,7 +46,7 @@ const WeatherWidgetComponent = ({
   roadConditionIsUncertain = true,
 }) =>
   (temperature !== false || roadCondition) && (
-    <WeatherContainer className={className}>
+    <WeatherContainer data-testid="weather-widget" className={className}>
       {temperature !== false && (
         <Temperature uncertain={temperatureIsUncertain}>{temperature} &deg;C</Temperature>
       )}

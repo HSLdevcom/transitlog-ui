@@ -81,4 +81,22 @@ describe("App opening smoke tests", () => {
     cy.getTestElement("route-input").should("be.empty");
     cy.getTestElement("stop-input").should("be.empty");
   });
+
+  it("Can display the journey graph", () => {
+    cy.getTestElement("route-input").type("2510/1");
+    cy.getTestElement("route-option-2510-1").click();
+
+    cy.getTestElement("observed-journey")
+      .first()
+      .click();
+
+    cy.assertJourneySelected("2510");
+
+    cy.getTestElement("toggle-graph-button")
+      .should("exist")
+      .click();
+
+    cy.getTestElement("journey-graph-container").should("visible");
+    cy.get(".test-class-journey-graph").should("exist");
+  });
 });
