@@ -35,12 +35,14 @@ const renderSuggestion = (suggestion, {query, isHighlighted}) => {
     uniqueVehicleId = `${uniqueVehicleId} (${registryNr})`;
   }
 
+  const isInService =
+    typeof suggestion.inService === "undefined" || suggestion.inService === true;
+
   return (
     <VehicleSuggestion
+      data-testid={`vehicle-option ${isInService ? "vehicle-option-in-service" : ""}`}
       isHighlighted={isHighlighted}
-      inService={
-        typeof suggestion.inService === "undefined" || suggestion.inService === true
-      }>
+      inService={isInService}>
       <SuggestionText>{uniqueVehicleId}</SuggestionText>
     </VehicleSuggestion>
   );
@@ -103,6 +105,7 @@ export default enhance(({value = "", onSelect, vehicles = []}) => {
 
   return (
     <SuggestionInput
+      testId="vehicle-search-input"
       helpText="Select vehicle"
       minimumInput={0}
       value={value}

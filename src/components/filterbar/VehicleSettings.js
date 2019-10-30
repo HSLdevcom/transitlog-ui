@@ -73,7 +73,9 @@ const VehicleSettings = decorate(({Filters, state, unsignedEventsLoading}) => {
                   )}
                 </ControlGroup>
                 {selectedVehicle && (
-                  <SelectedOptionDisplay withIcon={false}>
+                  <SelectedOptionDisplay
+                    data-testid="selected-vehicle-display"
+                    withIcon={false}>
                     <SuggestionText withIcon={false}>
                       <strong>{selectedVehicle.id}</strong> {selectedVehicle.registryNr}
                       <br />

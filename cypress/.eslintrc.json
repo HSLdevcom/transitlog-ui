@@ -1,6 +1,7 @@
 {
   "extends": ["plugin:cypress/recommended"],
   "rules": {
-    "no-unused-expressions": "off"
+    "no-unused-expressions": "off",
+    "cypress/no-unnecessary-waiting": "off"
   }
 }
