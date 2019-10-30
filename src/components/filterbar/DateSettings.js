@@ -156,7 +156,10 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
   return (
     <DateControlGroup>
       <CalendarStyles />
-      <Input label={text("filterpanel.choose_date_time")} animatedLabel={false}>
+      <Input
+        labelTestId="date-label"
+        label={text("filterpanel.choose_date_time")}
+        animatedLabel={false}>
         <WeekInput
           testIdPrefix="date-week"
           minusHelp="One week backward"

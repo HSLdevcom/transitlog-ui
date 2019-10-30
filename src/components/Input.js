@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {observer} from "mobx-react";
 import styled, {css} from "styled-components";
 import {InputBase, InputLabel} from "./Forms";
+import {flow} from "lodash";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -52,11 +53,17 @@ const Label = styled(InputLabel)`
       : ""};
 `;
 
-@observer
-class Input extends Component {
-  render() {
-    const {label, children, className, animatedLabel = true, ...props} = this.props;
+const decorate = flow(observer);
 
+const Input = decorate(
+  ({
+    labelTestId = "input-label",
+    label,
+    children,
+    className,
+    animatedLabel = true,
+    ...props
+  }) => {
     const inputComponent = !children ? (
       <InputBase placeholder=" " {...props} />
     ) : (
@@ -65,12 +72,16 @@ class Input extends Component {
 
     return (
       <InputWrapper animatedLabel={animatedLabel} className={className}>
-        {label && !animatedLabel && <Label animated={false}>{label}</Label>}
+        {label && !animatedLabel && (
+          <Label data-testid={labelTestId} animated={false}>
+            {label}
+          </Label>
+        )}
         {inputComponent}
         {label && animatedLabel && <Label animated={true}>{label}</Label>}
       </InputWrapper>
     );
   }
-}
+);
 
 export default Input;
