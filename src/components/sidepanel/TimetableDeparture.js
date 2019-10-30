@@ -76,7 +76,7 @@ class TimetableDeparture extends Component {
   ) => (children = null, onClick) => (
     <ListRow isCancelled={departure.isCancelled} selected={journeyIsSelected}>
       <TimetableButton
-        data-testid={`departure-row-${departure.departureTime}`}
+        data-testid={`departure-option departure-option-${departure.departureTime}`}
         hasData={!!children}
         selected={journeyIsSelected}
         onClick={onClick}>

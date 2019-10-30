@@ -39,10 +39,11 @@ class VirtualizedSidepanelList extends Component {
       loading = false,
       rowHeight,
       scrollToIndex,
+      testId = "virtual-list",
     } = this.props;
 
     return (
-      <ListWrapper data-testid="virtual-list" hasHeader={!!header}>
+      <ListWrapper data-testid={testId} hasHeader={!!header}>
         {header && <ListHeader>{header}</ListHeader>}
         <div>
           <AutoSizer>
