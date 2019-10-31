@@ -32,7 +32,7 @@ describe("Area search", () => {
 
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
-      `/?areaBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
+      `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
     );
 
     cy.getTestElement("area-journeys-list").should("exist");
@@ -46,19 +46,17 @@ describe("Area search", () => {
 
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
-      `/?areaBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
+      `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
     );
 
     cy.getTestElement("area-journeys-list").should("exist");
-    cy.getTestElement("area-journey-item-journey", {timeout: 10000}) // Select actual journeys and not deadruns
+    cy.getTestElement("area-journey-item-journey", {timeout: 60000})
       .first()
       .click();
 
     cy.getTestElement("sidebar-tab-journeys").should("exist");
     cy.getTestElement("journey-details").should("exist");
-    cy.getTestElement("journey-stop-event", {timeout: 10000}).should("exist");
-    cy.get(".test-class-stop-marker").should("have.length.least", 2);
 
-    cy.url().should("include", `/journey/${yesterday.replace(/-/g, "")}`);
+    cy.assertJourneySelected();
   });
 });
