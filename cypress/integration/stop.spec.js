@@ -4,7 +4,7 @@ describe("Stop smoke tests", () => {
   });
 
   it("Finds a stop and can select it", () => {
-    cy.getTestElement("stop-input", {timeout: 3000}).type("1173434");
+    cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
 
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
@@ -17,7 +17,7 @@ describe("Stop smoke tests", () => {
   });
 
   it("Can select a departure", () => {
-    cy.getTestElement("stop-input", {timeout: 3000}).type("1173434");
+    cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
 
     cy.getTestElement("departure-option")
