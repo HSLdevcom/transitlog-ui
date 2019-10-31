@@ -3996,6 +3996,11 @@ cypress-commands@^0.3.1:
   resolved "https://registry.yarnpkg.com/cypress-commands/-/cypress-commands-0.3.1.tgz#cae100909ffe4122f5c6280cb9f476fd665adf7d"
   integrity sha512-WwewSrwYjG7aIzWOSEBQsLFtK9cnsRF8PRrHyJXGAe0BWxqFO6JVTWmu+H6dtGYd4uWGVJ+SZpwi2mwiSuzeew==
 
+cypress-wait-until@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/cypress-wait-until/-/cypress-wait-until-1.5.0.tgz#ccd8de0339007ae73b7d16f64bdf2bfb8ca9895e"
+  integrity sha512-o3u7IhFPR66EFFKuTVuf+HtDwvX6RwdbjDfTFZxdrn7MX+ITZgtGfcSDQMXhdunYny90NqNuD+Q23ANRfPindg==
+
 cypress@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.5.0.tgz#e188bc8f48782953f6865d8830a4dc342334b81c"

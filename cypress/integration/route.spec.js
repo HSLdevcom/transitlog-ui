@@ -57,20 +57,24 @@ describe("Route smoke tests", () => {
 
     cy.getTestElement("observed-times-type-select").click();
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(5000);
+    cy.waitUntil(
+      () =>
+        cy
+          .getTestElement("weekly-departure-time", {timeout: 60000})
+          .first()
+          .text()
+          .then((lastStopArrival) =>
+            cy
+              .get("@first-departure-time")
+              .then((firstStopDeparture) => lastStopArrival !== firstStopDeparture)
+          ),
+      {timeout: 60000}
+    );
 
     cy.getTestElement("weekly-departure-time", {timeout: 10000}).should(
       "have.length.least",
       2
     );
-
-    cy.getTestElement("weekly-departure-time", {timeout: 10000})
-      .first()
-      .text()
-      .then((lastStopArrival) => {
-        cy.get("@first-departure-time").should("not.equal", lastStopArrival);
-      });
 
     cy.getTestElement("weekly-departure-ok", {timeout: 10000})
       .first()

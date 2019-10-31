@@ -30,7 +30,7 @@ Cypress.Commands.add("getTestElement", (selector, options = {}) => {
   return cy.get(`[data-testid~="${selector}"]`, options);
 });
 
-Cypress.Commands.add("hslLogin", (overrides = {}) => {
+Cypress.Commands.add("hslLogin", () => {
   const AUTH_URI = Cypress.env("AUTH_URI");
   const CLIENT_ID = Cypress.env("CLIENT_ID");
   const CLIENT_SECRET = Cypress.env("CLIENT_SECRET");
@@ -59,9 +59,6 @@ Cypress.Commands.add("hslLogin", (overrides = {}) => {
       password: HSL_TESTING_HSLID_PASSWORD,
     },
   };
-
-  // allow us to override defaults with passed in overrides
-  _.extend(options, overrides);
 
   cy.request(options).then((response) => {
     const {access_token} = response.body;
