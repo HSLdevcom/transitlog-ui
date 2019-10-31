@@ -1,5 +1,7 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
+const _ = require("lodash");
+const dotenv = require("dotenv");
 
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -14,32 +16,58 @@ const path = require("path");
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-module.exports = (on, config) => {
-  const appRoot = fs.realpathSync(process.cwd());
+async function getConfigurationByFile(file) {
+  if (!file) {
+    return {};
+  }
+
+  const pathToConfigFile = path.resolve("..", "config", `${file}.json`);
+  return fs.readJson(pathToConfigFile);
+}
+
+async function readEnvVars() {
+  const config = {};
+
+  const appRoot = await fs.realpath(process.cwd());
   const envPaths = [path.resolve(appRoot, ".testsecret")];
+  const envObjects = [];
 
   // Read env config
-  envPaths.forEach((envPath) => {
-    if (!fs.existsSync(envPath)) {
+  for (const envPath of envPaths) {
+    const pathExists = await fs.exists(envPath);
+
+    if (!pathExists) {
       throw new Error(
         "Auth secrets for testing not found! Ensure a `.testsecret` file exists in the project root containing the client secret."
       );
     }
 
-    require("dotenv-expand")(
-      require("dotenv").config({
-        path: envPath,
-      })
-    );
-  });
+    const envFile = await fs.readFile(envPath, "utf8");
+    const envContent = dotenv.parse(envFile);
+    envObjects.push(envContent);
+  }
 
-  const REACT_APP = /^REACT_APP_/i;
+  const combinedFiles = _.merge({}, ...envObjects);
 
-  // Add react app env vars to Cypress config.
-  Object.entries(process.env).forEach(([key, value]) => {
-    const cypressKey = key.replace(REACT_APP, "");
-    config.env[cypressKey] = value;
+  const CYPRESS_PREFIX = /^CYPRESS_/i;
+
+  // Add CYPRESS-prefixed vars to the config.
+  Object.entries(combinedFiles).forEach(([key, value]) => {
+    const cypressKey = key.replace(CYPRESS_PREFIX, "");
+    config[cypressKey] = value;
   });
 
   return config;
+}
+
+module.exports = async (on, config) => {
+  const configFile = config.env.configFile || "";
+
+  const envVars = await readEnvVars();
+
+  console.log(envVars);
+
+  const envConfig = await getConfigurationByFile(configFile);
+
+  return _.merge({}, config, {env: envVars}, envConfig);
 };
