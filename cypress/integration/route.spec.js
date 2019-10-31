@@ -34,7 +34,7 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure", () => {
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
-    cy.getTestElement("weekly-departure-time", {timeout: 20000}).should(
+    cy.getTestElement("weekly-departure-time", {timeout: 60000}).should(
       "have.length.least",
       2
     );
@@ -71,7 +71,7 @@ describe("Route smoke tests", () => {
       {timeout: 60000}
     );
 
-    cy.getTestElement("weekly-departure-time", {timeout: 10000}).should(
+    cy.getTestElement("weekly-departure-time", {timeout: 60000}).should(
       "have.length.least",
       2
     );
