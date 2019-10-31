@@ -31,7 +31,7 @@ class AreaSelect extends Component {
     const {layer} = e;
 
     const layerBounds = layer.getBounds();
-    UI.onSelectArea(layerBounds);
+    UI.setSelectedBounds(layerBounds);
     this.checkAreas();
   };
 
@@ -43,7 +43,7 @@ class AreaSelect extends Component {
       this.featureLayer.current.leafletElement.clearLayers();
     }
 
-    UI.onSelectArea(null);
+    UI.setSelectedBounds(null);
     this.checkAreas();
   };
 
@@ -91,9 +91,9 @@ class AreaSelect extends Component {
         {this.hasAreas && (
           <CancelControl position="bottomright" onCancel={this.clearAreas} />
         )}
-        {state.areaEventsBounds && (
+        {state.selectedBounds && (
           // If there were bounds set in the URL, draw them on the map
-          <Rectangle bounds={state.areaEventsBounds} {...rectangleStyle} />
+          <Rectangle bounds={state.selectedBounds} {...rectangleStyle} />
         )}
       </FeatureGroup>
     );
