@@ -64,9 +64,6 @@ module.exports = async (on, config) => {
   const configFile = config.env.configFile || "";
 
   const envVars = await readEnvVars();
-
-  console.log(envVars);
-
   const envConfig = await getConfigurationByFile(configFile);
 
   return _.merge({}, config, {env: envVars}, envConfig);
