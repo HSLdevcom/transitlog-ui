@@ -23,4 +23,4 @@ yarn-error.log*
 
 cypress/integration/examples/*.js
 cypress/fixtures/example.json
-
+cypress/videos/*
