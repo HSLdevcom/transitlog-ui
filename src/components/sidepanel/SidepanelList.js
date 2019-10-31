@@ -140,7 +140,7 @@ class SidepanelList extends Component {
       floatingListHeader,
       children = () => {},
       loading = false,
-      testIdPrefix = "sidepanel-list",
+      testIdPrefix = "sidepanel",
     } = this.props;
 
     this.scrollTo(this.scrollOffset);
