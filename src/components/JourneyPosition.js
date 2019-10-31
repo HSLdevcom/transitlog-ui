@@ -6,7 +6,6 @@ import findLast from "lodash/findLast";
 import differenceBy from "lodash/differenceBy";
 import {inject} from "../helpers/inject";
 import {observer} from "mobx-react-lite";
-import {map} from "leaflet/dist/leaflet-src.esm";
 
 function timeRangeFromEvents(events) {
   const firstEvent = events[0];

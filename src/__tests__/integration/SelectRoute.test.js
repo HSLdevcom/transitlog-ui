@@ -47,7 +47,6 @@ const routeDepartureMocks = [
 ];
 
 describe("Route selection and filtering", () => {
-  const route = {routeId: "1001", direction: 2, originStopId: "1304130"};
   let state = {};
   let setRouteMock = jest.fn();
 

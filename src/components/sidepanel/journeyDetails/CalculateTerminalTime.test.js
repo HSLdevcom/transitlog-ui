@@ -47,8 +47,6 @@ describe("CalculateTerminalTime", () => {
   });
 
   test("wasLate is true when the vehicle was late for the terminal time", () => {
-    const date = "2019-01-30";
-
     const departure = {
       plannedArrivalTime: {
         arrivalDateTime: "2019-01-30T16:10:00.000Z",
