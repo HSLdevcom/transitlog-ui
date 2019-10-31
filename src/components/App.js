@@ -97,6 +97,8 @@ function App({route, state, UI}) {
     []
   );
 
+  console.log(code, is_test);
+
   useEffect(() => {
     const auth = async () => {
       const response = await checkExistingSession();
@@ -118,7 +120,7 @@ function App({route, state, UI}) {
     };
 
     auth();
-  }, [code]);
+  }, [code, is_test]);
 
   // Condition for when the side panel is actually open, not only when it could be open.
   const detailsAreOpen = useMemo(

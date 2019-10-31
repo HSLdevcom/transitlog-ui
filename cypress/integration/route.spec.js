@@ -49,7 +49,7 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure in last stop arrival mode", () => {
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
-    cy.getTestElement("weekly-departure-time", {timeout: 20000})
+    cy.getTestElement("weekly-departure-time", {timeout: 60000})
       .should("have.length.least", 2)
       .first()
       .text()
