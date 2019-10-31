@@ -1,8 +1,7 @@
 import React from "react";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import styled, {css} from "styled-components";
 import {InputBase, InputLabel} from "./Forms";
-import {flow} from "lodash";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -53,9 +52,7 @@ const Label = styled(InputLabel)`
       : ""};
 `;
 
-const decorate = flow(observer);
-
-const Input = decorate(
+const Input = observer(
   ({
     labelTestId = "input-label",
     label,
