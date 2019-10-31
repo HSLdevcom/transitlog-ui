@@ -68,6 +68,9 @@ const TimetableFilters = styled.div`
   align-items: flex-end;
 `;
 
+// Wrap in styled() to use in a style rule.
+const RouteFilterInput = styled(Input)``;
+
 const RouteFilterContainer = styled.div`
   width: auto;
   margin-right: 1rem;
@@ -76,7 +79,7 @@ const RouteFilterContainer = styled.div`
     font-size: 0.75rem;
   }
 
-  ${Input} input {
+  ${RouteFilterInput} input {
     background-color: ${({noResult = false}) =>
       noResult ? "rgba(255,100,100, 0.15)" : "white"};
   }
@@ -172,7 +175,7 @@ const AreaJourneyList = decorate(
             <HeaderRow>
               <TimetableFilters>
                 <RouteFilterContainer noResult={filteringNoResults}>
-                  <Input
+                  <RouteFilterInput
                     value={areaEventsRouteFilter}
                     animatedLabel={false}
                     onChange={onChangeAreaEventsFilter}
