@@ -180,16 +180,16 @@ export default (state) => {
     state.highlightedStop = stopId;
   });
 
-  const onSelectArea = action((bounds) => {
-    state.areaEventsBounds =
+  const setSelectedBounds = action((bounds) => {
+    state.selectedBounds =
       !bounds || (typeof bounds.isValid === "function" && !bounds.isValid)
         ? null
         : bounds;
 
-    if (state.areaEventsBounds) {
-      setUrlValue("areaBounds", state.areaEventsBounds.toBBoxString());
+    if (state.selectedBounds) {
+      setUrlValue("selectedBounds", state.selectedBounds.toBBoxString());
     } else {
-      setUrlValue("areaBounds", null);
+      setUrlValue("selectedBounds", null);
     }
   });
 
@@ -218,7 +218,7 @@ export default (state) => {
     highlightStop,
     setUser,
     setWeeklyObservedTimesType,
-    onSelectArea,
+    setSelectedBounds,
     setMapillaryViewerLocation,
     setMapillaryMapLocation,
     setMapZoom,
