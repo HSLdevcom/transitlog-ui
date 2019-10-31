@@ -6,7 +6,6 @@
   "defaultCommandTimeout": 10000,
   "numTestsKeptInMemory": 1,
   "env": {
-    "test": true,
     "AUTH_URI": "https://hslid-dev.t5.fi/openid/token",
     "AUTH_SCOPE": "email https://oneportal.trivore.com/scope/groups.readonly"
   },
