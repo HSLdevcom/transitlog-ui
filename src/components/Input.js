@@ -1,7 +1,7 @@
 import React from "react";
-import {observer} from "mobx-react-lite";
 import styled, {css} from "styled-components";
 import {InputBase, InputLabel} from "./Forms";
+import {Observer} from "mobx-react-lite";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -52,33 +52,31 @@ const Label = styled(InputLabel)`
       : ""};
 `;
 
-const Input = observer(
-  ({
+// There is an inexplicable error that happens if this component is decorated with
+// observer() from mobx-react-lite. It uses <Observer /> for now.
+export default (props) => {
+  const {
     labelTestId = "input-label",
     label,
     children,
     className,
     animatedLabel = true,
-    ...props
-  }) => {
-    const inputComponent = !children ? (
-      <InputBase placeholder=" " {...props} />
-    ) : (
-      children
-    );
+    ...rest
+  } = props;
 
-    return (
-      <InputWrapper animatedLabel={animatedLabel} className={className}>
-        {label && !animatedLabel && (
-          <Label data-testid={labelTestId} animated={false}>
-            {label}
-          </Label>
-        )}
-        {inputComponent}
-        {label && animatedLabel && <Label animated={true}>{label}</Label>}
-      </InputWrapper>
-    );
-  }
-);
-
-export default Input;
+  return (
+    <Observer>
+      {() => (
+        <InputWrapper animatedLabel={animatedLabel} className={className}>
+          {label && !animatedLabel && (
+            <Label data-testid={labelTestId} animated={false}>
+              {label}
+            </Label>
+          )}
+          {!children ? <InputBase placeholder=" " {...rest} /> : children}
+          {label && animatedLabel && <Label animated={true}>{label}</Label>}
+        </InputWrapper>
+      )}
+    </Observer>
+  );
+};
