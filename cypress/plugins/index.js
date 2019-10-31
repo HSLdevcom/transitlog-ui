@@ -16,11 +16,7 @@ const path = require("path");
 
 module.exports = (on, config) => {
   const appRoot = fs.realpathSync(process.cwd());
-  // TODO: Read env config for current env instead of hardcoded values.
-  const envPaths = [
-    path.resolve(appRoot, ".env.cypress"),
-    path.resolve(appRoot, ".testsecret"),
-  ];
+  const envPaths = [path.resolve(appRoot, ".testsecret")];
 
   // Read env config
   envPaths.forEach((envPath) => {
