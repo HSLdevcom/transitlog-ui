@@ -48,16 +48,26 @@ class ControlBar extends Component {
 
     return (
       <Bar className={className}>
-        <ControlButton helpText="Share button" onClick={() => UI.toggleShareModal(true)}>
+        <ControlButton
+          data-testid="share-button"
+          helpText="Share button"
+          onClick={() => UI.toggleShareModal(true)}>
           <Text>general.share</Text>
         </ControlButton>
-        <ControlButton helpText="Reset button" onClick={this.onClickReset}>
+        <ControlButton
+          data-testid="reset-button"
+          helpText="Reset button"
+          onClick={this.onClickReset}>
           <Text>filterpanel.reset</Text>
         </ControlButton>
-        <ControlButton helpText="Update button" onClick={this.onClickUpdate}>
+        <ControlButton
+          data-testid="update-button"
+          helpText="Update button"
+          onClick={this.onClickUpdate}>
           <Text>general.update</Text>
         </ControlButton>
         <PollToggle
+          testId="simulation-toggle"
           helpText="Live toggle"
           type="checkbox"
           onChange={this.onToggleLive}

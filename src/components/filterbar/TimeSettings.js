@@ -155,11 +155,13 @@ class TimeSettings extends Component {
     return (
       <TimeControlGroup>
         <PlusMinusInput
+          testIdPrefix="time-setting"
           minusHelp="One time step backward"
           plusHelp="One time step forward"
           onIncrease={this.onTimeButtonClick(timeIncrement)}
           onDecrease={this.onTimeButtonClick(-timeIncrement)}>
           <TimeInput
+            data-testid="time-input"
             type="text"
             helpText="Select time"
             value={this.displayTime}

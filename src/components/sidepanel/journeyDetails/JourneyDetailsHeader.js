@@ -103,7 +103,7 @@ export default observer(({route, journey, showVehicleId = false}) => {
   const routeName = [origin, destination].join(" - ");
 
   return (
-    <JourneyPanelHeader>
+    <JourneyPanelHeader data-testid="journey-details-header">
       <HeaderContent>
         <MainHeaderRow>
           <TransportIcon width={23} height={23} mode={mode} />

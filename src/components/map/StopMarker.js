@@ -79,6 +79,7 @@ const StopMarker = observer(
     setStop,
     selectedStop,
     highlightedStop,
+    testId = "stop-marker",
   }) => {
     const popupOpen = useRef(false);
     const defaultRef = useRef(null);
@@ -133,7 +134,12 @@ const StopMarker = observer(
     const markerPosition = latLng({lat, lng});
 
     const markerIcon = (
-      <IconWrapper>
+      <IconWrapper
+        className={`test-class-${testId} test-class-${testId}-${get(
+          stop,
+          "stopId",
+          ""
+        )}`}>
         <StopMarkerCircle
           thickBorder={isTerminal}
           isSelected={isSelected}
@@ -175,6 +181,7 @@ const StopMarker = observer(
         </DivIcon>
       ) : (
         <CircleMarker
+          className={`test-class-${testId} test-class-${testId}-${stop.stopId}`}
           ref={markerRef}
           radius={selected ? 10 : isTerminal ? 9 : 7}
           weight={3}

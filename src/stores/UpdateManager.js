@@ -16,7 +16,7 @@ let pollingStart = 0;
 // Pass false as the third arg to prevent this from running when auto-updating.
 export function setUpdateListener(name, cb, auto = true) {
   set(updateListeners, name, {auto, cb});
-  return removeUpdateListener;
+  return () => removeUpdateListener(name);
 }
 
 export function removeUpdateListener(name) {

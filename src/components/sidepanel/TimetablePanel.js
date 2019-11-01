@@ -68,7 +68,10 @@ const renderTimetableRow = ({
   const departureTime = get(departure, "plannedDepartureTime.departureDateTime", "");
 
   return (
-    <div style={style} key={key} data-testid={index === 0 ? "first-timetable" : ""}>
+    <div
+      style={style}
+      key={key}
+      data-testid={`${index === 0 ? "first-timetable" : ""} departure-item`}>
       <TimetableDeparture
         key={`departure_${departure.departureId}_${departure.routeId}_${departure.direction}_${departureTime}_${instance}`}
         isScrolling={isScrolling}
@@ -196,6 +199,7 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
 
             return (
               <VirtualizedSidepanelList
+                testId="stop-departures-list"
                 date={date}
                 scrollToIndex={focusedIndex !== -1 ? focusedIndex : undefined}
                 list={departures}
@@ -205,7 +209,7 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
                 header={
                   <Observer>
                     {() => (
-                      <TimetableFilters>
+                      <TimetableFilters data-testid="timetable-filters">
                         <RouteFilterContainer>
                           <Input
                             value={route.pending}

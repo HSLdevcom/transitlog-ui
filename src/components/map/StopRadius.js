@@ -4,6 +4,7 @@ import React from "react";
 export const StopRadius = ({center, radius, children, color, isHighlighted = false}) => {
   return (
     <Circle
+      className="test-class-stop-radius"
       interactive={false}
       pane={isHighlighted ? "selected-stop-radius" : "stop-radius"}
       center={center}

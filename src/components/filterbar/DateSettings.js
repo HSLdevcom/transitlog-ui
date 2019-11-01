@@ -156,8 +156,12 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
   return (
     <DateControlGroup>
       <CalendarStyles />
-      <Input label={text("filterpanel.choose_date_time")} animatedLabel={false}>
+      <Input
+        labelTestId="date-label"
+        label={text("filterpanel.choose_date_time")}
+        animatedLabel={false}>
         <WeekInput
+          testIdPrefix="date-week"
           minusHelp="One week backward"
           plusHelp="One week forward"
           minusLabel={<>&laquo; 7</>}
@@ -165,6 +169,7 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
           onDecrease={onDateButtonClick.bind(undefined, -7)}
           onIncrease={onDateButtonClick.bind(undefined, 7)}>
           <DateInput
+            testIdPrefix="date-day"
             minusHelp="One day backward"
             plusHelp="One day forward"
             minusLabel={<>&lsaquo; 1</>}
@@ -188,7 +193,12 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
                 return (
                   <DatePicker
                     dropdownMode="select"
-                    customInput={<CalendarInput helpText="Select date field" />}
+                    customInput={
+                      <CalendarInput
+                        data-testid="date-input"
+                        helpText="Select date field"
+                      />
+                    }
                     dateFormat={"yyyy-MM-dd"}
                     selected={moment.tz(date, TIMEZONE).toDate()}
                     onChange={setDate}

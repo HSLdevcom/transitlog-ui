@@ -85,7 +85,17 @@ function App({route, state, UI}) {
   } = state;
 
   const selectedJourneyId = getJourneyId(selectedJourney);
-  const code = useMemo(() => new URL(window.location.href).searchParams.get("code"), []);
+  const {code, is_test = "false"} = useMemo(
+    () =>
+      Array.from(new URL(window.location.href).searchParams.entries()).reduce(
+        (params, [key, value]) => {
+          params[key] = value;
+          return params;
+        },
+        {}
+      ),
+    []
+  );
 
   useEffect(() => {
     const auth = async () => {
@@ -95,10 +105,12 @@ function App({route, state, UI}) {
         : UI.setUser(null);
 
       if (code) {
-        const response = await authorize(code);
+        const response = await authorize(code, is_test === "true");
 
         if (response && response.isOk && response.email) {
           UI.setUser(response.email);
+        } else {
+          console.error("Login not successful.");
         }
 
         removeAuthParams();
@@ -106,7 +118,7 @@ function App({route, state, UI}) {
     };
 
     auth();
-  }, [code]);
+  }, [code, is_test]);
 
   // Condition for when the side panel is actually open, not only when it could be open.
   const detailsAreOpen = useMemo(
@@ -206,6 +218,7 @@ function App({route, state, UI}) {
                             />
                             {selectedJourney && (
                               <GraphContainer
+                                data-testid="journey-graph-container"
                                 journeyGraphOpen={
                                   get(selectedJourney, "vehiclePositions", []).length !==
                                     0 && journeyGraphOpen

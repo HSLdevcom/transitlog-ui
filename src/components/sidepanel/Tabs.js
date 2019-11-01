@@ -194,6 +194,7 @@ class Tabs extends Component {
           {tabs.map((tabOption, index) => (
             <Tooltip helpText={tabOption.helpText} key={`tab_${tabOption.name}_${index}`}>
               <TabButton
+                data-testid={`sidebar-tab sidebar-tab-${tabOption.name}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
                 selected={selectedTab === tabOption.name}
                 onClick={this.onTabClick(tabOption.name)}>

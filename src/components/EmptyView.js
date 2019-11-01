@@ -85,7 +85,7 @@ const EmptyView = decorate(({error = null, text, icon}) => {
   }
 
   return (
-    <EmptyViewWrapper data-testid={`empty-view-${emptyReason}`}>
+    <EmptyViewWrapper data-testid={`empty-view empty-view-${emptyReason}`}>
       {text && !error ? (
         <>
           <UseIcon fill="var(--light-grey)" height="5rem" width="5rem" />

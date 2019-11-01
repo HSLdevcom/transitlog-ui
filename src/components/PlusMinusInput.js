@@ -44,11 +44,13 @@ const PlusMinusInput = React.forwardRef((props, ref) => {
     minusLabel = <MinusIcon fill="white" width={15} />,
     plusHelp = "",
     minusHelp = "",
+    testIdPrefix = "plus-minus-input",
   } = props;
 
   return (
     <Wrapper className={className} ref={ref}>
       <PlusMinusButton
+        data-testid={`${testIdPrefix}-decrease`}
         small
         primary
         side="left"
@@ -58,6 +60,7 @@ const PlusMinusInput = React.forwardRef((props, ref) => {
       </PlusMinusButton>
       {children}
       <PlusMinusButton
+        data-testid={`${testIdPrefix}-increase`}
         small
         primary
         side="right"

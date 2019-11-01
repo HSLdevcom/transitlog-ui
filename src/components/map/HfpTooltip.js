@@ -31,31 +31,35 @@ const HfpTooltip = observer(
         permanent={permanent}
         offset={offset}
         direction={direction}>
-        <strong>
-          {journey.journeyType !== "journey" ? (
+        <div data-testid="hfp-tooltip-content">
+          <strong>
+            {journey.journeyType !== "journey" ? (
+              <>
+                {journey.journeyType}: {journey.uniqueVehicleId}
+              </>
+            ) : (
+              <>
+                {journey.routeId} / {journey.direction}
+              </>
+            )}
+          </strong>
+          <br />
+          <span data-testid="hfp-event-time">
+            {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
+          </span>
+          <br />
+          {journey.uniqueVehicleId}
+          <br />
+          {usingEvent.nextStopId && (
             <>
-              {journey.journeyType}: {journey.uniqueVehicleId}
-            </>
-          ) : (
-            <>
-              {journey.routeId} / {journey.direction}
+              <Text>vehicle.next_stop</Text>: {usingEvent.nextStopId}
             </>
           )}
-        </strong>
-        <br />
-        {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
-        <br />
-        {journey.uniqueVehicleId}
-        <br />
-        {usingEvent.nextStopId && (
-          <>
-            <Text>vehicle.next_stop</Text>: {usingEvent.nextStopId}
-          </>
-        )}
-        <br />
-        <Text>vehicle.speed</Text>: {Math.round((usingEvent.velocity * 18) / 5)} km/h
-        <br />
-        {usingEvent.delay && <>DL: {usingEvent.delay}</>}
+          <br />
+          <Text>vehicle.speed</Text>: {Math.round((usingEvent.velocity * 18) / 5)} km/h
+          <br />
+          {usingEvent.delay && <>DL: {usingEvent.delay}</>}
+        </div>
       </Tooltip>
     );
   }

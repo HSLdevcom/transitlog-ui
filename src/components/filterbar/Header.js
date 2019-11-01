@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../../hsl-logo.png";
-import {Text} from "../../helpers/text";
+import {Text, text} from "../../helpers/text";
 import styled from "styled-components";
 import {Heading} from "../Typography";
 import LanguageSelect from "./LanguageSelect";
@@ -11,7 +11,6 @@ import Login from "../../icons/Login";
 import ControlBar from "../sidepanel/ControlBar";
 import {Button} from "../Forms";
 import Info from "../../icons/Info";
-import {text} from "../../helpers/text";
 
 const Header = styled.header`
   width: 100%;
@@ -105,11 +104,17 @@ function HeaderComponent({state, UI, className}) {
         <LanguageSelect />
       </LangSelectContainer>
       <LoginContainer>
-        {user && <Username>{user}</Username>}
-        <IconButton onClick={() => UI.toggleLoginModal()} helpText={text("Sign in")}>
+        {user && <Username data-testid="authenticated-user">{user}</Username>}
+        <IconButton
+          data-testid="auth-modal-button"
+          onClick={() => UI.toggleLoginModal()}
+          helpText={text("Sign in")}>
           <Login height="1.2rem" fill="white" />
         </IconButton>
-        <IconButton onClick={() => UI.toggleInstructions()} helpText={text("Show info")}>
+        <IconButton
+          onClick={() => UI.toggleInstructions()}
+          helpText={text("Show info")}
+          data-testid="open-instructions">
           <Info fill="white" width="1.2rem" height="1.2rem" />
         </IconButton>
       </LoginContainer>
