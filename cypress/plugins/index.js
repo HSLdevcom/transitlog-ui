@@ -21,7 +21,7 @@ async function getConfigurationByFile(file) {
     return {};
   }
 
-  const pathToConfigFile = path.resolve("..", "config", `${file}.json`);
+  const pathToConfigFile = path.resolve(`cypress.${file}.json`);
   return fs.readJson(pathToConfigFile);
 }
 
