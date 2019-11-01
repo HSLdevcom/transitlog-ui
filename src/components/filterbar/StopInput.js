@@ -31,6 +31,7 @@ const renderSuggestion = (date) => (suggestion, {query, isHighlighted}) => {
 
   return (
     <SuggestionContent
+      data-testid={`stop-option-${suggestion.stopId}`}
       {...applyTooltip(
         (suggestion.routes || [])
           .map(

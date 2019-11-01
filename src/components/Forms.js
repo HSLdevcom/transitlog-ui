@@ -31,7 +31,7 @@ export const InputLabel = styled.label`
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 129%;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   margin-bottom: 0.25rem;
   color: var(--grey);
   text-transform: uppercase;

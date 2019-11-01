@@ -185,7 +185,7 @@ describe("Stop search and filtering", () => {
 
     fireEvent.click(getByText(text("sidepanel.tabs.timetables", "fi")));
 
-    const firstDeparture = await findByTestId("virtual-list");
+    // const firstDeparture = await findByTestId("virtual-list");
     // expect(firstDeparture).toHaveTextContent("05:38");
   });
 });

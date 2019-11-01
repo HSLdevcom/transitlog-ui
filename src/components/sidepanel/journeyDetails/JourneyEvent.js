@@ -185,7 +185,7 @@ export const JourneyStopEvent = decorate(
 
     if (event.type === "PLANNED") {
       return (
-        <StopWrapper>
+        <StopWrapper data-testid="journey-stop-event planned-stop-event">
           <StopElementsWrapper
             color={color}
             terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
@@ -214,7 +214,7 @@ export const JourneyStopEvent = decorate(
     const diffObject = secondsToTimeObject(timeDiff);
 
     return (
-      <StopWrapper>
+      <StopWrapper data-testid="journey-stop-event">
         <StopElementsWrapper
           color={color}
           terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>

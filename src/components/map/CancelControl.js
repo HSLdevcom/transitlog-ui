@@ -29,7 +29,8 @@ L.Control.CancelControl = L.Control.extend({
   onAdd: function(map) {
     const cancelButton = L.DomUtil.create("button");
     cancelButton.setAttribute("style", this._style);
-    cancelButton.setAttribute("id", "box-zoom-button");
+    cancelButton.setAttribute("id", "draw-cancel-button");
+    cancelButton.setAttribute("data-testid", "cancel-area-search-button");
     cancelButton.innerHTML = renderToStaticMarkup(
       <Cross fill="black" width="1rem" height="1rem" />
     );

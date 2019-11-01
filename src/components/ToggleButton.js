@@ -94,8 +94,9 @@ const ToggleButton = observer(
     className,
     helpText,
     inverted = false,
+    testId = "toggle-button",
   }) => (
-    <Container {...useTooltip(helpText)} className={className}>
+    <Container data-testid={testId} {...useTooltip(helpText)} className={className}>
       {preLabel && <TextContainer isPreLabel={true}>{preLabel}</TextContainer>}
       <ToggleInput
         type={type}

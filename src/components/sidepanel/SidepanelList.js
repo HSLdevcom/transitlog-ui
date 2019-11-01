@@ -140,12 +140,13 @@ class SidepanelList extends Component {
       floatingListHeader,
       children = () => {},
       loading = false,
+      testIdPrefix = "sidepanel",
     } = this.props;
 
     this.scrollTo(this.scrollOffset);
 
     return (
-      <ListWrapper hasHeader={!!header}>
+      <ListWrapper hasHeader={!!header} data-testid={`${testIdPrefix}-list`}>
         {header && <ListHeader>{header}</ListHeader>}
         <ListContainer>
           {floatingListHeader && (

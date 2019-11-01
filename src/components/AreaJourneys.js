@@ -21,7 +21,7 @@ const AreaJourneys = decorate((props) => {
     areaSearchRangeMinutes = "",
     time,
     date,
-    areaEventsBounds,
+    selectedBounds,
   } = state;
 
   const [minTime, setMinTime] = useState(null);
@@ -38,7 +38,7 @@ const AreaJourneys = decorate((props) => {
 
   // Combine all values in a query vars object.
   useEffect(() => {
-    if (!areaEventsBounds || !areaSearchRangeMinutes) {
+    if (!selectedBounds || !areaSearchRangeMinutes) {
       resetAreaQuery();
       return;
     }
@@ -58,9 +58,9 @@ const AreaJourneys = decorate((props) => {
 
     setMinTime(min);
     setMaxTime(max);
-    setQueryBbox(areaEventsBounds.toBBoxString());
+    setQueryBbox(selectedBounds.toBBoxString());
     setQueryDate(date);
-  }, [queryBbox, minTime, maxTime, date, queryDate, areaEventsBounds]);
+  }, [queryBbox, minTime, maxTime, date, queryDate, selectedBounds]);
 
   useEffect(() => setResetListener(resetAreaQuery), []);
   useEffect(() => setUpdateListener(updateListenerName, resetAreaQuery), []);

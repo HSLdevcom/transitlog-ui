@@ -43,7 +43,7 @@ export default (state) => {
     lng = 24.940842;
   }
 
-  const urlBounds = getUrlValue("areaBounds", null);
+  const urlBounds = getUrlValue("selectedBounds", null);
 
   extendObservable(
     state,
@@ -55,7 +55,7 @@ export default (state) => {
       mapOverlays: getUrlValue("mapOverlays", "Stopped vehicle").split(","),
       areaEventsStyle: getUrlValue("areaEventsStyle", areaEventsStyles.MARKERS),
       areaEventsRouteFilter: getUrlValue("areaEventsRouteFilter", ""),
-      areaEventsBounds: urlBounds ? boundsFromBBoxString(urlBounds) : null,
+      selectedBounds: urlBounds ? boundsFromBBoxString(urlBounds) : null,
       weeklyObservedTimes: getUrlValue(
         "weeklyObservedTimes",
         weeklyObservedTimeTypes.FIRST_STOP_DEPARTURE
@@ -72,7 +72,7 @@ export default (state) => {
       mapBounds: null,
     },
     {
-      areaEventsBounds: observable.ref,
+      selectedBounds: observable.ref,
       currentMapillaryViewerLocation: observable.ref,
       currentMapillaryMapLocation: observable.ref,
       mapView: observable.ref,

@@ -113,7 +113,13 @@ class SharingModal extends React.Component {
         onBackgroundClick={onClose}
         onEscapeKeydown={onClose}>
         <ModalContent>
-          <UrlDisplay resizeable={false} rows={4} value={shareUrl} disabled={true} />
+          <UrlDisplay
+            data-testid="share-url-display"
+            resizeable={false}
+            rows={4}
+            value={shareUrl}
+            disabled={true}
+          />
           <ButtonRow>
             <CopyButton
               copied={this.copied === shareUrl}

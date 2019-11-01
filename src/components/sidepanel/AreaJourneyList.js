@@ -68,6 +68,9 @@ const TimetableFilters = styled.div`
   align-items: flex-end;
 `;
 
+// Wrap in styled() to use in a style rule.
+const RouteFilterInput = styled(Input)``;
+
 const RouteFilterContainer = styled.div`
   width: auto;
   margin-right: 1rem;
@@ -76,7 +79,7 @@ const RouteFilterContainer = styled.div`
     font-size: 0.75rem;
   }
 
-  ${Input} input {
+  ${RouteFilterInput} input {
     background-color: ${({noResult = false}) =>
       noResult ? "rgba(255,100,100, 0.15)" : "white"};
   }
@@ -152,6 +155,7 @@ const AreaJourneyList = decorate(
 
     return (
       <SidepanelList
+        testIdPrefix="area-journeys"
         focusKey={selectedJourneyId}
         loading={loading}
         header={
@@ -171,7 +175,7 @@ const AreaJourneyList = decorate(
             <HeaderRow>
               <TimetableFilters>
                 <RouteFilterContainer noResult={filteringNoResults}>
-                  <Input
+                  <RouteFilterInput
                     value={areaEventsRouteFilter}
                     animatedLabel={false}
                     onChange={onChangeAreaEventsFilter}
@@ -194,22 +198,26 @@ const AreaJourneyList = decorate(
               const journeyIsSelected =
                 selectedJourney && selectedJourneyId === journeyId;
 
+              const isJourney = journey.journeyType === "journey";
+
+              const subject = !isJourney
+                ? journey.uniqueVehicleId
+                : `${routeId}/${direction}`;
+
               return (
                 <JourneyListRow
+                  data-testid={`area-journey-item-${journey.journeyType} area-journey-item-${subject}`}
                   ref={journeyIsSelected ? scrollRef : null}
                   key={`area_event_row_${journeyId}`}
                   selected={journeyIsSelected}
                   onClick={() => selectJourney(journey)}>
                   <JourneyRowLeft>
-                    {journey.journeyType !== "journey" ? (
+                    {!isJourney ? (
                       <>
-                        {text(`journey.type.${journey.journeyType}`)}:{" "}
-                        {journey.uniqueVehicleId}
+                        {text(`journey.type.${journey.journeyType}`)}: {subject}
                       </>
                     ) : (
-                      <>
-                        {routeId} / {direction}
-                      </>
+                      subject
                     )}
                   </JourneyRowLeft>
                   <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>

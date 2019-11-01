@@ -47,7 +47,7 @@ const decorate = flow(
 
 const StopPopupContent = decorate(({UI, color, stop}) => {
   return (
-    <StopContentWrapper>
+    <StopContentWrapper data-testid={`stop-popup stop-popup-${stop.stopId}`}>
       <StopPopupContentSection>
         <Heading level={4}>
           {stop.name}, {stop.shortId.replace(/ /g, "")} ({stop.stopId})

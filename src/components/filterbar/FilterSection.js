@@ -17,10 +17,15 @@ const FilterSectionWrapper = styled.div`
     scrollable ? `overflow-y: auto; overflow-x: hidden;` : "overflow: visible;"};
 `;
 
-const FilterSection = observer(({className, children, scrollable, style}) => (
-  <FilterSectionWrapper scrollable={scrollable} className={className}>
-    <SectionContent style={style}>{children}</SectionContent>
-  </FilterSectionWrapper>
-));
+const FilterSection = observer(
+  ({testId = "filter-section", className, children, scrollable, style}) => (
+    <FilterSectionWrapper
+      data-testid={testId}
+      scrollable={scrollable}
+      className={className}>
+      <SectionContent style={style}>{children}</SectionContent>
+    </FilterSectionWrapper>
+  )
+);
 
 export default FilterSection;

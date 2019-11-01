@@ -1,4 +1,4 @@
-import {useMemo, useRef, useEffect} from "react";
+import {useMemo} from "react";
 import last from "lodash/last";
 import get from "lodash/get";
 import flow from "lodash/flow";
@@ -95,7 +95,19 @@ const getIndexedEvents = (time, timeIndex, journeys) => {
     return new Map();
   }
 
-  const journeysForTime = timeIndex.get(time) || new Map();
+  let testTime = time;
+  let journeysForTime;
+
+  // Check the previous 10 seconds for matching events
+  while (!journeysForTime && testTime > time - 10) {
+    journeysForTime = timeIndex.get(testTime);
+    testTime--;
+  }
+
+  if (!journeysForTime) {
+    journeysForTime = new Map();
+  }
+
   const indexedJourneys = Array.from(journeysForTime.keys());
 
   const unindexedJourneys = differenceBy(journeys, indexedJourneys, (journeyOrId) =>
@@ -134,9 +146,7 @@ const decorate = flow(
 );
 
 const JourneyPosition = decorate(({journeys, state, children}) => {
-  const timeIndex = useRef(new Map());
-
-  useEffect(() => {
+  const timeIndex = useMemo(() => {
     const nextTimeIndex = new Map();
 
     for (const journey of journeys) {
@@ -154,7 +164,7 @@ const JourneyPosition = decorate(({journeys, state, children}) => {
       }
     }
 
-    timeIndex.current = nextTimeIndex;
+    return nextTimeIndex;
   }, [journeys, state.date]);
 
   // Matches the current time with an event for each journey. If live mode is activated,
@@ -165,9 +175,9 @@ const JourneyPosition = decorate(({journeys, state, children}) => {
     if (isLiveAndCurrent) {
       return matchLiveEvents(unixTime, journeys);
     } else {
-      return getIndexedEvents(unixTime, timeIndex.current, journeys);
+      return getIndexedEvents(unixTime, timeIndex, journeys);
     }
-  }, [timeIndex.current, state.unixTime, state.isLiveAndCurrent]);
+  }, [timeIndex, state.unixTime, state.isLiveAndCurrent]);
 
   return children(journeyEvents);
 });

@@ -133,12 +133,12 @@ const SidePanel = decorate((props) => {
       selectedJourney,
       sidePanelVisible,
       showInstructions = false,
-      areaEventsBounds,
+      selectedBounds,
       user,
     },
   } = props;
 
-  const areaSearchActive = !!areaEventsBounds;
+  const areaSearchActive = !!selectedBounds;
 
   const hasRoute = (stateRoute && stateRoute.routeId) || (route && route.routeId);
   // Figure out which tab is suggested. It will not be outright selected, but
@@ -232,7 +232,9 @@ const SidePanel = decorate((props) => {
           )}
           {!!journey && (
             <Tooltip helpText="Toggle journey graph button">
-              <ToggleGraphButton onClick={() => toggleJourneyGraph()}>
+              <ToggleGraphButton
+                data-testid="toggle-graph-button"
+                onClick={() => toggleJourneyGraph()}>
                 <Chart fill="white" height="1rem" width="1rem" />
               </ToggleGraphButton>
             </Tooltip>

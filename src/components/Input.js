@@ -1,7 +1,7 @@
-import React, {Component} from "react";
-import {observer} from "mobx-react";
+import React from "react";
 import styled, {css} from "styled-components";
 import {InputBase, InputLabel} from "./Forms";
+import {observer} from "mobx-react-lite";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -52,25 +52,27 @@ const Label = styled(InputLabel)`
       : ""};
 `;
 
-@observer
-class Input extends Component {
-  render() {
-    const {label, children, className, animatedLabel = true, ...props} = this.props;
+const Input = observer((props) => {
+  const {
+    labelTestId = "input-label",
+    label,
+    children,
+    className,
+    animatedLabel = true,
+    ...rest
+  } = props;
 
-    const inputComponent = !children ? (
-      <InputBase placeholder=" " {...props} />
-    ) : (
-      children
-    );
-
-    return (
-      <InputWrapper animatedLabel={animatedLabel} className={className}>
-        {label && !animatedLabel && <Label animated={false}>{label}</Label>}
-        {inputComponent}
-        {label && animatedLabel && <Label animated={true}>{label}</Label>}
-      </InputWrapper>
-    );
-  }
-}
+  return (
+    <InputWrapper animatedLabel={animatedLabel} className={className}>
+      {label && !animatedLabel && (
+        <Label data-testid={labelTestId} animated={false}>
+          {label}
+        </Label>
+      )}
+      {!children ? <InputBase placeholder=" " {...rest} /> : children}
+      {label && animatedLabel && <Label animated={true}>{label}</Label>}
+    </InputWrapper>
+  );
+});
 
 export default Input;

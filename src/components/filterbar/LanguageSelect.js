@@ -46,18 +46,21 @@ class LanguageSelect extends Component {
     return (
       <LanguageButtonsWrapper className={className}>
         <LanguageButton
+          data-testid="select-lang-fi"
           helpText="Language select finnish"
           active={language === LANGUAGES.FINNISH}
           onClick={this.onSelectLanguage(LANGUAGES.FINNISH)}>
           Fi
         </LanguageButton>
         <LanguageButton
+          data-testid="select-lang-se"
           helpText="Language select swedish"
           active={language === LANGUAGES.SWEDISH}
           onClick={this.onSelectLanguage(LANGUAGES.SWEDISH)}>
           Se
         </LanguageButton>
         <LanguageButton
+          data-testid="select-lang-en"
           helpText="Language select english"
           active={language === LANGUAGES.ENGLISH}
           onClick={this.onSelectLanguage(LANGUAGES.ENGLISH)}>

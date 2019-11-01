@@ -165,6 +165,7 @@ class VehicleJourneys extends Component {
 
           return (
             <SidepanelList
+              testIdPrefix="vehicle-block"
               focusKey={selectedJourneyId}
               loading={loading}
               header={
@@ -224,6 +225,7 @@ class VehicleJourneys extends Component {
                         key={`vehicle_journey_row_${journeyId}`}
                         ref={journeyIsSelected ? scrollRef : null}>
                         <TagButton
+                          data-testid="vehicle-departure-option"
                           selected={journeyIsSelected}
                           onClick={this.onSelectJourney(journey)}>
                           <HeadsignSlot

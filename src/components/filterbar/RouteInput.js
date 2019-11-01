@@ -27,6 +27,7 @@ const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
 
   return (
     <SuggestionContent
+      data-testid={`route-option-${routeId}-${direction}`}
       isHighlighted={isHighlighted}
       withIcon={true}
       className={getTransportType(routeId)}>
