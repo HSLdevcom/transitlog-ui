@@ -60,8 +60,8 @@ describe("Time smoke tests", () => {
   });
 
   it("Can update current data", () => {
-    cy.getTestElement("route-input", {timeout: 2000}).type("2510/1");
-    cy.getTestElement("route-option-2510-1", {timeout: 2000}).click();
+    cy.getTestElement("route-input").type("2510/1");
+    cy.getTestElement("route-option-2510-1").click();
 
     cy.getTestElement("observed-journey")
       .last()
@@ -73,7 +73,7 @@ describe("Time smoke tests", () => {
     cy.getTestElement("hfp-marker-icon").click();
     cy.getTestElement("hfp-tooltip-content").should("exist");
 
-    cy.getTestElement("hfp-event-time")
+    cy.getTestElement("hfp-event-time", {timeout: 60000})
       .text()
       .as("start-time");
 
