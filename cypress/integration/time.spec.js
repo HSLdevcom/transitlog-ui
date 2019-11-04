@@ -29,8 +29,8 @@ describe("Time smoke tests", () => {
   });
 
   it("Can use live mode", () => {
-    cy.getTestElement("route-input", {timeout: 2000}).type("2510/1");
-    cy.getTestElement("route-option-2510-1", {timeout: 2000}).click();
+    cy.getTestElement("route-input").type("2510/1");
+    cy.getTestElement("route-option-2510-1").click();
 
     cy.getTestElement("observed-journey")
       .last()
