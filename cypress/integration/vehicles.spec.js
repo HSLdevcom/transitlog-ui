@@ -1,4 +1,4 @@
-describe("Authentication smoke tests", () => {
+describe("Vehicles smoke tests", () => {
   beforeEach(() => {
     cy.hslLogin();
   });
