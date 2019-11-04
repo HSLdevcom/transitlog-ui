@@ -1,5 +1,11 @@
 # Transitlog UI changelog
 
+## Version 1.4.0, deployed 2019-11-04 @ 09:00
+
+- Smoke tests added and 
+- New HSL ID environment.
+- Fixed some bugs that surfaced during testing.
+
 ## Version 1.3.1, deployed 2019-10-25 @ 09:00
 
 - New GraphQL schema.
