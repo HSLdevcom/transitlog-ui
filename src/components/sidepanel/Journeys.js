@@ -124,8 +124,8 @@ const Journeys = decorate(({state, Time, Journey, loading: journeyLoading}) => {
     Journey.setSelectedJourney(journeyToSelect);
   }, []);
 
-  const {date, route} = state;
-  const selectedJourneyId = getJourneyId(state.selectedJourney);
+  const {date, route, selectedJourney} = state;
+  const selectedJourneyId = getJourneyId(selectedJourney);
 
   let focusedJourney = expr(() => {
     // Make sure that the selected journey belongs to the currently selected route.
