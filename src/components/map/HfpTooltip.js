@@ -32,18 +32,20 @@ const HfpTooltip = observer(
         offset={offset}
         direction={direction}>
         <div data-testid="hfp-tooltip-content">
-          <strong>
-            {journey.journeyType !== "journey" ? (
-              <>
-                {journey.journeyType}: {journey.uniqueVehicleId}
-              </>
-            ) : (
-              <>
-                {journey.routeId} / {journey.direction}
-              </>
-            )}
-          </strong>
-          <br />
+          <span style={{display: "flex"}}>
+            <strong>
+              {journey.journeyType !== "journey" ? (
+                <>
+                  {journey.journeyType}: {journey.uniqueVehicleId}
+                </>
+              ) : (
+                <>
+                  {journey.routeId} / {journey.direction}
+                </>
+              )}
+            </strong>
+            <span style={{marginLeft: "auto"}}>{journey.departureTime}</span>
+          </span>
           <span data-testid="hfp-event-time">
             {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
           </span>
@@ -58,7 +60,7 @@ const HfpTooltip = observer(
           <br />
           <Text>vehicle.speed</Text>: {Math.round((usingEvent.velocity * 18) / 5)} km/h
           <br />
-          {usingEvent.delay && <>DL: {usingEvent.delay}</>}
+          {usingEvent.delay > 0 && <>DL: {usingEvent.delay}</>}
         </div>
       </Tooltip>
     );
