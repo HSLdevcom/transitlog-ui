@@ -6,6 +6,7 @@ import styled from "styled-components";
 import {withStop} from "../../hoc/withStop";
 import {inject} from "../../helpers/inject";
 import TimingStop from "../../icons/TimingStop";
+import {getModeColor} from "../../helpers/vehicleColor";
 
 const StopOptionButton = styled.button`
   text-decoration: none;
@@ -40,21 +41,26 @@ const decorate = flow(
 );
 
 export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters}) => {
-  const onSelectRoute = useCallback((route) => {
-    return () => route && Filters.setRoute(route);
-  }, []);
+  const onSelectRoute = useCallback(
+    (route) => () => route && Filters.setRoute(route),
+    []
+  );
 
   return stopLoading
     ? "loading"
-    : get(stop, "routes", []).map((route) => (
-        <StopOptionButton
-          color={color}
-          key={`route_${route.routeId}_${route.direction}`}
-          onClick={onSelectRoute(route)}>
-          {cleanRouteId(route.routeId)}
-          {route.isTimingStop && <TimingStop fill={color} width="1rem" height="1rem" />}
-        </StopOptionButton>
-      ));
+    : get(stop, "routes", []).map((route) => {
+        const buttonColor = getModeColor(route.mode) || color;
+
+        return (
+          <StopOptionButton
+            color={buttonColor}
+            key={`route_${route.routeId}_${route.direction}`}
+            onClick={onSelectRoute(route)}>
+            {cleanRouteId(route.routeId)}
+            {route.isTimingStop && <TimingStop fill={color} width="1rem" height="1rem" />}
+          </StopOptionButton>
+        );
+      });
 });
 
 export default StopRouteSelect;

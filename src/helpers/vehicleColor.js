@@ -2,6 +2,7 @@ import get from "lodash/get";
 
 const vehicleColors = {
   BUS: "var(--bus-blue)",
+  U: "var(--bus-blue)",
   TRAM: "var(--green)",
   RAIL: "var(--purple)",
   TRAIN: "var(--purple)",
@@ -18,11 +19,15 @@ export function getModeColor(mode = "default") {
 
 // If there are many modes, return the most significant one with explicit logic.
 export function getPriorityMode(modes) {
-  if (modes.indexOf("TRUNK") !== -1) {
+  if (modes.includes("TRUNK")) {
     return "TRUNK";
   }
 
-  if (modes.indexOf("TRAM") !== -1) {
+  if (modes.includes("U")) {
+    return "U";
+  }
+
+  if (modes.includes("TRAM")) {
     return "TRAM";
   }
 
