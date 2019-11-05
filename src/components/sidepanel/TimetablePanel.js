@@ -125,13 +125,17 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
         journey = createCompositeJourney(
           departure.originDepartureTime.departureDate,
           departure,
-          departure.originDepartureTime.departureTime
+          departure.originDepartureTime.departureTime,
+          get(journey, "uniqueVehicleId", "")
         );
       }
 
-      const selectedJourneyId = getJourneyId(selectedJourney, false);
+      const selectedJourneyId = getJourneyId(selectedJourney, !!journey.uniqueVehicleId);
 
-      if (journey && getJourneyId(journey, false) !== selectedJourneyId) {
+      if (
+        journey &&
+        getJourneyId(journey, !!journey.uniqueVehicleId) !== selectedJourneyId
+      ) {
         Journey.setSelectedJourney(journey);
       } else {
         Journey.setSelectedJourney(null);
