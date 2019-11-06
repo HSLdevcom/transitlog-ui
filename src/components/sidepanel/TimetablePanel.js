@@ -16,6 +16,7 @@ import {withStop} from "../../hoc/withStop";
 import {createCompositeJourney} from "../../stores/journeyActions";
 import {inject} from "../../helpers/inject";
 import {intval} from "../../helpers/isWithinRange";
+import {journeyStartTime} from "../../helpers/time";
 
 const TimetableFilters = styled.div`
   display: flex;
@@ -63,25 +64,19 @@ const renderTimetableRow = ({
   isScrolling,
   isVisible,
   departureProps,
-}) => {
-  const instance = get(departure, "journey.instance", 0);
-  const departureTime = get(departure, "plannedDepartureTime.departureDateTime", "");
-
-  return (
-    <div
-      style={style}
-      key={key}
-      data-testid={`${index === 0 ? "first-timetable" : ""} departure-item`}>
-      <TimetableDeparture
-        key={`departure_${departure.departureId}_${departure.routeId}_${departure.direction}_${departureTime}_${instance}`}
-        isScrolling={isScrolling}
-        isVisible={isVisible}
-        departure={departure}
-        {...departureProps}
-      />
-    </div>
-  );
-};
+}) => (
+  <div
+    style={style}
+    key={key}
+    data-testid={`${index === 0 ? "first-timetable" : ""} departure-item`}>
+    <TimetableDeparture
+      isScrolling={isScrolling}
+      isVisible={isVisible}
+      departure={departure}
+      {...departureProps}
+    />
+  </div>
+);
 
 const decorate = flow(
   observer,
@@ -175,13 +170,12 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
       {({departures = [], loading}) => (
         <Observer>
           {() => {
-            const selectedJourneyId = getJourneyId(selectedJourney, false);
+            const selectedJourneyId = getJourneyId(selectedJourney);
 
             const focusedDeparture = selectedJourneyId
               ? departures.find(
                   (departure) =>
-                    selectedJourneyId ===
-                    getJourneyId(departure.journey || departure, false)
+                    selectedJourneyId === getJourneyId(departure.journey || departure)
                 )
               : getDepartureByTime(departures, state.time);
 
