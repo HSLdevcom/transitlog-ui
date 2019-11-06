@@ -104,29 +104,28 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
     filteredRoutes,
     ({routeId, direction}) => {
       let matchScore = 0;
+      let isExactMatch = false;
 
       const cleanRouteId = routeId.trim().toLowerCase();
 
+      // Sort routes with spaces or the letter h in them lower.
       if (/\s+|h+/g.test(cleanRouteId)) {
         matchScore = matchScore - 100;
       }
 
       const lineId = parseLineNumber(cleanRouteId);
-      let checkValue = "";
+      const matchValues = [lineId, cleanRouteId];
 
-      let charIdx = 0;
+      for (const checkValue of matchValues) {
+        // If it matches exactly, just give a huge pile of points and break.
+        if (checkValue === searchRouteId) {
+          matchScore += 1000;
+          isExactMatch = true;
+          break;
+        }
 
-      if (cleanRouteId[0] === searchRouteId[0]) {
-        charIdx = 1;
-        matchScore = matchScore + 10;
-        checkValue = cleanRouteId;
-      } else if (lineId[0] === searchRouteId[0]) {
-        charIdx = 1;
-        matchScore = matchScore + 10;
-        checkValue = lineId;
-      }
+        let charIdx = 0;
 
-      if (checkValue) {
         // Loop through the given search term and match it
         // to a route or line ID, letter by letter.
         for (charIdx; charIdx < searchRouteId.length; charIdx++) {
@@ -154,8 +153,8 @@ const getFilteredSuggestions = (routes, {value = ""}) => {
       }
 
       // If we have an exact match, add the score for the direction if applicable.
-      if (checkValue && matchScore > 10 && searchDirection === direction) {
-        matchScore = matchScore + 1000;
+      if (isExactMatch && searchDirection === direction) {
+        matchScore += 1000;
       }
 
       return matchScore;
