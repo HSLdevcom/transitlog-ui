@@ -98,9 +98,6 @@ describe("Route smoke tests", () => {
   });
 
   it("Can display the journey graph", () => {
-    cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
-
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("observed-journey")
