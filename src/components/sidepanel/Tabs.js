@@ -198,7 +198,7 @@ class Tabs extends Component {
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
                 selected={selectedTab === tabOption.name}
                 onClick={this.onTabClick(tabOption.name)}>
-                {tabOption.loading && <LoadingIndicator />}
+                {tabOption.loading && <LoadingIndicator data-testid="loading" />}
                 <TabLabel>{tabOption.label}</TabLabel>
               </TabButton>
             </Tooltip>

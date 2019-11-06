@@ -8,8 +8,7 @@ describe("App opening smoke tests", () => {
   });
 
   it("Opens the app", () => {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(3000); // Wait for the initial requests to finish
+    cy.waitUntilLoadingFinishes();
 
     cy.get("@consoleError", {timeout: 1}).should((errorLog) =>
       expect(errorLog).to.have.callCount(0)
@@ -44,11 +43,15 @@ describe("App opening smoke tests", () => {
   });
 
   it("Can share the view", () => {
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("route-input").type("2510/1");
     cy.getTestElement("route-option-2510-1").click();
 
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
+
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("share-button").click();
     cy.getTestElement("share-url-display")
@@ -75,28 +78,12 @@ describe("App opening smoke tests", () => {
 
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("reset-button").click();
 
     cy.getTestElement("route-input").should("be.empty");
     cy.getTestElement("stop-input").should("be.empty");
-  });
-
-  it("Can display the journey graph", () => {
-    cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
-
-    cy.getTestElement("observed-journey")
-      .first()
-      .click();
-
-    cy.assertJourneySelected("2510");
-
-    cy.getTestElement("toggle-graph-button")
-      .should("exist")
-      .click();
-
-    cy.getTestElement("journey-graph-container").should("visible");
-    cy.get(".test-class-journey-graph").should("exist");
   });
 });

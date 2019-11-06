@@ -94,3 +94,9 @@ Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
       }
     });
 });
+
+Cypress.Commands.add("waitUntilLoadingFinishes", (loadingElementSelector) => {
+  const testId = loadingElementSelector || "loading";
+  cy.waitUntil(() => cy.getTestElement(testId).should("exist"));
+  return cy.waitUntil(() => cy.getTestElement(testId).should("have.length", 0));
+});

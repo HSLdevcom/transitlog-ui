@@ -31,11 +31,14 @@ describe("Time smoke tests", () => {
   it("Can use live mode", () => {
     cy.getTestElement("route-input").type("2510/1");
     cy.getTestElement("route-option-2510-1").click();
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("observed-journey")
       .last()
       .click();
-
+  
+    cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("2510");
 
     // Clicking the vehicle marker will pin the tooltip
@@ -62,11 +65,14 @@ describe("Time smoke tests", () => {
   it("Can update current data", () => {
     cy.getTestElement("route-input").type("2510/1");
     cy.getTestElement("route-option-2510-1").click();
-
+  
+    cy.waitUntilLoadingFinishes();
+    
     cy.getTestElement("observed-journey")
       .last()
       .click();
-
+  
+    cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("2510");
 
     // Clicking the vehicle marker will pin the tooltip
@@ -78,8 +84,8 @@ describe("Time smoke tests", () => {
       .as("start-time");
 
     cy.getTestElement("update-button").click();
-
-    cy.wait(3000);
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("hfp-event-time")
       .text()

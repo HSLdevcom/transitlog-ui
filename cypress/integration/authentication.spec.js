@@ -11,21 +11,24 @@ describe("Authentication smoke tests", () => {
     cy.hslLogin();
 
     cy.getTestElement("authenticated-user").should("exist");
+  
+    cy.waitUntilLoadingFinishes();
+    
     cy.getTestElement("vehicle-search").should("exist");
     cy.getCookie("transitlog-session").should("exist");
   });
 
   it("Can log out", () => {
     cy.hslLogin();
-
-    cy.wait(2000);
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("auth-modal-button").click();
     cy.getTestElement("logout-button")
       .should("exist")
       .click();
-
-    cy.wait(5000);
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("authenticated-user").should("not.exist");
     cy.getTestElement("vehicle-search").should("not.exist");

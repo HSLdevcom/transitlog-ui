@@ -6,6 +6,8 @@ describe("Stop smoke tests", () => {
   it("Finds a stop and can select it", () => {
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
 
@@ -19,11 +21,15 @@ describe("Stop smoke tests", () => {
   it("Can select a departure", () => {
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("departure-option")
       .first()
       .click();
-
+  
+    cy.waitUntilLoadingFinishes();
+    
     cy.assertJourneySelected();
   });
 

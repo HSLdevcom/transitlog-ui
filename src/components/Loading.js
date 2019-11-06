@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState, useRef} from "react";
 import styled, {keyframes, css} from "styled-components";
 import Spinner from "../icons/Spinner";
 
@@ -88,11 +88,34 @@ const Loading = ({className, inline, size}) => {
 
 export default Loading;
 
-export const LoadingDisplay = ({loading = false, className, inline, size}) => (
-  <LoadingContainer
-    data-testid="loading-container"
-    className={className}
-    loading={loading}>
-    <Loading inline={inline} size={size} />
-  </LoadingContainer>
-);
+export const LoadingDisplay = ({loading = false, className, inline, size}) => {
+  const [isRendered, setIsRendered] = useState(loading);
+  const timerRef = useRef(0);
+
+  useEffect(() => {
+    if (loading) {
+      setIsRendered(true);
+    } else {
+      timerRef.current = setTimeout(() => {
+        setIsRendered(false);
+      }, 300);
+    }
+
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, [loading]);
+
+  if (!isRendered) {
+    return null;
+  }
+
+  return (
+    <LoadingContainer
+      data-testid="loading-container"
+      className={className}
+      loading={loading}>
+      <Loading inline={inline} size={size} />
+    </LoadingContainer>
+  );
+};
