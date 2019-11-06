@@ -1,5 +1,9 @@
 # Transitlog UI changelog
 
+## Version 1.4.1
+
+- Improve route options order.
+
 ## Version 1.4.0, deployed 2019-11-06 @ 10:00
 
 - Smoke tests added.
