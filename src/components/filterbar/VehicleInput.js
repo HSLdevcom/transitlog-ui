@@ -32,7 +32,11 @@ const renderSuggestion = (suggestion, {query, isHighlighted}) => {
   let uniqueVehicleId = getSuggestionValue(suggestion);
 
   if (registryNr) {
-    uniqueVehicleId = `${uniqueVehicleId} (${registryNr})`;
+    uniqueVehicleId = (
+      <>
+        <span data-testid="vehicle-option-label">{uniqueVehicleId}</span> {registryNr}
+      </>
+    );
   }
 
   const isInService =

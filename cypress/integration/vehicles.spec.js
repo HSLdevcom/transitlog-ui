@@ -4,20 +4,33 @@ describe("Vehicles smoke tests", () => {
   });
 
   it("Can search for a vehicle", () => {
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("vehicle-search").should("exist");
     cy.getTestElement("vehicle-search-input")
       .should("exist")
-      .type("0012/1001");
+      .focus();
 
-    cy.getTestElement("vehicle-option")
+    cy.getTestElement("vehicle-option-label")
       .first()
-      .click();
+      .text()
+      .then((vehicleId) => {
+        cy.getTestElement("vehicle-search-input").type(vehicleId);
 
-    cy.getTestElement("vehicle-block-list").should("exist");
-    cy.getTestElement("selected-vehicle-display").should("exist");
+        cy.getTestElement("vehicle-option")
+          .first()
+          .click();
+
+        cy.waitUntilLoadingFinishes();
+
+        cy.getTestElement("vehicle-block-list").should("exist");
+        cy.getTestElement("selected-vehicle-display").should("exist");
+      });
   });
 
   it("Can select vehicle departure", () => {
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("vehicle-search").should("exist");
     cy.getTestElement("vehicle-search-input")
       .should("exist")
@@ -27,11 +40,14 @@ describe("Vehicles smoke tests", () => {
       .first()
       .click();
 
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("vehicle-block-list").should("exist");
     cy.getTestElement("vehicle-departure-option")
       .first()
       .click();
 
+    cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected();
   });
 });

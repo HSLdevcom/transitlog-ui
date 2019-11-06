@@ -6,5 +6,6 @@ declare namespace Cypress {
     hslLogin(): void;
     assertRouteSelected(routeId?: string): void;
     assertJourneySelected(routeId?: string, departureTime?: string): void;
+    waitUntilLoadingFinishes<Subject>(loadingElementSelector?: string): Chainable<Subject>
   }
 }

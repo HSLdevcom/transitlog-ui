@@ -16,10 +16,14 @@ describe("Area search", () => {
 
     cy.getTestElement("time-input").type("8:00");
     cy.getTestElement("date-day-decrease").click();
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.get(".leaflet-draw-draw-rectangle").click();
 
     drawRectangle(drawStart, drawEnd);
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
     cy.getTestElement("cancel-area-search-button").should("exist");
@@ -34,6 +38,8 @@ describe("Area search", () => {
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
       `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
     );
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
     cy.getTestElement("cancel-area-search-button").should("exist");
@@ -48,11 +54,15 @@ describe("Area search", () => {
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
       `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
     );
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
     cy.getTestElement("area-journey-item-journey", {timeout: 60000})
       .first()
       .click();
+  
+    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("sidebar-tab-journeys").should("exist");
     cy.getTestElement("journey-details").should("exist");

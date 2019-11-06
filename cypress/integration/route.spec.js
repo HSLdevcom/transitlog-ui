@@ -6,6 +6,9 @@ describe("Route smoke tests", () => {
 
   beforeEach(() => {
     cy.visit(`/?date=${yesterday}`);
+
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("route-input").type("2510/1");
     cy.getTestElement("route-option-2510-1").click();
   });
@@ -26,6 +29,8 @@ describe("Route smoke tests", () => {
       .find(`[data-testid="journey-departure-time"]`)
       .text()
       .then((departureTime) => {
+        cy.waitUntilLoadingFinishes();
+
         const urlDepartureTime = departureTime.replace(":", "") + "00";
         cy.assertJourneySelected("2510", urlDepartureTime);
       });
@@ -34,6 +39,9 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure", () => {
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
+
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("weekly-departure-time", {timeout: 60000}).should(
       "have.length.least",
       2
@@ -43,12 +51,16 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
+    cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("2510");
   });
 
   it("Can select a weekly departure in last stop arrival mode", () => {
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
+
+    cy.waitUntilLoadingFinishes();
+
     cy.getTestElement("weekly-departure-time", {timeout: 60000})
       .should("have.length.least", 2)
       .first()
@@ -80,6 +92,30 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
+    cy.waitUntilLoadingFinishes();
+
     cy.assertJourneySelected("2510");
+  });
+
+  it("Can display the journey graph", () => {
+    cy.getTestElement("route-input").type("2510/1");
+    cy.getTestElement("route-option-2510-1").click();
+
+    cy.waitUntilLoadingFinishes();
+
+    cy.getTestElement("observed-journey")
+      .first()
+      .click();
+
+    cy.waitUntilLoadingFinishes();
+
+    cy.assertJourneySelected("2510");
+
+    cy.getTestElement("toggle-graph-button")
+      .should("exist")
+      .click();
+
+    cy.getTestElement("journey-graph-container").should("visible");
+    cy.get(".test-class-journey-graph").should("exist");
   });
 });
