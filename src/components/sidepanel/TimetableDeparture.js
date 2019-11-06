@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {observer} from "mobx-react";
+import React, {useMemo} from "react";
+import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import doubleDigit from "../../helpers/doubleDigit";
 import getDelayType from "../../helpers/getDelayType";
@@ -64,98 +64,100 @@ const SpecialDayDisplay = styled.span`
   font-size: 0.5rem;
 `;
 
-@observer
-class TimetableDeparture extends Component {
-  renderListRow = (
-    journeyIsSelected,
-    departure,
-    color,
-    mode,
-    isTimingStop,
-    isSpecialDayType
-  ) => (children = null, onClick) => (
+const InstanceDisplay = styled.span`
+  margin-left: 0.25rem;
+  padding: 2px;
+  border-radius: 2px;
+  background: var(--lighter-grey);
+  min-width: 1rem;
+  font-size: 0.6rem;
+  text-align: center;
+  display: inline-block;
+  color: var(--dark-grey);
+`;
+
+const TimetableDeparture = observer((props) => {
+  const {stop, departure, onClick, selectedJourney} = props;
+
+  if (!stop || !departure) {
+    return null;
+  }
+
+  const {modes = []} = stop;
+
+  const stopMode = modes[0];
+  const currentTransportColor = get(transportColor, stopMode, "var(--light-grey)");
+  const selectedJourneyId = getJourneyId(selectedJourney);
+  const isTimingStop = departure.isTimingStop;
+  const instance = get(departure, "journey._numInstance", 0);
+
+  const journeyIsSelected =
+    !!selectedJourneyId &&
+    selectedJourneyId === getJourneyId(departure.journey || departure);
+
+  const isSpecialDayType =
+    getDayTypeFromDate(departure.plannedDepartureTime.departureDate) !==
+      departure.dayType || !dayTypes.includes(departure.dayType);
+
+  const observedTime = get(departure, "observedDepartureTime", null);
+  let observed = null;
+
+  const onClickDeparture = useMemo(() => onClick(departure), [departure, onClick]);
+
+  if (observedTime) {
+    // Diff planned and observed times
+    const observedTimeString = observedTime.departureTime;
+    const diff = observedTime.departureTimeDifference;
+    const delayType = getDelayType(diff);
+    const {hours, minutes, seconds} = secondsToTimeObject(diff);
+
+    observed = (
+      <>
+        <ColoredBackgroundSlot
+          color={delayType === "late" ? "var(--dark-grey)" : "white"}
+          backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+          {diff < 0 === "-" ? "-" : ""}
+          {hours ? doubleDigit(hours) + ":" : ""}
+          {doubleDigit(minutes)}:{doubleDigit(seconds)}
+        </ColoredBackgroundSlot>
+        <ObservedTimeDisplay>{observedTimeString}</ObservedTimeDisplay>
+      </>
+    );
+  }
+
+  return (
     <ListRow isCancelled={departure.isCancelled} selected={journeyIsSelected}>
       <TimetableButton
         data-testid={`departure-option departure-option-${departure.departureTime}`}
-        hasData={!!children}
+        hasData={!!observed}
         selected={journeyIsSelected}
-        onClick={onClick}>
-        <LineSlot color={color}>
+        onClick={onClickDeparture}>
+        <LineSlot color={currentTransportColor}>
           {parseLineNumber(departure.routeId)}/{departure.direction}
           {isSpecialDayType && (
             <SpecialDayDisplay largeMargin={true} {...applyTooltip("Journey day type")}>
               {departure.dayType}
             </SpecialDayDisplay>
           )}
+          {instance > 0 && (
+            <InstanceDisplay {...applyTooltip("Journey instance")}>
+              {instance}
+            </InstanceDisplay>
+          )}
         </LineSlot>
         <PlannedTimeSlot>
           {getNormalTime(departure.plannedDepartureTime.departureTime).slice(0, -3)}
-          {isTimingStop && <TimingStop fill={color} width="1rem" height="1rem" />}
+          {isTimingStop && (
+            <TimingStop fill={currentTransportColor} width="1rem" height="1rem" />
+          )}
         </PlannedTimeSlot>
-        {children}
+        {observed}
       </TimetableButton>
       {get(departure, "alerts", []).length !== 0 && (
         <AlertIcons alerts={getAlertsInEffect(departure)} />
       )}
     </ListRow>
   );
-
-  render() {
-    const {stop, departure, onClick, selectedJourney} = this.props;
-
-    if (!stop || !departure) {
-      return null;
-    }
-
-    const {modes = []} = stop;
-
-    const stopMode = modes[0];
-    const currentTransportColor = get(transportColor, stopMode, "var(--light-grey)");
-    const selectedJourneyId = getJourneyId(selectedJourney, false);
-    const isTimingStop = departure.isTimingStop;
-
-    const journeyIsSelected =
-      !!selectedJourneyId &&
-      selectedJourneyId === getJourneyId(departure.journey || departure, false);
-
-    const isSpecialDayType =
-      getDayTypeFromDate(departure.plannedDepartureTime.departureDate) !==
-        departure.dayType || !dayTypes.includes(departure.dayType);
-
-    const renderListRow = this.renderListRow(
-      journeyIsSelected,
-      departure,
-      currentTransportColor,
-      stopMode,
-      isTimingStop,
-      isSpecialDayType
-    );
-
-    const observedTime = get(departure, "observedDepartureTime", null);
-    let observed = null;
-
-    if (observedTime) {
-      // Diff planned and observed times
-      const observedTimeString = observedTime.departureTime;
-      const diff = observedTime.departureTimeDifference;
-      const delayType = getDelayType(diff);
-      const {hours, minutes, seconds} = secondsToTimeObject(diff);
-
-      observed = (
-        <>
-          <ColoredBackgroundSlot
-            color={delayType === "late" ? "var(--dark-grey)" : "white"}
-            backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
-            {diff < 0 === "-" ? "-" : ""}
-            {hours ? doubleDigit(hours) + ":" : ""}
-            {doubleDigit(minutes)}:{doubleDigit(seconds)}
-          </ColoredBackgroundSlot>
-          <ObservedTimeDisplay>{observedTimeString}</ObservedTimeDisplay>
-        </>
-      );
-    }
-    return renderListRow(observed, onClick(departure));
-  }
-}
+});
 
 export default TimetableDeparture;
