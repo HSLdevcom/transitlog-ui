@@ -1,6 +1,6 @@
 # Transitlog UI changelog
 
-## Version 1.4.0, deployed 2019-11-04 @ 09:00
+## Version 1.4.0, deployed 2019-11-06 @ 10:00
 
 - Smoke tests added.
 - New HSL ID environment.
