@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-(function() {
+;(function() {
   var allowedEngines = ["webkit", "gecko"];
   var engine = window.Sniff.browser.engine;
 
