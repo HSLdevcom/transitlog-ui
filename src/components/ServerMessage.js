@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Info from "../icons/Info";
 import moment from "moment-timezone";
 import {TIMEZONE} from "../constants";
+import Markdown from "react-markdown";
 
 const messageQuery = gql`
   query uiMessage {
@@ -30,7 +31,11 @@ const MessageWrapper = styled.div`
   }
 `;
 
-const MessageText = styled.span``;
+const MessageText = styled(Markdown)`
+  a {
+    color: var(--light-blue);
+  }
+`;
 
 const MessageDate = styled.span`
   margin-left: auto;
@@ -51,7 +56,20 @@ const ServerMessage = () => {
         return (
           <MessageWrapper>
             <Info fill="var(--light-grey)" width="1rem" />
-            <MessageText>{message}</MessageText>
+            <MessageText
+              source={message}
+              unwrapDisallowed={true}
+              allowedTypes={[
+                "root",
+                "text",
+                "emphasis",
+                "strong",
+                "delete",
+                "link",
+                "linkReference",
+                "inlineCode",
+              ]}
+            />
             <MessageDate>{moment.tz(date, TIMEZONE).format("D.M.YYYY")}</MessageDate>
           </MessageWrapper>
         );
