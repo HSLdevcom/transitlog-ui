@@ -114,6 +114,7 @@
   "domain.route": "Route",
   "domain.direction": "direction",
   "domain.alerts": "Alerts",
+  "domain.journey_data_health": "Data health",
   "domain.alerts.all_routes": "All routes",
   "domain.alerts.all_stops": "All stops",
   "domain.alerts.network": "Network",

@@ -93,7 +93,20 @@ const CancelledAlert = styled.div`
   }
 `;
 
-export default observer(({route, journey, showVehicleId = false}) => {
+const HealthIndicator = styled.div`
+  padding: 5px 7px;
+  font-size: 0.75rem;
+  border-radius: 5px;
+  margin-left: auto;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${(p) =>
+    p.value > 90 ? "var(--green)" : p.value > 75 ? "var(--yellow)" : "var(--red)"};
+`;
+
+export default observer(({journeyHealth, route, journey, showVehicleId = false}) => {
   if (!journey && !route) {
     return null;
   }
@@ -117,6 +130,11 @@ export default observer(({route, journey, showVehicleId = false}) => {
               <TransportIcon mode={mode} width={17} height={17} />
               {uniqueVehicleId}
             </HeaderText>
+          )}
+          {journeyHealth && (
+            <HealthIndicator title="Journey health" value={journeyHealth.total}>
+              {Math.floor(journeyHealth.total)}%
+            </HealthIndicator>
           )}
         </MainHeaderRow>
         {departureDate && departureTime && (
