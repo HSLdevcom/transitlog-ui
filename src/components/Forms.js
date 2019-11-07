@@ -32,7 +32,7 @@ export const InputLabel = styled.label`
   font-weight: 600;
   line-height: 129%;
   letter-spacing: 0;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   color: var(--grey);
   text-transform: uppercase;
   user-select: none;
