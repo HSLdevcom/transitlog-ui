@@ -115,6 +115,7 @@
   "domain.route": "Reitti",
   "domain.direction": "suunta",
   "domain.alerts": "Poikkeukset",
+  "domain.journey_data_health": "Tietojen kattavuus",
   "domain.alerts.all_routes": "Kaikki reitit",
   "domain.alerts.all_stops": "Kaikki pysäkit",
   "domain.alerts.network": "Koko alue",

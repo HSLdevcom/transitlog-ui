@@ -15,6 +15,7 @@ import {text} from "../../../helpers/text";
 import CancellationsList from "../../CancellationsList";
 import {inject} from "../../../helpers/inject";
 import {useJourneyHealth} from "../../../hooks/useJourneyHealth";
+import JourneyHealthDetails from "./JourneyHealthDetails";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -56,7 +57,6 @@ const JourneyDetails = decorate(
     const journeyEvents = get(journey, "events", []);
 
     const journeyHealth = useJourneyHealth(journey);
-    console.log(journeyHealth);
 
     const journeyTime = originDeparture
       ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)
@@ -76,7 +76,12 @@ const JourneyDetails = decorate(
     return (
       <JourneyPanelWrapper data-testid="journey-details">
         <LoadingDisplay loading={loading} />
-        <JourneyDetailsHeader journey={journey} route={route} showVehicleId={!!user} />
+        <JourneyDetailsHeader
+          journeyHealth={journeyHealth}
+          journey={journey}
+          route={route}
+          showVehicleId={!!user}
+        />
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} />
@@ -105,6 +110,13 @@ const JourneyDetails = decorate(
                     />
                   )}
                 </ListWrapper>
+              )}
+              {journeyHealth && (
+                <JourneyHealthDetails
+                  name="journey-health"
+                  label={text("domain.journey_data_health")}
+                  journeyHealth={journeyHealth}
+                />
               )}
             </Tabs>
           </JourneyPanelContent>

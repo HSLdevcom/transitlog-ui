@@ -113,6 +113,7 @@
   "domain.route": "Rutt",
   "domain.direction": "riktning",
   "domain.alerts": "Undantag",
+  "domain.journey_data_health": "Infons hälsa",
   "domain.alerts.all_routes": "Alla rutter",
   "domain.alerts.all_stops": "Alla hållplatser",
   "domain.alerts.network": "Hela nätverket",
