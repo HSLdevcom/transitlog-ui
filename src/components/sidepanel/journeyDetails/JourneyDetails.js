@@ -14,6 +14,7 @@ import {getAlertsInEffect} from "../../../helpers/getAlertsInEffect";
 import {text} from "../../../helpers/text";
 import CancellationsList from "../../CancellationsList";
 import {inject} from "../../../helpers/inject";
+import {useJourneyHealth} from "../../../hooks/useJourneyHealth";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -53,6 +54,8 @@ const JourneyDetails = decorate(
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
     const originDeparture = get(journey, "departure", null);
     const journeyEvents = get(journey, "events", []);
+
+    const journeyHealth = useJourneyHealth(journey);
 
     const journeyTime = originDeparture
       ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)
