@@ -11,6 +11,7 @@ import Login from "../../icons/Login";
 import ControlBar from "../sidepanel/ControlBar";
 import {Button} from "../Forms";
 import Info from "../../icons/Info";
+import {ENV_NAME} from "../../constants";
 
 const Header = styled.header`
   width: 100%;
@@ -32,6 +33,9 @@ const MainHeading = styled(Heading).attrs({level: 1})`
   color: white;
   margin: 0 0 0 1rem;
   font-size: 1.25rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
 `;
 
 const LogoAndHeading = styled.div`
@@ -84,6 +88,15 @@ const IconButton = styled(Button).attrs({small: true, transparent: true})`
   }
 `;
 
+const EnvName = styled.span`
+  color: var(--dark-blue);
+  padding: 3px 5px;
+  margin-right: 0.5rem;
+  border-radius: 5px;
+  background: white;
+  font-size: 1rem;
+`;
+
 const decorate = flow(
   observer,
   inject("UI")
@@ -96,6 +109,7 @@ function HeaderComponent({state, UI, className}) {
       <LogoAndHeading>
         <Logo src={logo} alt="logo" />
         <MainHeading>
+          {ENV_NAME && <EnvName>{ENV_NAME}</EnvName>}
           <Text>filterpanel.heading</Text>
         </MainHeading>
       </LogoAndHeading>
