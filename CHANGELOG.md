@@ -3,6 +3,7 @@
 ## Version 1.4.1, deployed 2019-11-07 @ 07:00
 
 - Improve route options order.
+- Markdown implemented for admin bar messages.
 - HOTFIX: Remove Typography.com CSS, it was causing trouble due to a config change on dev.hsl.fi which now requires authentication.
 
 ## Version 1.4.0, deployed 2019-11-06 @ 10:00
