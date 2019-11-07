@@ -20,7 +20,7 @@
   "filterpanel.planned_start_time": "Planerad starttid",
   "filterpanel.real_start_time": "Realiserad starttid",
   "filterpanel.journey.unrealized": "Ogenomförd",
-  "filterpanel.journey.no_data": "Ingen data",
+  "filterpanel.journey.no_data": "Information fattas",
   "filterpanel.journey.incomplete_data": "Ofullständig data",
   "filterpanel.journey.click_to_fetch": "Hämta",
   "filterpanel.clear.stop": "Återställ hållplats",
