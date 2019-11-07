@@ -1,5 +1,9 @@
 # Transitlog UI changelog
 
+## Version 1.4.2, deployed 2019-11-07 @ 09:00
+
+- Server message links open in a new tab.
+
 ## Version 1.4.1, deployed 2019-11-07 @ 07:00
 
 - Improve route options order.
