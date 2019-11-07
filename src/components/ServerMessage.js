@@ -59,6 +59,7 @@ const ServerMessage = () => {
             <MessageText
               source={message}
               unwrapDisallowed={true}
+              linkTarget="_blank"
               allowedTypes={[
                 "root",
                 "text",
