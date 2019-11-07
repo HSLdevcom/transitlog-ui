@@ -88,7 +88,6 @@ type DepartureJourney {
   id: ID!
   isCancelled: Boolean!
   journeyType: String!
-  lineId: String
   mode: String
   originStopId: String
   routeId: String
@@ -119,7 +118,9 @@ type ExceptionDay {
   exceptionDate: Date!
   exclusive: Boolean!
   id: ID!
-  modeScope: String
+  modeScope: String!
+  scope: String!
+  scopedDayType: String!
   startTime: Time
 }
 
@@ -128,7 +129,7 @@ type Journey {
   cancellations: [Cancellation!]!
   departure: Departure
   departureDate: Date!
-  departureTime: Time!
+  departureTime: Time
   direction: Direction
   equipment: Equipment
   events: [JourneyEventType!]!
@@ -140,6 +141,7 @@ type Journey {
   name: String
   operatorId: String
   originStopId: String
+  routeDepartures: [Departure!]!
   routeId: String
   uniqueVehicleId: VehicleId
   vehicleId: String
@@ -199,14 +201,6 @@ type JourneyStopEvent {
   unplannedStop: Boolean!
 }
 
-type Line {
-  _matchScore: Float
-  id: ID!
-  lineId: String!
-  name: String
-  routesCount: Int
-}
-
 type ObservedArrival {
   arrivalDate: Date!
   arrivalDateTime: DateTime!
@@ -249,6 +243,7 @@ type PlannedStopEvent {
   plannedDate: Date
   plannedDateTime: DateTime
   plannedTime: Time
+  plannedUnix: Int
   stop: Stop
   stopId: String
   type: String!
@@ -263,15 +258,13 @@ type Query {
   journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey
   journeys(departureDate: Date!, direction: Direction!, routeId: String!): [Journey]!
   journeysByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!, unsignedEvents: Boolean): [Journey]!
-  lines(date: Date, filter: LineFilterInput, includeLinesWithoutRoutes: Boolean = false): [Line]!
   route(date: Date!, direction: Direction!, routeId: String!): Route
   routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
   routeGeometry(date: Date!, direction: Direction!, routeId: String!): RouteGeometry
   routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
-  routes(date: Date, filter: RouteFilterInput, line: String): [Route]!
+  routes(date: Date, filter: RouteFilterInput): [Route]!
   stop(date: Date!, stopId: String!): Stop
   stops(date: Date, filter: StopFilterInput): [Stop]!
-  stopsByBbox(bbox: PreciseBBox!, date: Date!, filter: StopFilterInput): [Stop]!
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
@@ -286,7 +279,6 @@ type Route {
   destinationStopId: String
   direction: Direction!
   id: ID!
-  lineId: String!
   mode: String
   name: String
   origin: String
@@ -316,7 +308,6 @@ type RouteSegment implements Position {
   id: ID!
   isTimingStop: Boolean!
   lat: Float!
-  lineId: String
   lng: Float!
   modes: [String]!
   name: String
@@ -348,7 +339,6 @@ type StopRoute {
   direction: Direction!
   id: ID!
   isTimingStop: Boolean!
-  lineId: String
   mode: String
   originStopId: String
   routeId: String!
@@ -369,7 +359,6 @@ type VehicleJourney {
   id: ID!
   isCancelled: Boolean!
   journeyType: String!
-  lineId: String
   mode: String
   operatorId: String
   recordedAt: DateTime!
@@ -584,11 +573,6 @@ input EquipmentFilterInput {
   vehicleId: String
 }
 
-input LineFilterInput {
-  includeLinesWithoutRoutes: Boolean
-  search: String
-}
-
 input RouteFilterInput {
   direction: Direction
   routeId: String
@@ -609,14 +593,14 @@ scalar Direction
 "A DateTime string in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). Timezone will be converted to Europe/Helsinki."
 scalar DateTime
 
-"A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. The precise bbox is not rounded."
-scalar PreciseBBox
-
 "Time is seconds from 00:00:00 in format HH:mm:ss. The hours value can be more than 23. The timezone is assumed to be Europe/Helsinki"
 scalar Time
 
 "A string that uniquely identifies a vehicle. The format is [operator ID]/[vehicle ID]. The operator ID is padded to have a length of 4 characters."
 scalar VehicleId
+
+"A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. The precise bbox is not rounded."
+scalar PreciseBBox
 
 "A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. Toe coordinates will be rounded, use PreciseBBox if this is not desired."
 scalar BBox

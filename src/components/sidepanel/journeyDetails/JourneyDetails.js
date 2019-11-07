@@ -56,6 +56,7 @@ const JourneyDetails = decorate(
     const journeyEvents = get(journey, "events", []);
 
     const journeyHealth = useJourneyHealth(journey);
+    console.log(journeyHealth);
 
     const journeyTime = originDeparture
       ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)

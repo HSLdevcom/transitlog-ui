@@ -28,7 +28,7 @@ const areaJourneysQuery = gql`
         recordedAt
         recordedAtUnix
         recordedTime
-        nextStopId
+        stop
         lat
         lng
         doorStatus
