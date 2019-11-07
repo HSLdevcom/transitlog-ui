@@ -66,6 +66,7 @@ export const journeyQuery = gql`
         heading
         lat
         lng
+        stop
         nextStopId
         recordedAt
         recordedAtUnix
@@ -97,7 +98,6 @@ export const journeyQuery = gql`
           index
           isNextDay
           isTimingStop
-          nextStopId
           plannedDate
           plannedDateTime
           plannedTime
@@ -230,6 +230,10 @@ export const journeyQuery = gql`
           departureDateTime
           isNextDay
         }
+      }
+      routeDepartures {
+        id
+        stopId
       }
     }
   }
