@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
+import {Heading} from "../../Typography";
+import {HealthChecklistValues} from "../../../hooks/useJourneyHealth";
+import Alert from "../../../icons/Alert";
 
 const JourneyHealthContainer = styled.div``;
 
@@ -11,31 +14,18 @@ const HealthDescription = styled.p`
 
 const HealthRow = styled.div`
   display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: flex-start;
   width: 100%;
   padding: 0.5rem 1rem;
   background: transparent;
   font-size: 1rem;
   font-family: inherit;
+  align-items: center;
+  line-height: 1.5;
+  justify-content: space-between;
+  color: var(--dark-grey);
 
   &:nth-child(even) {
     background: rgba(0, 0, 0, 0.03);
-  }
-`;
-
-const Line = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  line-height: 1.5;
-  justify-content: ${({right = false}) => (right ? "flex-end" : "space-between")};
-  font-size: ${({small = false}) => (small ? "0.75rem" : "0.9rem")};
-  color: var(--dark-grey);
-
-  + * {
-    margin-top: 0.35rem;
   }
 `;
 
@@ -60,27 +50,104 @@ const ObservedValue = styled.span`
   border-color: transparent;
 `;
 
+const TotalHealthDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+`;
+
+const TotalHealthIndicator = styled.div`
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: conic-gradient(
+    ${(p) => p.color} 0 ${(p) => p.value}%,
+    var(--lightest-grey) 0 ${(p) => 100 - p.value}%
+  );
+  position: relative;
+  margin-right: 1rem;
+
+  &:after {
+    content: "";
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    position: absolute;
+    background: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+`;
+
+const HealthAlert = styled(Alert).attrs({
+  width: "2.1rem",
+  height: "2.1rem",
+  fill: "var(--red)",
+})`
+  margin-right: 1rem;
+  flex-shrink: 0;
+`;
+
 const JourneyHealthDetails = observer(({journeyHealth}) => {
+  const healthColor = useCallback((value) =>
+    value > 90 ? "var(--green)" : value >= 75 ? "var(--yellow)" : "var(--red)"
+  );
+
+  const totalHealthColor = healthColor(journeyHealth.total);
+
   return (
     <JourneyHealthContainer>
-      <HealthDescription>
-        This view shows you to what degree the selected journey is covered by the data.
-        Use the information to determine the reliability of the data that you're viewing.
-      </HealthDescription>
-      {Object.entries(journeyHealth.health).map(([name, value]) => (
-        <HealthRow>
-          <Line>
-            <LineHeading>{name}</LineHeading>
-            <ObservedValue
-              color={value < 75 || value > 90 ? "white" : "var(--dark-grey)"}
-              backgroundColor={
-                value > 90 ? "var(--green)" : value >= 75 ? "var(--yellow)" : "var(--red)"
-              }>
-              {value}%
-            </ObservedValue>
-          </Line>
-        </HealthRow>
-      ))}
+      <TotalHealthDisplay>
+        {journeyHealth.total === 0 ? (
+          <>
+            <HealthAlert />
+            <span>One or more aspect of the journey data is missing.</span>
+          </>
+        ) : (
+          <>
+            <TotalHealthIndicator color={totalHealthColor} value={journeyHealth.total} />
+            <Heading color="var(--grey)" level={2}>
+              {journeyHealth.total}%
+            </Heading>
+          </>
+        )}
+      </TotalHealthDisplay>
+      <div>
+        {Object.entries(journeyHealth.checklist).map(([name, state]) => {
+          const currentHealthColor =
+            state === HealthChecklistValues.PENDING
+              ? "var(--light-grey)"
+              : state === HealthChecklistValues.FAILED
+              ? "var(--red)"
+              : "var(--green)";
+
+          return (
+            <HealthRow key={name}>
+              <LineHeading>{name}</LineHeading>
+              <ObservedValue color="white" backgroundColor={currentHealthColor}>
+                {state}
+              </ObservedValue>
+            </HealthRow>
+          );
+        })}
+        {Object.entries(journeyHealth.health).map(([name, {health: value, messages}]) => {
+          const currentHealthColor = healthColor(value);
+
+          return (
+            <HealthRow key={name}>
+              <LineHeading>{name}</LineHeading>
+              <ObservedValue
+                color={
+                  currentHealthColor !== "var(--yellow)" ? "white" : "var(--dark-grey)"
+                }
+                backgroundColor={currentHealthColor}>
+                {value}%
+              </ObservedValue>
+            </HealthRow>
+          );
+        })}
+      </div>
     </JourneyHealthContainer>
   );
 });

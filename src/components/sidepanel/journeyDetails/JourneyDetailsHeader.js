@@ -9,6 +9,7 @@ import {observer} from "mobx-react-lite";
 import {parseLineNumber} from "../../../helpers/parseLineNumber";
 import CrossThick from "../../../icons/CrossThick";
 import {Text} from "../../../helpers/text";
+import Alert from "../../../icons/Alert";
 
 const JourneyPanelHeader = styled.div`
   flex: none;
@@ -98,12 +99,20 @@ const HealthIndicator = styled.div`
   font-size: 0.75rem;
   border-radius: 5px;
   margin-left: auto;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${(p) => (p.value < 75 || p.value > 90 ? "white" : "var(--dark-grey)")};
   background: ${(p) =>
     p.value > 90 ? "var(--green)" : p.value > 75 ? "var(--yellow)" : "var(--red)"};
+`;
+
+const HealthAlert = styled(Alert).attrs({
+  width: "1.5rem",
+  height: "1.5rem",
+  fill: "var(--red)",
+})`
+  flex-shrink: 0;
 `;
 
 export default observer(({journeyHealth, route, journey, showVehicleId = false}) => {
@@ -131,10 +140,14 @@ export default observer(({journeyHealth, route, journey, showVehicleId = false})
               {uniqueVehicleId}
             </HeaderText>
           )}
-          {journeyHealth && (
+          {journeyHealth && journeyHealth.total > 0 ? (
             <HealthIndicator title="Journey health" value={journeyHealth.total}>
               {Math.floor(journeyHealth.total)}%
             </HealthIndicator>
+          ) : (
+            <span style={{marginLeft: "auto"}} title="Journey health">
+              <HealthAlert />
+            </span>
           )}
         </MainHeaderRow>
         {departureDate && departureTime && (

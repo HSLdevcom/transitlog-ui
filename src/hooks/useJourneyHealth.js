@@ -1,16 +1,84 @@
 import findLast from "lodash/findLast";
 import get from "lodash/get";
+import last from "lodash/last";
 import groupBy from "lodash/groupBy";
 import difference from "lodash/difference";
 import {round} from "../helpers/getRoundedBbox";
 
 const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
 
-function checkDoorEventsHealth(events, incrementHealth, addMessage) {
-  if (events.some((evt) => ["DOO", "DOC"].includes(evt.type))) {
-    incrementHealth(100);
+export const HealthChecklistValues = {
+  PASSED: "passed",
+  FAILED: "failed",
+  PENDING: "pending",
+};
+
+function checkDoorEventsHealth(events, setState) {
+  if (events.some((evt) => ["DOO", "DOC"].includes(evt.type) || !!evt.doorsOpened)) {
+    setState(HealthChecklistValues.PASSED);
+  } else if (events.length !== 0) {
+    setState(HealthChecklistValues.FAILED);
+  }
+}
+
+function checkGPS(positions, setState) {
+  if (
+    positions.some((evt) => typeof evt.lat === "number" && typeof evt.lng === "number")
+  ) {
+    setState(HealthChecklistValues.PASSED);
+  } else if (positions.length !== 0) {
+    setState(HealthChecklistValues.FAILED);
+  }
+}
+
+function checkFirstStopDeparture(events, visitedStops, setState) {
+  const {stopId = ""} = visitedStops[0] || {};
+
+  if (stopId) {
+    const firstStopDeparture = events.find(
+      (evt) => evt.stopId === stopId && evt.type === "DEP"
+    );
+
+    if (firstStopDeparture) {
+      setState(HealthChecklistValues.PASSED);
+    } else {
+      setState(HealthChecklistValues.FAILED);
+    }
+  }
+}
+
+function checkLastStopArrival(events, lastStop, setState) {
+  if (lastStop) {
+    const lastStopArrival = events.find(
+      (evt) => evt.stopId === lastStop && evt.type === "ARS"
+    );
+
+    if (lastStopArrival) {
+      setState(HealthChecklistValues.PASSED);
+    } else {
+      setState(HealthChecklistValues.FAILED);
+    }
+  }
+}
+
+function checkTimingStopDepartures(events, visitedStops, setState) {
+  const timingStops = visitedStops.filter((stop) => !!stop.isTimingStop);
+
+  if (timingStops.length !== 0) {
+    for (const {stopId} of timingStops) {
+      const timingStopDeparture = events.find(
+        (evt) => evt.stopId === stopId && evt.type === "DEP"
+      );
+
+      if (!timingStopDeparture) {
+        setState(HealthChecklistValues.FAILED);
+        return;
+      }
+    }
+
+    setState(HealthChecklistValues.PASSED);
   } else {
-    addMessage("No door events found.");
+    setState(HealthChecklistValues.PASSED);
   }
 }
 
@@ -66,14 +134,14 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
 
   const eventGroups = groupBy(stopEvents, "stopId");
 
-  for (const plannedStop of plannedStops) {
-    const eventsForStop = get(eventGroups, plannedStop, []);
+  for (const {stopId} of plannedStops) {
+    const eventsForStop = get(eventGroups, stopId, []);
     incrementHealth(eventsForStop.length);
 
     if (eventsForStop.length < stopEventTypes.length) {
       const presentEvents = eventsForStop.map((evt) => evt.type);
       const missingEvents = difference(stopEventTypes, presentEvents);
-      addMessage(`Events missing for stop ${plannedStop}: ${missingEvents.join(", ")}`);
+      addMessage(`Events missing for stop ${stopId}: ${missingEvents.join(", ")}`);
     }
   }
 }
@@ -97,60 +165,97 @@ export const useJourneyHealth = (journey) => {
   );
 
   const vehiclePositions = get(journey, "vehiclePositions", []);
-  const plannedDepartures = get(journey, "routeDepartures", []).map(({stopId}) => stopId);
+  const plannedDepartures = get(journey, "routeDepartures", []);
 
   const maxDrivenStop = get(findLast(vehiclePositions, (pos) => !!pos.stop), "stop", "");
-  const stopsVisitedCount = plannedDepartures.indexOf(maxDrivenStop);
+  const stopsVisitedCount = plannedDepartures.findIndex(
+    (dep) => dep.stopId === maxDrivenStop
+  );
+
+  const visitedStops = plannedDepartures.slice(0, stopsVisitedCount);
 
   const healthScores = {
-    stops: {health: 0, max: stopsVisitedCount * 4},
-    driver: {health: 0, max: 200},
-    positions: {health: 0, max: vehiclePositions.length},
-    doors: {health: 0, max: 100},
+    stops: {health: 0, max: stopsVisitedCount * 4, messages: []},
+    driver: {health: 0, max: 200, messages: []},
+    positions: {health: 0, max: vehiclePositions.length, messages: []},
   };
 
   const onIncrementHealth = (which) => (addPoints = 0) => {
     healthScores[which].health += addPoints;
   };
 
-  const messages = [];
+  const checklist = {
+    firstStopDeparture: HealthChecklistValues.PENDING,
+    lastStopArrival: HealthChecklistValues.PENDING,
+    timingStopDepartures: HealthChecklistValues.PENDING,
+    GPS: HealthChecklistValues.PENDING,
+    doors: HealthChecklistValues.PENDING,
+  };
 
-  const onAddMessage = (message) => {
-    messages.push(message);
+  const onChecklistChange = (which) => (setValue = HealthChecklistValues.PASSED) => {
+    checklist[which] = setValue;
+  };
+
+  const onAddMessage = (which) => (message) => {
+    healthScores[which].messages.push(message);
   };
 
   checkPositionEventsHealth(
     vehiclePositions,
     onIncrementHealth("positions"),
-    onAddMessage
+    onAddMessage("positions")
   );
 
   checkStopEventsHealth(
     stopEvents,
-    plannedDepartures.slice(0, stopsVisitedCount),
+    visitedStops,
     onIncrementHealth("stops"),
-    onAddMessage
+    onAddMessage("stops")
   );
 
-  checkDriverEventsHealth(events, onIncrementHealth("driver"), onAddMessage);
-  checkDoorEventsHealth(events, onIncrementHealth("doors"), onAddMessage);
+  checkDriverEventsHealth(events, onIncrementHealth("driver"), onAddMessage("driver"));
+
+  checkDoorEventsHealth(events, onChecklistChange("doors"));
+  checkFirstStopDeparture(events, visitedStops, onChecklistChange("firstStopDeparture"));
+  checkGPS(vehiclePositions, onChecklistChange("GPS"));
+
+  // Keep these pending until the journey is complete
+  if (visitedStops.length === plannedDepartures.length) {
+    checkLastStopArrival(
+      events,
+      get(last(plannedDepartures), "stopId"),
+      onChecklistChange("lastStopArrival")
+    );
+
+    checkTimingStopDepartures(
+      events,
+      plannedDepartures,
+      onChecklistChange("timingStopDepartures")
+    );
+  }
 
   const calculatedScores = Object.entries(healthScores).reduce(
     (categories, [name, values]) => {
       const healthScore = round((values.health / values.max) * 100);
-      categories[name] = healthScore;
+      categories[name] = {health: healthScore, messages: values.messages};
       return categories;
     },
     {}
   );
 
-  const totalHealth = round(
-    Object.values(calculatedScores).reduce((total, val) => total + val, 0) /
-      Object.keys(calculatedScores).length
-  );
+  const allCriteria = [
+    ...Object.values(calculatedScores).map((val) => val.health),
+    ...Object.values(checklist)
+      .filter((check) => check !== HealthChecklistValues.PENDING)
+      .map((check) => (check === HealthChecklistValues.PASSED ? 100 : 0)),
+  ];
+
+  const totalHealth = allCriteria.some((val) => val === 0)
+    ? 0
+    : round(allCriteria.reduce((total, val) => total + val, 0) / allCriteria.length);
 
   return {
-    messages,
+    checklist,
     health: calculatedScores,
     total: totalHealth,
   };
