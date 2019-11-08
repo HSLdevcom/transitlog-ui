@@ -5,7 +5,7 @@ export const P = styled.p`
   margin: 1rem 0;
 `;
 
-export const Heading = styled(({level, ...rest}) =>
+export const Heading = styled(({level = 1, ...rest}) =>
   React.createElement(`h${level}`, rest)
 )`
   margin: 1rem 0;

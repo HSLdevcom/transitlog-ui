@@ -234,6 +234,7 @@ export const journeyQuery = gql`
       routeDepartures {
         id
         stopId
+        isTimingStop
       }
     }
   }
