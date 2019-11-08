@@ -7,11 +7,6 @@ import Alert from "../../../icons/Alert";
 
 const JourneyHealthContainer = styled.div``;
 
-const HealthDescription = styled.p`
-  font-size: 0.875rem;
-  padding: 0 1rem;
-`;
-
 const HealthRow = styled.div`
   display: flex;
   width: 100%;
@@ -106,7 +101,10 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
           </>
         ) : (
           <>
-            <TotalHealthIndicator color={totalHealthColor} value={journeyHealth.total} />
+            <TotalHealthIndicator
+              color={totalHealthColor}
+              value={Math.floor(journeyHealth.total)}
+            />
             <Heading color="var(--grey)" level={2}>
               {journeyHealth.total}%
             </Heading>
