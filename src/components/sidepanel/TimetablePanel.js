@@ -16,7 +16,6 @@ import {withStop} from "../../hoc/withStop";
 import {createCompositeJourney} from "../../stores/journeyActions";
 import {inject} from "../../helpers/inject";
 import {intval} from "../../helpers/isWithinRange";
-import {journeyStartTime} from "../../helpers/time";
 
 const TimetableFilters = styled.div`
   display: flex;

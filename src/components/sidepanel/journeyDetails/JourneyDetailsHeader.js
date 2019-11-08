@@ -140,15 +140,16 @@ export default observer(({journeyHealth, route, journey, showVehicleId = false})
               {uniqueVehicleId}
             </HeaderText>
           )}
-          {journeyHealth && journeyHealth.total > 0 ? (
-            <HealthIndicator title="Journey health" value={journeyHealth.total}>
-              {Math.floor(journeyHealth.total)}%
-            </HealthIndicator>
-          ) : (
-            <span style={{marginLeft: "auto"}} title="Journey health">
-              <HealthAlert />
-            </span>
-          )}
+          {journeyHealth &&
+            (journeyHealth.total > 0 ? (
+              <HealthIndicator title="Journey health" value={journeyHealth.total}>
+                {Math.floor(journeyHealth.total)}%
+              </HealthIndicator>
+            ) : (
+              <span style={{marginLeft: "auto"}} title="Journey health">
+                <HealthAlert />
+              </span>
+            ))}
         </MainHeaderRow>
         {departureDate && departureTime && (
           <>
