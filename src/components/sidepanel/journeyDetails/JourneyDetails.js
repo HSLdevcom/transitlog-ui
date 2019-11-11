@@ -88,7 +88,11 @@ const JourneyDetails = decorate(
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} />
-            <Tabs suggestedTab="journey-events" selectedTab={currentTab}>
+            <Tabs
+              urlValue="details-tab"
+              onTabChange={(tab) => setCurrentTab(tab)}
+              suggestedTab="journey-events"
+              selectedTab={currentTab}>
               {journeyEvents.length !== 0 && (
                 <JourneyEvents
                   cancellations={cancellations}
