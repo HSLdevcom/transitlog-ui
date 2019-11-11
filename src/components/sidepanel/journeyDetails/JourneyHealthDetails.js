@@ -137,7 +137,7 @@ const HealthMessage = styled.div`
 
 const JourneyHealthDetails = observer(({journeyHealth}) => {
   const healthColor = useCallback((value) =>
-    value >= 95 ? "var(--green)" : value >= 75 ? "var(--yellow)" : "var(--red)"
+    value >= 97 ? "var(--green)" : value >= 75 ? "var(--yellow)" : "var(--red)"
   );
 
   const totalHealthColor = healthColor(journeyHealth.total);

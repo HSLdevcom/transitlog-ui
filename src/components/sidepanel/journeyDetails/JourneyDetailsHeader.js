@@ -109,9 +109,9 @@ const HealthIndicator = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(p) => (p.value <= 75 || p.value >= 95 ? "white" : "var(--dark-grey)")};
+  color: ${(p) => (p.value <= 75 || p.value >= 97 ? "white" : "var(--dark-grey)")};
   background: ${(p) =>
-    p.value >= 95 ? "var(--green)" : p.value >= 75 ? "var(--yellow)" : "var(--red)"};
+    p.value >= 97 ? "var(--green)" : p.value >= 75 ? "var(--yellow)" : "var(--red)"};
 `;
 
 const HealthAlert = styled(Alert).attrs({
