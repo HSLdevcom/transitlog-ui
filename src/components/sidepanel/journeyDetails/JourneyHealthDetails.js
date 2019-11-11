@@ -4,6 +4,9 @@ import styled from "styled-components";
 import {Heading} from "../../Typography";
 import {HealthChecklistValues} from "../../../hooks/useJourneyHealth";
 import Alert from "../../../icons/Alert";
+import ToggleView from "../../ToggleView";
+import ArrowDown from "../../../icons/ArrowDown";
+import Info from "../../../icons/Info";
 
 const JourneyHealthContainer = styled.div``;
 
@@ -32,6 +35,7 @@ const LineHeading = styled.span`
 `;
 
 const ObservedValue = styled.span`
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,9 +44,15 @@ const ObservedValue = styled.span`
   padding: 4px 0.5rem;
   background: ${({backgroundColor = "var(--lighter-grey)"}) => backgroundColor};
   color: ${({color = "var(--dark-grey)"}) => color};
-  margin-left: 0.5rem;
+  margin-left: auto;
   font-family: "Courier New", Courier, monospace;
   border-color: transparent;
+`;
+
+const ToggleIcon = styled(ArrowDown)`
+  margin-left: 1rem;
+  transition: transform 0.1s ease-out;
+  ${(p) => (p.isOpen ? `transform: rotate(180deg);` : "")}
 `;
 
 const TotalHealthDisplay = styled.div`
@@ -82,6 +92,47 @@ const HealthAlert = styled(Alert).attrs({
 })`
   margin-right: 1rem;
   flex-shrink: 0;
+`;
+
+const Accordion = styled(ToggleView)`
+  &:nth-child(even) {
+    button {
+      background: rgba(0, 0, 0, 0.03);
+    }
+  }
+
+  button {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    display: block;
+  }
+`;
+
+const MessagesContainer = styled.div`
+  padding: 1rem 1rem 0.5rem;
+`;
+
+const HealthMessage = styled.div`
+  font-size: 0.875rem;
+  margin: 0 0 0.75rem;
+  padding: 0 0 0.75rem;
+  border-bottom: 1px solid var(--lighter-grey);
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+
+  &:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  > *:first-child {
+    margin-right: 0.5rem;
+    position: relative;
+    top: 6px;
+    margin-top: -6px;
+  }
 `;
 
 const JourneyHealthDetails = observer(({journeyHealth}) => {
@@ -133,16 +184,42 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
           const currentHealthColor = healthColor(value);
 
           return (
-            <HealthRow key={name}>
-              <LineHeading>{name}</LineHeading>
-              <ObservedValue
-                color={
-                  currentHealthColor !== "var(--yellow)" ? "white" : "var(--dark-grey)"
-                }
-                backgroundColor={currentHealthColor}>
-                {value}%
-              </ObservedValue>
-            </HealthRow>
+            <Accordion
+              key={name}
+              disabled={messages.length === 0}
+              label={(isOpen) => (
+                <HealthRow>
+                  <LineHeading>{name}</LineHeading>
+                  <ObservedValue
+                    color={
+                      currentHealthColor !== "var(--yellow)"
+                        ? "white"
+                        : "var(--dark-grey)"
+                    }
+                    backgroundColor={currentHealthColor}>
+                    {value}%
+                  </ObservedValue>
+                  {messages.length !== 0 && (
+                    <ToggleIcon
+                      isOpen={isOpen}
+                      fill="var(--grey)"
+                      height="1rem"
+                      width="1rem"
+                    />
+                  )}
+                </HealthRow>
+              )}>
+              {messages.length !== 0 && (
+                <MessagesContainer>
+                  {messages.map((message, idx) => (
+                    <HealthMessage key={`message-${idx}`}>
+                      <Info fill="var(--light-blue)" height="1.5rem" width="1.5rem" />
+                      <span>{message}</span>
+                    </HealthMessage>
+                  ))}
+                </MessagesContainer>
+              )}
+            </Accordion>
           );
         })}
       </div>

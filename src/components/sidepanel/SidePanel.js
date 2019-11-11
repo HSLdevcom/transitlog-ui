@@ -2,7 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import Journeys from "./Journeys";
 import styled from "styled-components";
-import Tabs from "./Tabs";
+import Tabs from "../Tabs";
 import TimetablePanel from "./TimetablePanel";
 import VehicleJourneys from "./VehicleJourneys";
 import {text} from "../../helpers/text";

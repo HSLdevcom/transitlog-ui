@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {useToggle} from "../hooks/useToggle";
 
@@ -26,21 +26,22 @@ const ToggleButton = styled.button`
   }
 `;
 
-const ToggleView = ({
-  children,
-  className,
-  label = "Toggle",
-  closedLabel = label,
-  openLabel = label,
-}) => {
+const ToggleView = ({children, className, label = "Toggle", disabled = false}) => {
+  const isDisabled = !!disabled || !children;
   const [open, toggleOpen] = useToggle(false);
 
+  const onClickLabel = useCallback(() => {
+    if (!isDisabled) {
+      toggleOpen();
+    }
+  }, [isDisabled]);
+
   return (
-    <ToggleViewWrapper className={className}>
-      <ToggleButton onClick={() => toggleOpen()}>
-        {open ? openLabel : closedLabel}
+    <ToggleViewWrapper isActive={!isDisabled} className={className}>
+      <ToggleButton onClick={onClickLabel}>
+        {typeof label === "function" ? label(open) : label}
       </ToggleButton>
-      {open ? children : null}
+      {!isDisabled && open ? children : null}
     </ToggleViewWrapper>
   );
 };
