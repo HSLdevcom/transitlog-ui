@@ -109,9 +109,9 @@ const HealthIndicator = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${(p) => (p.value < 75 || p.value > 90 ? "white" : "var(--dark-grey)")};
+  color: ${(p) => (p.value <= 75 || p.value >= 95 ? "white" : "var(--dark-grey)")};
   background: ${(p) =>
-    p.value > 90 ? "var(--green)" : p.value > 75 ? "var(--yellow)" : "var(--red)"};
+    p.value >= 95 ? "var(--green)" : p.value >= 75 ? "var(--yellow)" : "var(--red)"};
 `;
 
 const HealthAlert = styled(Alert).attrs({
@@ -164,6 +164,7 @@ export default observer(
                     border: 0,
                     background: "transparent",
                     padding: 0,
+                    width: "auto",
                   }}
                   title="Journey health">
                   <HealthAlert />
