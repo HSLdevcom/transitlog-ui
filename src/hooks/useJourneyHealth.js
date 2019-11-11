@@ -5,6 +5,9 @@ import groupBy from "lodash/groupBy";
 import difference from "lodash/difference";
 import {round} from "../helpers/getRoundedBbox";
 import {useMemo} from "react";
+import {getDepartureMoment} from "../helpers/time";
+import {TIMEZONE} from "../constants";
+import moment from "moment-timezone";
 
 const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
 
@@ -32,7 +35,7 @@ function checkGPS(positions, setState) {
   }
 }
 
-function checkFirstStopDeparture(events, visitedStops, setState) {
+function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessage) {
   const {stopId = ""} = visitedStops[0] || {};
 
   if (stopId) {
@@ -40,29 +43,49 @@ function checkFirstStopDeparture(events, visitedStops, setState) {
       (evt) => evt.stopId === stopId && evt.type === "DEP"
     );
 
-    if (firstStopDeparture) {
-      setState(HealthChecklistValues.PASSED);
-    } else {
-      setState(HealthChecklistValues.FAILED);
+    if (!firstStopDeparture) {
+      addMessage(`DEP event missing for origin stop ${stopId}`);
+      incrementHealth(0); // Exit pending state
+      return;
+    }
+
+    if (!firstStopDeparture._isVirtual) {
+      incrementHealth(100);
+    } else if (firstStopDeparture._isVirtual) {
+      addMessage(
+        `DEP event is derived from vehicle positions for origin stop ${stopId}.`
+      );
+
+      incrementHealth(50);
     }
   }
 }
 
-function checkLastStopArrival(events, lastStop, setState) {
+function checkLastStopArrival(events, lastStop, incrementHealth, addMessage) {
   if (lastStop) {
     const lastStopArrival = events.find(
       (evt) => evt.stopId === lastStop && evt.type === "ARS"
     );
 
-    if (lastStopArrival) {
-      setState(HealthChecklistValues.PASSED);
-    } else {
-      setState(HealthChecklistValues.FAILED);
+    if (!lastStopArrival) {
+      addMessage(`ARS event missing for destination stop ${lastStop}`);
+      incrementHealth(0); // exit pending state
+      return;
+    }
+
+    if (!lastStopArrival._isVirtual) {
+      incrementHealth(100);
+    } else if (lastStopArrival._isVirtual) {
+      addMessage(
+        `ARS event is derived from vehicle positions for destination stop ${lastStop}.`
+      );
+
+      incrementHealth(50);
     }
   }
 }
 
-function checkTimingStopDepartures(events, visitedStops, setState) {
+function checkTimingStopDepartures(events, visitedStops, incrementHealth, addMessage) {
   const timingStops = visitedStops.filter((stop) => !!stop.isTimingStop);
 
   if (timingStops.length !== 0) {
@@ -72,17 +95,28 @@ function checkTimingStopDepartures(events, visitedStops, setState) {
       );
 
       if (!timingStopDeparture) {
-        setState(HealthChecklistValues.FAILED);
-        return;
+        addMessage(`DEP event missing for timing stop ${stopId}`);
+        incrementHealth(0); // Exit pending state
+        continue;
+      }
+
+      if (!timingStopDeparture._isVirtual) {
+        incrementHealth(100);
+      } else if (timingStopDeparture._isVirtual) {
+        addMessage(
+          `DEP event is derived from vehicle positions for timing stop ${stopId}.`
+        );
+
+        incrementHealth(50);
       }
     }
-
-    setState(HealthChecklistValues.PASSED);
   } else {
-    setState(HealthChecklistValues.PASSED);
+    incrementHealth(100);
   }
 }
 
+// Evaluate the health of position events by checking that they were recorded within
+// 5 seconds of each other.
 function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) {
   const positionsLength = get(positionEvents, "length", 0);
 
@@ -104,7 +138,7 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
     if (diff <= 5) {
       incrementHealth(1);
     } else {
-      addMessage(`Gap of ${diff} seconds detected in vehicle positions.`);
+      addMessage(`Gap detected in vehicle positions. Seconds: ${diff}`);
       incrementHealth(-(diff * 2));
     }
 
@@ -181,10 +215,30 @@ export const useJourneyHealth = (journey) => {
     const lastPlannedStop = get(last(plannedDepartures), "stopId");
 
     // Check if the journey has finished. If not, we won't check for events that
-    // we know are in the future. That just wouldn't be fair!
-    const journeyIsConcluded = vehiclePositions.some(
+    // we know are in the future. That wouldn't be fair!
+    const lastStopVisited = vehiclePositions.some(
       (evt) => evt.nextStopId === "EOL" || evt.stop === lastPlannedStop
     );
+
+    // The planned duration of the journey is available, which we'll use to check
+    // if the journey SHOULD be concluded.
+    const journeyDuration = get(journey, "journeyDurationMinutes", 0);
+    const departure = get(journey, "departure", {});
+
+    const journeyStartMoment = getDepartureMoment(departure).add(
+      journeyDuration,
+      "minutes"
+    );
+
+    // If the start time + the planned duration is in the past, the journey SHOULD be
+    // concluded and we can evaluate the data as a completed journey.
+    const journeyShouldBeConcluded = journeyStartMoment.isSameOrBefore(
+      moment.tz(new Date(), TIMEZONE)
+    );
+
+    // The journey is evaluted as a completed journey when either the last stop
+    // is visited or the planned duration is
+    const journeyIsConcluded = lastStopVisited || journeyShouldBeConcluded;
 
     // Get a slice of the visited stops from the planned departures.
     const visitedStops = plannedDepartures.slice(0, stopsVisitedCount);
@@ -196,17 +250,31 @@ export const useJourneyHealth = (journey) => {
     const healthScores = {
       stops: {health: 0, max: stopsVisitedCount * 4, messages: []},
       positions: {health: 0, max: vehiclePositions.length, messages: []},
+      firstStopDeparture: {health: 0, max: 100, messages: []},
+      lastStopArrival: {health: -1, max: 100, messages: []},
+      timingStopDepartures: {
+        health: -1,
+        max: Math.max(
+          100,
+          plannedDepartures.filter((dep) => !!dep.isTimingStop).length * 100
+        ),
+        messages: [],
+      },
     };
 
     // Function that increments the health points for a specific health check.
     const onIncrementHealth = (which) => (addPoints = 0) => {
       const currentHealth = healthScores[which].health;
-      healthScores[which].health = Math.max(0, currentHealth + addPoints);
-    };
+      let pointsToAdd = addPoints;
 
-    // Function that adds a message for a specific health check.
-    const onAddMessage = (which) => (message) => {
-      healthScores[which].messages.push(message);
+      // Health checks that are pending have a value of -1. If we are adding points,
+      // it means that the health check is no longer pending, so we also pull it
+      // out from the pending state while adding points.
+      if (currentHealth === -1) {
+        pointsToAdd += 1;
+      }
+
+      healthScores[which].health = Math.max(0, currentHealth + pointsToAdd);
     };
 
     // Health scores that are scored with a boolean. If any of these are "false", the
@@ -214,27 +282,25 @@ export const useJourneyHealth = (journey) => {
     // for example, the journey is ongoing and hasn't reached a timing stop yet. Pending
     // checks are not counted in the total health score.
     const checklist = {
-      firstStopDeparture: HealthChecklistValues.PENDING,
-      lastStopArrival: HealthChecklistValues.PENDING,
-      GPS: HealthChecklistValues.PENDING,
-      doors: HealthChecklistValues.PENDING,
+      GPS: {status: HealthChecklistValues.PENDING, messages: []},
+      doors: {status: HealthChecklistValues.PENDING, messages: []},
     };
 
-    // Only add the timing stop checks if there are timing stops.
-    if (plannedDepartures.some((dep) => !!dep.isTimingStop)) {
-      checklist.timingStopDepartures = HealthChecklistValues.PENDING;
-    }
+    // Function that adds a message for a specific health check.
+    const onAddMessage = (which, list = healthScores) => (message) => {
+      list[which].messages.push(message);
+    };
 
     // Approve or fail a binary health check.
     const onChecklistChange = (which) => (setValue = HealthChecklistValues.PASSED) => {
-      checklist[which] = setValue;
+      checklist[which].status = setValue;
     };
 
     // Check the health of the vehicle position events stream.
     checkPositionEventsHealth(
       vehiclePositions,
       onIncrementHealth("positions"),
-      onAddMessage("positions")
+      onAddMessage("positions", healthScores)
     );
 
     // Check the health of stop events.
@@ -242,21 +308,16 @@ export const useJourneyHealth = (journey) => {
       stopEvents,
       journeyIsConcluded ? plannedDepartures : visitedStops,
       onIncrementHealth("stops"),
-      onAddMessage("stops")
+      onAddMessage("stops", healthScores)
     );
-
-    // Check that the vehicle has functioning door sensors.
-    checkDoorEventsHealth(events, onChecklistChange("doors"));
 
     // Check the departure from the first stop.
     checkFirstStopDeparture(
       stopEvents,
       plannedDepartures,
-      onChecklistChange("firstStopDeparture")
+      onIncrementHealth("firstStopDeparture"),
+      onAddMessage("firstStopDeparture", healthScores)
     );
-
-    // Check that the vehicle GPS is working.
-    checkGPS(vehiclePositions, onChecklistChange("GPS"));
 
     // Keep these pending until the journey is complete
     if (journeyIsConcluded) {
@@ -264,38 +325,52 @@ export const useJourneyHealth = (journey) => {
       checkLastStopArrival(
         stopEvents,
         lastPlannedStop,
-        onChecklistChange("lastStopArrival")
+        onIncrementHealth("lastStopArrival"),
+        onAddMessage("lastStopArrival", healthScores)
       );
 
-      if (typeof checklist.timingStopDepartures !== "undefined") {
-        // Check that important timing stop events are present.
-        checkTimingStopDepartures(
-          stopEvents,
-          plannedDepartures,
-          onChecklistChange("timingStopDepartures")
-        );
-      }
+      // Check that important timing stop events are present.
+      checkTimingStopDepartures(
+        stopEvents,
+        plannedDepartures,
+        onIncrementHealth("timingStopDepartures"),
+        onAddMessage("timingStopDepartures", healthScores)
+      );
     }
+
+    // Check that the vehicle has functioning door sensors.
+    checkDoorEventsHealth(
+      events,
+      onChecklistChange("doors"),
+      onAddMessage("doors", checklist)
+    );
+
+    // Check that the vehicle GPS is working.
+    checkGPS(vehiclePositions, onChecklistChange("GPS"), onAddMessage("GPS", checklist));
 
     // Calculate the percentage scores
     const calculatedScores = Object.entries(healthScores).reduce(
-      (categories, [name, values]) => {
-        const healthScore =
-          values.health === 0
-            ? 0
-            : round((values.health / Math.max(1, values.max)) * 100);
-        categories[name] = {health: healthScore, messages: values.messages};
+      (categories, [name, {health, max, messages}]) => {
+        if (health === -1) {
+          categories[name] = {health: health, messages: messages};
+          return categories;
+        }
+
+        const healthScore = health === 0 ? 0 : round((health / Math.max(1, max)) * 100);
+        categories[name] = {health: healthScore, messages: messages};
         return categories;
       },
       {}
     );
 
-    // Get all criteria as a number score. Binary checks give 100 if true or 0 if false.
+    // Get all criteria as number scores. Binary checks are worth 100 if true or 0 if false.
     const allCriteria = [
-      ...Object.values(calculatedScores).map((val) => val.health),
+      ...Object.values(calculatedScores)
+        .filter(({health}) => health !== -1) // Skip pending states.
+        .map(({health}) => health),
       ...Object.values(checklist)
-        .filter((check) => check !== HealthChecklistValues.PENDING) // Skip pending states.
-        .map((check) => (check === HealthChecklistValues.PASSED ? 100 : 0)),
+        .filter(({status}) => status !== HealthChecklistValues.PENDING) // Skip pending states.
+        .map(({status}) => (status === HealthChecklistValues.PASSED ? 100 : 0)),
     ];
 
     // Calculate the total health of the journey data.
