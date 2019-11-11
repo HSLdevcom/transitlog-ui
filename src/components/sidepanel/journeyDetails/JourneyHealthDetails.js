@@ -130,14 +130,21 @@ const HealthMessage = styled.div`
   > *:first-child {
     margin-right: 0.5rem;
     position: relative;
-    top: 6px;
-    margin-top: -6px;
+    top: 4px;
+    margin-top: -4px;
+    flex-shrink: 0;
   }
 `;
 
 const JourneyHealthDetails = observer(({journeyHealth}) => {
   const healthColor = useCallback((value) =>
-    value >= 97 ? "var(--green)" : value >= 75 ? "var(--yellow)" : "var(--red)"
+    value === -1
+      ? "var(--light-grey)"
+      : value >= 97
+      ? "var(--green)"
+      : value >= 75
+      ? "var(--yellow)"
+      : "var(--red)"
   );
 
   const totalHealthColor = healthColor(journeyHealth.total);
@@ -163,21 +170,49 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
         )}
       </TotalHealthDisplay>
       <div>
-        {Object.entries(journeyHealth.checklist).map(([name, state]) => {
+        {Object.entries(journeyHealth.checklist).map(([name, {status, messages}]) => {
           const currentHealthColor =
-            state === HealthChecklistValues.PENDING
+            status === HealthChecklistValues.PENDING
               ? "var(--light-grey)"
-              : state === HealthChecklistValues.FAILED
+              : status === HealthChecklistValues.FAILED
               ? "var(--red)"
               : "var(--green)";
 
           return (
-            <HealthRow key={name}>
-              <LineHeading>{name}</LineHeading>
-              <ObservedValue color="white" backgroundColor={currentHealthColor}>
-                {state}
-              </ObservedValue>
-            </HealthRow>
+            <Accordion
+              key={name}
+              disabled={messages.length === 0}
+              label={(isOpen) => (
+                <HealthRow>
+                  <LineHeading>{name}</LineHeading>
+                  <ObservedValue
+                    color={
+                      currentHealthColor !== "var(--yellow)"
+                        ? "white"
+                        : "var(--dark-grey)"
+                    }
+                    backgroundColor={currentHealthColor}>
+                    {status}
+                  </ObservedValue>
+                  <ToggleIcon
+                    isOpen={isOpen}
+                    fill={messages.length !== 0 ? "var(--grey)" : "transparent"}
+                    height="1rem"
+                    width="1rem"
+                  />
+                </HealthRow>
+              )}>
+              {messages.length !== 0 && (
+                <MessagesContainer>
+                  {messages.map((message, idx) => (
+                    <HealthMessage key={`message-${idx}`}>
+                      <Info fill="var(--light-blue)" height="1.25rem" width="1.25rem" />
+                      <span>{message}</span>
+                    </HealthMessage>
+                  ))}
+                </MessagesContainer>
+              )}
+            </Accordion>
           );
         })}
         {Object.entries(journeyHealth.health).map(([name, {health: value, messages}]) => {
@@ -197,23 +232,26 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
                         : "var(--dark-grey)"
                     }
                     backgroundColor={currentHealthColor}>
-                    {value}%
+                    {value === -1 ? "pending" : `${value}%`}
                   </ObservedValue>
-                  {messages.length !== 0 && (
-                    <ToggleIcon
-                      isOpen={isOpen}
-                      fill="var(--grey)"
-                      height="1rem"
-                      width="1rem"
-                    />
-                  )}
+                  <ToggleIcon
+                    isOpen={isOpen}
+                    fill={messages.length !== 0 ? "var(--grey)" : "transparent"}
+                    height="1rem"
+                    width="1rem"
+                  />
                 </HealthRow>
               )}>
               {messages.length !== 0 && (
                 <MessagesContainer>
                   {messages.map((message, idx) => (
                     <HealthMessage key={`message-${idx}`}>
-                      <Info fill="var(--light-blue)" height="1.5rem" width="1.5rem" />
+                      <Info
+                        style={{flex: 0}}
+                        fill="var(--light-blue)"
+                        height="1.25rem"
+                        width="1.25rem"
+                      />
                       <span>{message}</span>
                     </HealthMessage>
                   ))}

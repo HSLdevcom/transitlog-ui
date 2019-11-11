@@ -12,7 +12,7 @@ const ToggleButton = styled.button`
   font-family: inherit;
   text-decoration: underline dashed;
   color: var(--blue);
-  cursor: pointer;
+  cursor: ${(p) => (p.isActive ? "pointer" : "default")};
   outline: none;
   text-align: left;
   width: auto;
@@ -22,7 +22,7 @@ const ToggleButton = styled.button`
   }
 
   &:hover > * {
-    transform: scale(1.025);
+    transform: ${(p) => (p.isActive ? "scale(1.025)" : "none")};
   }
 `;
 
@@ -37,8 +37,8 @@ const ToggleView = ({children, className, label = "Toggle", disabled = false}) =
   }, [isDisabled]);
 
   return (
-    <ToggleViewWrapper isActive={!isDisabled} className={className}>
-      <ToggleButton onClick={onClickLabel}>
+    <ToggleViewWrapper className={className}>
+      <ToggleButton isActive={!isDisabled} onClick={onClickLabel}>
         {typeof label === "function" ? label(open) : label}
       </ToggleButton>
       {!isDisabled && open ? children : null}
