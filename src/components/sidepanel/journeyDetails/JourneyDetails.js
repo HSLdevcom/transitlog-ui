@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useState} from "react";
 import styled from "styled-components";
 import JourneyDetailsHeader from "./JourneyDetailsHeader";
 import {observer} from "mobx-react-lite";
@@ -8,7 +8,7 @@ import JourneyEvents from "./JourneyEvents";
 import {LoadingDisplay} from "../../Loading";
 import JourneyInfo from "./JourneyInfo";
 import {transportColor} from "../../transportModes";
-import Tabs from "../Tabs";
+import Tabs from "../../Tabs";
 import AlertsList from "../../AlertsList";
 import {getAlertsInEffect} from "../../../helpers/getAlertsInEffect";
 import {text} from "../../../helpers/text";
@@ -51,6 +51,8 @@ const decorate = flow(
 
 const JourneyDetails = decorate(
   ({state: {date, timeMoment, user}, journey = null, route = null, loading = false}) => {
+    const [currentTab, setCurrentTab] = useState("journey-events");
+
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
     const originDeparture = get(journey, "departure", null);
@@ -81,11 +83,12 @@ const JourneyDetails = decorate(
           journey={journey}
           route={route}
           showVehicleId={!!user}
+          selectTab={setCurrentTab}
         />
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} />
-            <Tabs suggestedTab="journey-events">
+            <Tabs suggestedTab="journey-events" selectedTab={currentTab}>
               {journeyEvents.length !== 0 && (
                 <JourneyEvents
                   cancellations={cancellations}

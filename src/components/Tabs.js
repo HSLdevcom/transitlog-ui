@@ -3,8 +3,8 @@ import {observer} from "mobx-react";
 import styled, {keyframes} from "styled-components";
 import compact from "lodash/compact";
 import difference from "lodash/difference";
-import {setUrlValue, getUrlValue} from "../../stores/UrlManager";
-import Tooltip from "../Tooltip";
+import {setUrlValue, getUrlValue} from "../stores/UrlManager";
+import Tooltip from "./Tooltip";
 
 const TabsWrapper = styled.div`
   height: 100%;
@@ -107,34 +107,48 @@ class Tabs extends Component {
     );
   };
 
-  componentDidUpdate({children: prevChildren}) {
+  componentDidUpdate({children: prevChildren}, {selectedTab: prevSelectedTab}) {
     this.selectAddedTab(prevChildren);
+    this.selectTab(prevSelectedTab);
   }
 
   selectAddedTab = (prevChildren) => {
-    this.setState(({selectedTab: stateSelectedTab}) => {
-      const {children, suggestedTab} = this.props;
+    this.setState(
+      ({selectedTab: stateSelectedTab}) => {
+        const {children, suggestedTab} = this.props;
 
-      const prevChildrenArray = compact(Children.toArray(prevChildren)).map(
-        ({props: {name}}) => name
-      );
+        const prevChildrenArray = compact(Children.toArray(prevChildren)).map(
+          ({props: {name}}) => name
+        );
 
-      const childrenArray = compact(Children.toArray(children)).map(
-        ({props: {name}}) => name
-      );
+        const childrenArray = compact(Children.toArray(children)).map(
+          ({props: {name}}) => name
+        );
 
-      const newChildren = difference(childrenArray, prevChildrenArray);
-      const nextTab =
-        newChildren.length === 1 && newChildren.includes(suggestedTab)
-          ? suggestedTab
-          : stateSelectedTab;
+        const newChildren = difference(childrenArray, prevChildrenArray);
+        const nextTab =
+          newChildren.length === 1 && newChildren.includes(suggestedTab)
+            ? suggestedTab
+            : stateSelectedTab;
 
-      if (!nextTab || nextTab === stateSelectedTab) return null;
+        if (!nextTab || nextTab === stateSelectedTab) return null;
 
-      return {
-        selectedTab: nextTab,
-      };
-    });
+        return {
+          selectedTab: nextTab,
+        };
+      },
+      () => {
+        setUrlValue("tab", this.state.selectedTab);
+      }
+    );
+  };
+
+  selectTab = (prevSelectedTab) => {
+    const {selectedTab} = this.props;
+
+    if (selectedTab && selectedTab !== prevSelectedTab) {
+      this.onTabClick(selectedTab)();
+    }
   };
 
   render() {
@@ -148,6 +162,7 @@ class Tabs extends Component {
     // Compact() removes all such falsy values from the array.
     const validChildren = compact(Children.toArray(children));
 
+    // An array of child tab data with labels etc. is extracted from props.children.
     let tabs = validChildren.map((tabContent, idx, allChildren) => {
       if (!tabContent || !React.isValidElement(tabContent)) {
         return null;
@@ -183,8 +198,10 @@ class Tabs extends Component {
       selectedTabContent = content;
     }
 
+    // Falsy tabs removed
     tabs = compact(tabs);
 
+    // Fit the tab label into the ever-shrinking tab
     const tabLabelFontSizeMultiplier =
       tabs.length <= 2 ? 1.75 : tabs.length < 4 ? 1.5 : tabs.length < 5 ? 1.2 : 1;
 

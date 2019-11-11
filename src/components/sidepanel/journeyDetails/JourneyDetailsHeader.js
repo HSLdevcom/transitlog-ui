@@ -94,7 +94,14 @@ const CancelledAlert = styled.div`
   }
 `;
 
-const HealthIndicator = styled.div`
+const HealthIndicator = styled.button`
+  cursor: pointer;
+  outline: 0;
+  user-select: none;
+  border: 0;
+  width: auto;
+  font-family: var(--font-family);
+  font-weight: bold;
   padding: 5px 7px;
   font-size: 0.75rem;
   border-radius: 5px;
@@ -115,64 +122,77 @@ const HealthAlert = styled(Alert).attrs({
   flex-shrink: 0;
 `;
 
-export default observer(({journeyHealth, route, journey, showVehicleId = false}) => {
-  if (!journey && !route) {
-    return null;
-  }
+export default observer(
+  ({journeyHealth, route, journey, showVehicleId = false, selectTab}) => {
+    if (!journey && !route) {
+      return null;
+    }
 
-  const {uniqueVehicleId, departureTime, departureDate, isCancelled} = journey || {};
-  const {mode, routeId, origin, destination} = route || {};
-  const routeName = [origin, destination].join(" - ");
+    const {uniqueVehicleId, departureTime, departureDate, isCancelled} = journey || {};
+    const {mode, routeId, origin, destination} = route || {};
+    const routeName = [origin, destination].join(" - ");
 
-  return (
-    <JourneyPanelHeader data-testid="journey-details-header">
-      <HeaderContent>
-        <MainHeaderRow>
-          <TransportIcon width={23} height={23} mode={mode} />
-          <LineIdHeading>{parseLineNumber(routeId)}</LineIdHeading>
-          <HeaderText>
-            <JourneyPlanner fill="var(--blue)" width="1rem" height="1rem" />
-            {routeId}
-          </HeaderText>
-          {showVehicleId && uniqueVehicleId && (
+    return (
+      <JourneyPanelHeader data-testid="journey-details-header">
+        <HeaderContent>
+          <MainHeaderRow>
+            <TransportIcon width={23} height={23} mode={mode} />
+            <LineIdHeading>{parseLineNumber(routeId)}</LineIdHeading>
             <HeaderText>
-              <TransportIcon mode={mode} width={17} height={17} />
-              {uniqueVehicleId}
+              <JourneyPlanner fill="var(--blue)" width="1rem" height="1rem" />
+              {routeId}
             </HeaderText>
+            {showVehicleId && uniqueVehicleId && (
+              <HeaderText>
+                <TransportIcon mode={mode} width={17} height={17} />
+                {uniqueVehicleId}
+              </HeaderText>
+            )}
+            {journeyHealth &&
+              (journeyHealth.total > 0 ? (
+                <HealthIndicator
+                  onClick={() => selectTab("journey-health")}
+                  title="Journey health"
+                  value={journeyHealth.total}>
+                  {Math.floor(journeyHealth.total)}%
+                </HealthIndicator>
+              ) : (
+                <button
+                  onClick={() => selectTab("journey-health")}
+                  style={{
+                    marginLeft: "auto",
+                    border: 0,
+                    background: "transparent",
+                    padding: 0,
+                  }}
+                  title="Journey health">
+                  <HealthAlert />
+                </button>
+              ))}
+          </MainHeaderRow>
+          {departureDate && departureTime && (
+            <>
+              <DateTimeHeading>
+                <HeaderText>
+                  <Calendar fill="var(--blue)" width="1rem" height="1rem" />
+                  {departureDate}
+                </HeaderText>
+                <HeaderText>
+                  <Time2 fill="var(--blue)" width="1rem" height="1rem" />
+                  {departureTime}
+                </HeaderText>
+              </DateTimeHeading>
+            </>
           )}
-          {journeyHealth &&
-            (journeyHealth.total > 0 ? (
-              <HealthIndicator title="Journey health" value={journeyHealth.total}>
-                {Math.floor(journeyHealth.total)}%
-              </HealthIndicator>
-            ) : (
-              <span style={{marginLeft: "auto"}} title="Journey health">
-                <HealthAlert />
-              </span>
-            ))}
-        </MainHeaderRow>
-        {departureDate && departureTime && (
-          <>
-            <DateTimeHeading>
-              <HeaderText>
-                <Calendar fill="var(--blue)" width="1rem" height="1rem" />
-                {departureDate}
-              </HeaderText>
-              <HeaderText>
-                <Time2 fill="var(--blue)" width="1rem" height="1rem" />
-                {departureTime}
-              </HeaderText>
-            </DateTimeHeading>
-          </>
+          <LineNameHeading>{routeName}</LineNameHeading>
+        </HeaderContent>
+        {isCancelled && (
+          <CancelledAlert>
+            <CrossThick fill="white" width="0.75rem" height="0.75rem" />
+            <Text>domain.cancelled</Text>
+          </CancelledAlert>
         )}
-        <LineNameHeading>{routeName}</LineNameHeading>
-      </HeaderContent>
-      {isCancelled && (
-        <CancelledAlert>
-          <CrossThick fill="white" width="0.75rem" height="0.75rem" />
-          <Text>domain.cancelled</Text>
-        </CancelledAlert>
-      )}
-    </JourneyPanelHeader>
-  );
-});
+      </JourneyPanelHeader>
+    );
+  }
+);

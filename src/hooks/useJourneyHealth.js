@@ -171,8 +171,6 @@ export const useJourneyHealth = (journey) => {
       get(lastEventWithStop, "stopId", "")
     );
 
-    console.log(maxDrivenStop);
-
     const stopsVisitedCount = plannedDepartures.findIndex(
       (dep) => dep.stopId === maxDrivenStop
     );
