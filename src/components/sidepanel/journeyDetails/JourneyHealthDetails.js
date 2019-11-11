@@ -7,6 +7,7 @@ import Alert from "../../../icons/Alert";
 import ToggleView from "../../ToggleView";
 import ArrowDown from "../../../icons/ArrowDown";
 import Info from "../../../icons/Info";
+import {text, Text} from "../../../helpers/text";
 
 const JourneyHealthContainer = styled.div``;
 
@@ -17,7 +18,7 @@ const HealthRow = styled.div`
   background: transparent;
   font-size: 1rem;
   font-family: inherit;
-  align-items: center;
+  align-items: baseline;
   line-height: 1.5;
   justify-content: space-between;
   color: var(--dark-grey);
@@ -30,11 +31,12 @@ const HealthRow = styled.div`
 const LineHeading = styled.span`
   color: var(--dark-grey);
   font-size: 0.9rem;
-  flex-wrap: nowrap;
-  white-space: nowrap;
+  margin-right: 0.5rem;
+  flex: 1 1 auto;
 `;
 
 const ObservedValue = styled.span`
+  flex: 0 1 auto;
   user-select: none;
   display: flex;
   align-items: center;
@@ -155,7 +157,9 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
         {journeyHealth.total === 0 ? (
           <>
             <HealthAlert />
-            <span>One or more aspect of the journey data is missing.</span>
+            <LineHeading>
+              <Text>journey.health.data_missing</Text>
+            </LineHeading>
           </>
         ) : (
           <>
@@ -163,9 +167,16 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
               color={totalHealthColor}
               value={Math.floor(journeyHealth.total)}
             />
-            <Heading color="var(--grey)" level={2}>
-              {journeyHealth.total}%
-            </Heading>
+            <div>
+              <Heading style={{marginBottom: 0}} color="var(--grey)" level={2}>
+                {journeyHealth.total}%
+              </Heading>
+              {!journeyHealth.isDone && (
+                <LineHeading>
+                  <Text>journey.health.not_complete</Text>
+                </LineHeading>
+              )}
+            </div>
           </>
         )}
       </TotalHealthDisplay>
@@ -184,7 +195,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
               disabled={messages.length === 0}
               label={(isOpen) => (
                 <HealthRow>
-                  <LineHeading>{name}</LineHeading>
+                  <LineHeading>{text(`journey.health.${name}`)}</LineHeading>
                   <ObservedValue
                     color={
                       currentHealthColor !== "var(--yellow)"
@@ -192,7 +203,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
                         : "var(--dark-grey)"
                     }
                     backgroundColor={currentHealthColor}>
-                    {status}
+                    {text(`journey.health.${status}`)}
                   </ObservedValue>
                   <ToggleIcon
                     isOpen={isOpen}
@@ -224,7 +235,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
               disabled={messages.length === 0}
               label={(isOpen) => (
                 <HealthRow>
-                  <LineHeading>{name}</LineHeading>
+                  <LineHeading>{text(`journey.health.${name}`)}</LineHeading>
                   <ObservedValue
                     color={
                       currentHealthColor !== "var(--yellow)"
@@ -232,7 +243,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
                         : "var(--dark-grey)"
                     }
                     backgroundColor={currentHealthColor}>
-                    {value === -1 ? "pending" : `${value}%`}
+                    {value === -1 ? text(`journey.health.pending`) : `${value}%`}
                   </ObservedValue>
                   <ToggleIcon
                     isOpen={isOpen}
