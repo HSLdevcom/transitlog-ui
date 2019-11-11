@@ -105,6 +105,7 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
       incrementHealth(1);
     } else {
       addMessage(`Gap of ${diff} seconds detected in vehicle positions.`);
+      incrementHealth(-(diff * 2));
     }
 
     prevTsi = event.recordedAtUnix;
@@ -129,7 +130,7 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
       const presentEvents = eventsForStop.map((evt) => evt.type);
       const missingEvents = difference(stopEventTypes, presentEvents);
       addMessage(`Events missing for stop ${stopId}: ${missingEvents.join(", ")}`);
-      incrementHealth(-(missingEvents.length * 10));
+      incrementHealth(-(missingEvents.length * 5));
     }
   }
 }
