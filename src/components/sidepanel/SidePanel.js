@@ -163,7 +163,7 @@ const SidePanel = decorate((props) => {
         ) : allTabsHidden ? (
           <Alerts language={language} />
         ) : (
-          <Tabs suggestedTab={suggestedTab}>
+          <Tabs urlValue="tab" suggestedTab={suggestedTab}>
             {areaSearchActive && (
               <AreaJourneyList
                 helpText="Area search tab"

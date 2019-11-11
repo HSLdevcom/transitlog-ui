@@ -92,63 +92,67 @@ let selectedTab = "";
 
 @observer
 class Tabs extends Component {
-  state = {
-    selectedTab: getUrlValue("tab"),
+  static defaultProps = {
+    urlValue: "tab",
   };
 
-  onTabClick = (selectName) => () => {
-    this.setState(
-      {
-        selectedTab: selectName,
-      },
-      () => {
-        setUrlValue("tab", this.state.selectedTab);
-      }
-    );
+  state = {
+    selectedTab: getUrlValue(this.props.urlValue),
+  };
+
+  selectTab = (selectedTab) => {
+    const {onTabChange = () => {}, urlValue} = this.props;
+
+    let setStateValue =
+      typeof selectedTab === "function" ? selectedTab : {selectedTab: selectedTab};
+
+    this.setState(setStateValue, () => {
+      const currentTab = this.state.selectedTab;
+      setUrlValue(urlValue, currentTab);
+      onTabChange(currentTab);
+    });
+  };
+
+  onTabClick = (selectTabName) => () => {
+    this.selectTab(selectTabName);
   };
 
   componentDidUpdate({children: prevChildren}, {selectedTab: prevSelectedTab}) {
+    const {selectedTab} = this.props;
+
     this.selectAddedTab(prevChildren);
-    this.selectTab(prevSelectedTab);
+
+    if (selectedTab && selectedTab !== prevSelectedTab) {
+      this.selectTab(selectedTab);
+    }
   }
 
   selectAddedTab = (prevChildren) => {
-    this.setState(
-      ({selectedTab: stateSelectedTab}) => {
-        const {children, suggestedTab} = this.props;
+    const {children, suggestedTab} = this.props;
 
-        const prevChildrenArray = compact(Children.toArray(prevChildren)).map(
-          ({props: {name}}) => name
-        );
+    this.selectTab(({selectedTab}) => {
+      const prevChildrenArray = compact(Children.toArray(prevChildren)).map(
+        ({props: {name}}) => name
+      );
 
-        const childrenArray = compact(Children.toArray(children)).map(
-          ({props: {name}}) => name
-        );
+      const childrenArray = compact(Children.toArray(children)).map(
+        ({props: {name}}) => name
+      );
 
-        const newChildren = difference(childrenArray, prevChildrenArray);
-        const nextTab =
-          newChildren.length === 1 && newChildren.includes(suggestedTab)
-            ? suggestedTab
-            : stateSelectedTab;
+      const newChildren = difference(childrenArray, prevChildrenArray);
+      const nextTab =
+        newChildren.length === 1 && newChildren.includes(suggestedTab)
+          ? suggestedTab
+          : selectedTab;
 
-        if (!nextTab || nextTab === stateSelectedTab) return null;
-
-        return {
-          selectedTab: nextTab,
-        };
-      },
-      () => {
-        setUrlValue("tab", this.state.selectedTab);
+      if (!nextTab || nextTab === selectedTab) {
+        return null;
       }
-    );
-  };
 
-  selectTab = (prevSelectedTab) => {
-    const {selectedTab} = this.props;
-
-    if (selectedTab && selectedTab !== prevSelectedTab) {
-      this.onTabClick(selectedTab)();
-    }
+      return {
+        selectedTab: nextTab,
+      };
+    });
   };
 
   render() {
