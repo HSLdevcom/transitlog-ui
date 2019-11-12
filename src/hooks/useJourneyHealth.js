@@ -153,7 +153,14 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
   const lastStop = get(last(plannedStops), "stopId", "");
 
   for (const {stopId} of plannedStops) {
-    const eventsForStop = get(stopEventGroups, stopId, []);
+    // The last stop will usually not get departure events,
+    // so we don't check departure events for the last stop.
+    const stopTypesForStop = lastStop === stopId ? lastStopEventTypes : stopEventTypes;
+
+    const eventsForStop = get(stopEventGroups, stopId, []).filter((evt) =>
+      stopTypesForStop.includes(evt.type)
+    );
+
     // Collect virtual events here, we will report them all at once in a message.
     const virtualStopEvents = [];
 
@@ -173,10 +180,6 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
         )}`
       );
     }
-
-    // The last stop will usually not get departure events,
-    // so we don't check departure events for the last stop.
-    const stopTypesForStop = lastStop === stopId ? lastStopEventTypes : stopEventTypes;
 
     if (eventsForStop.length < stopTypesForStop.length) {
       const presentEvents = eventsForStop.map((evt) => evt.type);
@@ -270,6 +273,10 @@ export const useJourneyHealth = (journey) => {
     // Get all timing stops. If there are any, we check that it has the required departure events.
     const timingStops = plannedDepartures.filter((dep) => !!dep.isTimingStop);
 
+    const stopsShouldBeVisitedLength = journeyIsConcluded
+      ? plannedDepartures.length
+      : stopsVisitedCount;
+
     // Health scores that are scored with a percentage. If data is missing the
     // percentage is lower. Also includes messages that the validators can add
     // which can help explain why the score is below 100%. The max value is used
@@ -278,7 +285,7 @@ export const useJourneyHealth = (journey) => {
       // Max is number of stops * number of stop events * 2 points per event. Deduct last stop departure events.
       stops: {
         health: 0,
-        max: stopsVisitedCount * stopEventTypes.length * 2 - 4,
+        max: stopsShouldBeVisitedLength * stopEventTypes.length * 2 - 4,
         messages: [],
       },
       // Max is how many VP events we have. We only check that the events are
