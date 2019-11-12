@@ -9,7 +9,9 @@ import ArrowDown from "../../../icons/ArrowDown";
 import Info from "../../../icons/Info";
 import {text, Text} from "../../../helpers/text";
 
-const JourneyHealthContainer = styled.div``;
+const JourneyHealthContainer = styled.div`
+  padding-bottom: 1rem;
+`;
 
 const HealthRow = styled.div`
   display: flex;
