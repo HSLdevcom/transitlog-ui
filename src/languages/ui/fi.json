@@ -134,6 +134,7 @@
   "journey.health.positions_gap": "Aukko löydetty ajoneuvon paikkatiedoista. Pituus sekunneissa",
   "journey.health.stop_events_not_found": "Pysäkkitapahtumia ei löydetty.",
   "journey.health.stop_event_missing": "Pysäkkitapahtuma puuttuu pysäkille",
+  "journey.health.stop_event_virtual": "Pysäkkitapahtumat luotu ajoneuvon paikkatiedoista pysäkille",
 
   "domain.line": "Linja",
   "domain.route": "Reitti",
