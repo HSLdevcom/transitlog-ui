@@ -122,7 +122,7 @@
   "journey.health.lastStopArrival": "Saapuminen viimeiselle pysäkille",
   "journey.health.timingStopDepartures": "Lähtö ajantasauspysäkeiltä",
   "journey.health.not_complete": "Matka on vielä käynnissä.",
-  "journey.health.data_missing": "One or more aspect of the journey data is missing.",
+  "journey.health.data_missing": "Yksi tai monta osuutta matkan tiedoista puuttuu.",
 
   "domain.line": "Linja",
   "domain.route": "Reitti",
