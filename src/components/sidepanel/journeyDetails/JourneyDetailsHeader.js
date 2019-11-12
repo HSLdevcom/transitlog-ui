@@ -10,6 +10,8 @@ import {parseLineNumber} from "../../../helpers/parseLineNumber";
 import CrossThick from "../../../icons/CrossThick";
 import {Text} from "../../../helpers/text";
 import Alert from "../../../icons/Alert";
+import ButtonGroup from "../../ButtonGroup";
+import {Button} from "../../Forms";
 
 const JourneyPanelHeader = styled.div`
   flex: none;
@@ -157,10 +159,12 @@ export default observer(
                   {Math.floor(journeyHealth.total)}%
                 </HealthIndicator>
               ) : (
-                <button
+                <Button
+                  transparent={true}
                   onClick={() => selectTab("journey-health")}
                   style={{
                     marginLeft: "auto",
+                    height: "auto",
                     border: 0,
                     background: "transparent",
                     padding: 0,
@@ -168,7 +172,7 @@ export default observer(
                   }}
                   title="Journey health">
                   <HealthAlert />
-                </button>
+                </Button>
               ))}
           </MainHeaderRow>
           {departureDate && departureTime && (
