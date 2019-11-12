@@ -14,9 +14,8 @@ const JourneyHealthContainer = styled.div``;
 const HealthRow = styled.div`
   display: flex;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
   background: transparent;
-  font-size: 1rem;
   font-family: inherit;
   align-items: baseline;
   line-height: 1.5;
@@ -52,7 +51,8 @@ const ObservedValue = styled.span`
 `;
 
 const ToggleIcon = styled(ArrowDown)`
-  margin-left: 1rem;
+  margin-left: 0.5rem;
+  align-self: center;
   transition: transform 0.1s ease-out;
   ${(p) => (p.isOpen ? `transform: rotate(180deg);` : "")}
 `;
@@ -138,6 +138,51 @@ const HealthMessage = styled.div`
   }
 `;
 
+const HealthItem = observer((props) => {
+  const {messages, name, status, health, color} = props;
+
+  let showValue = text("journey.health.unknown");
+
+  if (typeof status !== "undefined") {
+    showValue = text(`journey.health.${status}`);
+  } else if (typeof health !== "undefined") {
+    showValue = health === -1 ? text(`journey.health.pending`) : `${health}%`;
+  }
+
+  return (
+    <Accordion
+      key={name}
+      disabled={messages.length === 0}
+      label={(isOpen) => (
+        <HealthRow>
+          <LineHeading>{text(`journey.health.${name}`)}</LineHeading>
+          <ObservedValue
+            color={color !== "var(--yellow)" ? "white" : "var(--dark-grey)"}
+            backgroundColor={color}>
+            {showValue}
+          </ObservedValue>
+          <ToggleIcon
+            isOpen={isOpen}
+            fill={messages.length !== 0 ? "var(--grey)" : "transparent"}
+            height="0.875rem"
+            width="0.875rem"
+          />
+        </HealthRow>
+      )}>
+      {messages.length !== 0 && (
+        <MessagesContainer>
+          {messages.map((message, idx) => (
+            <HealthMessage key={`message-${idx}`}>
+              <Info fill="var(--light-blue)" height="1.25rem" width="1.25rem" />
+              <span>{message}</span>
+            </HealthMessage>
+          ))}
+        </MessagesContainer>
+      )}
+    </Accordion>
+  );
+});
+
 const JourneyHealthDetails = observer(({journeyHealth}) => {
   const healthColor = useCallback((value) =>
     value === -1
@@ -190,85 +235,24 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
               : "var(--green)";
 
           return (
-            <Accordion
-              key={name}
-              disabled={messages.length === 0}
-              label={(isOpen) => (
-                <HealthRow>
-                  <LineHeading>{text(`journey.health.${name}`)}</LineHeading>
-                  <ObservedValue
-                    color={
-                      currentHealthColor !== "var(--yellow)"
-                        ? "white"
-                        : "var(--dark-grey)"
-                    }
-                    backgroundColor={currentHealthColor}>
-                    {text(`journey.health.${status}`)}
-                  </ObservedValue>
-                  <ToggleIcon
-                    isOpen={isOpen}
-                    fill={messages.length !== 0 ? "var(--grey)" : "transparent"}
-                    height="1rem"
-                    width="1rem"
-                  />
-                </HealthRow>
-              )}>
-              {messages.length !== 0 && (
-                <MessagesContainer>
-                  {messages.map((message, idx) => (
-                    <HealthMessage key={`message-${idx}`}>
-                      <Info fill="var(--light-blue)" height="1.25rem" width="1.25rem" />
-                      <span>{message}</span>
-                    </HealthMessage>
-                  ))}
-                </MessagesContainer>
-              )}
-            </Accordion>
+            <HealthItem
+              name={name}
+              status={status}
+              messages={messages}
+              color={currentHealthColor}
+            />
           );
         })}
-        {Object.entries(journeyHealth.health).map(([name, {health: value, messages}]) => {
-          const currentHealthColor = healthColor(value);
+        {Object.entries(journeyHealth.health).map(([name, {health, messages}]) => {
+          const currentHealthColor = healthColor(health);
 
           return (
-            <Accordion
-              key={name}
-              disabled={messages.length === 0}
-              label={(isOpen) => (
-                <HealthRow>
-                  <LineHeading>{text(`journey.health.${name}`)}</LineHeading>
-                  <ObservedValue
-                    color={
-                      currentHealthColor !== "var(--yellow)"
-                        ? "white"
-                        : "var(--dark-grey)"
-                    }
-                    backgroundColor={currentHealthColor}>
-                    {value === -1 ? text(`journey.health.pending`) : `${value}%`}
-                  </ObservedValue>
-                  <ToggleIcon
-                    isOpen={isOpen}
-                    fill={messages.length !== 0 ? "var(--grey)" : "transparent"}
-                    height="1rem"
-                    width="1rem"
-                  />
-                </HealthRow>
-              )}>
-              {messages.length !== 0 && (
-                <MessagesContainer>
-                  {messages.map((message, idx) => (
-                    <HealthMessage key={`message-${idx}`}>
-                      <Info
-                        style={{flex: 0}}
-                        fill="var(--light-blue)"
-                        height="1.25rem"
-                        width="1.25rem"
-                      />
-                      <span>{message}</span>
-                    </HealthMessage>
-                  ))}
-                </MessagesContainer>
-              )}
-            </Accordion>
+            <HealthItem
+              name={name}
+              health={health}
+              messages={messages}
+              color={currentHealthColor}
+            />
           );
         })}
       </div>
