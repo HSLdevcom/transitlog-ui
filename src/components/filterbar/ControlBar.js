@@ -37,7 +37,7 @@ const decorate = flow(
 const ControlBar = decorate(
   ({className, UI, Filters, Update, Time, state: {live, timeIsCurrent}}) => {
     const onClickReset = useCallback(() => Filters.reset());
-    const onClickUpdate = useCallback(() => Update.update());
+    const onClickUpdate = useCallback(() => Update.update(false));
     const onToggleLive = useCallback(() => Time.toggleLive());
     const onClickShare = useCallback(() => UI.toggleShareModal(true));
 
