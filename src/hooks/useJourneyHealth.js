@@ -8,6 +8,7 @@ import {useMemo} from "react";
 import {getDepartureMoment} from "../helpers/time";
 import {TIMEZONE} from "../constants";
 import moment from "moment-timezone";
+import {text} from "../helpers/text";
 
 const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
 
@@ -44,7 +45,7 @@ function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessa
     );
 
     if (!firstStopDeparture) {
-      addMessage(`DEP event missing for origin stop ${stopId}`);
+      addMessage(`${text("journey.health.origin_event_missing")} ${stopId}`);
       incrementHealth(0); // Exit pending state
       return;
     }
@@ -52,9 +53,7 @@ function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessa
     if (!firstStopDeparture._isVirtual) {
       incrementHealth(100);
     } else if (firstStopDeparture._isVirtual) {
-      addMessage(
-        `DEP event is derived from vehicle positions for origin stop ${stopId}.`
-      );
+      addMessage(`${text("journey.health.origin_event_virtual")} ${stopId}.`);
 
       incrementHealth(50);
     }
@@ -68,18 +67,15 @@ function checkLastStopArrival(events, lastStop, incrementHealth, addMessage) {
     );
 
     if (!lastStopArrival) {
-      addMessage(`ARS event missing for destination stop ${lastStop}`);
+      addMessage(`${text("journey.health.destination_event_missing")} ${lastStop}`);
       incrementHealth(0); // exit pending state
       return;
     }
 
     if (!lastStopArrival._isVirtual) {
       incrementHealth(100);
-    } else if (lastStopArrival._isVirtual) {
-      addMessage(
-        `ARS event is derived from vehicle positions for destination stop ${lastStop}.`
-      );
-
+    } else {
+      addMessage(`${text("journey.health.destination_event_virtual")} ${lastStop}.`);
       incrementHealth(50);
     }
   }
@@ -95,18 +91,15 @@ function checkTimingStopDepartures(events, visitedStops, incrementHealth, addMes
       );
 
       if (!timingStopDeparture) {
-        addMessage(`DEP event missing for timing stop ${stopId}`);
+        addMessage(`${text("journey.health.timing_event_missing")} ${stopId}`);
         incrementHealth(0); // Exit pending state
         continue;
       }
 
       if (!timingStopDeparture._isVirtual) {
         incrementHealth(100);
-      } else if (timingStopDeparture._isVirtual) {
-        addMessage(
-          `DEP event is derived from vehicle positions for timing stop ${stopId}.`
-        );
-
+      } else {
+        addMessage(`${text("journey.health.timing_event_virtual")} ${stopId}.`);
         incrementHealth(50);
       }
     }
@@ -121,7 +114,7 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
   const positionsLength = get(positionEvents, "length", 0);
 
   if (!positionEvents || !positionsLength) {
-    addMessage("No position events found.");
+    addMessage(text("journey.health.positions_not_found"));
     return;
   }
 
@@ -138,7 +131,7 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
     if (diff <= 5) {
       incrementHealth(1);
     } else {
-      addMessage(`Gap detected in vehicle positions. Seconds: ${diff}`);
+      addMessage(`${text("journey.health.positions_gap")}: ${diff}`);
       incrementHealth(-(diff * 2));
     }
 
@@ -150,7 +143,7 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
   const stopEventsLength = get(stopEvents, "length", 0);
 
   if (!stopEvents || stopEventsLength === 0) {
-    addMessage("No stop events found.");
+    addMessage(text("journey.health.stop_events_not_found"));
     return;
   }
 
@@ -163,7 +156,11 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
     if (eventsForStop.length < stopEventTypes.length) {
       const presentEvents = eventsForStop.map((evt) => evt.type);
       const missingEvents = difference(stopEventTypes, presentEvents);
-      addMessage(`Events missing for stop ${stopId}: ${missingEvents.join(", ")}`);
+      addMessage(
+        `${text("journey.health.stop_event_missing")} ${stopId}: ${missingEvents.join(
+          ", "
+        )}`
+      );
       incrementHealth(-(missingEvents.length * 5));
     }
   }
