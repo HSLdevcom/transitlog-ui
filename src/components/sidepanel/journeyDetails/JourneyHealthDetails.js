@@ -153,7 +153,6 @@ const HealthItem = observer((props) => {
 
   return (
     <Accordion
-      key={name}
       disabled={messages.length === 0}
       label={(isOpen) => (
         <HealthRow>
@@ -238,6 +237,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
 
           return (
             <HealthItem
+              key={name}
               name={name}
               status={status}
               messages={messages}
@@ -250,6 +250,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
 
           return (
             <HealthItem
+              key={name}
               name={name}
               health={health}
               messages={messages}
