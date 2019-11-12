@@ -52,9 +52,9 @@ const HfpTooltip = observer(
           <br />
           {journey.uniqueVehicleId}
           <br />
-          {usingEvent.nextStopId && (
+          {usingEvent.stop && (
             <>
-              <Text>vehicle.next_stop</Text>: {usingEvent.nextStopId}
+              <Text>vehicle.next_stop</Text>: {usingEvent.stop}
             </>
           )}
           <br />

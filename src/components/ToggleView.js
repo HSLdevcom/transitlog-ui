@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {useToggle} from "../hooks/useToggle";
 
@@ -12,7 +12,7 @@ const ToggleButton = styled.button`
   font-family: inherit;
   text-decoration: underline dashed;
   color: var(--blue);
-  cursor: pointer;
+  cursor: ${(p) => (p.isActive ? "pointer" : "default")};
   outline: none;
   text-align: left;
   width: auto;
@@ -22,25 +22,26 @@ const ToggleButton = styled.button`
   }
 
   &:hover > * {
-    transform: scale(1.025);
+    transform: ${(p) => (p.isActive ? "scale(1.025)" : "none")};
   }
 `;
 
-const ToggleView = ({
-  children,
-  className,
-  label = "Toggle",
-  closedLabel = label,
-  openLabel = label,
-}) => {
+const ToggleView = ({children, className, label = "Toggle", disabled = false}) => {
+  const isDisabled = !!disabled || !children;
   const [open, toggleOpen] = useToggle(false);
+
+  const onClickLabel = useCallback(() => {
+    if (!isDisabled) {
+      toggleOpen();
+    }
+  }, [isDisabled]);
 
   return (
     <ToggleViewWrapper className={className}>
-      <ToggleButton onClick={() => toggleOpen()}>
-        {open ? openLabel : closedLabel}
+      <ToggleButton isActive={!isDisabled} onClick={onClickLabel}>
+        {typeof label === "function" ? label(open) : label}
       </ToggleButton>
-      {open ? children : null}
+      {!isDisabled && open ? children : null}
     </ToggleViewWrapper>
   );
 };

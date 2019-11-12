@@ -181,6 +181,17 @@ export function journeyEventTime(event, date) {
   return getTimeString(hours, minutes, seconds);
 }
 
+export function getDepartureMoment(departure) {
+  let {isNextDay, departureTime: departureTimeStr, departureDate} = departure;
+
+  const {hours = 0, minutes = 0} = timeToTimeObject(departureTimeStr);
+
+  const hour = isNextDay ? hours + 24 : hours;
+  const departureTime = getTimeString(hour, minutes);
+
+  return getMomentFromDateTime(departureDate, departureTime);
+}
+
 // Return the departure time as a 24h+ time string
 export function departureTime(departure, useArrival = false) {
   let {isNextDay, hours, minutes} = departure;

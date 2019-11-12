@@ -3,7 +3,7 @@ import {Svg, Path} from "react-primitives-svg";
 import PropTypes from "prop-types";
 import {svgSize} from "../helpers/svg";
 
-export default function Icon({fill, height, width, ...rest}) {
+export default function Icon({fill, height, width, isOpen, ...rest}) {
   return (
     <Svg
       {...rest}

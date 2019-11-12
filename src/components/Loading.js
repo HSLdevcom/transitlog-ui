@@ -20,6 +20,9 @@ const LoadingIndicator = styled.div`
   color: white;
   width: 3.7rem;
   height: 3.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   ${({inline}) =>
     inline
@@ -88,7 +91,7 @@ const Loading = ({className, inline, size}) => {
 
 export default Loading;
 
-export const LoadingDisplay = ({loading = false, className, inline, size}) => {
+export const LoadingDisplay = ({loading = true, className, inline, size}) => {
   const [isRendered, setIsRendered] = useState(loading);
   const timerRef = useRef(0);
 

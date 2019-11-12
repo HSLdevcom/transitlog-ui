@@ -38,6 +38,8 @@ export const journeyQuery = gql`
       vehicleId
       name
       mode
+      journeyDurationMinutes
+      journeyLength
       headsign
       isCancelled
       cancellations {
@@ -66,6 +68,7 @@ export const journeyQuery = gql`
         heading
         lat
         lng
+        stop
         nextStopId
         recordedAt
         recordedAtUnix
@@ -97,7 +100,6 @@ export const journeyQuery = gql`
           index
           isNextDay
           isTimingStop
-          nextStopId
           plannedDate
           plannedDateTime
           plannedTime
@@ -113,6 +115,7 @@ export const journeyQuery = gql`
           isTimingStop
           lat
           lng
+          _isVirtual
           stop {
             id
             isTimingStop
@@ -165,6 +168,7 @@ export const journeyQuery = gql`
           stopId
           lat
           lng
+          _isVirtual
         }
       }
       departure {
@@ -230,6 +234,11 @@ export const journeyQuery = gql`
           departureDateTime
           isNextDay
         }
+      }
+      routeDepartures {
+        id
+        stopId
+        isTimingStop
       }
     }
   }

@@ -26,7 +26,7 @@ export const routeJourneysQuery = gql`
         heading
         lat
         lng
-        nextStopId
+        stop
         recordedAt
         recordedAtUnix
         recordedTime
