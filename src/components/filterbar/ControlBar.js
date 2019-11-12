@@ -1,10 +1,11 @@
-import React, {Component} from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {Text, text} from "../../helpers/text";
 import {Button} from "../Forms";
-import {observer, inject} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import ToggleButton from "../ToggleButton";
-import {app} from "mobx-app";
+import {inject} from "../../helpers/inject";
+import flow from "lodash/flow";
 
 const Bar = styled.div`
   display: flex;
@@ -28,49 +29,43 @@ const PollToggle = styled(ToggleButton).attrs({inverted: true})`
   color: white;
 `;
 
-@inject(app("Filters", "Update", "Time", "UI"))
-@observer
-class ControlBar extends Component {
-  onClickReset = () => {
-    this.props.Filters.reset();
-  };
+const decorate = flow(
+  observer,
+  inject("Filters", "Update", "Time", "UI")
+);
 
-  onClickUpdate = () => this.props.Update.update();
-
-  onToggleLive = () => this.props.Time.toggleLive();
-
-  render() {
-    const {
-      className,
-      UI,
-      state: {live, timeIsCurrent},
-    } = this.props;
+const ControlBar = decorate(
+  ({className, UI, Filters, Update, Time, state: {live, timeIsCurrent}}) => {
+    const onClickReset = useCallback(() => Filters.reset());
+    const onClickUpdate = useCallback(() => Update.update());
+    const onToggleLive = useCallback(() => Time.toggleLive());
+    const onClickShare = useCallback(() => UI.toggleShareModal(true));
 
     return (
       <Bar className={className}>
         <ControlButton
           data-testid="share-button"
           helpText="Share button"
-          onClick={() => UI.toggleShareModal(true)}>
+          onClick={onClickShare}>
           <Text>general.share</Text>
         </ControlButton>
         <ControlButton
           data-testid="reset-button"
           helpText="Reset button"
-          onClick={this.onClickReset}>
+          onClick={onClickReset}>
           <Text>filterpanel.reset</Text>
         </ControlButton>
         <ControlButton
           data-testid="update-button"
           helpText="Update button"
-          onClick={this.onClickUpdate}>
+          onClick={onClickUpdate}>
           <Text>general.update</Text>
         </ControlButton>
         <PollToggle
           testId="simulation-toggle"
           helpText="Live toggle"
           type="checkbox"
-          onChange={this.onToggleLive}
+          onChange={onToggleLive}
           name="query_polling"
           label={timeIsCurrent ? text("general.live") : text("general.auto_update")}
           checked={live}
@@ -79,6 +74,6 @@ class ControlBar extends Component {
       </Bar>
     );
   }
-}
+);
 
 export default ControlBar;

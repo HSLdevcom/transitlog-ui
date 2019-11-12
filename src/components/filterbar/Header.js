@@ -8,7 +8,7 @@ import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import Login from "../../icons/Login";
-import ControlBar from "../sidepanel/ControlBar";
+import ControlBar from "./ControlBar";
 import {Button} from "../Forms";
 import Info from "../../icons/Info";
 import {ENV_NAME} from "../../constants";

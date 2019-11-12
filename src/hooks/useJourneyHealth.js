@@ -181,6 +181,7 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
       );
     }
 
+    // Reduce points for missing events.
     if (eventsForStop.length < stopTypesForStop.length) {
       const presentEvents = eventsForStop.map((evt) => evt.type);
       const missingEvents = difference(stopTypesForStop, presentEvents);
