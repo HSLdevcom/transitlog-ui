@@ -257,12 +257,14 @@ export const useJourneyHealth = (journey) => {
       moment.tz(new Date(), TIMEZONE)
     );
 
-    // The journey is evaluted as a completed journey when either the last stop
-    // is visited or the planned duration is
+    // The journey is evaluated as a completed journey when either the last stop
+    // is visited or the planned duration time is reached.
     const journeyIsConcluded = lastStopVisited || journeyShouldBeConcluded;
 
     // Get a slice of the visited stops from the planned departures.
     const visitedStops = plannedDepartures.slice(0, stopsVisitedCount);
+    // Get all timing stops. If there are any, we check that it has the required departure events.
+    const timingStops = plannedDepartures.filter((dep) => !!dep.isTimingStop);
 
     // Health scores that are scored with a percentage. If data is missing the
     // percentage is lower. Also includes messages that the validators can add
@@ -276,19 +278,19 @@ export const useJourneyHealth = (journey) => {
         messages: [],
       },
       // Max is how many VP events we have. We only check that the events are
-      // <5 secs apart, not that the whole journey is covered.
+      // < 5 seconds apart, not that the whole journey is covered.
       positions: {health: 0, max: vehiclePositions.length, messages: []},
       firstStopDeparture: {health: 0, max: 100, messages: []},
       lastStopArrival: {health: -1, max: 100, messages: []},
-      timingStopDepartures: {
-        health: -1,
-        max: Math.max(
-          100,
-          plannedDepartures.filter((dep) => !!dep.isTimingStop).length * 100
-        ),
-        messages: [],
-      },
     };
+
+    if (timingStops.length !== 0) {
+      healthScores.timingStopDepartures = {
+        health: -1,
+        max: Math.max(100, timingStops.length * 100),
+        messages: [],
+      };
+    }
 
     // Function that increments the health points for a specific health check.
     const onIncrementHealth = (which) => (addPoints = 0) => {
@@ -357,13 +359,15 @@ export const useJourneyHealth = (journey) => {
         onAddMessage("lastStopArrival", healthScores)
       );
 
-      // Check that important timing stop events are present.
-      checkTimingStopDepartures(
-        stopEvents,
-        plannedDepartures,
-        onIncrementHealth("timingStopDepartures"),
-        onAddMessage("timingStopDepartures", healthScores)
-      );
+      if (typeof healthScores.timingStopDepartures !== "undefined") {
+        // Check that important timing stop events are present.
+        checkTimingStopDepartures(
+          stopEvents,
+          plannedDepartures,
+          onIncrementHealth("timingStopDepartures"),
+          onAddMessage("timingStopDepartures", healthScores)
+        );
+      }
     }
 
     // Check that the vehicle has functioning door sensors.
