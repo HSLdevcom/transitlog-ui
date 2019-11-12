@@ -133,6 +133,7 @@
   "journey.health.positions_gap": "Gap found in vehicle positions. Duration in seconds",
   "journey.health.stop_events_not_found": "Stop events not found.",
   "journey.health.stop_event_missing": "Stop events missing for stop",
+  "journey.health.stop_event_virtual": "Stop events are derived from vehicle positions for stop",
 
   "domain.line": "Line",
   "domain.route": "Route",

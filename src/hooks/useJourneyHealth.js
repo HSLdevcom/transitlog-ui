@@ -12,6 +12,7 @@ import {text} from "../helpers/text";
 import {StoreContext} from "../stores/StoreContext";
 
 const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
+const lastStopEventTypes = ["ARR", "ARS"];
 
 export const HealthChecklistValues = {
   PASSED: "passed",
@@ -149,20 +150,40 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
   }
 
   const eventGroups = groupBy(stopEvents, "stopId");
+  const lastStop = get(last(plannedStops), "stopId", "");
 
   for (const {stopId} of plannedStops) {
     const eventsForStop = get(eventGroups, stopId, []);
-    incrementHealth(eventsForStop.length);
+    const virtualStopEvents = [];
 
-    if (eventsForStop.length < stopEventTypes.length) {
+    for (const stopEvent of eventsForStop) {
+      if (stopEvent._isVirtual) {
+        virtualStopEvents.push(stopEvent.type);
+        incrementHealth(1);
+      } else {
+        incrementHealth(2);
+      }
+    }
+
+    if (virtualStopEvents.length !== 0) {
+      addMessage(
+        `${text("journey.health.stop_event_virtual")} ${stopId}: ${virtualStopEvents.join(
+          ", "
+        )}`
+      );
+    }
+
+    const stopTypesForStop = lastStop === stopId ? lastStopEventTypes : stopEventTypes;
+
+    if (eventsForStop.length < stopTypesForStop.length) {
       const presentEvents = eventsForStop.map((evt) => evt.type);
-      const missingEvents = difference(stopEventTypes, presentEvents);
+      const missingEvents = difference(stopTypesForStop, presentEvents);
       addMessage(
         `${text("journey.health.stop_event_missing")} ${stopId}: ${missingEvents.join(
           ", "
         )}`
       );
-      incrementHealth(-(missingEvents.length * 5));
+      incrementHealth(-(missingEvents.length * 6));
     }
   }
 }
@@ -248,7 +269,14 @@ export const useJourneyHealth = (journey) => {
     // which can help explain why the score is below 100%. The max value is used
     // to calculate the percentage and is not returned from this function.
     const healthScores = {
-      stops: {health: 0, max: stopsVisitedCount * 4, messages: []},
+      // Max is number of stops * number of stop events * 2 points per event. Deduct last stop departure events.
+      stops: {
+        health: 0,
+        max: stopsVisitedCount * stopEventTypes.length * 2 - 4,
+        messages: [],
+      },
+      // Max is how many VP events we have. We only check that the events are
+      // <5 secs apart, not that the whole journey is covered.
       positions: {health: 0, max: vehiclePositions.length, messages: []},
       firstStopDeparture: {health: 0, max: 100, messages: []},
       lastStopArrival: {health: -1, max: 100, messages: []},

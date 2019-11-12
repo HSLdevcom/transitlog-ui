@@ -132,6 +132,7 @@
   "journey.health.positions_gap": "Lucka hittad i fordonets positionshändelser. Längd i sekunder",
   "journey.health.stop_events_not_found": "Hållplatshändelser fattas.",
   "journey.health.stop_event_missing": "Händelser fattas för hållplatsen",
+  "journey.health.stop_event_virtual": "Händelser härledda från fordonets positionshändelser för hållplats",
 
   "domain.line": "Linje",
   "domain.route": "Rutt",
