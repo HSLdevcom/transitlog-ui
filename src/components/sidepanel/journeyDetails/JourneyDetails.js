@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useState} from "react";
 import styled from "styled-components";
 import JourneyDetailsHeader from "./JourneyDetailsHeader";
 import {observer} from "mobx-react-lite";
@@ -8,12 +8,14 @@ import JourneyEvents from "./JourneyEvents";
 import {LoadingDisplay} from "../../Loading";
 import JourneyInfo from "./JourneyInfo";
 import {transportColor} from "../../transportModes";
-import Tabs from "../Tabs";
+import Tabs from "../../Tabs";
 import AlertsList from "../../AlertsList";
 import {getAlertsInEffect} from "../../../helpers/getAlertsInEffect";
 import {text} from "../../../helpers/text";
 import CancellationsList from "../../CancellationsList";
 import {inject} from "../../../helpers/inject";
+import {useJourneyHealth} from "../../../hooks/useJourneyHealth";
+import JourneyHealthDetails from "./JourneyHealthDetails";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -49,10 +51,14 @@ const decorate = flow(
 
 const JourneyDetails = decorate(
   ({state: {date, timeMoment, user}, journey = null, route = null, loading = false}) => {
+    const [currentTab, setCurrentTab] = useState("journey-events");
+
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
     const originDeparture = get(journey, "departure", null);
     const journeyEvents = get(journey, "events", []);
+
+    const journeyHealth = useJourneyHealth(journey);
 
     const journeyTime = originDeparture
       ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)
@@ -72,11 +78,21 @@ const JourneyDetails = decorate(
     return (
       <JourneyPanelWrapper data-testid="journey-details">
         <LoadingDisplay loading={loading} />
-        <JourneyDetailsHeader journey={journey} route={route} showVehicleId={!!user} />
+        <JourneyDetailsHeader
+          journeyHealth={journeyHealth}
+          journey={journey}
+          route={route}
+          showVehicleId={!!user}
+          selectTab={setCurrentTab}
+        />
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} />
-            <Tabs suggestedTab="journey-events">
+            <Tabs
+              urlValue="details-tab"
+              onTabChange={(tab) => setCurrentTab(tab)}
+              suggestedTab="journey-events"
+              selectedTab={currentTab}>
               {journeyEvents.length !== 0 && (
                 <JourneyEvents
                   cancellations={cancellations}
@@ -101,6 +117,13 @@ const JourneyDetails = decorate(
                     />
                   )}
                 </ListWrapper>
+              )}
+              {journeyHealth && (
+                <JourneyHealthDetails
+                  name="journey-health"
+                  label={text("domain.journey_data_health")}
+                  journeyHealth={journeyHealth}
+                />
               )}
             </Tabs>
           </JourneyPanelContent>
