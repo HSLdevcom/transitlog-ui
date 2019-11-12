@@ -29,35 +29,29 @@ export default (state) => {
   const timeActions = TimeActions(state);
   const filterActions = FilterActions(state);
 
-  const updateTime = (forceCurrent = false) => {
-    const {time, date, timeIncrement, timeIsCurrent} = state;
+  const updateTime = () => {
+    const {time, live, timeIncrement, timeIsCurrent} = state;
 
-    if (!timeIsCurrent && !forceCurrent) {
+    if (live && !timeIsCurrent) {
       const currentTime = timeToSeconds(time);
       const nextTime = currentTime + timeIncrement;
       timeActions.setTime(secondsToTime(Math.max(0, nextTime)));
-    } else {
+    } else if (live && timeIsCurrent) {
       // Live-updating is impossible for 24h+ journeys, as the date will
       // just be the current, real date.
       const nowMoment = moment.tz(new Date(), TIMEZONE);
-
       timeActions.setTime(nowMoment.format("HH:mm:ss"));
-      const currentDate = nowMoment.format("YYYY-MM-DD");
-
-      if (currentDate !== date) {
-        filterActions.setDate(currentDate);
-      }
     }
   };
 
-  const update = (isAuto = false, runUpdateListeners = false) => {
+  const update = (isAuto = false) => {
     if (!isAuto) {
       timeActions.toggleLive(false);
     }
 
-    updateTime(!isAuto);
+    updateTime();
 
-    if (state.timeIsCurrent || runUpdateListeners) {
+    if ((isAuto && state.timeIsCurrent) || !isAuto) {
       Object.values(updateListeners).forEach(({auto, cb}) => {
         // Check that the cb should run when auto-updating if this is an auto-update.
         if (typeof cb === "function" && (!isAuto || (isAuto && auto))) {
@@ -74,7 +68,7 @@ export default (state) => {
 
   reaction(
     () => [state.live, state.timeIsCurrent],
-    ([isPolling, isCurrent]) => {
+    ([isPolling]) => {
       if (updateTimerHandle) {
         cancelTimer();
       }
