@@ -4,11 +4,12 @@ import last from "lodash/last";
 import groupBy from "lodash/groupBy";
 import difference from "lodash/difference";
 import {round} from "../helpers/getRoundedBbox";
-import {useMemo} from "react";
+import {useMemo, useContext} from "react";
 import {getDepartureMoment} from "../helpers/time";
 import {TIMEZONE} from "../constants";
 import moment from "moment-timezone";
 import {text} from "../helpers/text";
+import {StoreContext} from "../stores/StoreContext";
 
 const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
 
@@ -167,6 +168,8 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
 }
 
 export const useJourneyHealth = (journey) => {
+  const {state} = useContext(StoreContext);
+
   const journeyHealth = useMemo(() => {
     const journeyEvents = get(journey, "events", []);
     const vehiclePositions = get(journey, "vehiclePositions", []);
@@ -384,7 +387,7 @@ export const useJourneyHealth = (journey) => {
       total: totalHealth,
       isDone: journeyIsConcluded,
     };
-  }, [journey]);
+  }, [journey, state.language]);
 
   return journeyHealth;
 };

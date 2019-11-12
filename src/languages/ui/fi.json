@@ -131,7 +131,7 @@
   "journey.health.timing_event_missing": "DEP-tapahtuma puuttuu ajantasauspysäkiltä",
   "journey.health.timing_event_virtual": "DEP-tapahtuma on luotu ajoneuvon paikkatiedoista ajantasauspysäkille",
   "journey.health.positions_not_found": "Ajoneuvon paikkatietoja ei löydetty.",
-  "journey.health.positions_gap": "Aukko löydetty ajoneuvon paikkatiedoista. Pituus sekunneissa:",
+  "journey.health.positions_gap": "Aukko löydetty ajoneuvon paikkatiedoista. Pituus sekunneissa",
   "journey.health.stop_events_not_found": "Pysäkkitapahtumia ei löydetty.",
   "journey.health.stop_event_missing": "Pysäkkitapahtuma puuttuu pysäkille",
 
