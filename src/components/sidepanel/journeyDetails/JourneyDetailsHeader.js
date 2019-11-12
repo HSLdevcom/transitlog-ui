@@ -10,7 +10,6 @@ import {parseLineNumber} from "../../../helpers/parseLineNumber";
 import CrossThick from "../../../icons/CrossThick";
 import {Text} from "../../../helpers/text";
 import Alert from "../../../icons/Alert";
-import ButtonGroup from "../../ButtonGroup";
 import {Button} from "../../Forms";
 
 const JourneyPanelHeader = styled.div`

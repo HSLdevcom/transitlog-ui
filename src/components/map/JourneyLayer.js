@@ -76,6 +76,10 @@ const JourneyLayer = decorate(
       let stationaryDuration = 0; // The duration during which the vehicle was stopped.
 
       for (const event of vehiclePositions) {
+        if (!event.lat || !event.lng) {
+          continue;
+        }
+
         if (prevEvent) {
           let distance = 0; // Distance to the first stopped event or the previous event
           const eventPosition = latLng([event.lat, event.lng]);
