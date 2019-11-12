@@ -149,11 +149,12 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
     return;
   }
 
-  const eventGroups = groupBy(stopEvents, "stopId");
+  const stopEventGroups = groupBy(stopEvents, "stopId");
   const lastStop = get(last(plannedStops), "stopId", "");
 
   for (const {stopId} of plannedStops) {
-    const eventsForStop = get(eventGroups, stopId, []);
+    const eventsForStop = get(stopEventGroups, stopId, []);
+    // Collect virtual events here, we will report them all at once in a message.
     const virtualStopEvents = [];
 
     for (const stopEvent of eventsForStop) {
@@ -173,6 +174,8 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
       );
     }
 
+    // The last stop will usually not get departure events,
+    // so we don't check departure events for the last stop.
     const stopTypesForStop = lastStop === stopId ? lastStopEventTypes : stopEventTypes;
 
     if (eventsForStop.length < stopTypesForStop.length) {
@@ -183,6 +186,7 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
           ", "
         )}`
       );
+      // Reduce points for missing events with a multiplier.
       incrementHealth(-(missingEvents.length * 6));
     }
   }
