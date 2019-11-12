@@ -27,7 +27,6 @@ let updateTimerHandle = null;
 
 export default (state) => {
   const timeActions = TimeActions(state);
-  const filterActions = FilterActions(state);
 
   const updateTime = () => {
     const {time, live, timeIncrement, timeIsCurrent} = state;
