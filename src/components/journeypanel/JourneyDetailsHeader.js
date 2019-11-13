@@ -1,16 +1,16 @@
-import {Heading} from "../../Typography";
-import {TransportIcon} from "../../transportModes";
+import {Heading} from "../Typography";
+import {TransportIcon} from "../transportModes";
 import React from "react";
 import styled from "styled-components";
-import Calendar from "../../../icons/Calendar";
-import JourneyPlanner from "../../../icons/JourneyPlanner";
-import Time2 from "../../../icons/Time2";
+import Calendar from "../../icons/Calendar";
+import JourneyPlanner from "../../icons/JourneyPlanner";
+import Time2 from "../../icons/Time2";
 import {observer} from "mobx-react-lite";
-import {parseLineNumber} from "../../../helpers/parseLineNumber";
-import CrossThick from "../../../icons/CrossThick";
-import {Text} from "../../../helpers/text";
-import Alert from "../../../icons/Alert";
-import {Button} from "../../Forms";
+import {parseLineNumber} from "../../helpers/parseLineNumber";
+import CrossThick from "../../icons/CrossThick";
+import {Text} from "../../helpers/text";
+import Alert from "../../icons/Alert";
+import {Button} from "../Forms";
 
 const JourneyPanelHeader = styled.div`
   flex: none;

@@ -7,7 +7,7 @@ import TimetablePanel from "./TimetablePanel";
 import VehicleJourneys from "./VehicleJourneys";
 import {text} from "../../helpers/text";
 import AreaJourneyList from "./AreaJourneyList";
-import JourneyDetails from "./journeyDetails/JourneyDetails";
+import JourneyPanel from "../journeypanel/JourneyPanel";
 import Info from "../../icons/Info";
 import Chart from "../../icons/Chart";
 import {createRouteId} from "../../helpers/keys";
@@ -97,7 +97,7 @@ const MainSidePanel = styled.div`
   flex-direction: column;
 `;
 
-const JourneyPanel = styled.div`
+const JourneyPanelWrapper = styled.div`
   position: relative;
   z-index: 5;
   transition: margin-left 0.2s ease-out;
@@ -213,10 +213,10 @@ const SidePanel = decorate((props) => {
           </Tabs>
         )}
       </MainSidePanel>
-      <JourneyPanel visible={detailsOpen}>
+      <JourneyPanelWrapper visible={detailsOpen}>
         {/* The content of the sidebar is independent from the sidebar wrapper so that we can animate it. */}
         {detailsOpen && (
-          <JourneyDetails
+          <JourneyPanel
             loading={journeyLoading}
             journey={journey}
             route={route || stateRoute}
@@ -240,7 +240,7 @@ const SidePanel = decorate((props) => {
             </Tooltip>
           )}
         </div>
-      </JourneyPanel>
+      </JourneyPanelWrapper>
       <Tooltip helpText="Toggle sidebar button">
         <ToggleSidePanelButton
           isVisible={sidePanelVisible}

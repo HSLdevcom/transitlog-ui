@@ -35,6 +35,7 @@ const MapContent = decorate(
     route,
     stop,
     centerOnRoute = true,
+    routeStops = [],
     state: {
       selectedJourney,
       date,
@@ -85,7 +86,7 @@ const MapContent = decorate(
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (
-              <RouteStopsLayer showRadius={showStopRadius} route={route} />
+              <RouteStopsLayer showRadius={showStopRadius} routeStops={routeStops} />
             )}
 
             {journeys.length !== 0 &&

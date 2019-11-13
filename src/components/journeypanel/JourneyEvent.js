@@ -11,26 +11,17 @@ import {
   TimeHeading,
   StopArrivalTime,
   SmallText,
-} from "../../StopElements";
-import {
-  TagButton,
-  PlainSlot,
-  ColoredBackgroundSlot,
-  PlainSlotSmall,
-} from "../../TagButton";
-import {getTimelinessColor} from "../../../helpers/timelinessColor";
-import doubleDigit from "../../../helpers/doubleDigit";
-import {text, alertText, Text} from "../../../helpers/text";
-import {
-  getNormalTime,
-  secondsToTimeObject,
-  journeyEventTime,
-} from "../../../helpers/time";
-import getDelayType from "../../../helpers/getDelayType";
-import {applyTooltip} from "../../../hooks/useTooltip";
+} from "../StopElements";
+import {TagButton, PlainSlot, ColoredBackgroundSlot, PlainSlotSmall} from "../TagButton";
+import {getTimelinessColor} from "../../helpers/timelinessColor";
+import doubleDigit from "../../helpers/doubleDigit";
+import {text, alertText, Text} from "../../helpers/text";
+import {getNormalTime, secondsToTimeObject, journeyEventTime} from "../../helpers/time";
+import getDelayType from "../../helpers/getDelayType";
+import {applyTooltip} from "../../hooks/useTooltip";
 import {observer} from "mobx-react-lite";
-import CrossThick from "../../../icons/CrossThick";
-import CircleCheckmark from "../../../icons/CircleCheckmark";
+import CrossThick from "../../icons/CrossThick";
+import CircleCheckmark from "../../icons/CircleCheckmark";
 import format from "date-fns/format";
 import {
   CancellationHeader,
@@ -43,14 +34,14 @@ import {
   CancellationPublishTime,
   Row,
   CancellationTime,
-} from "../../CancellationItem";
+} from "../CancellationItem";
 import flow from "lodash/flow";
-import {inject} from "../../../helpers/inject";
-import {TIMEZONE} from "../../../constants";
+import {inject} from "../../helpers/inject";
+import {TIMEZONE} from "../../constants";
 import moment from "moment-timezone";
-import {getModeColor} from "../../../helpers/vehicleColor";
+import {getModeColor} from "../../helpers/vehicleColor";
 import CalculateTerminalTime from "./CalculateTerminalTime";
-import RoutesFail from "../../../icons/RoutesFail";
+import RoutesFail from "../../icons/RoutesFail";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 

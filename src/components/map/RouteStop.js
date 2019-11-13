@@ -17,7 +17,7 @@ import {Text} from "../../helpers/text";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {TimeHeading, StopHeading, StopArrivalTime, SmallText} from "../StopElements";
-import CalculateTerminalTime from "../sidepanel/journeyDetails/CalculateTerminalTime";
+import CalculateTerminalTime from "../journeypanel/CalculateTerminalTime";
 import getDelayType from "../../helpers/getDelayType";
 import StopPopupContent, {
   StopContentWrapper,

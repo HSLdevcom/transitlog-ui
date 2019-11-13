@@ -1,7 +1,7 @@
 import get from "lodash/get";
 import moment from "moment-timezone";
-import {secondsToTimeObject} from "../../../helpers/time";
-import {TIMEZONE} from "../../../constants";
+import {secondsToTimeObject} from "../../helpers/time";
+import {TIMEZONE} from "../../constants";
 import {useMemo} from "react";
 
 // Reusable higher-order function for calculating the planned arrival time from

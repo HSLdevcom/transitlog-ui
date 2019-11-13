@@ -1,13 +1,13 @@
 import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
-import {Heading} from "../../Typography";
-import {HealthChecklistValues} from "../../../hooks/useJourneyHealth";
-import Alert from "../../../icons/Alert";
-import ToggleView from "../../ToggleView";
-import ArrowDown from "../../../icons/ArrowDown";
-import Info from "../../../icons/Info";
-import {text, Text} from "../../../helpers/text";
+import {Heading} from "../Typography";
+import {HealthChecklistValues} from "../../hooks/useJourneyHealth";
+import Alert from "../../icons/Alert";
+import ToggleView from "../ToggleView";
+import ArrowDown from "../../icons/ArrowDown";
+import Info from "../../icons/Info";
+import {text, Text} from "../../helpers/text";
 
 const JourneyHealthContainer = styled.div`
   padding-bottom: 1rem;

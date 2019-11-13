@@ -4,12 +4,12 @@ import get from "lodash/get";
 import flow from "lodash/flow";
 import findLast from "lodash/findLast";
 import CalculateTerminalTime from "./CalculateTerminalTime";
-import doubleDigit from "../../../helpers/doubleDigit";
+import doubleDigit from "../../helpers/doubleDigit";
 import {getEquipmentType, validateEquipment} from "./equipmentType";
-import {Text, text} from "../../../helpers/text";
-import {getOperatorName} from "../../../helpers/getOperatorNameById";
+import {Text, text} from "../../helpers/text";
+import {getOperatorName} from "../../helpers/getOperatorNameById";
 import {observer} from "mobx-react-lite";
-import {inject} from "../../../helpers/inject";
+import {inject} from "../../helpers/inject";
 
 const JourneyInfo = styled.div`
   flex: none;
