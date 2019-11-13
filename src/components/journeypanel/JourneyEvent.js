@@ -224,7 +224,10 @@ export const JourneyStopEvent = decorate(
             {stopName && <strong>{stopName}</strong>} {stopId}{" "}
             {stopShortId && `(${stopShortId})`}
           </EventHeadingButton>
-          <EventTypeHeading>{text(`journey.event.${event.type}`)}</EventTypeHeading>
+          <EventTypeHeading>
+            {text(`journey.event.${event.type}`)}{" "}
+            <span style={{fontSize: "0.75rem", color: "var(--grey)"}}>{event.type}</span>
+          </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>
           )}
