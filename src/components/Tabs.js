@@ -34,7 +34,8 @@ const TabButton = styled.button`
   border-bottom-color: ${({selected}) =>
     selected ? "transparent" : "var(--lighter-grey)"};
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
+  width: auto;
   flex-direction: row;
   align-items: center;
   justify-content: center;
