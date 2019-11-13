@@ -20,9 +20,7 @@ const JourneyStopsLayer = decorate(
       const stopEvents = journey.events.filter(
         (evt) =>
           ["JourneyStopEvent", "PlannedStopEvent"].includes(evt.__typename) &&
-          !!evt.stopId &&
-          !!evt.lat &&
-          !!evt.lng
+          !!evt.stopId
       );
 
       const stopGroups = orderBy(
