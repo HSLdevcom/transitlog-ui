@@ -28,7 +28,7 @@ const decorate = flow(
 );
 
 const JourneyEvents = decorate(
-  ({events = [], originDeparture, date, Filters, UI, Time, Journey, state}) => {
+  ({events = [], originDeparture, date, Filters, UI, Time, Journey, state, color}) => {
     const eventFilterTypes = useMemo(
       () =>
         events.reduce(
@@ -161,6 +161,7 @@ const JourneyEvents = decorate(
                 date={date}
                 departure={originDeparture}
                 onSelectTime={onClickTime}
+                color={color}
               />
             );
           })}

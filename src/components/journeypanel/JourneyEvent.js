@@ -39,7 +39,6 @@ import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import {TIMEZONE} from "../../constants";
 import moment from "moment-timezone";
-import {getModeColor} from "../../helpers/vehicleColor";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../icons/RoutesFail";
 
@@ -136,6 +135,7 @@ export const JourneyStopEvent = decorate(
     isFirst,
     isLast,
     isOrigin,
+    color,
   }) => {
     const plannedTime = get(event, "plannedTime", "");
     const observedTime = get(event, "recordedTime");
@@ -146,7 +146,6 @@ export const JourneyStopEvent = decorate(
     ]);
 
     let stop = get(event, "stop");
-    const color = getModeColor(event.mode);
 
     if (!stop) {
       stop = {stopId: get(event, "stopId", "")};

@@ -16,6 +16,7 @@ import CancellationsList from "../CancellationsList";
 import {inject} from "../../helpers/inject";
 import {useJourneyHealth} from "../../hooks/useJourneyHealth";
 import JourneyHealthDetails from "./JourneyHealthDetails";
+import RouteStops from "./RouteStops";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -50,7 +51,13 @@ const decorate = flow(
 );
 
 const JourneyPanel = decorate(
-  ({state: {date, timeMoment, user}, journey = null, route = null, loading = false}) => {
+  ({
+    state: {date, timeMoment, user},
+    routeStops = [],
+    journey = null,
+    route = null,
+    loading = false,
+  }) => {
     const [currentTab, setCurrentTab] = useState("journey-events");
 
     const journeyMode = get(route, "mode", "BUS");
@@ -93,6 +100,14 @@ const JourneyPanel = decorate(
               onTabChange={(tab) => setCurrentTab(tab)}
               suggestedTab="journey-events"
               selectedTab={currentTab}>
+              {routeStops.length !== 0 && (
+                <RouteStops
+                  name="route-stops"
+                  label={text("journey.stops")}
+                  routeStops={routeStops}
+                  color={journeyColor}
+                />
+              )}
               {journeyEvents.length !== 0 && (
                 <JourneyEvents
                   cancellations={cancellations}
