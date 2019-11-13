@@ -4,7 +4,7 @@ import styled from "styled-components";
 import flow from "lodash/flow";
 import last from "lodash/last";
 import uniqBy from "lodash/uniqBy";
-import {inject} from "../../../helpers/inject";
+import {inject} from "../../helpers/inject";
 import {
   JourneyStopEvent,
   JourneyCancellationEventItem,

@@ -2,8 +2,8 @@ import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import React, {useCallback} from "react";
-import {applyTooltip} from "../../../hooks/useTooltip";
-import {text, helpText} from "../../../helpers/text";
+import {applyTooltip} from "../../hooks/useTooltip";
+import {text, helpText} from "../../helpers/text";
 
 const EventFilters = styled.div`
   display: flex;

@@ -5,16 +5,16 @@ import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import flow from "lodash/flow";
 import JourneyEvents from "./JourneyEvents";
-import {LoadingDisplay} from "../../Loading";
+import {LoadingDisplay} from "../Loading";
 import JourneyInfo from "./JourneyInfo";
-import {transportColor} from "../../transportModes";
-import Tabs from "../../Tabs";
-import AlertsList from "../../AlertsList";
-import {getAlertsInEffect} from "../../../helpers/getAlertsInEffect";
-import {text} from "../../../helpers/text";
-import CancellationsList from "../../CancellationsList";
-import {inject} from "../../../helpers/inject";
-import {useJourneyHealth} from "../../../hooks/useJourneyHealth";
+import {transportColor} from "../transportModes";
+import Tabs from "../Tabs";
+import AlertsList from "../AlertsList";
+import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
+import {text} from "../../helpers/text";
+import CancellationsList from "../CancellationsList";
+import {inject} from "../../helpers/inject";
+import {useJourneyHealth} from "../../hooks/useJourneyHealth";
 import JourneyHealthDetails from "./JourneyHealthDetails";
 
 const JourneyPanelWrapper = styled.div`
@@ -49,7 +49,7 @@ const decorate = flow(
   inject("UI", "Time", "Filters")
 );
 
-const JourneyDetails = decorate(
+const JourneyPanel = decorate(
   ({state: {date, timeMoment, user}, journey = null, route = null, loading = false}) => {
     const [currentTab, setCurrentTab] = useState("journey-events");
 
@@ -133,4 +133,4 @@ const JourneyDetails = decorate(
   }
 );
 
-export default JourneyDetails;
+export default JourneyPanel;
