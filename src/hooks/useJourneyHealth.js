@@ -126,7 +126,6 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
   for (const event of positionEvents) {
     if (prevTsi === 0) {
       prevTsi = event.recordedAtUnix;
-      continue;
     }
 
     const diff = Math.abs(event.recordedAtUnix - prevTsi);
