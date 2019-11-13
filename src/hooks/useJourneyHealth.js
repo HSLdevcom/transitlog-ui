@@ -3,6 +3,7 @@ import get from "lodash/get";
 import last from "lodash/last";
 import groupBy from "lodash/groupBy";
 import difference from "lodash/difference";
+import uniq from "lodash/uniq";
 import {round} from "../helpers/getRoundedBbox";
 import {useMemo, useContext} from "react";
 import {getDepartureMoment} from "../helpers/time";
@@ -157,8 +158,12 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
     // so we don't check departure events for the last stop.
     const stopTypesForStop = lastStop === stopId ? lastStopEventTypes : stopEventTypes;
 
-    const eventsForStop = get(stopEventGroups, stopId, []).filter((evt) =>
-      stopTypesForStop.includes(evt.type)
+    // Find out which events have been recorded for this stop. It's important to
+    // remove duplicates to prevent getting a stop score of more than 100%.
+    const eventsForStop = uniq(
+      get(stopEventGroups, stopId, []).filter((evt) =>
+        stopTypesForStop.includes(evt.type)
+      )
     );
 
     // Collect virtual events here, we will report them all at once in a message.
@@ -191,7 +196,7 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
         )}`
       );
       // Reduce points for missing events with a multiplier.
-      incrementHealth(-(missingEvents.length * 6));
+      incrementHealth(-(missingEvents.length * 4));
     }
   }
 }
@@ -274,8 +279,8 @@ export const useJourneyHealth = (journey) => {
     // Get all timing stops. If there are any, we check that it has the required departure events.
     const timingStops = plannedDepartures.filter((dep) => !!dep.isTimingStop);
 
-    const stopsShouldBeVisitedLength = journeyIsConcluded
-      ? plannedDepartures.length
+    const maxPlannedStops = journeyIsConcluded
+      ? plannedDepartures.length - 1
       : stopsVisitedCount;
 
     // Health scores that are scored with a percentage. If data is missing the
@@ -283,10 +288,11 @@ export const useJourneyHealth = (journey) => {
     // which can help explain why the score is below 100%. The max value is used
     // to calculate the percentage and is not returned from this function.
     const healthScores = {
-      // Max is number of stops * number of stop events * 2 points per event. Deduct last stop departure events.
+      // Max is number of stops * number of stop events * 2 points per event.
+      // Deduct max points for the last stop departure events as they are not counted.
       stops: {
         health: 0,
-        max: stopsShouldBeVisitedLength * stopEventTypes.length * 2 - 4,
+        max: maxPlannedStops * stopEventTypes.length * 2 + lastStopEventTypes.length * 2,
         messages: [],
       },
       // Max is how many VP events we have. We only check that the events are
