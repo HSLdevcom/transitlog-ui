@@ -4,7 +4,6 @@ import set from "lodash/set";
 import unset from "lodash/unset";
 import timer from "../helpers/timer";
 import TimeActions from "./timeActions";
-import FilterActions from "./filterActions";
 import {timeToSeconds, secondsToTime} from "../helpers/time";
 import {TIMEZONE} from "../constants";
 
