@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {observer, inject} from "mobx-react";
 import styled from "styled-components";
-import {action, observable} from "mobx";
+import {action, observable, reaction} from "mobx";
 import {app} from "mobx-app";
 import {LoadingDisplay} from "../Loading";
 
@@ -29,7 +29,7 @@ const ListHeader = styled.header`
   background: transparent;
   font-size: 0.9em;
   border-bottom: 1px solid var(--alt-grey);
-  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.075);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.075);
   position: relative;
   z-index: 1;
   line-height: 1.4;
@@ -82,6 +82,14 @@ class SidepanelList extends Component {
     if (this.scrollElementRef.current) {
       this.listHeight = this.scrollElementRef.current.getBoundingClientRect().height;
     }
+
+    this.disposeScrollOffsetReaction = reaction(
+      () => this.scrollOffset,
+      (offset) => {
+        this.scrollTo(offset);
+      },
+      {fireImmediately: true}
+    );
   }
 
   componentWillUnmount() {
@@ -142,8 +150,6 @@ class SidepanelList extends Component {
       loading = false,
       testIdPrefix = "sidepanel",
     } = this.props;
-
-    this.scrollTo(this.scrollOffset);
 
     return (
       <ListWrapper hasHeader={!!header} data-testid={`${testIdPrefix}-list`}>
