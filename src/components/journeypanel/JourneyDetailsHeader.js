@@ -112,7 +112,11 @@ const HealthIndicator = styled.button`
   justify-content: center;
   color: ${(p) => (p.value <= 75 || p.value >= 97 ? "white" : "var(--dark-grey)")};
   background: ${(p) =>
-    p.value >= 97 ? "var(--green)" : p.value >= 75 ? "var(--yellow)" : "var(--red)"};
+    p.value >= 97
+      ? "var(--light-green)"
+      : p.value >= 75
+      ? "var(--yellow)"
+      : "var(--red)"};
 `;
 
 const HealthAlert = styled(Alert).attrs({
@@ -150,12 +154,16 @@ export default observer(
               </HeaderText>
             )}
             {journeyHealth &&
-              (journeyHealth.total > 0 ? (
+              (journeyHealth.total > 0 && journeyHealth.checklist.length !== 0 ? (
                 <HealthIndicator
                   onClick={() => selectTab("journey-health")}
                   title="Journey health"
                   value={journeyHealth.total}>
                   {Math.floor(journeyHealth.total)}%
+                </HealthIndicator>
+              ) : journeyHealth.total === 0 && journeyHealth.checklist.length === 0 ? (
+                <HealthIndicator title="Journey health" value={0}>
+                  <Text>general.no_data</Text>
                 </HealthIndicator>
               ) : (
                 <Button
