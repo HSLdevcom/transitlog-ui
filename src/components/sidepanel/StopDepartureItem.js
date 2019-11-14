@@ -76,7 +76,7 @@ const InstanceDisplay = styled.span`
   color: var(--dark-grey);
 `;
 
-const TimetableDeparture = observer((props) => {
+const StopDepartureItem = observer((props) => {
   const {stop, departure, onClick, selectedJourney} = props;
 
   if (!stop || !departure) {
@@ -160,4 +160,4 @@ const TimetableDeparture = observer((props) => {
   );
 });
 
-export default TimetableDeparture;
+export default StopDepartureItem;

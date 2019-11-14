@@ -8,7 +8,7 @@ import flow from "lodash/flow";
 import {Button} from "../Forms";
 import {setResetListener} from "../../stores/FilterStore";
 import VirtualizedSidepanelList from "./VirtualizedSidepanelList";
-import TimetableDeparture from "./TimetableDeparture";
+import StopDepartureItem from "./StopDepartureItem";
 import {getDepartureByTime} from "../../helpers/getDepartureByTime";
 import getJourneyId from "../../helpers/getJourneyId";
 import DeparturesQuery from "../../queries/DeparturesQuery";
@@ -68,7 +68,7 @@ const renderTimetableRow = ({
     style={style}
     key={key}
     data-testid={`${index === 0 ? "first-timetable" : ""} departure-item`}>
-    <TimetableDeparture
+    <StopDepartureItem
       isScrolling={isScrolling}
       isVisible={isVisible}
       departure={departure}
@@ -83,7 +83,7 @@ const decorate = flow(
   inject("Filters", "Journey", "Time")
 );
 
-const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
+const StopDepartures = decorate(({stop, state, Filters, Journey, Time}) => {
   const {date, selectedJourney, stop: stopId, timetableFilters} = state;
 
   const filterValues = Object.values(timetableFilters);
@@ -182,25 +182,24 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
               ? departures.findIndex((departure) => departure === focusedDeparture)
               : -1;
 
-            const createRowRenderer = (props) =>
-              renderTimetableRow({
-                departure: departures[props.index],
-                departureProps: {
-                  selectedJourney,
-                  onClick: selectAsJourney,
-                  date,
-                  stop,
-                },
-                ...props,
-              });
-
             return (
               <VirtualizedSidepanelList
                 testId="stop-departures-list"
                 date={date}
                 scrollToIndex={focusedIndex !== -1 ? focusedIndex : undefined}
                 list={departures}
-                renderRow={createRowRenderer}
+                renderRow={(rowProps) =>
+                  renderTimetableRow({
+                    departure: departures[rowProps.index],
+                    departureProps: {
+                      selectedJourney,
+                      onClick: selectAsJourney,
+                      date,
+                      stop,
+                    },
+                    ...rowProps,
+                  })
+                }
                 rowHeight={32}
                 loading={loading}
                 header={
@@ -258,4 +257,4 @@ const TimetablePanel = decorate(({stop, state, Filters, Journey, Time}) => {
   );
 });
 
-export default TimetablePanel;
+export default StopDepartures;

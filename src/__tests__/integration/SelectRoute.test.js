@@ -7,7 +7,7 @@ import {
   fireEvent,
   getByText as getByTextUtil,
 } from "@testing-library/react";
-import Journeys from "../../components/sidepanel/Journeys";
+import RouteDepartures from "../../components/sidepanel/RouteDepartures";
 import {MockedProvider} from "react-apollo/test-utils";
 import {routeJourneysQuery} from "../../queries/RouteDeparturesQuery";
 import mockJourneysResponse from "../route_journeys_response";
@@ -89,7 +89,7 @@ describe("Route selection and filtering", () => {
       <RenderContext>
         <>
           <RouteSettings />
-          <Journeys />
+          <RouteDepartures />
         </>
       </RenderContext>
     );
