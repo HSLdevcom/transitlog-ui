@@ -79,6 +79,8 @@ const InstanceDisplay = styled.span`
 const StopDepartureItem = observer((props) => {
   const {stop, departure, onClick, selectedJourney} = props;
 
+  const onClickDeparture = useMemo(() => onClick(departure), [departure, onClick]);
+
   if (!stop || !departure) {
     return null;
   }
@@ -101,8 +103,6 @@ const StopDepartureItem = observer((props) => {
 
   const observedTime = get(departure, "observedDepartureTime", null);
   let observed = null;
-
-  const onClickDeparture = useMemo(() => onClick(departure), [departure, onClick]);
 
   if (observedTime) {
     // Diff planned and observed times
