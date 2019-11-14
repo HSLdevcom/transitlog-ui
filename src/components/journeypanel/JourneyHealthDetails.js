@@ -189,7 +189,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
     value === -1
       ? "var(--light-grey)"
       : value >= 97
-      ? "var(--green)"
+      ? "var(--light-green)"
       : value >= 75
       ? "var(--yellow)"
       : "var(--red)"
@@ -233,7 +233,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
               ? "var(--light-grey)"
               : status === HealthChecklistValues.FAILED
               ? "var(--red)"
-              : "var(--green)";
+              : "var(--light-green)";
 
           return (
             <HealthItem

@@ -213,13 +213,38 @@ export const useJourneyHealth = (journey) => {
       "asc"
     );
 
+    // The planned duration of the journey may be available, which
+    // we'll use to check if the journey SHOULD be concluded.
+    const journeyDuration = get(journey, "journeyDurationMinutes", 0);
+    const departure = get(journey, "departure", {});
+
+    const plannedJourneyEndMoment = getDepartureMoment(departure).add(
+      journeyDuration,
+      "minutes"
+    );
+
+    let journeyShouldBeConcluded = true;
+
+    if (journey) {
+      // If the start time + the planned duration is in the past, the journey SHOULD be
+      // concluded and we can evaluate the data as a completed journey.
+      journeyShouldBeConcluded = plannedJourneyEndMoment.isBefore(
+        moment.tz(new Date(), TIMEZONE)
+      );
+    }
+
     // Ensure we have all required data. Bail here if not.
     if (
       !journey ||
       plannedDepartures.length === 0 ||
       (journeyEvents.length === 0 && vehiclePositions.length === 0)
     ) {
-      return null;
+      return {
+        checklist: [],
+        health: [],
+        total: 0,
+        isDone: journeyShouldBeConcluded,
+      };
     }
 
     // Separate events into stop events and non-stop events.
@@ -256,22 +281,6 @@ export const useJourneyHealth = (journey) => {
     // we know are in the future. That wouldn't be fair!
     const lastStopVisited = vehiclePositions.some(
       (evt) => evt.nextStopId === "EOL" || evt.stop === lastPlannedStop
-    );
-
-    // The planned duration of the journey is available, which we'll use to check
-    // if the journey SHOULD be concluded.
-    const journeyDuration = get(journey, "journeyDurationMinutes", 0);
-    const departure = get(journey, "departure", {});
-
-    const plannedJourneyEndMoment = getDepartureMoment(departure).add(
-      journeyDuration,
-      "minutes"
-    );
-
-    // If the start time + the planned duration is in the past, the journey SHOULD be
-    // concluded and we can evaluate the data as a completed journey.
-    const journeyShouldBeConcluded = plannedJourneyEndMoment.isBefore(
-      moment.tz(new Date(), TIMEZONE)
     );
 
     // The journey is evaluated as a completed journey when either the last stop

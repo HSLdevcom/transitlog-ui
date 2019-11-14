@@ -86,7 +86,7 @@ const JourneyPanel = decorate(
       <JourneyPanelWrapper data-testid="journey-details">
         <LoadingDisplay loading={loading} />
         <JourneyDetailsHeader
-          journeyHealth={journeyHealth}
+          journeyHealth={loading ? null : journeyHealth}
           journey={journey}
           route={route}
           showVehicleId={!!user}
@@ -133,7 +133,7 @@ const JourneyPanel = decorate(
                   )}
                 </ListWrapper>
               )}
-              {journeyHealth && (
+              {!loading && journeyHealth && (
                 <JourneyHealthDetails
                   name="journey-health"
                   label={text("domain.journey_data_health")}
