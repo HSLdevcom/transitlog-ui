@@ -1,9 +1,9 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import Journeys from "./Journeys";
+import RouteDepartures from "./RouteDepartures";
 import styled from "styled-components";
 import Tabs from "../Tabs";
-import TimetablePanel from "./TimetablePanel";
+import StopDepartures from "./StopDepartures";
 import VehicleJourneys from "./VehicleJourneys";
 import {text} from "../../helpers/text";
 import AreaJourneyList from "./AreaJourneyList";
@@ -175,7 +175,7 @@ const SidePanel = decorate((props) => {
               />
             )}
             {hasRoute && (
-              <Journeys
+              <RouteDepartures
                 helpText="Journeys tab"
                 key={`route_journeys_${createRouteId(route, true)}_${date}`}
                 route={route}
@@ -203,7 +203,7 @@ const SidePanel = decorate((props) => {
               />
             )}
             {stateStop && (
-              <TimetablePanel
+              <StopDepartures
                 helpText="Timetable tab"
                 stop={stop}
                 name="timetables"
