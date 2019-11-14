@@ -52,7 +52,7 @@ const decorate = flow(
 
 const JourneyPanel = decorate(
   ({
-    state: {date, timeMoment, user},
+    state: {date, timeMoment, user, selectedJourney},
     routeStops = [],
     journey = null,
     route = null,
@@ -86,7 +86,7 @@ const JourneyPanel = decorate(
       <JourneyPanelWrapper data-testid="journey-details">
         <LoadingDisplay loading={loading} />
         <JourneyDetailsHeader
-          journeyHealth={loading ? null : journeyHealth}
+          journeyHealth={!selectedJourney || loading ? null : journeyHealth}
           journey={journey}
           route={route}
           showVehicleId={!!user}
@@ -133,7 +133,7 @@ const JourneyPanel = decorate(
                   )}
                 </ListWrapper>
               )}
-              {!loading && journeyHealth && (
+              {selectedJourney && !loading && journeyHealth && (
                 <JourneyHealthDetails
                   name="journey-health"
                   label={text("domain.journey_data_health")}
