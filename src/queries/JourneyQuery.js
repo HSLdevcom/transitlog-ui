@@ -239,6 +239,7 @@ export const journeyQuery = gql`
         id
         stopId
         isTimingStop
+        index
       }
     }
   }

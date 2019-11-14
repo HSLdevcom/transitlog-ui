@@ -4,6 +4,7 @@ import last from "lodash/last";
 import groupBy from "lodash/groupBy";
 import difference from "lodash/difference";
 import uniq from "lodash/uniq";
+import orderBy from "lodash/orderBy";
 import {round} from "../helpers/getRoundedBbox";
 import {useMemo, useContext} from "react";
 import {getDepartureMoment} from "../helpers/time";
@@ -206,9 +207,13 @@ export const useJourneyHealth = (journey) => {
   const journeyHealth = useMemo(() => {
     const journeyEvents = get(journey, "events", []);
     const vehiclePositions = get(journey, "vehiclePositions", []);
-    const plannedDepartures = get(journey, "routeDepartures", []);
+    const plannedDepartures = orderBy(
+      get(journey, "routeDepartures", []),
+      "index",
+      "asc"
+    );
 
-    // Ensure we have all required data. Bail here is not.
+    // Ensure we have all required data. Bail here if not.
     if (
       !journey ||
       plannedDepartures.length === 0 ||
@@ -258,14 +263,14 @@ export const useJourneyHealth = (journey) => {
     const journeyDuration = get(journey, "journeyDurationMinutes", 0);
     const departure = get(journey, "departure", {});
 
-    const journeyStartMoment = getDepartureMoment(departure).add(
+    const plannedJourneyEndMoment = getDepartureMoment(departure).add(
       journeyDuration,
       "minutes"
     );
 
     // If the start time + the planned duration is in the past, the journey SHOULD be
     // concluded and we can evaluate the data as a completed journey.
-    const journeyShouldBeConcluded = journeyStartMoment.isSameOrBefore(
+    const journeyShouldBeConcluded = plannedJourneyEndMoment.isBefore(
       moment.tz(new Date(), TIMEZONE)
     );
 
