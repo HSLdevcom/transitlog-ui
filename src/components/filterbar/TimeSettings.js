@@ -89,6 +89,10 @@ class TimeSettings extends Component {
   };
 
   onBlur = () => {
+    if (!this.isDirty) {
+      return false;
+    }
+
     // Get the current input value and remove non-number characters.
     const timeValue = this.timeInput.replace(/([^0-9])+/g, "");
 
