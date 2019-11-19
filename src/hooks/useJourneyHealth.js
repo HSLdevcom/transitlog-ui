@@ -2,9 +2,9 @@ import findLast from "lodash/findLast";
 import get from "lodash/get";
 import last from "lodash/last";
 import groupBy from "lodash/groupBy";
-import difference from "lodash/difference";
-import uniq from "lodash/uniq";
+import uniqBy from "lodash/uniqBy";
 import orderBy from "lodash/orderBy";
+import flatten from "lodash/flatten";
 import {round} from "../helpers/getRoundedBbox";
 import {useMemo, useContext} from "react";
 import {getDepartureMoment} from "../helpers/time";
@@ -139,7 +139,7 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
   }
 }
 
-const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
+const stopEventTypes = ["DEP", ["PDE", "PAS"], "ARR", "ARS"];
 const lastStopEventTypes = ["ARR", "ARS"];
 
 function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMessage) {
@@ -160,14 +160,14 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
 
     // Find out which events have been recorded for this stop. It's important to
     // remove duplicates to prevent getting a stop score of more than 100%.
-    const eventsForStop = uniq(
-      get(stopEventGroups, stopId, []).filter((evt) => {
-        if (evt.type === "PAS") {
-          return true;
-        }
-
-        return stopTypesForStop.includes(evt.type);
-      })
+    const eventsForStop = uniqBy(
+      get(stopEventGroups, stopId, []).filter((evt) =>
+        stopTypesForStop.some((st) => {
+          const matchTypes = Array.isArray(st) ? st : [st];
+          return matchTypes.includes(evt.type);
+        })
+      ),
+      "type"
     );
 
     // Collect virtual events here, we will report them all at once in a message.
@@ -192,13 +192,23 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
 
     // Reduce points for missing events.
     if (eventsForStop.length < stopTypesForStop.length) {
-      const presentEvents = eventsForStop.map((evt) => evt.type);
-      const missingEvents = difference(stopTypesForStop, presentEvents);
+      const missingEvents = stopTypesForStop.reduce((missing, eventType) => {
+        const checkTypes = Array.isArray(eventType) ? eventType : [eventType];
+        const isPresent = eventsForStop.some((evt) => checkTypes.includes(evt.type));
+
+        if (!isPresent) {
+          missing.push(checkTypes[0]);
+        }
+
+        return missing;
+      }, []);
+
       addMessage(
         `${text("journey.health.stop_event_missing")} ${stopId}: ${missingEvents.join(
           ", "
         )}`
       );
+
       // Reduce points for missing events with a multiplier.
       incrementHealth(-(missingEvents.length * 4));
     }
@@ -254,7 +264,7 @@ export const useJourneyHealth = (journey) => {
     // Separate events into stop events and non-stop events.
     const {stopEvents, events} = journeyEvents.reduce(
       (categories, event) => {
-        if (stopEventTypes.includes(event.type)) {
+        if (flatten(stopEventTypes).includes(event.type)) {
           categories.stopEvents.push(event);
         } else {
           categories.events.push(event);
