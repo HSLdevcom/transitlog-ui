@@ -21,13 +21,6 @@ export const allStopsQuery = gql`
         originStopId
         mode
       }
-      alerts {
-        level
-        affectedId
-        distribution
-        startDateTime
-        endDateTime
-      }
     }
   }
 `;
@@ -36,7 +29,7 @@ const AllStopsQuery = ({children, date}) => {
   const prevResults = useRef([]);
 
   return (
-    <Query partialRefetch={true} query={allStopsQuery} variables={{date}}>
+    <Query query={allStopsQuery} variables={{date}}>
       {({loading, error, data}) => {
         if (loading || !data) {
           return children({
