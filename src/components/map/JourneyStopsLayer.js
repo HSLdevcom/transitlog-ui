@@ -69,7 +69,8 @@ const JourneyStopsLayer = decorate(
 
         const arrival = events.find((evt) => evt.type === "ARS");
         let departure =
-          events.find((evt) => evt.type === (useDEP ? "DEP" : "PDE")) || arrival;
+          events.find((evt) => [useDEP ? "DEP" : "PDE", "PAS"].includes(evt.type)) ||
+          arrival;
 
         if (!departure) {
           useEvent = events.find((evt) => evt.type === "PLANNED");

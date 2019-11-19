@@ -6,7 +6,7 @@ import uniqBy from "lodash/uniqBy";
 export const getJourneyStopDiffs = (journeyEvents) => {
   const departureEvents = journeyEvents.filter(
     ({__typename, type}) =>
-      __typename === "JourneyStopEvent" && ["DEP", "PDE"].includes(type)
+      __typename === "JourneyStopEvent" && ["DEP", "PDE", "PAS"].includes(type)
   );
 
   return uniqBy(departureEvents, "stopId").map((event, index) => {
