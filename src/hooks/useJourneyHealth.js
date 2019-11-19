@@ -13,9 +13,6 @@ import moment from "moment-timezone";
 import {text} from "../helpers/text";
 import {StoreContext} from "../stores/StoreContext";
 
-const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
-const lastStopEventTypes = ["ARR", "ARS"];
-
 export const HealthChecklistValues = {
   PASSED: "passed",
   FAILED: "failed",
@@ -142,6 +139,9 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
   }
 }
 
+const stopEventTypes = ["DEP", "PDE", "ARR", "ARS"];
+const lastStopEventTypes = ["ARR", "ARS"];
+
 function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMessage) {
   const stopEventsLength = get(stopEvents, "length", 0);
 
@@ -161,9 +161,13 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
     // Find out which events have been recorded for this stop. It's important to
     // remove duplicates to prevent getting a stop score of more than 100%.
     const eventsForStop = uniq(
-      get(stopEventGroups, stopId, []).filter((evt) =>
-        stopTypesForStop.includes(evt.type)
-      )
+      get(stopEventGroups, stopId, []).filter((evt) => {
+        if (evt.type === "PAS") {
+          return true;
+        }
+
+        return stopTypesForStop.includes(evt.type);
+      })
     );
 
     // Collect virtual events here, we will report them all at once in a message.

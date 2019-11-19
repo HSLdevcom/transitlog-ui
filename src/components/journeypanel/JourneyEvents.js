@@ -107,12 +107,13 @@ const JourneyEvents = decorate(
       // Special departure filter for the relevant departure event for this stop.
       // DEP for origins and timing stops, PDE for everything else.
       if (
-        (typeof event.isOrigin !== "undefined" &&
+        event.type === "PAS" ||
+        ((typeof event.isOrigin !== "undefined" &&
           (isOrigin || isTimingStop) &&
           event.type === "DEP") ||
-        (typeof event.isOrigin !== "undefined" &&
-          !(isOrigin || isTimingStop) &&
-          event.type === "PDE")
+          (typeof event.isOrigin !== "undefined" &&
+            !(isOrigin || isTimingStop) &&
+            event.type === "PDE"))
       ) {
         types.push("DEPARTURE");
       }
