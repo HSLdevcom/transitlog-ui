@@ -1,5 +1,19 @@
 # Transitlog UI changelog
 
+## Version 1.5.0, deployed 2019-11-20 @ 09:00
+
+- Use real HSL fonts.
+- Added health scores for journey data.
+- Changed update button to not force-select the current time.
+- Include HFP events with null lat and long properties.
+- Show event type next to clear-text event name.
+- Show list of stops in the details sidebar when a route is selected.
+- Fix sidebar tab labels and jumping scroll positions.
+- Add an icon to the route departures list if the departure is in the future. Change the label of departures without data.
+- Better handling of PAS-type events.
+- Improve E2E tests.
+- Source code refactors and other fixes and updates.
+
 ## Version 1.4.2, deployed 2019-11-07 @ 09:00
 
 - Server message links open in a new tab.
