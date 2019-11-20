@@ -98,7 +98,10 @@ Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
 Cypress.Commands.add("waitUntilLoadingFinishes", (loadingElementSelector) => {
   const testId = loadingElementSelector || "loading";
   cy.waitUntil(() => cy.getTestElement(testId).should("exist"));
-  return cy.waitUntil(() => cy.getTestElement(testId).should("have.length", 0), {
-    timeout: 3 * 60 * 1000,
-  });
+  return cy.waitUntil(
+    () => cy.getTestElement(testId, {timeout: 60 * 60 * 1000}).should("have.length", 0),
+    {
+      timeout: 60 * 60 * 1000,
+    }
+  );
 });

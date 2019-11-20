@@ -84,7 +84,7 @@ const RouteSettings = decorate(
                         <br />
                         {selectedRoute.origin} - {selectedRoute.destination}
                       </SuggestionText>
-                      {routeEventsLoading && <RouteEventsLoading />}
+                      {routeEventsLoading && <RouteEventsLoading _testWait={false} />}
                       {alertsInEffect.length !== 0 && (
                         <SuggestionAlerts alerts={alertsInEffect} />
                       )}

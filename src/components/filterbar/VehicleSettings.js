@@ -81,7 +81,7 @@ const VehicleSettings = decorate(({Filters, state, unsignedEventsLoading}) => {
                       <br />
                       {selectedVehicle.operatorName}
                     </SuggestionText>
-                    {unsignedEventsLoading && <UnsignedEventsLoading />}
+                    {unsignedEventsLoading && <UnsignedEventsLoading _testWait={false} />}
                   </SelectedOptionDisplay>
                 )}
               </>
