@@ -1,5 +1,9 @@
 # Transitlog UI changelog
 
+## Version 1.5.1, deployed 2019-11-20 @ 09:00
+
+- Fix production env name.
+
 ## Version 1.5.0, deployed 2019-11-20 @ 09:00
 
 - Use real HSL fonts.
