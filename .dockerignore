@@ -12,3 +12,4 @@ tag-version.sh
 deploy-local.sh
 docker-deploy-all.sh
 .testsecret
+cypress
