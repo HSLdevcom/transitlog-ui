@@ -84,7 +84,6 @@ type DepartureJourney {
   departureDate: Date!
   departureTime: Time!
   direction: Direction
-  events: [VehiclePosition!]
   id: ID!
   isCancelled: Boolean!
   journeyType: String!
@@ -195,6 +194,7 @@ type JourneyStopEvent {
   plannedDateTime: DateTime
   plannedTime: Time
   plannedTimeDifference: Int
+  plannedUnix: Int
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
@@ -315,7 +315,7 @@ type RouteSegment implements Position {
   isTimingStop: Boolean!
   lat: Float!
   lng: Float!
-  modes: [String]!
+  modes: [String!]
   name: String
   originStopId: String
   radius: Float
