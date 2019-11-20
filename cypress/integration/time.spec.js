@@ -31,13 +31,13 @@ describe("Time smoke tests", () => {
   it("Can use live mode", () => {
     cy.getTestElement("route-input").type("2510/1");
     cy.getTestElement("route-option-2510-1").click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("observed-journey")
       .last()
       .click();
-  
+
     cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("2510");
 
@@ -62,16 +62,16 @@ describe("Time smoke tests", () => {
     cy.getTestElement("simulation-toggle").click();
   });
 
-  it("Can update current data", () => {
+  it.skip("Can update current data", () => {
     cy.getTestElement("route-input").type("2510/1");
     cy.getTestElement("route-option-2510-1").click();
-  
+
     cy.waitUntilLoadingFinishes();
-    
+
     cy.getTestElement("observed-journey")
       .last()
       .click();
-  
+
     cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("2510");
 
@@ -79,12 +79,12 @@ describe("Time smoke tests", () => {
     cy.getTestElement("hfp-marker-icon").click();
     cy.getTestElement("hfp-tooltip-content").should("exist");
 
-    cy.getTestElement("hfp-event-time", {timeout: 60000})
+    cy.getTestElement("hfp-event-time")
       .text()
       .as("start-time");
 
     cy.getTestElement("update-button").click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("hfp-event-time")

@@ -79,11 +79,14 @@ const LoadingContainer = styled(LoadingSafeDivComponent)`
       : ""};
 `;
 
-const Loading = ({className, inline, size}) => {
+const Loading = ({className, inline, size, _testWait = true}) => {
   const defaultSize = inline ? 24 : 35;
 
   return (
-    <LoadingIndicator data-testid="loading" inline={inline} className={className}>
+    <LoadingIndicator
+      data-testid={_testWait ? "loading" : "loading-bg"}
+      inline={inline}
+      className={className}>
       <Spinner width={size || defaultSize} height={size || defaultSize} />
     </LoadingIndicator>
   );

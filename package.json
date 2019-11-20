@@ -125,7 +125,10 @@
     "production": "forever start -c \"yarn run serve -s -l 3000\" build && forever logs -f 0",
     "prepare": "patch-package",
     "codegen": "gql-gen --config codegen.yml",
-    "cypress": "cypress"
+    "cypress": "cypress",
+    "cypress:run:dev": "cypress run --env configFile=dev",
+    "cypress:run:stage": "cypress run --env configFile=stage",
+    "cypress:run:production": "cypress run --env configFile=production"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.3",
