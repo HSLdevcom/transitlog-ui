@@ -1,9 +1,8 @@
-import React from "react";
+import React, {useRef} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
-import {observer} from "mobx-react";
-import {AlertFieldsFragment} from "./AlertFieldsFragment";
+import {observer} from "mobx-react-lite";
 
 const stopsByRouteQuery = gql`
   query routeSegments($routeId: String!, $direction: Direction!, $date: Date!) {
@@ -25,15 +24,13 @@ const stopsByRouteQuery = gql`
       duration
       stopIndex
       isTimingStop
-      alerts {
-        ...AlertFieldsFragment
-      }
     }
   }
-  ${AlertFieldsFragment}
 `;
 
 export default observer(({children, route, date, skip}) => {
+  const prevResult = useRef([]);
+
   return (
     <Query
       skip={skip}
@@ -44,7 +41,19 @@ export default observer(({children, route, date, skip}) => {
         date,
       }}>
       {({loading, error, data}) => {
+        if (loading || error || !data) {
+          return children({
+            loading,
+            error,
+            stops: prevResult.current,
+          });
+        }
+
         const stops = get(data, "routeSegments", []);
+
+        if (stops && stops.length !== 0) {
+          prevResult.current = stops;
+        }
 
         return children({
           loading,
