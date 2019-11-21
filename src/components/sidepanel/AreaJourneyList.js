@@ -104,9 +104,7 @@ const AreaJourneyList = decorate(
     Time,
     state: {selectedJourney, areaEventsStyle, areaEventsRouteFilter},
   }) => {
-    const selectedJourneyId = useMemo(() => getJourneyId(selectedJourney), [
-      selectedJourney,
-    ]);
+    const selectedJourneyId = getJourneyId(selectedJourney);
 
     const selectJourney = useCallback(
       (journey) => {
@@ -122,7 +120,6 @@ const AreaJourneyList = decorate(
           }
           // If unsigned, just set the time to the start of the vehiclePositions.
         } else if (journey.journeyType !== "journey") {
-          // TODO: Select as unsigned journey
           const time = get(journey, "vehiclePositions[0].recordedTime");
 
           if (time) {
@@ -194,7 +191,9 @@ const AreaJourneyList = decorate(
             <EmptyView text="message.emptyview.noareevents" />
           ) : (
             journeys.map((journey) => {
-              const {routeId, direction, departureTime, id: journeyId} = journey;
+              const {routeId, direction, departureTime} = journey;
+              const journeyId = getJourneyId(journey);
+
               const journeyIsSelected =
                 selectedJourney && selectedJourneyId === journeyId;
 
