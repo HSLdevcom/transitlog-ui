@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useRef, useMemo} from "react";
+import React, {useCallback, useState, useRef, useMemo, useEffect} from "react";
 import {Polyline, CircleMarker, FeatureGroup, Tooltip, Marker} from "react-leaflet";
 import {latLng, Icon} from "leaflet";
 import get from "lodash/get";
@@ -133,6 +133,7 @@ const JourneyLayer = decorate(
 
     const mouseOver = useRef(false);
     const mouseOut = useRef(false);
+    const mouseOutTimer = useRef(0);
 
     const findHfpItem = useCallback(
       (latlng) => {
@@ -153,7 +154,7 @@ const JourneyLayer = decorate(
     const onMouseout = useCallback(() => {
       mouseOut.current = true;
 
-      setTimeout(() => {
+      mouseOutTimer.current = setTimeout(() => {
         if (mouseOut.current) {
           mouseOut.current = false;
           mouseOver.current = false;
@@ -187,6 +188,9 @@ const JourneyLayer = decorate(
         }),
       []
     );
+
+    // Clear the timer to avoid "cannot update unmounted component" errors.
+    useEffect(() => () => clearTimeout(mouseOutTimer.current));
 
     return (
       <FeatureGroup
