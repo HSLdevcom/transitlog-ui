@@ -66,7 +66,10 @@ export const getClient = (UIStore) => {
     }
   });
 
-  const cache = new InMemoryCache({fragmentMatcher});
+  const cache = new InMemoryCache({
+    fragmentMatcher,
+    addTypename: true,
+  });
 
   const httpLink = new HttpLink({
     uri: serverUrl,
