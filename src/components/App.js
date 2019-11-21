@@ -152,111 +152,107 @@ function App({route, state, UI}) {
             />
             <SidepanelAndMapWrapper>
               <StopsByRouteQuery date={date} route={route} skip={!route}>
-                {({stops: routeStops}) => {
-                  console.log(routeStops);
+                {({stops: routeStops}) => (
+                  <SingleStopQuery date={date} stopId={selectedStopId}>
+                    {({stop}) => (
+                      <JourneyPosition date={date} journeys={routeAndSelected}>
+                        {(currentJourneyPositions) => (
+                          <>
+                            <SidePanel
+                              areaJourneysLoading={!live && areaJourneysLoading}
+                              journeyLoading={selectedJourneyLoading}
+                              areaEvents={areaJourneys}
+                              journey={selectedJourney}
+                              stop={stop}
+                              route={route}
+                              routeStops={routeStops}
+                              detailsOpen={detailsAreOpen}
+                            />
+                            <Map detailsOpen={detailsAreOpen}>
+                              <>
+                                <Observer>
+                                  {() => {
+                                    // Set the map center from a selected
+                                    // stop position or selected
+                                    // selectedJourney position.
+                                    if (!live) {
+                                      const stopPosition = stop
+                                        ? latLng([stop.lat, stop.lng])
+                                        : false;
 
-                  return (
-                    <SingleStopQuery date={date} stopId={selectedStopId}>
-                      {({stop}) => (
-                        <JourneyPosition date={date} journeys={routeAndSelected}>
-                          {(currentJourneyPositions) => (
-                            <>
-                              <SidePanel
-                                areaJourneysLoading={!live && areaJourneysLoading}
-                                journeyLoading={selectedJourneyLoading}
-                                areaEvents={areaJourneys}
-                                journey={selectedJourney}
-                                stop={stop}
-                                route={route}
-                                routeStops={routeStops}
-                                detailsOpen={detailsAreOpen}
-                              />
-                              <Map detailsOpen={detailsAreOpen}>
-                                <>
-                                  <Observer>
-                                    {() => {
-                                      // Set the map center from a selected
-                                      // stop position or selected
-                                      // selectedJourney position.
-                                      if (!live) {
-                                        const stopPosition = stop
-                                          ? latLng([stop.lat, stop.lng])
+                                      const selectedJourneyPosition =
+                                        currentJourneyPositions.size === 1 &&
+                                        selectedJourneyId
+                                          ? currentJourneyPositions.get(
+                                              selectedJourneyId
+                                            ) || false
                                           : false;
 
-                                        const selectedJourneyPosition =
-                                          currentJourneyPositions.size === 1 &&
-                                          selectedJourneyId
-                                            ? currentJourneyPositions.get(
-                                                selectedJourneyId
-                                              ) || false
-                                            : false;
+                                      const {lat, lng} = selectedJourneyPosition || {};
 
-                                        const {lat, lng} = selectedJourneyPosition || {};
+                                      // If a journey is selected, use the
+                                      // journey position if available.
+                                      // Else use the selected stop
+                                      // position if available.
+                                      let centerPosition = false;
 
-                                        // If a journey is selected, use the
-                                        // journey position if available.
-                                        // Else use the selected stop
-                                        // position if available.
-                                        let centerPosition = false;
-
-                                        if (state.currentMapillaryMapLocation) {
-                                          centerPosition =
-                                            state.currentMapillaryMapLocation;
-                                        } else if (lat && lng && selectedJourney) {
-                                          centerPosition = latLng([lat, lng]);
-                                        } else if (!selectedJourney) {
-                                          centerPosition = stopPosition;
-                                        }
-
-                                        if (centerPosition) {
-                                          UI.setMapView(centerPosition);
-                                        }
+                                      if (state.currentMapillaryMapLocation) {
+                                        centerPosition =
+                                          state.currentMapillaryMapLocation;
+                                      } else if (lat && lng && selectedJourney) {
+                                        centerPosition = latLng([lat, lng]);
+                                      } else if (!selectedJourney) {
+                                        centerPosition = stopPosition;
                                       }
 
-                                      return null;
-                                    }}
-                                  </Observer>
-                                  <MapContent
-                                    centerOnRoute={areaJourneys.length === 0}
-                                    routeJourneys={routeJourneys}
-                                    journeys={currentJourneys}
-                                    journeyPositions={currentJourneyPositions}
-                                    unsignedEvents={unsignedEvents}
-                                    route={route}
-                                    stop={stop}
-                                    routeStops={routeStops}
-                                  />
-                                  {selectedJourney && (
-                                    <GraphContainer
-                                      data-testid="journey-graph-container"
-                                      journeyGraphOpen={
-                                        get(selectedJourney, "vehiclePositions", [])
-                                          .length !== 0 && journeyGraphOpen
-                                      }>
-                                      <Graph
-                                        width={530}
-                                        events={get(selectedJourney, "events", [])}
-                                        vehiclePositions={get(
-                                          selectedJourney,
-                                          "vehiclePositions",
-                                          []
-                                        )}
-                                        graphExpanded={
-                                          get(selectedJourney, "departures", []) !== 0 &&
-                                          journeyGraphOpen
-                                        }
-                                      />
-                                    </GraphContainer>
-                                  )}
-                                </>
-                              </Map>
-                            </>
-                          )}
-                        </JourneyPosition>
-                      )}
-                    </SingleStopQuery>
-                  );
-                }}
+                                      if (centerPosition) {
+                                        UI.setMapView(centerPosition);
+                                      }
+                                    }
+
+                                    return null;
+                                  }}
+                                </Observer>
+                                <MapContent
+                                  centerOnRoute={areaJourneys.length === 0}
+                                  routeJourneys={routeJourneys}
+                                  journeys={currentJourneys}
+                                  journeyPositions={currentJourneyPositions}
+                                  unsignedEvents={unsignedEvents}
+                                  route={route}
+                                  stop={stop}
+                                  routeStops={routeStops}
+                                />
+                                {selectedJourney && (
+                                  <GraphContainer
+                                    data-testid="journey-graph-container"
+                                    journeyGraphOpen={
+                                      get(selectedJourney, "vehiclePositions", [])
+                                        .length !== 0 && journeyGraphOpen
+                                    }>
+                                    <Graph
+                                      width={530}
+                                      events={get(selectedJourney, "events", [])}
+                                      vehiclePositions={get(
+                                        selectedJourney,
+                                        "vehiclePositions",
+                                        []
+                                      )}
+                                      graphExpanded={
+                                        get(selectedJourney, "departures", []) !== 0 &&
+                                        journeyGraphOpen
+                                      }
+                                    />
+                                  </GraphContainer>
+                                )}
+                              </>
+                            </Map>
+                          </>
+                        )}
+                      </JourneyPosition>
+                    )}
+                  </SingleStopQuery>
+                )}
               </StopsByRouteQuery>
             </SidepanelAndMapWrapper>
           </AppGrid>
