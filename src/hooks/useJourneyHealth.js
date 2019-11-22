@@ -193,8 +193,6 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
 
     // Reduce points for missing events.
     if (eventsForStop.length < stopTypesForStop.length) {
-      console.log(eventsForStop, stopTypesForStop);
-
       const missingEvents = stopTypesForStop.reduce((missing, eventType) => {
         const checkTypes = Array.isArray(eventType) ? eventType : [eventType];
         const isPresent = eventsForStop.some((evt) => checkTypes.includes(evt.type));

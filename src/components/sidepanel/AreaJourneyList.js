@@ -219,7 +219,7 @@ const AreaJourneyList = decorate(
                       subject
                     )}
                   </JourneyRowLeft>
-                  <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>
+                  {departureTime && <TimeSlot>{getNormalTime(departureTime)}</TimeSlot>}
                 </JourneyListRow>
               );
             })

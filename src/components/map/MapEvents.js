@@ -1,6 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
+import get from "lodash/get";
 import AreaJourneys from "../AreaJourneys";
 import SelectedJourneyEvents from "../SelectedJourneyEvents";
 import MergedJourneys from "../MergedJourneys";
@@ -22,9 +23,13 @@ const MapEvents = decorate(({children, state}) => {
 
         if (areaEventsRouteFilter) {
           const routes = areaEventsRouteFilter.split(",").map((r) => r.trim());
-          areaJourneys = areaJourneysResult.filter(({routeId}) =>
-            routes.some((r) => routeId.includes(r))
-          );
+          areaJourneys = areaJourneysResult.filter((route) => {
+            if (!get(route, "routeId", null)) {
+              return routes.some((r) => r === "signoff");
+            }
+
+            return routes.some((r) => route.routeId.includes(r));
+          });
         }
 
         // Temporarily disable this featrue
