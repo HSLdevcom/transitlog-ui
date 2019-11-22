@@ -1,5 +1,11 @@
 # Transitlog UI changelog
 
+## Version 1.5.2, deployed 2019-11-22 @ 12:00
+
+- Fix area journey filter.
+- Fix area journey selected journey.
+- Fix route stops going invisible in some cases.
+
 ## Version 1.5.1, deployed 2019-11-20 @ 09:00
 
 - Fix production env name.
