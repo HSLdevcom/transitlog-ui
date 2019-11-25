@@ -1,7 +1,8 @@
-import React, {useRef} from "react";
+import React, {useRef, useCallback} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
+import {setUpdateListener} from "../stores/UpdateManager";
 
 export const allStopsQuery = gql`
   query allStopsQuery($date: Date, $search: String) {
@@ -25,12 +26,26 @@ export const allStopsQuery = gql`
   }
 `;
 
+const updateListenerName = "update plain stops";
+
 const AllStopsQuery = ({children, date}) => {
   const prevResults = useRef([]);
 
+  const createRefetcher = useCallback(
+    (refetch) => () => {
+      if (refetch && date) {
+        refetch({
+          date,
+          _cache: false,
+        });
+      }
+    },
+    [date]
+  );
+
   return (
     <Query query={allStopsQuery} variables={{date}}>
-      {({loading, error, data}) => {
+      {({loading, error, data, refetch}) => {
         if (loading || !data) {
           return children({
             loading,
@@ -38,6 +53,8 @@ const AllStopsQuery = ({children, date}) => {
             stops: prevResults.current,
           });
         }
+
+        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
 
         const stops = get(data, "stops", []);
         prevResults.current = stops;
