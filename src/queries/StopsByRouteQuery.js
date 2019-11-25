@@ -1,8 +1,9 @@
-import React, {useRef} from "react";
+import React, {useRef, useCallback} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {observer} from "mobx-react-lite";
+import {setUpdateListener} from "../stores/UpdateManager";
 
 const stopsByRouteQuery = gql`
   query routeSegments($routeId: String!, $direction: Direction!, $date: Date!) {
@@ -28,8 +29,24 @@ const stopsByRouteQuery = gql`
   }
 `;
 
+const updateListenerName = "update route stops";
+
 export default observer(({children, route, date, skip}) => {
   const prevResult = useRef([]);
+
+  const createRefetcher = useCallback(
+    (refetch) => () => {
+      if (refetch && route && route.routeId && date && !skip) {
+        refetch({
+          routeId: get(route, "routeId"),
+          direction: get(route, "direction"),
+          date,
+          _cache: false,
+        });
+      }
+    },
+    [route, date, skip]
+  );
 
   return (
     <Query
@@ -40,7 +57,7 @@ export default observer(({children, route, date, skip}) => {
         direction: get(route, "direction"),
         date,
       }}>
-      {({loading, error, data}) => {
+      {({loading, error, data, refetch}) => {
         if (loading || error || !data) {
           return children({
             loading,
@@ -48,6 +65,8 @@ export default observer(({children, route, date, skip}) => {
             stops: prevResult.current,
           });
         }
+
+        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
 
         const stops = get(data, "routeSegments", []);
 

@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useCallback} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {StopFieldsFragment} from "./StopFieldsFragment";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
+import {setUpdateListener} from "../stores/UpdateManager";
 
 export const singleStopQuery = gql`
   query singleStopQuery($stopId: String!, $date: Date!) {
@@ -18,10 +19,25 @@ export const singleStopQuery = gql`
   ${AlertFieldsFragment}
 `;
 
+const updateListenerName = "update single stop";
+
 const SingleStopQuery = ({children, stopId, date, skip}) => {
+  const createRefetcher = useCallback(
+    (refetch) => () => {
+      if (refetch && stopId && date && !skip) {
+        refetch({
+          stopId,
+          date,
+          _cache: false,
+        });
+      }
+    },
+    [stopId, date, skip]
+  );
+
   return (
     <Query skip={skip || !stopId} query={singleStopQuery} variables={{stopId, date}}>
-      {({loading, error, data}) => {
+      {({loading, error, data, refetch}) => {
         if (!data) {
           return children({
             loading,
@@ -29,6 +45,8 @@ const SingleStopQuery = ({children, stopId, date, skip}) => {
             stop: null,
           });
         }
+
+        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
 
         const stop = get(data, "stop", null);
 
