@@ -54,13 +54,14 @@ export const getClient = (UIStore) => {
     const {headers} = prevContext;
 
     if (typeof operation.variables._cache !== "undefined") {
+      const useCache = !!operation.variables._cache;
       delete operation.variables._cache;
 
       return {
         ...prevContext,
         headers: {
           ...headers,
-          "x-skip-cache": "true",
+          "x-skip-cache": !useCache ? "true" : "false",
         },
       };
     }

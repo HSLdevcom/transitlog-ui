@@ -49,11 +49,11 @@ export default (state) => {
 
     updateTime();
 
-    if ((isAuto && state.timeIsCurrent) || !isAuto) {
+    if (!isAuto || (isAuto && state.timeIsCurrent)) {
       Object.values(updateListeners).forEach(({auto, cb}) => {
         // Check that the cb should run when auto-updating if this is an auto-update.
         if (typeof cb === "function" && (!isAuto || (isAuto && auto))) {
-          cb();
+          cb(isAuto);
         }
       });
     }

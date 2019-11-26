@@ -269,9 +269,9 @@ const JourneyQuery = decorate(
     );
 
     const createRefetcher = useCallback(
-      (refetch) => () => {
+      (refetch) => (isAuto = false) => {
         if (journey && !skip) {
-          refetch(queryVars);
+          refetch({...queryVars, _cache: isAuto});
         }
       },
       [skip, queryVars]
