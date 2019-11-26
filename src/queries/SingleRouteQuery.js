@@ -51,7 +51,6 @@ const SingleRouteQuery = observer(
           }
 
           const fetchedRoute = get(data, "route", null);
-
           activateRefetch(refetch);
 
           return children({
