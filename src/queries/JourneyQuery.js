@@ -252,20 +252,19 @@ const decorate = flow(observer);
 
 const JourneyQuery = decorate(
   ({skip, children, journey = {}, includeUnsigned = false}) => {
-    const queryVars = useMemo(
-      () => ({
-        ...pick(
-          journey,
-          "routeId",
-          "direction",
-          "departureDate",
-          "departureTime",
-          "uniqueVehicleId"
-        ),
+    const queryVars = useMemo(() => {
+      const {routeId, direction, departureDate, departureTime, uniqueVehicleId} =
+        journey || {};
+
+      return {
+        routeId,
+        direction,
+        departureDate,
+        departureTime,
+        uniqueVehicleId,
         unsignedEvents: includeUnsigned,
-      }),
-      [journey, includeUnsigned]
-    );
+      };
+    }, [journey, includeUnsigned]);
 
     const shouldSkip = skip || !journey;
 
