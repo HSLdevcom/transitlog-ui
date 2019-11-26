@@ -35,7 +35,7 @@ const alertsQuery = gql`
   ${AlertFieldsFragment}
 `;
 
-const updateListenerName = "update alerts";
+const updateListenerName = "alerts query";
 
 const AlertsQuery = observer(({time, language = "fi", alertSearch, children}) => {
   const queryProps = useMemo(() => ({time, language, ...alertSearch}), [

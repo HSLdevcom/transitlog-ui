@@ -1,6 +1,6 @@
 import React, {useMemo} from "react";
 import get from "lodash/get";
-import pick from "lodash/pick";
+
 import flow from "lodash/flow";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";

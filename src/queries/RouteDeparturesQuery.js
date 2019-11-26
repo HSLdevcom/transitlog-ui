@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useMemo} from "react";
 import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {observer} from "mobx-react-lite";
-import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
+import {useRefetch} from "../hooks/useRefetch";
 
 export const routeJourneysQuery = gql`
   query journeysByDateQuery(
@@ -93,37 +93,30 @@ export const routeJourneysQuery = gql`
   ${CancellationFieldsFragment}
 `;
 
-const updateListenerName = "journey list query";
+const updateListenerName = "route departures query";
 
 const RouteDeparturesQuery = observer(({children, route, date, skip}) => {
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      const {routeId, direction, originStopId} = route;
-
-      if (refetch && route && route.routeId && !skip) {
-        refetch({
-          routeId,
-          direction: parseInt(direction, 10),
-          stopId: originStopId,
-          date,
-          _cache: false,
-        });
-      }
-    },
-    [route, date]
-  );
-
-  useEffect(() => () => removeUpdateListener(updateListenerName), []);
-
   const {routeId, direction, originStopId} = route;
   const shouldSkip = skip || !route || !routeId || !direction || !originStopId;
 
-  const queryVars = {
-    routeId: routeId,
-    direction: parseInt(direction, 10),
-    stopId: originStopId || "",
-    date,
-  };
+  const queryVars = useMemo(
+    () => ({
+      routeId: routeId,
+      direction: parseInt(direction, 10),
+      stopId: originStopId || "",
+      date,
+    }),
+    [routeId, direction, originStopId, date]
+  );
+
+  const activateRefetch = useRefetch(
+    updateListenerName,
+    {
+      ...queryVars,
+      skip: shouldSkip,
+    },
+    true
+  );
 
   return (
     <Query skip={shouldSkip} query={routeJourneysQuery} variables={queryVars}>
@@ -132,9 +125,9 @@ const RouteDeparturesQuery = observer(({children, route, date, skip}) => {
           return children({departures: [], loading, error, skipped: shouldSkip});
         }
 
-        const departures = get(data, "routeDepartures", []);
+        activateRefetch(refetch);
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+        const departures = get(data, "routeDepartures", []);
         return children({departures, loading, error, skipped: shouldSkip});
       }}
     </Query>

@@ -36,7 +36,7 @@ const decorate = flow(
   inject("state")
 );
 
-const updateListenerName = "update cancellations";
+const updateListenerName = "cancellations query";
 
 const CancellationsQuery = decorate(({date, cancellationsSearch, children}) => {
   const queryProps = useMemo(() => ({date, ...cancellationsSearch}), [
