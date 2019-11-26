@@ -26,7 +26,7 @@ export const allStopsQuery = gql`
   }
 `;
 
-const updateListenerName = "update plain stops";
+const updateListenerName = "plain stops query";
 
 const AllStopsQuery = ({children, date}) => {
   const prevResults = useRef([]);
