@@ -44,7 +44,7 @@ const AlertsQuery = observer(({time, language = "fi", alertSearch, children}) =>
     alertSearch,
   ]);
 
-  const activateRefetch = useRefetch(updateListenerName, queryProps, false);
+  const activateRefetch = useRefetch(updateListenerName, queryProps);
 
   return (
     <Query query={alertsQuery} variables={queryProps}>
