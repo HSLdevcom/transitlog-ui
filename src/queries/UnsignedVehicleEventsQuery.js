@@ -1,11 +1,9 @@
-import React, {useEffect, useCallback} from "react";
+import React from "react";
 import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
-import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {observer} from "mobx-react-lite";
 import {useRefetch} from "../hooks/useRefetch";
-import query from "apollo-cache-inmemory/lib/fragmentMatcherIntrospectionQuery";
 
 export const unsignedEventsQuery = gql`
   query unsignedEventsQuery($date: Date!, $vehicleId: VehicleId!) {

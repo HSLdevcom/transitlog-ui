@@ -1,9 +1,8 @@
-import React, {useRef, useCallback, useMemo} from "react";
+import React, {useRef, useMemo} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {observer} from "mobx-react-lite";
-import {setUpdateListener} from "../stores/UpdateManager";
 import {useRefetch} from "../hooks/useRefetch";
 
 const stopsByRouteQuery = gql`

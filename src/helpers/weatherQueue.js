@@ -2,7 +2,7 @@ import PQueue from "p-queue";
 
 const queue = new PQueue({
   concurrency: 2,
-  timeout: 500,
+  timeout: 10000,
   throwOnTimeout: true,
   autoStart: true,
   carryoverConcurrencyCount: true,
