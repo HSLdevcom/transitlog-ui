@@ -100,7 +100,7 @@ export const routeJourneysByWeekQuery = gql`
   ${CancellationFieldsFragment}
 `;
 
-const updateListenerName = "journey weel query";
+const updateListenerName = "journey week query";
 
 const JourneysByWeekQuery = observer(
   ({children, route, date, lastStopArrival = false, skip}) => {

@@ -1,10 +1,10 @@
-import React, {useCallback} from "react";
+import React, {useMemo} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {observer} from "mobx-react-lite";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
-import {setUpdateListener} from "../stores/UpdateManager";
+import {useRefetch} from "../hooks/useRefetch";
 
 const alertsQuery = gql`
   query alertsQuery(
@@ -38,26 +38,20 @@ const alertsQuery = gql`
 const updateListenerName = "update alerts";
 
 const AlertsQuery = observer(({time, language = "fi", alertSearch, children}) => {
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      if (refetch && time && language) {
-        refetch({
-          time,
-          language,
-          _cache: false,
-          ...alertSearch,
-        });
-      }
-    },
-    [time, language, alertSearch]
-  );
+  const queryProps = useMemo(() => ({time, language, ...alertSearch}), [
+    time,
+    language,
+    alertSearch,
+  ]);
+
+  const activateRefetch = useRefetch(updateListenerName, queryProps, false);
 
   return (
-    <Query query={alertsQuery} variables={{time, language, ...alertSearch}}>
+    <Query query={alertsQuery} variables={queryProps}>
       {({loading, error, data, refetch}) => {
         const alerts = get(data, "alerts", []);
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+        activateRefetch(refetch);
 
         return children({
           loading,
