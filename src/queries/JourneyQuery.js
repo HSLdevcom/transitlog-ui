@@ -1,10 +1,9 @@
-import React, {useEffect, useCallback, useMemo} from "react";
+import React, {useMemo} from "react";
 import get from "lodash/get";
 import pick from "lodash/pick";
 import flow from "lodash/flow";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
-import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
 import {observer} from "mobx-react-lite";
@@ -249,7 +248,6 @@ export const journeyQuery = gql`
 `;
 
 const updateListenerName = "selected journey";
-
 const decorate = flow(observer);
 
 const JourneyQuery = decorate(
@@ -270,6 +268,7 @@ const JourneyQuery = decorate(
     );
 
     const shouldSkip = skip || !journey;
+
     const activateRefetch = useRefetch(
       updateListenerName,
       {...queryVars, skip: shouldSkip},
@@ -286,7 +285,6 @@ const JourneyQuery = decorate(
           activateRefetch(refetch);
 
           const journey = get(data, "journey", null);
-
           return children({journey, loading, error});
         }}
       </Query>
