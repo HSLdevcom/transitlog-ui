@@ -10,9 +10,11 @@ export const useRefetch = (name, props = {}, reactToAuto = false) => {
     (isAuto = false) => {
       if (typeof refetch.current === "function" && get(props, "skip", false) === false) {
         console.log(`Refetching: ${name}`);
+        // Remove the skip prop, it is not used in queries.
+        const {skip, ...queryProps} = props;
 
         refetch.current({
-          ...props,
+          ...queryProps,
           _cache: isAuto,
         });
       }
