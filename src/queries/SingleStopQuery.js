@@ -1,10 +1,9 @@
-import React, {useCallback} from "react";
+import React from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {StopFieldsFragment} from "./StopFieldsFragment";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
-import {setUpdateListener} from "../stores/UpdateManager";
 import {useRefetch} from "../hooks/useRefetch";
 
 export const singleStopQuery = gql`
