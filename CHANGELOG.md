@@ -1,5 +1,11 @@
 # Transitlog UI changelog
 
+## Version 1.5.3, deployed 2019-11-26 @ 13:00
+
+- Refactor queries to use a refetch hook.
+- Use the refetch hook for most queries.
+- Fix weather request timeout.
+
 ## Version 1.5.2, deployed 2019-11-22 @ 12:00
 
 - Fix area journey filter.
