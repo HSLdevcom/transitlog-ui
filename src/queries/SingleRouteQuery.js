@@ -1,9 +1,10 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useRef} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {RouteFieldsFragment} from "./RouteFieldsFragment";
 import {observer} from "mobx-react-lite";
+import {useRefetch} from "../hooks/useRefetch";
 
 const singleRouteQuery = gql`
   query singleRouteQuery($routeId: String!, $direction: Direction!, $date: Date!) {
@@ -13,6 +14,8 @@ const singleRouteQuery = gql`
   }
   ${RouteFieldsFragment}
 `;
+
+const updateListenerName = "single stop query";
 
 const SingleRouteQuery = observer(
   ({children, routeId, direction, date, skip, onCompleted}) => {
@@ -25,13 +28,20 @@ const SingleRouteQuery = observer(
       [routeId, direction, date]
     );
 
+    const shouldSkip = skip || !routeId || !date;
+
+    const activateRefetch = useRefetch(updateListenerName, {
+      ...variables,
+      skip: shouldSkip,
+    });
+
     return (
       <Query
         onCompleted={onCompleted}
-        skip={skip || !routeId || !date}
+        skip={shouldSkip}
         query={singleRouteQuery}
         variables={variables}>
-        {({loading, error, data}) => {
+        {({loading, error, data, refetch}) => {
           if (loading || error || !data) {
             return children({
               loading,
@@ -41,6 +51,8 @@ const SingleRouteQuery = observer(
           }
 
           const fetchedRoute = get(data, "route", null);
+
+          activateRefetch(refetch);
 
           return children({
             loading,
