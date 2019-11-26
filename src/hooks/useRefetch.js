@@ -1,5 +1,5 @@
-import {useCallback, useRef} from "react";
-import {setUpdateListener} from "../stores/UpdateManager";
+import {useCallback, useRef, useEffect} from "react";
+import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 
 export const useRefetch = (name, props = {}, reactToAuto = false) => {
   const refetch = useRef(null);
@@ -11,6 +11,8 @@ export const useRefetch = (name, props = {}, reactToAuto = false) => {
         typeof refetch.current === "function" &&
         (Object.keys(props).length === 0 ||
           Object.entries(props).every(([name, val]) =>
+            // Check the skip prop separately, if it is true the refetch should not happen.
+            // Other props should be truthy or one of the allowed falsy values.
             name === "skip" ? val !== true : val === false || val === 0 || !!val
           ))
       ) {
@@ -25,11 +27,16 @@ export const useRefetch = (name, props = {}, reactToAuto = false) => {
     [refetch.current, ...propDeps]
   );
 
-  return useCallback(
-    (queryRefetcher) => {
-      refetch.current = queryRefetcher;
-      setUpdateListener(name, refetchWithProps, reactToAuto);
-    },
-    [name, refetchWithProps, reactToAuto]
-  );
+  useEffect(() => {
+    setUpdateListener(name, refetchWithProps, reactToAuto);
+
+    return () => {
+      console.log(`Removing update listener: ${name}`);
+      removeUpdateListener(name);
+    };
+  }, [name, refetchWithProps, reactToAuto]);
+
+  return useCallback((queryRefetcher) => {
+    refetch.current = queryRefetcher;
+  }, []);
 };

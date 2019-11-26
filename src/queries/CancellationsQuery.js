@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useMemo} from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
@@ -6,7 +6,7 @@ import {observer} from "mobx-react";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
-import {setUpdateListener} from "../stores/UpdateManager";
+import {useRefetch} from "../hooks/useRefetch";
 
 const cancellationsQuery = gql`
   query cancellationsQuery(
@@ -39,25 +39,19 @@ const decorate = flow(
 const updateListenerName = "update cancellations";
 
 const CancellationsQuery = decorate(({date, cancellationsSearch, children}) => {
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      if (refetch && date) {
-        refetch({
-          date,
-          _cache: false,
-          ...cancellationsSearch,
-        });
-      }
-    },
-    [date]
-  );
+  const queryProps = useMemo(() => ({date, ...cancellationsSearch}), [
+    date,
+    cancellationsSearch,
+  ]);
+
+  const activateRefetch = useRefetch(updateListenerName, queryProps);
 
   return (
-    <Query query={cancellationsQuery} variables={{date, ...cancellationsSearch}}>
+    <Query query={cancellationsQuery} variables={queryProps}>
       {({loading, error, data, refetch}) => {
         const cancellations = get(data, "cancellations", []);
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+        activateRefetch(refetch);
 
         return children({
           loading,
