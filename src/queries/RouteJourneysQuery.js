@@ -3,6 +3,8 @@ import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
+import {useRefetch} from "../hooks/useRefetch";
+import {observer} from "mobx-react-lite";
 
 export const routeJourneysQuery = gql`
   query routeJourneyQuery(
@@ -38,46 +40,40 @@ export const routeJourneysQuery = gql`
 
 const updateListenerName = "route journeys";
 
-const RouteJourneysQuery = (props) => {
+const RouteJourneysQuery = observer((props) => {
   const {routeId, direction, date, skip, children} = props;
 
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      if (!skip && routeId && direction && date) {
-        refetch({
-          routeId,
-          direction,
-          departureDate: date,
-        });
-      }
-    },
-    [routeId, direction, date, skip]
-  );
+  const shouldSkip = skip || !routeId || !direction || !date;
 
-  useEffect(() => () => removeUpdateListener(updateListenerName), []);
+  const queryProps = {
+    routeId,
+    direction,
+    departureDate: date,
+  };
+
+  const activateRefetch = useRefetch(updateListenerName, {
+    ...queryProps,
+    skip: shouldSkip,
+  });
 
   return (
     <Query
       partialRefetch={true}
-      skip={skip || !routeId || !direction || !date}
+      skip={shouldSkip}
       query={routeJourneysQuery}
-      variables={{
-        routeId,
-        direction,
-        departureDate: date,
-      }}>
+      variables={queryProps}>
       {({data, loading, error, refetch}) => {
         if (!data || loading) {
           return children({routeJourneys: [], loading, error});
         }
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+        activateRefetch(refetch);
         const routeJourneys = get(data, "journeys", []);
 
         return children({routeJourneys, loading, error});
       }}
     </Query>
   );
-};
+});
 
 export default RouteJourneysQuery;

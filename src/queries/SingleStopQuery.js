@@ -5,6 +5,7 @@ import get from "lodash/get";
 import {StopFieldsFragment} from "./StopFieldsFragment";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {setUpdateListener} from "../stores/UpdateManager";
+import {useRefetch} from "../hooks/useRefetch";
 
 export const singleStopQuery = gql`
   query singleStopQuery($stopId: String!, $date: Date!) {
@@ -19,24 +20,16 @@ export const singleStopQuery = gql`
   ${AlertFieldsFragment}
 `;
 
-const updateListenerName = "update single stop";
+const updateListenerName = "single stop query";
 
 const SingleStopQuery = ({children, stopId, date, skip}) => {
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      if (refetch && stopId && date && !skip) {
-        refetch({
-          stopId,
-          date,
-          _cache: false,
-        });
-      }
-    },
-    [stopId, date, skip]
-  );
+  const shouldSkip = skip || !stopId;
+  const queryProps = {stopId, date};
+
+  const activateRefetch = useRefetch(updateListenerName, queryProps);
 
   return (
-    <Query skip={skip || !stopId} query={singleStopQuery} variables={{stopId, date}}>
+    <Query skip={shouldSkip} query={singleStopQuery} variables={queryProps}>
       {({loading, error, data, refetch}) => {
         if (!data) {
           return children({
@@ -46,7 +39,7 @@ const SingleStopQuery = ({children, stopId, date, skip}) => {
           });
         }
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+        activateRefetch(refetch);
 
         const stop = get(data, "stop", null);
 
