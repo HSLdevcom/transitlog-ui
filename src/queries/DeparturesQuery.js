@@ -1,11 +1,10 @@
-import React, {useEffect, useCallback, useMemo} from "react";
+import React, {useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import {Query} from "react-apollo";
 import gql from "graphql-tag";
 import get from "lodash/get";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
-import {removeUpdateListener, setUpdateListener} from "../stores/UpdateManager";
 import {useRefetch} from "../hooks/useRefetch";
 
 export const departuresQuery = gql`

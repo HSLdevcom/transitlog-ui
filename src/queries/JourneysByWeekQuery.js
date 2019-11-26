@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useRef, useMemo} from "react";
 import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {observer} from "mobx-react-lite";
-import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
+import {useRefetch} from "../hooks/useRefetch";
 
 export const routeJourneysByWeekQuery = gql`
   query journeysByWeekQuery(
@@ -104,43 +104,30 @@ const updateListenerName = "journey week query";
 
 const JourneysByWeekQuery = observer(
   ({children, route, date, lastStopArrival = false, skip}) => {
-    const prevResults = useRef([]);
-
-    const createRefetcher = useCallback(
-      (refetch) => () => {
-        const {routeId, direction, originStopId, destinationStopId} = route;
-
-        if (refetch && route && route.routeId && !skip) {
-          refetch({
-            routeId,
-            direction: parseInt(direction, 10),
-            stopId: lastStopArrival ? destinationStopId : originStopId,
-            lastStopArrival,
-            date,
-          });
-        }
-      },
-      [route, date]
-    );
-
-    useEffect(() => () => removeUpdateListener(updateListenerName), []);
-
     const {routeId, direction, originStopId, destinationStopId} = route;
 
     const shouldSkip =
       skip || !routeId || !originStopId || (lastStopArrival && !destinationStopId);
 
+    const queryProps = useMemo(
+      () => ({
+        lastStopArrival,
+        routeId: routeId,
+        direction: parseInt(direction, 10),
+        stopId: lastStopArrival ? destinationStopId : originStopId,
+        date,
+      }),
+      [lastStopArrival, routeId, direction, destinationStopId, originStopId, date]
+    );
+
+    const prevResults = useRef([]);
+    const activateRefetch = useRefetch(updateListenerName, {
+      ...queryProps,
+      skip: shouldSkip,
+    });
+
     return (
-      <Query
-        skip={shouldSkip}
-        query={routeJourneysByWeekQuery}
-        variables={{
-          lastStopArrival,
-          routeId: routeId,
-          direction: parseInt(direction, 10),
-          stopId: lastStopArrival ? destinationStopId : originStopId,
-          date,
-        }}>
+      <Query skip={shouldSkip} query={routeJourneysByWeekQuery} variables={queryProps}>
         {({data, error, loading, refetch}) => {
           if (!data || loading) {
             return children({departures: prevResults.current, loading, error});
@@ -148,7 +135,7 @@ const JourneysByWeekQuery = observer(
 
           const departures = get(data, "weeklyDepartures", []);
 
-          setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+          activateRefetch(refetch);
 
           prevResults.current = departures;
           return children({departures, loading, error});
