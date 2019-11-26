@@ -8,6 +8,7 @@ import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
 import {observer} from "mobx-react-lite";
+import {useRefetch} from "../hooks/useRefetch";
 
 export const journeyQuery = gql`
   query journeyQuery(
@@ -268,25 +269,22 @@ const JourneyQuery = decorate(
       [journey, includeUnsigned]
     );
 
-    const createRefetcher = useCallback(
-      (refetch) => (isAuto = false) => {
-        if (journey && !skip) {
-          refetch({...queryVars, _cache: isAuto});
-        }
-      },
-      [skip, queryVars]
+    const shouldSkip = skip || !journey;
+    const activateRefetch = useRefetch(
+      updateListenerName,
+      {...queryVars, skip: shouldSkip},
+      true
     );
 
-    useEffect(() => () => removeUpdateListener(updateListenerName), []);
-
     return (
-      <Query skip={skip || !journey} query={journeyQuery} variables={queryVars}>
+      <Query skip={shouldSkip} query={journeyQuery} variables={queryVars}>
         {({data, loading, error, refetch}) => {
           if (!data || loading) {
             return children({journey: null, loading, error});
           }
 
-          setUpdateListener(updateListenerName, createRefetcher(refetch));
+          activateRefetch(refetch);
+
           const journey = get(data, "journey", null);
 
           return children({journey, loading, error});
