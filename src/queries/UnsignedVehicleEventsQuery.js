@@ -4,6 +4,8 @@ import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {observer} from "mobx-react-lite";
+import {useRefetch} from "../hooks/useRefetch";
+import query from "apollo-cache-inmemory/lib/fragmentMatcherIntrospectionQuery";
 
 export const unsignedEventsQuery = gql`
   query unsignedEventsQuery($date: Date!, $vehicleId: VehicleId!) {
@@ -31,35 +33,26 @@ const updateListenerName = "unsigned vehicle events";
 const UnsignedVehicleEventsQuery = observer((props) => {
   const {vehicleId, date, skip, children} = props;
 
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      if (!skip && vehicleId && date) {
-        refetch({
-          vehicleId,
-          date,
-        });
-      }
-    },
-    [vehicleId, date, skip]
-  );
+  const queryProps = {
+    vehicleId,
+    date,
+  };
 
-  useEffect(() => () => removeUpdateListener(updateListenerName), []);
+  const activateRefetch = useRefetch(updateListenerName, {...queryProps, skip});
 
   return (
     <Query
       partialRefetch={true}
       skip={skip}
       query={unsignedEventsQuery}
-      variables={{
-        vehicleId,
-        date,
-      }}>
+      variables={queryProps}>
       {({data, loading, error, refetch}) => {
         if (!data || loading) {
           return children({unsignedEvents: [], loading, error});
         }
 
-        setUpdateListener(updateListenerName, createRefetcher(refetch), false);
+        activateRefetch(refetch);
+
         const unsignedEvents = get(data, "unsignedVehicleEvents", []);
         return children({unsignedEvents, loading, error});
       }}

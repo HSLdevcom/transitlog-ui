@@ -1,14 +1,14 @@
-import React, {useEffect, useCallback} from "react";
+import React from "react";
 import get from "lodash/get";
 import orderBy from "lodash/orderBy";
 import gql from "graphql-tag";
 import {observer} from "mobx-react-lite";
 import {Query} from "react-apollo";
-import {removeUpdateListener, setUpdateListener} from "../stores/UpdateManager";
 import {timeToSeconds} from "../helpers/time";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
+import {useRefetch} from "../hooks/useRefetch";
 
-export const hfpQuery = gql`
+export const vehicleJourneysQuery = gql`
   query vehicleJourneysQuery($date: Date!, $uniqueVehicleId: VehicleId!) {
     vehicleJourneys(date: $date, uniqueVehicleId: $uniqueVehicleId) {
       id
@@ -45,30 +45,18 @@ const VehicleJourneysQuery = observer((props) => {
 
   const uniqueVehicleId = `${operatorId}/${vehicleNumber}`;
 
-  const createRefetcher = useCallback(
-    (refetch) => () => {
-      if (vehicleId && !skip) {
-        refetch({
-          date,
-          uniqueVehicleId,
-        });
-      }
-    },
-    [date, vehicleId, skip]
-  );
+  const queryProps = {
+    date,
+    uniqueVehicleId,
+  };
 
-  useEffect(() => () => removeUpdateListener(updateListenerName), []);
+  const activateRefetch = useRefetch(updateListenerName, {...queryProps, skip});
 
   return (
-    <Query
-      query={hfpQuery}
-      variables={{
-        date,
-        uniqueVehicleId,
-      }}>
+    <Query query={vehicleJourneysQuery} variables={queryProps}>
       {({data, loading, refetch, error}) => {
-        if (!loading) {
-          setUpdateListener(updateListenerName, createRefetcher(refetch));
+        if (!loading && !error) {
+          activateRefetch(refetch);
         }
 
         const journeys = orderBy(get(data, "vehicleJourneys", []), ({departureTime}) =>

@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {observer} from "mobx-react-lite";
+import {useRefetch} from "../hooks/useRefetch";
 
 const vehiclesQuery = gql`
   query vehicleOptionsQuery($date: Date, $search: String) {
@@ -22,12 +23,15 @@ const vehiclesQuery = gql`
   }
 `;
 
+const updateListenerName = "vehicle options query";
+
 export default observer(({children, date, skip}) => {
   const prevResults = useRef([]);
+  const activateRefetch = useRefetch(updateListenerName, {date, skip});
 
   return (
     <Query query={vehiclesQuery} variables={{date}} skip={skip}>
-      {({loading, error, data}) => {
+      {({loading, error, data, refetch}) => {
         if (loading || !data) {
           return children({
             loading,
@@ -35,6 +39,8 @@ export default observer(({children, date, skip}) => {
             vehicles: prevResults.current,
           });
         }
+
+        activateRefetch(refetch);
 
         const vehicles = [...get(data, "equipment", [])];
         prevResults.current = vehicles;
