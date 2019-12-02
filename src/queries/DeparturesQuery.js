@@ -99,14 +99,10 @@ const DeparturesQuery = observer(
       [date, stopId, routeId, maxHour, minHour]
     );
 
-    const activateRefetch = useRefetch(
-      updateListenerName,
-      {
-        ...queryProps,
-        skip: shouldSkip,
-      },
-      true
-    );
+    const activateRefetch = useRefetch(updateListenerName, {
+      ...queryProps,
+      skip: shouldSkip,
+    });
 
     return (
       <Query query={departuresQuery} variables={queryProps} skip={shouldSkip}>

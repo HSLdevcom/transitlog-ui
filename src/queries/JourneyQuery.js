@@ -1,12 +1,9 @@
 import React, {useMemo} from "react";
 import get from "lodash/get";
-
-import flow from "lodash/flow";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
-import {observer} from "mobx-react-lite";
 import {useRefetch} from "../hooks/useRefetch";
 
 export const journeyQuery = gql`
@@ -256,47 +253,55 @@ export const journeyQuery = gql`
 `;
 
 const updateListenerName = "selected journey";
-const decorate = flow(observer);
 
-const JourneyQuery = decorate(
-  ({skip, children, journey = {}, includeUnsigned = false}) => {
-    const queryVars = useMemo(() => {
-      const {routeId, direction, departureDate, departureTime, uniqueVehicleId} =
-        journey || {};
+const JourneyQuery = ({
+  children,
+  skip = false,
+  journey = null,
+  includeUnsigned = false,
+}) => {
+  const queryVars = useMemo(() => {
+    const {routeId, direction, departureDate, departureTime, uniqueVehicleId} =
+      journey || {};
 
-      return {
-        routeId,
-        direction,
-        departureDate,
-        departureTime,
-        uniqueVehicleId,
-        unsignedEvents: includeUnsigned,
-      };
-    }, [journey, includeUnsigned]);
+    return {
+      routeId,
+      direction,
+      departureDate,
+      departureTime,
+      uniqueVehicleId,
+      unsignedEvents: includeUnsigned,
+    };
+  }, [journey, includeUnsigned]);
 
-    const shouldSkip = skip || !journey;
+  const shouldSkip = skip || !journey;
+  const activateRefetch = useRefetch(
+    updateListenerName,
+    {...queryVars, skip: shouldSkip},
+    true
+  );
 
-    const activateRefetch = useRefetch(
-      updateListenerName,
-      {...queryVars, skip: shouldSkip},
-      true
-    );
+  return (
+    <Query
+      skip={shouldSkip}
+      query={journeyQuery}
+      variables={queryVars}
+      partialRefetch={true}>
+      {({data, loading, error, refetch}) => {
+        if (!data || loading) {
+          return children({
+            journey: null,
+            loading,
+            error,
+          });
+        }
 
-    return (
-      <Query skip={shouldSkip} query={journeyQuery} variables={queryVars}>
-        {({data, loading, error, refetch}) => {
-          if (!data || loading) {
-            return children({journey: null, loading, error});
-          }
-
-          activateRefetch(refetch);
-
-          const journey = get(data, "journey", null);
-          return children({journey, loading, error});
-        }}
-      </Query>
-    );
-  }
-);
+        activateRefetch(refetch);
+        const journey = get(data, "journey", null);
+        return children({journey, loading, error});
+      }}
+    </Query>
+  );
+};
 
 export default JourneyQuery;

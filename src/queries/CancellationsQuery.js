@@ -44,7 +44,7 @@ const CancellationsQuery = decorate(({date, cancellationsSearch, children}) => {
     cancellationsSearch,
   ]);
 
-  const activateRefetch = useRefetch(updateListenerName, queryProps);
+  const activateRefetch = useRefetch(updateListenerName, queryProps, false);
 
   return (
     <Query query={cancellationsQuery} variables={queryProps}>

@@ -109,14 +109,10 @@ const RouteDeparturesQuery = observer(({children, route, date, skip}) => {
     [routeId, direction, originStopId, date]
   );
 
-  const activateRefetch = useRefetch(
-    updateListenerName,
-    {
-      ...queryVars,
-      skip: shouldSkip,
-    },
-    true
-  );
+  const activateRefetch = useRefetch(updateListenerName, {
+    ...queryVars,
+    skip: shouldSkip,
+  });
 
   return (
     <Query skip={shouldSkip} query={routeJourneysQuery} variables={queryVars}>

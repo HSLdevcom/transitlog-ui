@@ -14,7 +14,7 @@
     "@types/moment-timezone": "^0.5.10",
     "@types/react": "^16.9.3",
     "apollo-cache-inmemory": "^1.6.2",
-    "apollo-client": "^2.6.3",
+    "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.13",
     "apollo-link-batch-http": "^1.2.13",
     "apollo-link-context": "^1.0.19",

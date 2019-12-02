@@ -31,7 +31,7 @@ const decorate = flow(
   inject("Journey", "Filters", "Time")
 );
 
-const RouteDepartures = decorate(({state, Time, Journey, loading: journeyLoading}) => {
+const RouteDepartures = decorate(({state, Time, Journey}) => {
   const selectJourney = useCallback((journey, matchVehicle = true) => {
     let journeyToSelect = null;
 
@@ -65,7 +65,7 @@ const RouteDepartures = decorate(({state, Time, Journey, loading: journeyLoading
           <SidepanelList
             testIdPrefix="journey"
             focusKey={selectedJourneyId}
-            loading={loading || journeyLoading}
+            loading={loading}
             header={
               <JourneyListHeader data-testid="journey-list-header">
                 <HeaderRowLeft>
