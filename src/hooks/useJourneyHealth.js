@@ -1,4 +1,3 @@
-import findLast from "lodash/findLast";
 import get from "lodash/get";
 import last from "lodash/last";
 import groupBy from "lodash/groupBy";
@@ -6,7 +5,6 @@ import orderBy from "lodash/orderBy";
 import flatten from "lodash/flatten";
 import {round} from "../helpers/getRoundedBbox";
 import {useMemo, useContext} from "react";
-import {getDepartureMoment} from "../helpers/time";
 import {TIMEZONE} from "../constants";
 import moment from "moment-timezone";
 import {text} from "../helpers/text";
@@ -124,13 +122,12 @@ function checkPositionEventsHealth(
     return;
   }
 
-  const {start, end} = bounds;
+  const {start = 0, end = 0} = bounds;
 
   // Catch gaps from the start of the journey by starting with the first stop event.
   // We also don't care about gaps that happen before this.
   // "tsi" = TimeStamp Integer, ie unix timestamp of event.
-  let prevTsi = get(start, "event.recordedAtUnix", 0) || 0;
-  const lastTsi = get(end, "event.recordedAtUnix", 0) || 0;
+  let prevTsi = start || 0;
 
   let eventsChecked = 0;
 
@@ -141,6 +138,8 @@ function checkPositionEventsHealth(
       addMessage(`${text("journey.health.positions_gap")}: ${diff}`);
       incrementHealth(-(diff * 2));
     }
+
+    eventsChecked++;
   }
 
   for (const event of positionEvents) {
@@ -152,22 +151,19 @@ function checkPositionEventsHealth(
       continue;
     }
 
-    if (lastTsi && lastTsi < event.recordedAtUnix) {
+    if (end !== 0 && end < event.recordedAtUnix) {
       break;
     }
 
     const diff = Math.abs(event.recordedAtUnix - prevTsi);
     assignPoints(diff);
-
-    eventsChecked++;
     prevTsi = event.recordedAtUnix;
   }
 
   // Catch gaps from the end of the journey.
-  if (lastTsi > prevTsi) {
-    const diff = Math.abs(lastTsi - prevTsi);
+  if (end > prevTsi) {
+    const diff = Math.abs(end - prevTsi);
     assignPoints(diff);
-    eventsChecked++;
   }
 
   reportMax(eventsChecked);
@@ -267,24 +263,26 @@ export const useJourneyHealth = (journey) => {
       "asc"
     );
 
-    // The planned duration of the journey may be available, which
-    // we'll use to check if the journey SHOULD be concluded.
-    const journeyDuration = get(journey, "journeyDurationMinutes", 0);
-    const departure = get(journey, "departure", {});
+    // Get the last departure of the journey
+    const journeyEndDeparture = plannedDepartures[plannedDepartures.length - 1];
 
-    const plannedJourneyEndMoment = getDepartureMoment(departure).add(
-      journeyDuration,
-      "minutes"
+    const lastPlannedArrival = get(
+      journeyEndDeparture,
+      "plannedArrivalTime.arrivalDateTime",
+      ""
     );
 
-    let journeyShouldBeConcluded = true;
+    const lastStopPlannedUnix = lastPlannedArrival
+      ? moment.tz(lastPlannedArrival, TIMEZONE).unix()
+      : 0;
 
-    if (journey) {
-      // If the start time + the planned duration is in the past, the journey SHOULD be
+    let journeyIsConcluded = true;
+    const currentUnix = Math.floor(Date.now() / 1000);
+
+    if (lastStopPlannedUnix !== 0) {
+      // If the planned arrival time at the last stop is in the past, the journey SHOULD be
       // concluded and we can evaluate the data as a completed journey.
-      journeyShouldBeConcluded = plannedJourneyEndMoment.isBefore(
-        moment.tz(new Date(), TIMEZONE)
-      );
+      journeyIsConcluded = currentUnix > lastStopPlannedUnix;
     }
 
     // Ensure we have all required data. Bail here if not.
@@ -297,11 +295,11 @@ export const useJourneyHealth = (journey) => {
         checklist: [],
         health: [],
         total: 0,
-        isDone: journeyShouldBeConcluded,
+        isDone: journeyIsConcluded,
       };
     }
 
-    // Separate events into stop events and non-stop events.
+    // Separate events into stop events and not-stop events.
     const {stopEvents, events} = journeyEvents.reduce(
       (categories, event) => {
         if (flatten(stopEventTypes).includes(event.type)) {
@@ -315,40 +313,42 @@ export const useJourneyHealth = (journey) => {
       {stopEvents: [], events: []}
     );
 
-    // Get the furthest stop that we have events from. For journeys that are in
-    // progress, the data is validated up to here. In other words we don't expect
-    // events to be present from stops that are in the future of the journey. The
-    // furthest driven stop is checked from the vehicle positions to disentangle
-    // this check from the data that we are actually checking; the stop events.
-    const lastEventWithStop = findLast(vehiclePositions, (pos) => !!pos.stop);
-    const maxDrivenStop = get(lastEventWithStop, "stop", "");
+    let visitedStops = plannedDepartures;
+    let maxPlannedStops = visitedStops.length - 1;
 
-    // The index of the max stop.
-    const stopsVisitedCount = plannedDepartures.findIndex(
-      (dep) => dep.stopId === maxDrivenStop
-    );
+    if (!journeyIsConcluded) {
+      // Get the furthest stop that we have events from. For journeys that are in
+      // progress, the data is validated up to here. In other words we don't expect
+      // events to be present from stops that are in the future of the journey. The
+      // furthest driven stop is retrieved by comparing the planned times to the
+      // current time, to disentangle this variable from the stop events themselves.
+      const furthestDepartureIndex = plannedDepartures.findIndex(
+        (dep) =>
+          moment.tz(dep.plannedDepartureTime.departureDateTime, TIMEZONE).unix() <=
+          currentUnix + 5 * 60
+      );
 
-    // This is the destination stop of the journey.
-    const lastPlannedStop = get(last(plannedDepartures), "stopId");
+      // Get a slice of only the visited stops. Include the first departure as a minimum.
+      visitedStops = plannedDepartures.slice(0, Math.max(1, furthestDepartureIndex));
+      maxPlannedStops = furthestDepartureIndex;
+    }
 
-    // Check if the journey has finished. If not, we won't check for events that
-    // we know are in the future. That wouldn't be fair!
-    const lastStopVisited = vehiclePositions.some(
-      (evt) => evt.nextStopId === "EOL" || evt.stop === lastPlannedStop
-    );
-
-    // The journey is evaluated as a completed journey when either the last stop
-    // is visited or the planned duration time is reached.
-    const journeyIsConcluded = lastStopVisited || journeyShouldBeConcluded;
-
-    // Get a slice of the visited stops from the planned departures.
-    const visitedStops = plannedDepartures.slice(0, stopsVisitedCount);
     // Get all timing stops. If there are any, we check that it has the required departure events.
     const timingStops = plannedDepartures.filter((dep) => !!dep.isTimingStop);
 
-    const maxPlannedStops = journeyIsConcluded
-      ? plannedDepartures.length - 1
-      : stopsVisitedCount;
+    const currentEndDeparture = visitedStops[visitedStops.length - 1];
+    const currentLastPlannedArrival = get(
+      currentEndDeparture,
+      "plannedArrivalTime.arrivalDateTime",
+      ""
+    );
+
+    const journeyEndStopEvent =
+      orderBy(
+        stopEvents.filter((se) => se.stopId === currentEndDeparture.stopId),
+        "recordedAtUnix",
+        "DESC"
+      )[0] || null;
 
     // Health scores that are scored with a percentage. If data is missing the
     // percentage is lower. Also includes messages that the validators can add
@@ -416,7 +416,8 @@ export const useJourneyHealth = (journey) => {
       checklist[which].status = setValue;
     };
 
-    const journeyStartDeparture = visitedStops[0];
+    // Get the first departure
+    const journeyStartDeparture = plannedDepartures[0];
     const journeyStartStopEvent =
       orderBy(
         stopEvents.filter((se) => se.stopId === journeyStartDeparture.stopId),
@@ -424,20 +425,26 @@ export const useJourneyHealth = (journey) => {
         "ASC"
       )[0] || null;
 
-    const journeyEndDeparture = visitedStops[visitedStops.length - 1];
-    const journeyEndStopEvent =
-      orderBy(
-        stopEvents.filter((se) => se.stopId === journeyEndDeparture.stopId),
-        "recordedAtUnix",
-        "DESC"
-      )[0] || null;
+    const firstPlannedDeparture = get(
+      journeyStartDeparture,
+      "plannedDepartureTime.departureDateTime",
+      ""
+    );
+
+    const journeyStartPlannedUnix = firstPlannedDeparture
+      ? moment.tz(firstPlannedDeparture, TIMEZONE).unix()
+      : 0;
+
+    const journeyEndPlannedUnix = currentLastPlannedArrival
+      ? moment.tz(currentLastPlannedArrival, TIMEZONE).unix()
+      : 0;
 
     // Check the health of the vehicle position events stream.
     checkPositionEventsHealth(
       vehiclePositions,
       {
-        start: {event: journeyStartStopEvent, stopId: journeyStartDeparture.stopId},
-        end: {event: journeyEndStopEvent, stopId: journeyEndDeparture.stopId},
+        start: get(journeyStartStopEvent, "recordedAtUnix", journeyStartPlannedUnix),
+        end: get(journeyEndStopEvent, "recordedAtUnix", journeyEndPlannedUnix),
       },
       onIncrementHealth("positions"),
       onAddMessage("positions", healthScores),
@@ -460,12 +467,16 @@ export const useJourneyHealth = (journey) => {
       onAddMessage("firstStopDeparture", healthScores)
     );
 
+    // This is the destination stop of the journey.
+    const lastPlannedStop = last(plannedDepartures);
+    const lastPlannedStopId = get(lastPlannedStop, "stopId");
+
     // Keep these pending until the journey is complete
     if (journeyIsConcluded) {
       // Check that the last stop arrival event is present.
       checkLastStopArrival(
         stopEvents,
-        lastPlannedStop,
+        lastPlannedStopId,
         onIncrementHealth("lastStopArrival"),
         onAddMessage("lastStopArrival", healthScores)
       );

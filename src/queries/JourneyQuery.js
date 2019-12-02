@@ -240,6 +240,14 @@ export const journeyQuery = gql`
         stopId
         isTimingStop
         index
+        plannedDepartureTime {
+          id
+          departureDateTime
+        }
+        plannedArrivalTime {
+          id
+          arrivalDateTime
+        }
       }
     }
   }
