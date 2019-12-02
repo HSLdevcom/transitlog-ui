@@ -14,7 +14,7 @@ export const LANGUAGES = {
 };
 
 // Language state is external because there are some parts of the app
-// that use it that are outside the the scope of the React tree.
+// that use it that are outside the scope of the React tree.
 export const languageState = observable({
   language: getUrlValue("language", "fi"),
 });
