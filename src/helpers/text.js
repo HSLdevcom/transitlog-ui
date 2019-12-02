@@ -1,6 +1,6 @@
 import {observer} from "mobx-react";
 import {languageState} from "../stores/UIStore";
-import {get} from "lodash";
+import get from "lodash/get";
 
 const uiFiles = {
   fi: require("../languages/ui/fi.json"),

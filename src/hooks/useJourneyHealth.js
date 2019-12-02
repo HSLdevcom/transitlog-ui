@@ -110,7 +110,13 @@ function checkTimingStopDepartures(events, visitedStops, incrementHealth, addMes
 
 // Evaluate the health of position events by checking that they were recorded within
 // 5 seconds of each other.
-function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) {
+function checkPositionEventsHealth(
+  positionEvents,
+  bounds,
+  incrementHealth,
+  addMessage,
+  reportMax
+) {
   const positionsLength = get(positionEvents, "length", 0);
 
   if (!positionEvents || !positionsLength) {
@@ -118,24 +124,53 @@ function checkPositionEventsHealth(positionEvents, incrementHealth, addMessage) 
     return;
   }
 
-  let prevTsi = 0;
+  const {start, end} = bounds;
 
-  for (const event of positionEvents) {
-    if (prevTsi === 0) {
-      prevTsi = event.recordedAtUnix;
-    }
+  // Catch gaps from the start of the journey by starting with the first stop event.
+  // We also don't care about gaps that happen before this.
+  // "tsi" = TimeStamp Integer, ie unix timestamp of event.
+  let prevTsi = get(start, "event.recordedAtUnix", 0) || 0;
+  const lastTsi = get(end, "event.recordedAtUnix", 0) || 0;
 
-    const diff = Math.abs(event.recordedAtUnix - prevTsi);
+  let eventsChecked = 0;
 
+  function assignPoints(diff) {
     if (diff <= 5) {
       incrementHealth(1);
     } else {
       addMessage(`${text("journey.health.positions_gap")}: ${diff}`);
       incrementHealth(-(diff * 2));
     }
+  }
 
+  for (const event of positionEvents) {
+    if (prevTsi === 0) {
+      prevTsi = event.recordedAtUnix;
+    }
+
+    if (prevTsi > event.recordedAtUnix) {
+      continue;
+    }
+
+    if (lastTsi && lastTsi < event.recordedAtUnix) {
+      break;
+    }
+
+    const diff = Math.abs(event.recordedAtUnix - prevTsi);
+    assignPoints(diff);
+
+    eventsChecked++;
     prevTsi = event.recordedAtUnix;
   }
+
+  // Catch gaps from the end of the journey.
+  if (lastTsi > prevTsi) {
+    const diff = Math.abs(lastTsi - prevTsi);
+    assignPoints(diff);
+    eventsChecked++;
+  }
+
+  reportMax(eventsChecked);
 }
 
 const stopEventTypes = ["DEP", ["PDE", "PAS"], "ARR", ["ARS", "PAS"]];
@@ -357,6 +392,11 @@ export const useJourneyHealth = (journey) => {
       healthScores[which].health = Math.max(0, currentHealth + pointsToAdd);
     };
 
+    const onReportMax = (which) => (maxPoints = 0) => {
+      const currentMax = healthScores[which].max;
+      healthScores[which].max = maxPoints || currentMax;
+    };
+
     // Health scores that are scored with a boolean. If any of these are "false", the
     // data is insufficient and should not be relied upon. They can also be pending if,
     // for example, the journey is ongoing and hasn't reached a timing stop yet. Pending
@@ -376,11 +416,32 @@ export const useJourneyHealth = (journey) => {
       checklist[which].status = setValue;
     };
 
+    const journeyStartDeparture = visitedStops[0];
+    const journeyStartStopEvent =
+      orderBy(
+        stopEvents.filter((se) => se.stopId === journeyStartDeparture.stopId),
+        "recordedAtUnix",
+        "ASC"
+      )[0] || null;
+
+    const journeyEndDeparture = visitedStops[visitedStops.length - 1];
+    const journeyEndStopEvent =
+      orderBy(
+        stopEvents.filter((se) => se.stopId === journeyEndDeparture.stopId),
+        "recordedAtUnix",
+        "DESC"
+      )[0] || null;
+
     // Check the health of the vehicle position events stream.
     checkPositionEventsHealth(
       vehiclePositions,
+      {
+        start: {event: journeyStartStopEvent, stopId: journeyStartDeparture.stopId},
+        end: {event: journeyEndStopEvent, stopId: journeyEndDeparture.stopId},
+      },
       onIncrementHealth("positions"),
-      onAddMessage("positions", healthScores)
+      onAddMessage("positions", healthScores),
+      onReportMax("positions")
     );
 
     // Check the health of stop events.
