@@ -4,7 +4,6 @@ import get from "lodash/get";
 
 export const useRefetch = (name, props = {}, reactToAuto = false) => {
   const [refetch, setRefetch] = useState(null);
-  const propDeps = Object.values(props);
 
   const refetchWithProps = useCallback(
     (isAuto = false) => {
@@ -22,7 +21,7 @@ export const useRefetch = (name, props = {}, reactToAuto = false) => {
         });
       }
     },
-    [refetch, ...propDeps]
+    [refetch, props.skip || false]
   );
 
   useEffect(() => {
