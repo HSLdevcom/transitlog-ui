@@ -179,7 +179,6 @@ const SidePanel = decorate((props) => {
                 helpText="Journeys tab"
                 key={`route_journeys_${createRouteId(route, true)}_${date}`}
                 route={route}
-                loading={journeyLoading}
                 name="journeys"
                 label={text("sidepanel.tabs.journeys")}
               />

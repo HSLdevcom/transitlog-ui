@@ -30,7 +30,7 @@ const updateListenerName = "plain stops query";
 
 const AllStopsQuery = ({children, date}) => {
   const prevResults = useRef([]);
-  const activateRefetch = useRefetch(updateListenerName, {date});
+  const activateRefetch = useRefetch(updateListenerName, {date}, false);
 
   return (
     <Query query={allStopsQuery} variables={{date}}>

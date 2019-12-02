@@ -1,43 +1,35 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect} from "react";
 import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import get from "lodash/get";
 
 export const useRefetch = (name, props = {}, reactToAuto = false) => {
-  const [refetch, setRefetch] = useState(null);
-
-  const refetchWithProps = useCallback(
-    (isAuto = false) => {
-      if (
-        refetch &&
-        typeof refetch === "function" &&
-        get(props, "skip", false) === false
-      ) {
+  const createRefetcher = useCallback(
+    (refetch, props) => (isAuto = false) => {
+      if (get(props, "skip", false) === false) {
         // Remove the skip prop, it is not used in queries.
         const {skip, ...queryProps} = props;
 
-        refetch({
-          ...queryProps,
-          _cache: isAuto,
-        });
+        if (isAuto) {
+          refetch();
+        } else {
+          refetch({...queryProps, _cache: false});
+        }
       }
     },
-    [refetch, props.skip || false]
+    [name]
   );
 
-  useEffect(() => {
-    if (refetch) {
-      setUpdateListener(name, refetchWithProps, reactToAuto);
-    }
-
-    return () => {
+  useEffect(
+    () => () => {
       removeUpdateListener(name);
-    };
-  }, [refetch, name, refetchWithProps, reactToAuto]);
+    },
+    [name]
+  );
 
   return useCallback(
     (queryRefetcher) => {
-      setRefetch(() => queryRefetcher);
+      setUpdateListener(name, createRefetcher(queryRefetcher, props), reactToAuto);
     },
-    [refetch]
+    [name, createRefetcher, reactToAuto, props]
   );
 };
