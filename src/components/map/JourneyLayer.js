@@ -131,8 +131,6 @@ const JourneyLayer = decorate(
 
     const [eventAtHover, setHoverEvent] = useState(null);
 
-    const mouseOver = useRef(false);
-    const mouseOut = useRef(false);
     const mouseOutTimer = useRef(0);
 
     const findHfpItem = useCallback(
@@ -152,21 +150,14 @@ const JourneyLayer = decorate(
     );
 
     const onMouseout = useCallback(() => {
-      mouseOut.current = true;
-
       mouseOutTimer.current = setTimeout(() => {
-        if (mouseOut.current) {
-          mouseOut.current = false;
-          mouseOver.current = false;
-          setHoverEvent(null);
-        }
-      }, 1000);
-    }, [mouseOut.current]);
+        setHoverEvent(null);
+      }, 500);
+    }, []);
 
     const onHover = useCallback(() => {
-      mouseOut.current = false;
-      mouseOver.current = true;
-    }, []);
+      clearTimeout(mouseOutTimer.current);
+    }, [mouseOutTimer.current]);
 
     const onMousemove = useCallback(
       (event) => {
@@ -190,7 +181,7 @@ const JourneyLayer = decorate(
     );
 
     // Clear the timer to avoid "cannot update unmounted component" errors.
-    useEffect(() => () => clearTimeout(mouseOutTimer.current));
+    useEffect(() => () => clearTimeout(mouseOutTimer.current), [mouseOutTimer.current]);
 
     return (
       <FeatureGroup
