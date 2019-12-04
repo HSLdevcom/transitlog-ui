@@ -21,6 +21,8 @@ import AlertIcons from "../AlertIcons";
 import {ColoredBackgroundSlot} from "../TagButton";
 import {cancelledStyle} from "../commonComponents";
 import Timetable from "../../icons/Timetable";
+import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
 
 const JourneyListRow = styled.button`
   display: flex;
@@ -95,9 +97,18 @@ const TimetableIcon = styled(Timetable)`
   margin-bottom: -3.5px; // Uniform row height
 `;
 
-const RouteDepartureItem = observer(
-  ({departure, scrollRef, selectJourney, selectedJourney}) => {
-    const selectedJourneyId = getJourneyId(selectedJourney);
+const decorate = flow(
+  observer,
+  inject("state")
+);
+
+const RouteDepartureItem = decorate(
+  ({departure, scrollRef, selectJourney, state: {selectedJourney}}) => {
+    let matchVehicle =
+      get(departure, "journey.uniqueVehicleId") &&
+      get(selectedJourney, "uniqueVehicleId");
+
+    let selectedJourneyId = getJourneyId(selectedJourney, matchVehicle);
     const departureDate = departure.plannedDepartureTime.departureDate;
     const departureTime = departure.plannedDepartureTime.departureTime;
 
@@ -115,10 +126,12 @@ const RouteDepartureItem = observer(
       [departure]
     );
 
-    let journeyId = getJourneyId(departure.journey);
+    let journeyId = getJourneyId(departure.journey, matchVehicle);
 
     if (!departure.journey) {
-      journeyId = getJourneyId(compositeJourney, false);
+      matchVehicle = false;
+      selectedJourneyId = getJourneyId(selectedJourney, matchVehicle);
+      journeyId = getJourneyId(compositeJourney, matchVehicle);
     }
 
     const journeyIsSelected = useMemo(() => {
@@ -130,8 +143,8 @@ const RouteDepartureItem = observer(
         return selectedJourneyId && selectedJourneyId === journeyId;
       }
 
-      return getJourneyId(selectedJourney, false) === journeyId;
-    }, [selectedJourney, departure, journeyId]);
+      return selectedJourneyId === journeyId;
+    }, [selectedJourneyId, departure, journeyId]);
 
     const {isCancelled} = departure;
 
@@ -215,7 +228,7 @@ const RouteDepartureItem = observer(
         selected={journeyIsSelected}
         key={`journey_row_${journeyId}_${departure.id}`}
         isCancelled={isCancelled}
-        onClick={() => selectJourney(departure.journey)}>
+        onClick={() => selectJourney(departure.journey, matchVehicle)}>
         <JourneyRowLeft
           data-testid="journey-departure-time"
           {...applyTooltip("Planned journey time with data")}>
