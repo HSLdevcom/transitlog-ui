@@ -133,6 +133,7 @@
   "journey.health.stop_events_not_found": "Hållplatshändelser fattas.",
   "journey.health.stop_event_missing": "Händelser fattas för hållplatsen",
   "journey.health.stop_event_virtual": "Händelser härledda från fordonets positionshändelser för hållplats",
+  "journey.health.average_delay": "Uppgifternas dröjsmål",
 
   "domain.line": "Linje",
   "domain.route": "Rutt",

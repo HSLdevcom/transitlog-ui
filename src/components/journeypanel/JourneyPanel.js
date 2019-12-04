@@ -17,6 +17,7 @@ import {inject} from "../../helpers/inject";
 import {useJourneyHealth} from "../../hooks/useJourneyHealth";
 import JourneyHealthDetails from "./JourneyHealthDetails";
 import RouteStops from "./RouteStops";
+import {useDataDelay} from "../../hooks/useDataDelay";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -66,6 +67,7 @@ const JourneyPanel = decorate(
     const journeyEvents = get(journey, "events", []);
 
     const journeyHealth = useJourneyHealth(journey);
+    const dataDelay = useDataDelay(journey);
 
     const journeyTime = originDeparture
       ? get(originDeparture, "observedDepartureTime.departureDateTime", timeMoment)
@@ -138,6 +140,7 @@ const JourneyPanel = decorate(
                   name="journey-health"
                   label={text("domain.journey_data_health")}
                   journeyHealth={journeyHealth}
+                  dataDelay={dataDelay}
                 />
               )}
             </Tabs>

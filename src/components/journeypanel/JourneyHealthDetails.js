@@ -8,6 +8,8 @@ import ToggleView from "../ToggleView";
 import ArrowDown from "../../icons/ArrowDown";
 import Info from "../../icons/Info";
 import {text, Text} from "../../helpers/text";
+import {round} from "../../helpers/getRoundedBbox";
+import {useTooltip} from "../../hooks/useTooltip";
 
 const JourneyHealthContainer = styled.div`
   padding-bottom: 1rem;
@@ -15,7 +17,6 @@ const JourneyHealthContainer = styled.div`
 
 const HealthRow = styled.div`
   display: flex;
-  width: 100%;
   padding: 0.5rem 0.5rem 0.5rem 1rem;
   background: transparent;
   font-family: inherit;
@@ -184,7 +185,7 @@ const HealthItem = observer((props) => {
   );
 });
 
-const JourneyHealthDetails = observer(({journeyHealth}) => {
+const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
   const healthColor = useCallback((value) =>
     value === -1
       ? "var(--light-grey)"
@@ -196,6 +197,7 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
   );
 
   const totalHealthColor = healthColor(journeyHealth.total);
+  const dataDelayHelpText = useTooltip("Data delay");
 
   return (
     <JourneyHealthContainer>
@@ -258,6 +260,27 @@ const JourneyHealthDetails = observer(({journeyHealth}) => {
             />
           );
         })}
+      </div>
+      <div>
+        <TotalHealthDisplay>
+          <LineHeading>{dataDelayHelpText.title}</LineHeading>
+        </TotalHealthDisplay>
+        <HealthRow>
+          <LineHeading>
+            <Text>journey.health.average_delay</Text>
+          </LineHeading>
+          <ObservedValue
+            color={dataDelay > 10 && dataDelay <= 60 ? "var(--dark-grey)" : "white"}
+            backgroundColor={
+              dataDelay <= 10
+                ? "var(--light-green)"
+                : dataDelay <= 60
+                ? "var(--yellow)"
+                : "var(--red)"
+            }>
+            {round(dataDelay)} <Text>general.seconds.short</Text>
+          </ObservedValue>
+        </HealthRow>
       </div>
     </JourneyHealthContainer>
   );
