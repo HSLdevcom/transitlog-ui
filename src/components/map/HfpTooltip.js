@@ -2,10 +2,45 @@ import React, {useRef} from "react";
 import {Tooltip} from "react-leaflet";
 import moment from "moment-timezone";
 import {observer} from "mobx-react-lite";
-import {Text} from "../../helpers/text";
 import {TIMEZONE} from "../../constants";
+import BusStop from "../../icons/BusStop";
+import styled from "styled-components";
+import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
+import Time2 from "../../icons/Time2";
+import Bus from "../../icons/Bus";
+import Envelope from "../../icons/Envelope";
+import RealTime2 from "../../icons/RealTime2";
+import BusLine from "../../icons/BusLine";
+import Timetable from "../../icons/Timetable";
+import ArrowRight from "../../icons/ArrowRight";
 
-const HfpTooltip = observer(
+const TooltipWrapper = styled.div``;
+
+const TooltipDataRow = styled.div`
+  width: 200px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: ${(p) => (p.small ? `0.875rem` : "0.95rem")};
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+
+  &:nth-child(odd) {
+    background: var(--lightest-grey);
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const decorate = flow(
+  observer,
+  inject("state")
+);
+
+const HfpTooltip = decorate(
   ({
     journey = null,
     event = null,
@@ -13,9 +48,11 @@ const HfpTooltip = observer(
     sticky = true,
     direction = "left",
     offset = [-25, 0],
+    state,
   }) => {
     const prevEvent = useRef(null);
     let usingEvent = event || prevEvent.current;
+    const {user = null} = state;
 
     if (!usingEvent) {
       return null;
@@ -27,12 +64,14 @@ const HfpTooltip = observer(
 
     return (
       <Tooltip
+        className="tooltip-unpadded"
         sticky={sticky}
         permanent={permanent}
         offset={offset}
         direction={direction}>
-        <div data-testid="hfp-tooltip-content">
-          <span style={{display: "flex"}}>
+        <TooltipWrapper data-testid="hfp-tooltip-content">
+          <TooltipDataRow>
+            <BusLine fill="var(--blue)" width="1rem" height="1rem" />
             <strong>
               {journey.journeyType !== "journey" ? (
                 <>
@@ -44,30 +83,43 @@ const HfpTooltip = observer(
                 </>
               )}
             </strong>
-            <span style={{marginLeft: "auto"}}>{journey.departureTime}</span>
-          </span>
-          <span
-            data-testid="hfp-event-time"
-            style={{display: "block", marginTop: "0.5rem"}}>
-            {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
-          </span>
-          <span style={{fontSize: "0.95em", display: "block", marginBottom: "0.5rem"}}>
-            ({moment.tz(usingEvent.receivedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")})
-          </span>
-          <span style={{display: "block"}}>{journey.uniqueVehicleId}</span>
-          {usingEvent.stop && (
-            <span style={{display: "block"}}>
-              <Text>vehicle.next_stop</Text>: {usingEvent.stop}
-              <br />
-            </span>
+          </TooltipDataRow>
+          {!!journey.departureTime && (
+            <TooltipDataRow>
+              <Timetable fill="var(--blue)" width="1rem" height="1rem" />
+              {journey.departureTime}
+            </TooltipDataRow>
           )}
-          <span style={{display: "block"}}>
-            <Text>vehicle.speed</Text>: {Math.round((usingEvent.velocity * 18) / 5)} km/h
-          </span>
-          <span style={{display: "block"}}>
-            {usingEvent.delay > 0 && <>DL: {usingEvent.delay}</>}
-          </span>
-        </div>
+          <TooltipDataRow data-testid="hfp-event-time">
+            <RealTime2 fill="var(--blue)" width="1rem" height="1rem" />
+            {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
+          </TooltipDataRow>
+          <TooltipDataRow>
+            <Envelope fill="var(--blue)" width="1rem" height="1rem" />
+            {moment.tz(usingEvent.receivedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
+          </TooltipDataRow>
+          {user && (
+            <TooltipDataRow>
+              <Bus fill="var(--blue)" width="1rem" height="1rem" />
+              {journey.uniqueVehicleId}
+            </TooltipDataRow>
+          )}
+          {!!usingEvent.stop && (
+            <TooltipDataRow>
+              <BusStop fill="var(--blue)" width="1rem" height="1rem" /> {usingEvent.stop}
+            </TooltipDataRow>
+          )}
+          <TooltipDataRow>
+            <ArrowRight fill="var(--blue)" width="1rem" height="1rem" />{" "}
+            {Math.round((usingEvent.velocity * 18) / 5)} km/h
+          </TooltipDataRow>
+          {!!usingEvent.delay && (
+            <TooltipDataRow>
+              <Time2 fill="var(--blue)" width="1rem" height="1rem" /> {usingEvent.delay}{" "}
+              sek.
+            </TooltipDataRow>
+          )}
+        </TooltipWrapper>
       </Tooltip>
     );
   }
