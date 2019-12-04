@@ -171,6 +171,7 @@ type JourneyEvent {
   id: ID!
   lat: Float
   lng: Float
+  receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
@@ -195,6 +196,7 @@ type JourneyStopEvent {
   plannedTime: Time
   plannedTimeDifference: Int
   plannedUnix: Int
+  receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
@@ -387,6 +389,7 @@ type VehiclePosition implements Position {
   mode: String
   nextStopId: String
   operatorId: String
+  receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!

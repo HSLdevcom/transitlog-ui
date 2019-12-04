@@ -67,6 +67,7 @@ export const journeyQuery = gql`
         lng
         stop
         nextStopId
+        receivedAt
         recordedAt
         recordedAtUnix
         recordedTime
@@ -101,6 +102,7 @@ export const journeyQuery = gql`
           plannedDateTime
           plannedTime
           plannedTimeDifference
+          receivedAt
           recordedAt
           recordedAtUnix
           recordedTime
@@ -123,9 +125,6 @@ export const journeyQuery = gql`
             radius
             shortId
             stopId
-            alerts {
-              ...AlertFieldsFragment
-            }
           }
         }
         ... on PlannedStopEvent {
@@ -151,13 +150,11 @@ export const journeyQuery = gql`
             radius
             shortId
             stopId
-            alerts {
-              ...AlertFieldsFragment
-            }
           }
         }
         ... on JourneyEvent {
           id
+          receivedAt
           recordedAt
           recordedAtUnix
           recordedTime
@@ -186,9 +183,6 @@ export const journeyQuery = gql`
         terminalTime
         recoveryTime
         isCancelled
-        alerts {
-          ...AlertFieldsFragment
-        }
         stop {
           id
           isTimingStop
@@ -199,9 +193,6 @@ export const journeyQuery = gql`
           radius
           shortId
           stopId
-          alerts {
-            ...AlertFieldsFragment
-          }
         }
         plannedArrivalTime {
           id

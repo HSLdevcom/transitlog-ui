@@ -46,21 +46,27 @@ const HfpTooltip = observer(
             </strong>
             <span style={{marginLeft: "auto"}}>{journey.departureTime}</span>
           </span>
-          <span data-testid="hfp-event-time">
+          <span
+            data-testid="hfp-event-time"
+            style={{display: "block", marginTop: "0.5rem"}}>
             {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
           </span>
-          <br />
-          {journey.uniqueVehicleId}
-          <br />
+          <span style={{fontSize: "0.95em", display: "block", marginBottom: "0.5rem"}}>
+            ({moment.tz(usingEvent.receivedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")})
+          </span>
+          <span style={{display: "block"}}>{journey.uniqueVehicleId}</span>
           {usingEvent.stop && (
-            <>
+            <span style={{display: "block"}}>
               <Text>vehicle.next_stop</Text>: {usingEvent.stop}
-            </>
+              <br />
+            </span>
           )}
-          <br />
-          <Text>vehicle.speed</Text>: {Math.round((usingEvent.velocity * 18) / 5)} km/h
-          <br />
-          {usingEvent.delay > 0 && <>DL: {usingEvent.delay}</>}
+          <span style={{display: "block"}}>
+            <Text>vehicle.speed</Text>: {Math.round((usingEvent.velocity * 18) / 5)} km/h
+          </span>
+          <span style={{display: "block"}}>
+            {usingEvent.delay > 0 && <>DL: {usingEvent.delay}</>}
+          </span>
         </div>
       </Tooltip>
     );
