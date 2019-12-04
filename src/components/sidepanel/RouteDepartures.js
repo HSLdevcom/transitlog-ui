@@ -32,6 +32,9 @@ const decorate = flow(
 );
 
 const RouteDepartures = decorate(({state, Time, Journey}) => {
+  const {date, route, selectedJourney} = state;
+  const selectedJourneyId = getJourneyId(selectedJourney);
+
   const selectJourney = useCallback((journey, matchVehicle = true) => {
     let journeyToSelect = null;
 
@@ -48,9 +51,6 @@ const RouteDepartures = decorate(({state, Time, Journey}) => {
 
     Journey.setSelectedJourney(journeyToSelect);
   }, []);
-
-  const {date, route, selectedJourney} = state;
-  const selectedJourneyId = getJourneyId(selectedJourney);
 
   return (
     <RouteDeparturesQuery route={route} date={date}>
@@ -83,7 +83,6 @@ const RouteDepartures = decorate(({state, Time, Journey}) => {
                   departure={departure}
                   scrollRef={scrollRef}
                   selectJourney={selectJourney}
-                  selectedJourney={selectedJourney}
                 />
               ))
             }
