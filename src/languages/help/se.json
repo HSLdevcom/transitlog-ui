@@ -50,5 +50,6 @@
   "Developer sign in": "Kirjaudu sisään käyttäen kehittäjätunnuksia.",
   "Create user": "Luo HSL ID-tunnus kirjautuaksesi palveluun.",
   "Focus on stop": "Kohdista pysäkkiin klikkaamalla.",
-  "Show info": "Näytä tai piilota käyttöohjeet."
+  "Show info": "Näytä tai piilota käyttöohjeet.",
+  "Data delay": "Tietojen viive tarkoittaa ero tapahtuman tallennushetkeltä tapahtuman vastaanottohetkeen. Suuri viive ei tarkoita että tiedot olisi virheellisiä."
 }

@@ -51,6 +51,7 @@
   "Create user": "Luo HSL ID-tunnus kirjautuaksesi palveluun.",
   "Focus on stop": "Kohdista pysäkkiin klikkaamalla.",
   "Show info": "Näytä tai piilota käyttöohjeet.",
+  "Data delay": "The data delay describes the difference between the time when an event was recorded to the time it was received. A large delay does not mean that there's anything wrong with the data.",
 
   "PDE": "Departure when the doors closed",
   "DEP": "Departure when the vehicle exited the stop radius.",

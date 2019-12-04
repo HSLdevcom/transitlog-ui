@@ -134,6 +134,7 @@
   "journey.health.stop_events_not_found": "Stop events not found.",
   "journey.health.stop_event_missing": "Stop events missing for stop",
   "journey.health.stop_event_virtual": "Stop events are derived from vehicle positions for stop",
+  "journey.health.average_delay": "Average data delay",
 
   "domain.line": "Line",
   "domain.route": "Route",

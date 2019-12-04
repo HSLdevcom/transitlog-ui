@@ -102,8 +102,8 @@ const JourneyPanelWrapper = styled.div`
   z-index: 5;
   transition: margin-left 0.2s ease-out;
   margin-left: ${({visible}) =>
-    visible ? 0 : "-22rem"}; // Makes the map area larger when the sidebar is hidden
-  width: 22rem;
+    visible ? 0 : "-25rem"}; // Makes the map area larger when the sidebar is hidden
+  width: 25rem;
   height: 100%;
   background: white;
   border-right: 1px solid var(--alt-grey);
