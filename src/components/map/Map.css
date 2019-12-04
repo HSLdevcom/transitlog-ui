@@ -26,3 +26,8 @@
   font-size: 0;
   text-indent: -9999px;
 }
+
+.tooltip-unpadded {
+  padding: 0 !important;
+  border: 0 !important;
+}
