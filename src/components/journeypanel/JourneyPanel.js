@@ -88,7 +88,6 @@ const JourneyPanel = decorate(
       <JourneyPanelWrapper data-testid="journey-details">
         <LoadingDisplay loading={loading} />
         <JourneyDetailsHeader
-          dataDelay={!selectedJourney || loading ? null : dataDelay}
           journeyHealth={!selectedJourney || loading ? null : journeyHealth}
           journey={journey}
           route={route}
