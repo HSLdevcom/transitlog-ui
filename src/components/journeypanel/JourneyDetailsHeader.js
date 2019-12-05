@@ -11,6 +11,8 @@ import CrossThick from "../../icons/CrossThick";
 import {Text} from "../../helpers/text";
 import Alert from "../../icons/Alert";
 import {Button} from "../Forms";
+import {round} from "../../helpers/getRoundedBbox";
+import {useTooltip} from "../../hooks/useTooltip";
 
 const JourneyPanelHeader = styled.div`
   flex: none;
@@ -95,6 +97,19 @@ const CancelledAlert = styled.div`
   }
 `;
 
+const HealthDisplay = styled.div`
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  svg {
+    margin-right: 0.1rem !important;
+  }
+`;
+
 const HealthIndicator = styled.button`
   cursor: pointer;
   outline: 0;
@@ -106,15 +121,30 @@ const HealthIndicator = styled.button`
   padding: 5px 7px;
   font-size: 0.75rem;
   border-radius: 5px;
-  margin-left: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease-out, transform 0.1s ease-out;
   color: ${(p) => (p.value <= 75 || p.value >= 97 ? "white" : "var(--dark-grey)")};
   background: ${(p) =>
     p.value >= 97
       ? "var(--light-green)"
       : p.value >= 75
+      ? "var(--yellow)"
+      : "var(--red)"};
+
+  &:hover {
+    transform: scale(1.025);
+  }
+`;
+
+const DelayIndicator = styled(HealthIndicator)`
+  margin-top: 1.15rem;
+  color: ${(p) => (p.value > 10 && p.value <= 60 ? "var(--dark-grey)" : "white")};
+  background: ${(p) =>
+    p.value <= 10
+      ? "var(--light-green)"
+      : p.value <= 60
       ? "var(--yellow)"
       : "var(--red)"};
 `;
@@ -128,7 +158,9 @@ const HealthAlert = styled(Alert).attrs({
 `;
 
 export default observer(
-  ({journeyHealth, route, journey, showVehicleId = false, selectTab}) => {
+  ({journeyHealth, dataDelay, route, journey, showVehicleId = false, selectTab}) => {
+    const dataDelayTooltip = useTooltip("Data delay");
+
     if (!journey && !route) {
       return null;
     }
@@ -153,34 +185,46 @@ export default observer(
                 {uniqueVehicleId}
               </HeaderText>
             )}
-            {journeyHealth &&
-              (journeyHealth.total > 0 && journeyHealth.checklist.length !== 0 ? (
-                <HealthIndicator
-                  onClick={() => selectTab("journey-health")}
-                  title="Journey health"
-                  value={journeyHealth.total}>
-                  {Math.floor(journeyHealth.total)}%
-                </HealthIndicator>
-              ) : journeyHealth.total === 0 && journeyHealth.checklist.length === 0 ? (
-                <HealthIndicator title="Journey health" value={0}>
-                  <Text>general.no_data</Text>
-                </HealthIndicator>
-              ) : (
-                <Button
-                  transparent={true}
-                  onClick={() => selectTab("journey-health")}
-                  style={{
-                    marginLeft: "auto",
-                    height: "auto",
-                    border: 0,
-                    background: "transparent",
-                    padding: 0,
-                    width: "auto",
-                  }}
-                  title="Journey health">
-                  <HealthAlert />
-                </Button>
-              ))}
+            {(dataDelay || journeyHealth) && (
+              <HealthDisplay>
+                {journeyHealth.total > 0 && journeyHealth.checklist.length !== 0 ? (
+                  <HealthIndicator
+                    onClick={() => selectTab("journey-health")}
+                    title="Journey health"
+                    value={journeyHealth.total}>
+                    {Math.floor(journeyHealth.total)}%
+                  </HealthIndicator>
+                ) : journeyHealth.total === 0 && journeyHealth.checklist.length === 0 ? (
+                  <HealthIndicator title="Journey health" value={0}>
+                    <Text>general.no_data</Text>
+                  </HealthIndicator>
+                ) : (
+                  <Button
+                    transparent={true}
+                    onClick={() => selectTab("journey-health")}
+                    style={{
+                      marginLeft: "auto",
+                      height: "auto",
+                      border: 0,
+                      background: "transparent",
+                      padding: 0,
+                      width: "auto",
+                    }}
+                    title="Journey health">
+                    <HealthAlert />
+                  </Button>
+                )}
+                {!!dataDelay && (
+                  <DelayIndicator
+                    value={round(dataDelay)}
+                    onClick={() => selectTab("journey-health")}
+                    {...dataDelayTooltip}>
+                    <Text>general.delay</Text> {round(dataDelay)}{" "}
+                    <Text>general.seconds.short</Text>
+                  </DelayIndicator>
+                )}
+              </HealthDisplay>
+            )}
           </MainHeaderRow>
           {departureDate && departureTime && (
             <>
