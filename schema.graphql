@@ -66,6 +66,7 @@ type Departure {
   mode: String!
   observedArrivalTime: ObservedArrival
   observedDepartureTime: ObservedDeparture
+  operatingUnit: String
   operatorId: String
   originDepartureTime: PlannedDeparture
   plannedArrivalTime: PlannedArrival!

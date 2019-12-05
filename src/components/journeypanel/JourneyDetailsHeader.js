@@ -158,7 +158,7 @@ const HealthAlert = styled(Alert).attrs({
 `;
 
 export default observer(
-  ({journeyHealth, route, journey, showVehicleId = false, selectTab}) => {
+  ({journeyHealth, departure, route, journey, showVehicleId = false, selectTab}) => {
     if (!journey && !route) {
       return null;
     }

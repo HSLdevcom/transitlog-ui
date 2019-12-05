@@ -71,6 +71,7 @@
   "journey.departure": "Departure",
   "journey.end_of_stream": "End of stream used as stop departure.",
   "journey.duration": "Journey duration",
+  "journey.operating_unit": "Operating unit",
   "journey.hide_graph": "Hide delays and average speeds.",
   "journey.show_graph": "Show delays and average speeds.",
   "journey.stops": "Stops",

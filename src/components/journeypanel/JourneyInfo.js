@@ -91,9 +91,7 @@ const decorate = flow(
   inject("state")
 );
 
-export default decorate(({state, journey, date}) => {
-  const departure = get(journey, "departure", null);
-
+export default decorate(({departure, state, journey, date}) => {
   if (!departure) {
     return null;
   }
@@ -105,6 +103,9 @@ export default decorate(({state, journey, date}) => {
   const plannedColor = get(departure, "equipmentColor", "");
   const operatorName = getOperatorName(departure.operatorId);
   const observedOperatorName = getOperatorName(journey.operatorId);
+  const operatingUnit = get(departure, "operatingUnit", null);
+
+  console.log(operatingUnit);
 
   const originArrivalEvent = journey.events.find((evt) => evt.type === "ARS");
   const destinationArrivalEvent = findLast(journey.events, (evt) => evt.type === "ARS");
@@ -201,6 +202,18 @@ export default decorate(({state, journey, date}) => {
           </Line>
         )}
       </JourneyInfoRow>
+      {!!operatingUnit && (
+        <JourneyInfoRow>
+          <Line>
+            <LineHeading>
+              <Text>journey.operating_unit</Text>
+            </LineHeading>
+            <Values>
+              <span>{operatingUnit}</span>
+            </Values>
+          </Line>
+        </JourneyInfoRow>
+      )}
       {journey.equipment && (
         <>
           <JourneyInfoRow>

@@ -96,7 +96,7 @@ const JourneyPanel = decorate(
         />
         <ScrollContainer>
           <JourneyPanelContent>
-            <JourneyInfo date={date} journey={journey} />
+            <JourneyInfo date={date} journey={journey} departure={originDeparture} />
             <Tabs
               urlValue="details-tab"
               onTabChange={(tab) => setCurrentTab(tab)}
