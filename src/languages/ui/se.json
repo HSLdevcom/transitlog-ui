@@ -185,6 +185,7 @@
   "general.previous": "Föregående",
   "general.previous.plural": "Föregående",
   "general.unknown": "Okänd",
+  "general.contact.team": "Be om hjälp eller rapportera problem",
 
   "message.emptyview.network": "Denna vy är tom på grund av ett nätfel. Försökra dig om att du har en aktiv nätförbindelse och prova sedan igen.",
   "message.emptyview.authentication": "Datan i denna vy kräver inloggning, eller så har ditt konto inte rättighet.",
