@@ -180,7 +180,7 @@ const RouteDepartureItem = decorate(
                   height="1.25rem"
                 />
               ) : (
-                text("filterpanel.journey.no_data")
+                text("filterpanel.journey.no_departure")
               )}
             </span>
           </Tooltip>

@@ -21,6 +21,7 @@
   "filterpanel.real_start_time": "Toteutunut lähtöaika",
   "filterpanel.journey.unrealized": "Toteutumaton",
   "filterpanel.journey.no_data": "Tietoja puuttuu",
+  "filterpanel.journey.no_departure": "Lähtötieto puuttuu",
   "filterpanel.journey.incomplete_data": "Puutteelliset tiedot",
   "filterpanel.journey.click_to_fetch": "Hae",
   "filterpanel.clear.stop": "Tyhjennä pysäkkivalinta",
