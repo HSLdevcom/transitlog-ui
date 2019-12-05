@@ -51,10 +51,11 @@ const ObservedValue = styled.span`
   margin-left: auto;
   font-family: "Courier New", Courier, monospace;
   border-color: transparent;
+  margin-right: 1.2rem;
 `;
 
 const ToggleIcon = styled(ArrowDown)`
-  margin-left: 0.5rem;
+  margin-left: -0.85rem;
   align-self: center;
   transition: transform 0.1s ease-out;
   ${(p) => (p.isOpen ? `transform: rotate(180deg);` : "")}
@@ -260,12 +261,7 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
             />
           );
         })}
-      </div>
-      <div>
-        <TotalHealthDisplay>
-          <LineHeading>{dataDelayHelpText.title}</LineHeading>
-        </TotalHealthDisplay>
-        <HealthRow>
+        <HealthRow {...dataDelayHelpText}>
           <LineHeading>
             <Text>journey.health.average_delay</Text>
           </LineHeading>

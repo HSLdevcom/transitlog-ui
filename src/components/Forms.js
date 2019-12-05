@@ -94,7 +94,7 @@ export const StyledButton = styled.button`
   &:hover {
     background: ${({primary = false, transparent}) =>
       primary || transparent ? "var(--dark-blue)" : "#eeeeee"};
-    transform: scale(1.05) translateZ(10px);
+    transform: scale(1.025);
   }
 `;
 

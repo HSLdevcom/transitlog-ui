@@ -51,7 +51,7 @@
   "Create user": "Luo HSL ID-tunnus kirjautuaksesi palveluun.",
   "Focus on stop": "Kohdista pysäkkiin klikkaamalla.",
   "Show info": "Näytä tai piilota käyttöohjeet.",
-  "Data delay": "Tietojen viive tarkoittaa ero tapahtuman tallennushetkeltä tapahtuman vastaanottohetkeen. Suuri viive ei tarkoita että tiedot olisi virheellisiä.",
+  "Data delay": "Tietojen viive tarkoittaa ero tapahtuman tallennushetkeltä tapahtuman vastaanottohetkeen. Suuri viive ei tarkoita että tiedot olisi virheellisiä, vain että ne tuli myöhässä perille vastaanottajalle.",
 
   "PDE": "Lähtö, ovet laitettu kiinni.",
   "DEP": "Lähtö, ajoneuvo poistunut pysäkkialueelta.",
