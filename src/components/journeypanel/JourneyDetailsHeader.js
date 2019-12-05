@@ -158,9 +158,7 @@ const HealthAlert = styled(Alert).attrs({
 `;
 
 export default observer(
-  ({journeyHealth, dataDelay, route, journey, showVehicleId = false, selectTab}) => {
-    const dataDelayTooltip = useTooltip("Data delay");
-
+  ({journeyHealth, route, journey, showVehicleId = false, selectTab}) => {
     if (!journey && !route) {
       return null;
     }
@@ -185,7 +183,7 @@ export default observer(
                 {uniqueVehicleId}
               </HeaderText>
             )}
-            {(dataDelay || journeyHealth) && (
+            {journeyHealth && (
               <HealthDisplay>
                 {journeyHealth.total > 0 && journeyHealth.checklist.length !== 0 ? (
                   <HealthIndicator
@@ -213,15 +211,6 @@ export default observer(
                     title="Journey health">
                     <HealthAlert />
                   </Button>
-                )}
-                {!!dataDelay && (
-                  <DelayIndicator
-                    value={round(dataDelay)}
-                    onClick={() => selectTab("journey-health")}
-                    {...dataDelayTooltip}>
-                    <Text>general.delay</Text> {round(dataDelay)}{" "}
-                    <Text>general.seconds.short</Text>
-                  </DelayIndicator>
                 )}
               </HealthDisplay>
             )}
