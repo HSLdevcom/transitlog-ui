@@ -71,6 +71,7 @@
   "journey.departure": "Lähtö",
   "journey.end_of_stream": "Tietovirran loppu käytetty pysäkin lähtöajankohtana.",
   "journey.duration": "Matkan kesto",
+  "journey.operating_unit": "Kilpailukohde",
   "journey.hide_graph": "Piilota viiveet ja keskinopeudet",
   "journey.show_graph": "Näytä viiveet ja keskinopeudet",
   "journey.stops": "Pysäkit",

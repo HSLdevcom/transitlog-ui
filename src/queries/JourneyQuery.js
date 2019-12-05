@@ -183,6 +183,7 @@ export const journeyQuery = gql`
         terminalTime
         recoveryTime
         isCancelled
+        operatingUnit
         stop {
           id
           isTimingStop

@@ -71,6 +71,7 @@
   "journey.departure": "Avfärd",
   "journey.end_of_stream": "De sista uppgifterna används som hållplatsens avfärd.",
   "journey.duration": "Resans tidslängd",
+  "journey.operating_unit": "Tävlingsmål",
   "journey.hide_graph": "Göm fördröjningar och medelhastigheter",
   "journey.show_graph": "Visa fördröjningar och medelhastigheter",
   "journey.stops": "Hållplatser",
