@@ -7,6 +7,7 @@ import Info from "../icons/Info";
 import moment from "moment-timezone";
 import {TIMEZONE} from "../constants";
 import Markdown from "react-markdown";
+import {Text} from "../helpers/text";
 
 const messageQuery = gql`
   query uiMessage {
@@ -18,17 +19,23 @@ const messageQuery = gql`
 `;
 
 const MessageWrapper = styled.div`
-  padding: 0.25rem 0.875rem;
   background: var(--dark-grey);
-  display: flex;
-  align-items: center;
   font-size: 0.875rem;
   color: white;
+  display: flex;
+  align-items: stretch;
 
   svg {
     display: inline-block;
     margin-right: 0.75rem;
   }
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1 0 auto;
+  padding: 0.25rem 0.875rem;
 `;
 
 const MessageText = styled(Markdown)`
@@ -43,6 +50,12 @@ const MessageDate = styled.span`
   font-size: 0.75rem;
 `;
 
+const TeamContact = styled.div`
+  margin-left: auto;
+  background: var(--dark-blue);
+  padding: 0.2rem 0.75rem 0.3rem 1rem;
+`;
+
 const ServerMessage = () => {
   return (
     <Query query={messageQuery}>
@@ -55,23 +68,34 @@ const ServerMessage = () => {
 
         return (
           <MessageWrapper>
-            <Info fill="var(--light-grey)" width="1rem" />
-            <MessageText
-              source={message}
-              unwrapDisallowed={true}
-              linkTarget="_blank"
-              allowedTypes={[
-                "root",
-                "text",
-                "emphasis",
-                "strong",
-                "delete",
-                "link",
-                "linkReference",
-                "inlineCode",
-              ]}
-            />
-            <MessageDate>{moment.tz(date, TIMEZONE).format("D.M.YYYY")}</MessageDate>
+            <ContentWrapper>
+              <Info fill="var(--light-grey)" width="1rem" />
+              <MessageText
+                source={message}
+                unwrapDisallowed={true}
+                linkTarget="_blank"
+                allowedTypes={[
+                  "root",
+                  "text",
+                  "emphasis",
+                  "strong",
+                  "delete",
+                  "link",
+                  "linkReference",
+                  "inlineCode",
+                ]}
+              />
+              <MessageDate>{moment.tz(date, TIMEZONE).format("D.M.YYYY")}</MessageDate>
+            </ContentWrapper>
+            <TeamContact>
+              <Text>general.contact.team</Text>:{" "}
+              <a
+                style={{color: "white"}}
+                href="mailto:infopalvelut@hsl.fi"
+                target="_blank">
+                infopalvelut@hsl.fi
+              </a>
+            </TeamContact>
           </MessageWrapper>
         );
       }}
