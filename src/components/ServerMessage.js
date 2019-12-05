@@ -56,6 +56,15 @@ const TeamContact = styled.div`
   padding: 0.2rem 0.75rem 0.3rem 1rem;
 `;
 
+const TeamContactComponent = (
+  <TeamContact>
+    <Text>general.contact.team</Text>:{" "}
+    <a style={{color: "white"}} href="mailto:infopalvelut@hsl.fi" target="_blank">
+      infopalvelut@hsl.fi
+    </a>
+  </TeamContact>
+);
+
 const ServerMessage = () => {
   return (
     <Query query={messageQuery}>
@@ -63,7 +72,7 @@ const ServerMessage = () => {
         const {message = "", date = ""} = get(data, "uiMessage", {message: "", date: ""});
 
         if (!message) {
-          return null;
+          return <MessageWrapper>{TeamContactComponent}</MessageWrapper>;
         }
 
         return (
@@ -87,15 +96,7 @@ const ServerMessage = () => {
               />
               <MessageDate>{moment.tz(date, TIMEZONE).format("D.M.YYYY")}</MessageDate>
             </ContentWrapper>
-            <TeamContact>
-              <Text>general.contact.team</Text>:{" "}
-              <a
-                style={{color: "white"}}
-                href="mailto:infopalvelut@hsl.fi"
-                target="_blank">
-                infopalvelut@hsl.fi
-              </a>
-            </TeamContact>
+            {TeamContactComponent}
           </MessageWrapper>
         );
       }}
