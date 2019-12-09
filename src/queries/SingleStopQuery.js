@@ -3,20 +3,15 @@ import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import get from "lodash/get";
 import {StopFieldsFragment} from "./StopFieldsFragment";
-import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {useRefetch} from "../hooks/useRefetch";
 
 export const singleStopQuery = gql`
   query singleStopQuery($stopId: String!, $date: Date!) {
     stop(date: $date, stopId: $stopId) {
       ...StopFieldsFragment
-      alerts {
-        ...AlertFieldsFragment
-      }
     }
   }
   ${StopFieldsFragment}
-  ${AlertFieldsFragment}
 `;
 
 const updateListenerName = "single stop query";
