@@ -4,16 +4,11 @@ import flow from "lodash/flow";
 import orderBy from "lodash/orderBy";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
-import SuggestionInput, {
-  SuggestionContent,
-  SuggestionText,
-  SuggestionAlerts,
-} from "./SuggestionInput";
+import SuggestionInput, {SuggestionContent, SuggestionText} from "./SuggestionInput";
 import getTransportType from "../../helpers/getTransportType";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import sortBy from "lodash/sortBy";
 import {text} from "../../helpers/text";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 
 const decorate = flow(
   observer,
@@ -23,7 +18,6 @@ const decorate = flow(
 const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
   const route = getFullRoute(routes, suggestion);
   const {routeId, direction, origin, destination} = route;
-  const suggestionAlerts = getAlertsInEffect(route, date);
 
   return (
     <SuggestionContent
@@ -37,12 +31,11 @@ const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
         </div>
         <div>{`${origin} - ${destination}`}</div>
       </SuggestionText>
-      {suggestionAlerts.length !== 0 && <SuggestionAlerts alerts={suggestionAlerts} />}
     </SuggestionContent>
   );
 };
 
-const renderSuggestionsContainer = ({containerProps, children, query}) => {
+const renderSuggestionsContainer = ({containerProps, children}) => {
   return (
     <div data-testid="route-suggestions-list" {...containerProps}>
       {children}

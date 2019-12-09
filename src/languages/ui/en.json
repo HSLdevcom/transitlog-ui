@@ -190,6 +190,8 @@
   "general.unknown": "Unknown",
   "general.contact.team": "Ask for help or report problems",
   "general.delay": "Delay",
+  "general.subjects": "Subjects",
+  "general.subjects.count": "subjects",
 
   "message.emptyview.network": "The data in this view is unavailable due to a network issue. Make sure you are online and try again.",
   "message.emptyview.authentication": "You need to be logged in to get access to the data in this view, or this account is not authorized.",
