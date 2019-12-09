@@ -11,8 +11,6 @@ import CrossThick from "../../icons/CrossThick";
 import {Text} from "../../helpers/text";
 import Alert from "../../icons/Alert";
 import {Button} from "../Forms";
-import {round} from "../../helpers/getRoundedBbox";
-import {useTooltip} from "../../hooks/useTooltip";
 
 const JourneyPanelHeader = styled.div`
   flex: none;
@@ -136,17 +134,6 @@ const HealthIndicator = styled.button`
   &:hover {
     transform: scale(1.025);
   }
-`;
-
-const DelayIndicator = styled(HealthIndicator)`
-  margin-top: 1.15rem;
-  color: ${(p) => (p.value > 10 && p.value <= 60 ? "var(--dark-grey)" : "white")};
-  background: ${(p) =>
-    p.value <= 10
-      ? "var(--light-green)"
-      : p.value <= 60
-      ? "var(--yellow)"
-      : "var(--red)"};
 `;
 
 const HealthAlert = styled(Alert).attrs({

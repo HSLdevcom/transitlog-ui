@@ -124,18 +124,16 @@ const StopDepartures = decorate(({stop, state, Filters, Journey, Time}) => {
         );
       }
 
-      const selectedJourneyId = getJourneyId(selectedJourney, !!journey.uniqueVehicleId);
+      const matchVehicle = !!journey.uniqueVehicleId;
+      const selectedJourneyId = getJourneyId(selectedJourney, matchVehicle);
 
-      if (
-        journey &&
-        getJourneyId(journey, !!journey.uniqueVehicleId) !== selectedJourneyId
-      ) {
+      if (journey && getJourneyId(journey, matchVehicle) !== selectedJourneyId) {
         Journey.setSelectedJourney(journey);
       } else {
         Journey.setSelectedJourney(null);
       }
     },
-    []
+    [selectedJourney, Journey]
   );
 
   const setHourFilter = useCallback((which, value) => {
