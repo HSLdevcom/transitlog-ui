@@ -5,7 +5,6 @@ import gql from "graphql-tag";
 import {observer} from "mobx-react-lite";
 import {Query} from "react-apollo";
 import {timeToSeconds} from "../helpers/time";
-import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {useRefetch} from "../hooks/useRefetch";
 
 export const vehicleJourneysQuery = gql`
@@ -26,12 +25,8 @@ export const vehicleJourneysQuery = gql`
       recordedAtUnix
       recordedTime
       timeDifference
-      alerts {
-        ...AlertFieldsFragment
-      }
     }
   }
-  ${AlertFieldsFragment}
 `;
 
 const updateListenerName = "vehicle hfp query";

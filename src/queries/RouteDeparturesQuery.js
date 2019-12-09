@@ -3,7 +3,6 @@ import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 import {observer} from "mobx-react-lite";
-import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
 import {useRefetch} from "../hooks/useRefetch";
 
@@ -38,9 +37,6 @@ export const routeJourneysQuery = gql`
       direction
       stopId
       isCancelled
-      alerts {
-        ...AlertFieldsFragment
-      }
       cancellations {
         ...CancellationFieldsFragment
       }
@@ -55,9 +51,6 @@ export const routeJourneysQuery = gql`
         uniqueVehicleId
         mode
         _numInstance
-        alerts {
-          ...AlertFieldsFragment
-        }
       }
       plannedArrivalTime {
         id
@@ -89,7 +82,6 @@ export const routeJourneysQuery = gql`
       }
     }
   }
-  ${AlertFieldsFragment}
   ${CancellationFieldsFragment}
 `;
 
