@@ -6,10 +6,9 @@ import {observer, Observer} from "mobx-react-lite";
 import AllStopsQuery from "../../queries/AllStopsQuery";
 import StopInput from "./StopInput";
 import Tooltip from "../Tooltip";
-import {SelectedOptionDisplay, SuggestionText, SuggestionAlerts} from "./SuggestionInput";
+import {SelectedOptionDisplay, SuggestionText} from "./SuggestionInput";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import styled from "styled-components";
 import Loading from "../Loading";
 
@@ -35,10 +34,6 @@ const StopSettings = decorate(({Filters, state}) => {
             if (loading && stops.length === 0) {
               return <LoadingSpinner inline={true} />;
             }
-
-            const alertsInEffect = !selectedStop
-              ? []
-              : getAlertsInEffect(selectedStop, date);
 
             return (
               <>
@@ -69,9 +64,6 @@ const StopSettings = decorate(({Filters, state}) => {
                       <br />
                       {selectedStop.name}
                     </SuggestionText>
-                    {alertsInEffect.length !== 0 && (
-                      <SuggestionAlerts alerts={alertsInEffect} />
-                    )}
                   </SelectedOptionDisplay>
                 )}
               </>
