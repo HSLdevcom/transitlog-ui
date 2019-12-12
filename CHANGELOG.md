@@ -1,5 +1,17 @@
 # Transitlog UI changelog
 
+## Version 1.5.4, deployed 2019-12-12 @ 09:00
+
+- Update journey positions health check to also check start and end of journey.
+- Fixes and improvements for update and live features.
+- Fix departure highlight in departure lists.
+- Add received_at information to HFP tooltip (vehicle and HFP line).
+- Update HFP tooltip styling.
+- Analyze data delay of HFP events with the received_at information in journey health.
+- Show operating unit (kilpailukohde) of departures for authorized users.
+- Fix journey selection in timetable view.
+- Update the "no data" message in the route departure list.
+
 ## Version 1.5.3, deployed 2019-11-26 @ 13:00
 
 - Refactor queries to use a refetch hook.
