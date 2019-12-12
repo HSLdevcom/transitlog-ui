@@ -1,6 +1,6 @@
 # Transitlog UI changelog
 
-## Version 1.5.4, deployed 2019-11-26 @ 13:00
+## Version 1.5.4, deployed 2019-12-12 @ 09:00
 
 - Update journey positions health check to also check start and end of journey.
 - Fixes and improvements for update and live features.
