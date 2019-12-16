@@ -20,6 +20,7 @@ import {applyTooltip} from "../../hooks/useTooltip";
 import {getDayTypeFromDate, dayTypes} from "../../helpers/getDayTypeFromDate";
 import TimingStop from "../../icons/TimingStop";
 import {cancelledStyle} from "../commonComponents";
+import getTransportType from "../../helpers/getTransportType";
 
 const ListRow = styled.div`
   padding: 0.25rem 0.5rem 0.25rem 0.75rem;
@@ -75,17 +76,15 @@ const InstanceDisplay = styled.span`
 `;
 
 const StopDepartureItem = observer((props) => {
-  const {stop, departure, onClick, selectedJourney} = props;
+  const {departure, onClick, selectedJourney} = props;
 
   const onClickDeparture = useMemo(() => onClick(departure), [departure, onClick]);
 
-  if (!stop || !departure) {
+  if (!departure) {
     return null;
   }
 
-  const {modes = []} = stop;
-
-  const stopMode = modes[0];
+  const stopMode = getTransportType(departure.routeId);
   const currentTransportColor = get(transportColor, stopMode, "var(--light-grey)");
   const selectedJourneyId = getJourneyId(selectedJourney);
   const isTimingStop = departure.isTimingStop;

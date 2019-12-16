@@ -15,13 +15,6 @@ export const allStopsQuery = gql`
       name
       radius
       modes
-      routes {
-        routeId
-        direction
-        isTimingStop
-        originStopId
-        mode
-      }
     }
   }
 `;
