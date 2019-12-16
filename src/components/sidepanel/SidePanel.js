@@ -121,7 +121,6 @@ const SidePanel = decorate((props) => {
     journey = null,
     journeyLoading = false,
     areaJourneysLoading = false,
-    stop,
     route,
     routeStops = [],
     detailsOpen,
@@ -204,7 +203,6 @@ const SidePanel = decorate((props) => {
             {stateStop && (
               <StopDepartures
                 helpText="Timetable tab"
-                stop={stop}
                 name="timetables"
                 label={text("sidepanel.tabs.timetables")}
               />
