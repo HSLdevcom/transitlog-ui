@@ -83,7 +83,7 @@ const decorate = flow(
   inject("Filters", "Journey", "Time")
 );
 
-const StopDepartures = decorate(({stop, state, Filters, Journey, Time}) => {
+const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
   const {date, selectedJourney, stop: stopId, timetableFilters} = state;
 
   const filterValues = Object.values(timetableFilters);
@@ -193,7 +193,6 @@ const StopDepartures = decorate(({stop, state, Filters, Journey, Time}) => {
                       selectedJourney,
                       onClick: selectAsJourney,
                       date,
-                      stop,
                     },
                     ...rowProps,
                   })

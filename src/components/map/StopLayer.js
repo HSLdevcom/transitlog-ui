@@ -99,7 +99,7 @@ const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
 });
 
 const StopLayer = decorate(({showRadius, state, selectedStop}) => {
-  const {date, mapBounds: bounds, mapZoom: zoom, route} = state;
+  const {date, mapBounds: bounds, mapZoom: zoom, route, stop: selectedStopId} = state;
 
   const boundsAreValid =
     !!bounds && typeof bounds.isValid === "function" && bounds.isValid();

@@ -153,22 +153,21 @@ function App({route, state, UI}) {
             <SidepanelAndMapWrapper>
               <StopsByRouteQuery date={date} route={route} skip={!route}>
                 {({stops: routeStops}) => (
-                  <SingleStopQuery date={date} stopId={selectedStopId}>
-                    {({stop}) => (
-                      <JourneyPosition date={date} journeys={routeAndSelected}>
-                        {(currentJourneyPositions) => (
-                          <>
-                            <SidePanel
-                              areaJourneysLoading={!live && areaJourneysLoading}
-                              journeyLoading={selectedJourneyLoading}
-                              areaEvents={areaJourneys}
-                              journey={selectedJourney}
-                              stop={stop}
-                              route={route}
-                              routeStops={routeStops}
-                              detailsOpen={detailsAreOpen}
-                            />
-                            <Map detailsOpen={detailsAreOpen}>
+                  <JourneyPosition date={date} journeys={routeAndSelected}>
+                    {(currentJourneyPositions) => (
+                      <>
+                        <SidePanel
+                          areaJourneysLoading={!live && areaJourneysLoading}
+                          journeyLoading={selectedJourneyLoading}
+                          areaEvents={areaJourneys}
+                          journey={selectedJourney}
+                          route={route}
+                          routeStops={routeStops}
+                          detailsOpen={detailsAreOpen}
+                        />
+                        <Map detailsOpen={detailsAreOpen}>
+                          <SingleStopQuery date={date} stopId={selectedStopId}>
+                            {({stop}) => (
                               <>
                                 <Observer>
                                   {() => {
@@ -223,35 +222,35 @@ function App({route, state, UI}) {
                                   stop={stop}
                                   routeStops={routeStops}
                                 />
-                                {selectedJourney && (
-                                  <GraphContainer
-                                    data-testid="journey-graph-container"
-                                    journeyGraphOpen={
-                                      get(selectedJourney, "vehiclePositions", [])
-                                        .length !== 0 && journeyGraphOpen
-                                    }>
-                                    <Graph
-                                      width={530}
-                                      events={get(selectedJourney, "events", [])}
-                                      vehiclePositions={get(
-                                        selectedJourney,
-                                        "vehiclePositions",
-                                        []
-                                      )}
-                                      graphExpanded={
-                                        get(selectedJourney, "departures", []) !== 0 &&
-                                        journeyGraphOpen
-                                      }
-                                    />
-                                  </GraphContainer>
-                                )}
                               </>
-                            </Map>
-                          </>
-                        )}
-                      </JourneyPosition>
+                            )}
+                          </SingleStopQuery>
+                          {selectedJourney && (
+                            <GraphContainer
+                              data-testid="journey-graph-container"
+                              journeyGraphOpen={
+                                get(selectedJourney, "vehiclePositions", []).length !==
+                                  0 && journeyGraphOpen
+                              }>
+                              <Graph
+                                width={530}
+                                events={get(selectedJourney, "events", [])}
+                                vehiclePositions={get(
+                                  selectedJourney,
+                                  "vehiclePositions",
+                                  []
+                                )}
+                                graphExpanded={
+                                  get(selectedJourney, "departures", []) !== 0 &&
+                                  journeyGraphOpen
+                                }
+                              />
+                            </GraphContainer>
+                          )}
+                        </Map>
+                      </>
                     )}
-                  </SingleStopQuery>
+                  </JourneyPosition>
                 )}
               </StopsByRouteQuery>
             </SidepanelAndMapWrapper>
