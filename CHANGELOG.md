@@ -1,5 +1,10 @@
 # Transitlog UI changelog
 
+## Version 1.5.5, deployed 2019-12-20 @ 11:00
+
+- Refactor app structure regarding stop fetching
+- Remove redundant alert query fields.
+
 ## Version 1.5.4, deployed 2019-12-12 @ 09:00
 
 - Update journey positions health check to also check start and end of journey.
