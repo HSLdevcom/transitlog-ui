@@ -18,8 +18,6 @@ import {secondsToTimeObject, getNormalTime} from "../../helpers/time";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import {applyTooltip} from "../../hooks/useTooltip";
 import {getDayTypeFromDate, dayTypes} from "../../helpers/getDayTypeFromDate";
-import AlertIcons from "../AlertIcons";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import TimingStop from "../../icons/TimingStop";
 import {cancelledStyle} from "../commonComponents";
 import getTransportType from "../../helpers/getTransportType";
@@ -152,9 +150,6 @@ const StopDepartureItem = observer((props) => {
         </PlannedTimeSlot>
         {observed}
       </TimetableButton>
-      {get(departure, "alerts", []).length !== 0 && (
-        <AlertIcons alerts={getAlertsInEffect(departure)} />
-      )}
     </ListRow>
   );
 });

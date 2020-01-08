@@ -41,11 +41,7 @@ const Alerts = decorate(({state}) => {
     <AlertsQuery time={searchTime} language={language} alertSearch={alertSearch}>
       {({alerts = [], loading: alertsLoading, error: alertsError}) => (
         <CancellationsQuery date={searchTime} cancellationsSearch={cancellationsSearch}>
-          {({
-            cancellations = [],
-            loading: cancellationsLoading,
-            error: cancellationsError,
-          }) => (
+          {({cancellations = [], loading: cancellationsLoading}) => (
             <Observer>
               {() => {
                 const alertsInEffect = getAlertsInEffect(

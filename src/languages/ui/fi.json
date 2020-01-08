@@ -191,6 +191,8 @@
   "general.unknown": "Ei tiedossa",
   "general.contact.team": "Kysy apua tai raportoi ongelmia",
   "general.delay": "Viive",
+  "general.subjects": "Kohteet",
+  "general.subjects.count": "kohdetta",
 
   "message.emptyview.network": "Verkko-ongelman takia tämä näkymä ei ole saatavilla. Varmista että sinulla on yhteys verkkoon ja kokeile uudelleen.",
   "message.emptyview.authentication": "Tämän näkymän tiedot vaatii kirjautumista, tai tililläsi ei ole vaadittu oikeustaso.",

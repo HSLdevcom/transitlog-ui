@@ -14,5 +14,6 @@ export const AlertFieldsFragment = gql`
     title
     description
     url
+    bulletinId
   }
 `;

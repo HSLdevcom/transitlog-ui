@@ -21,8 +21,6 @@ import {getTimelinessColor} from "../../helpers/timelinessColor";
 import VehicleJourneysQuery from "../../queries/VehicleJourneysQuery";
 import {secondsToTimeObject} from "../../helpers/time";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
-import AlertIcons from "../AlertIcons";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import EmptyView from "../EmptyView";
 
 const JourneyListRow = styled.div`
@@ -246,9 +244,6 @@ class VehicleJourneys extends Component {
                           </ColoredBackgroundSlot>
                           <PlainSlotSmall>{observedTimeString}</PlainSlotSmall>
                         </TagButton>
-                        {get(journey, "alerts", []).length !== 0 && (
-                          <AlertIcons alerts={getAlertsInEffect(journey)} />
-                        )}
                       </JourneyListRow>
                     );
                   })

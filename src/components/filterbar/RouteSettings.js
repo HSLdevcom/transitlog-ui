@@ -11,8 +11,7 @@ import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import Tooltip from "../Tooltip";
 import getTransportType from "../../helpers/getTransportType";
-import {SuggestionText, SelectedOptionDisplay, SuggestionAlerts} from "./SuggestionInput";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
+import {SuggestionText, SelectedOptionDisplay} from "./SuggestionInput";
 
 const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
@@ -42,10 +41,6 @@ const RouteSettings = decorate(
               if (loading) {
                 return <LoadingSpinner inline={true} />;
               }
-
-              const alertsInEffect = !selectedRoute
-                ? []
-                : getAlertsInEffect(selectedRoute, date);
 
               return (
                 <>
@@ -85,9 +80,6 @@ const RouteSettings = decorate(
                         {selectedRoute.origin} - {selectedRoute.destination}
                       </SuggestionText>
                       {routeEventsLoading && <RouteEventsLoading _testWait={false} />}
-                      {alertsInEffect.length !== 0 && (
-                        <SuggestionAlerts alerts={alertsInEffect} />
-                      )}
                     </SelectedOptionDisplay>
                   )}
                 </>
