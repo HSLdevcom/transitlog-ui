@@ -1,12 +1,7 @@
-import React, {useMemo, useState, useCallback} from "react";
-import SuggestionInput, {
-  SuggestionContent,
-  SuggestionText,
-  SuggestionAlerts,
-} from "./SuggestionInput";
+import React, {useState, useCallback} from "react";
+import SuggestionInput, {SuggestionContent, SuggestionText} from "./SuggestionInput";
 import get from "lodash/get";
 import {observer} from "mobx-react-lite";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import styled from "styled-components";
 import Loading from "../Loading";
 import {applyTooltip} from "../../hooks/useTooltip";
@@ -26,9 +21,7 @@ const getSuggestionValue = (suggestion) => {
   return get(suggestion, "stopId", "");
 };
 
-const renderSuggestion = (date) => (suggestion, {query, isHighlighted}) => {
-  const suggestionAlerts = getAlertsInEffect(suggestion.alerts || [], date);
-
+const renderSuggestion = (suggestion, {query, isHighlighted}) => {
   return (
     <SuggestionContent
       data-testid={`stop-option-${suggestion.stopId}`}
@@ -48,7 +41,6 @@ const renderSuggestion = (date) => (suggestion, {query, isHighlighted}) => {
         <br />
         {suggestion.name}
       </SuggestionText>
-      {suggestionAlerts.length !== 0 && <SuggestionAlerts alerts={suggestionAlerts} />}
     </SuggestionContent>
   );
 };
@@ -173,7 +165,6 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
 
 export default observer(({date, stops, onSelect, stop, loading}) => {
   const [options, setOptions] = useState(stops);
-  const renderSuggestionFn = useMemo(() => renderSuggestion(date), [date]);
 
   const onSearch = useCallback(
     (searchQuery) => {
@@ -192,7 +183,7 @@ export default observer(({date, stops, onSelect, stop, loading}) => {
       onSelect={onSelect}
       getValue={getSuggestionValue}
       highlightFirstSuggestion={true}
-      renderSuggestion={renderSuggestionFn}
+      renderSuggestion={renderSuggestion}
       suggestions={options.slice(0, 50)}
       renderSuggestionsContainer={renderSuggestionsContainer(loading)}
       onSuggestionsFetchRequested={onSearch}

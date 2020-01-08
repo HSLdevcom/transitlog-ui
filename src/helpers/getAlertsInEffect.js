@@ -32,6 +32,44 @@ const timeProps = [
   "plannedArrivalTime.arrivalDateTime",
 ];
 
+export const orderAlerts = (alerts, compareDate = new Date()) => {
+  const sortedAlerts = orderBy(
+    alerts,
+    [
+      (alert) => {
+        let sortVal = 0;
+
+        if (alert.level === "SEVERE") {
+          sortVal += 1000;
+        }
+
+        if (alert.level === "WARNING") {
+          sortVal += 10;
+        }
+
+        if (alert.distribution === AlertDistribution.Network) {
+          sortVal += 100;
+        }
+
+        if (
+          [AlertDistribution.AllRoutes, AlertDistribution.AllStops].includes(
+            alert.distribution
+          )
+        ) {
+          sortVal += 10;
+        }
+
+        return sortVal;
+      },
+      (alert) => differenceInMinutes(legacyParse(alert.startDateTime), compareDate),
+      (alert) => differenceInMinutes(legacyParse(alert.endDateTime), compareDate),
+    ],
+    ["desc", "asc", "desc"]
+  );
+
+  return sortedAlerts;
+};
+
 export const getAlertsInEffect = (
   objectWithAlerts = [],
   time,
@@ -62,48 +100,7 @@ export const getAlertsInEffect = (
   }
 
   const alertsInEffect = alerts.filter(filterByDate);
-
-  const sortedAlerts = orderBy(
-    alertsInEffect,
-    [
-      (alert) => {
-        let sortVal = 0;
-
-        if (alert.level === "SEVERE") {
-          sortVal += 1000;
-        }
-
-        if (alert.level === "WARNING") {
-          sortVal += 10;
-        }
-
-        if (alert.distribution === AlertDistribution.Network) {
-          sortVal += 100;
-        }
-
-        if (
-          [AlertDistribution.AllRoutes, AlertDistribution.AllStops].includes(
-            alert.distribution
-          )
-        ) {
-          sortVal += 10;
-        }
-
-        return sortVal;
-      },
-      (alert) =>
-        differenceInMinutes(
-          legacyParse(alert.startDateTime),
-          legacyParse(currentMoment.toDate())
-        ),
-      (alert) =>
-        differenceInMinutes(
-          legacyParse(alert.endDateTime),
-          legacyParse(currentMoment.toDate())
-        ),
-    ],
-    ["desc", "asc", "asc"]
-  );
+  const sortedAlerts = orderAlerts(alertsInEffect, currentMoment.toDate());
 
   if (Array.isArray(objectWithAlerts)) {
     return sortedAlerts;

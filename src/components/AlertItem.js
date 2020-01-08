@@ -12,7 +12,7 @@ import {AlertDistribution} from "../helpers/getAlertsInEffect";
 import BusStop from "../icons/BusStop";
 import JourneyPlanner from "../icons/JourneyPlanner";
 import HSLLogoNoText from "../icons/HSLLogoNoText";
-import {text, alertText} from "../helpers/text";
+import {text, alertText, Text} from "../helpers/text";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
 
@@ -139,6 +139,16 @@ const Accordion = styled(ToggleView)`
   }
 `;
 
+const AffectedIdsDisplay = styled.div`
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.025);
+  border-radius: 5px;
+  border: 1px solid var(--lighter-grey);
+  line-height: 1.35;
+`;
+
 const AlertTimeDisplay = observer(({alert}) => {
   const startMoment = moment.tz(alert.startDateTime, TIMEZONE);
   const endMoment = moment.tz(alert.endDateTime, TIMEZONE);
@@ -207,6 +217,12 @@ const AlertItem = decorate(({alert, state}) => {
         : "https://" + alert.url
       : "";
 
+  const affectedCount = alert.affectedIds.length;
+  const affectedTitle =
+    affectedCount > 1
+      ? `${affectedCount} ${text("general.subjects.count")}`
+      : alert.affectedId;
+
   return (
     <AlertComponent
       lightText={!lightBg}
@@ -224,7 +240,7 @@ const AlertItem = decorate(({alert, state}) => {
                   ? text("domain.alerts.all_stops")
                   : alert.distribution === AlertDistribution.Route ||
                     alert.distribution === AlertDistribution.Stop
-                  ? alert.affectedId
+                  ? affectedTitle
                   : text("domain.alerts.network")}
               </AlertType>
               <AlertTimeDisplay alert={alert} />
@@ -242,6 +258,18 @@ const AlertItem = decorate(({alert, state}) => {
           </AlertHeader>
         }>
         <AlertContent>
+          {affectedCount > 1 && (
+            <AffectedIdsDisplay>
+              <span
+                style={{display: "block", marginBottom: "0.5rem", fontWeight: "bold"}}>
+                <Text>general.subjects</Text>
+              </span>
+              <span
+                style={{fontFamily: '"Courier New", Courier, monospace'}}
+                dangerouslySetInnerHTML={{__html: alert.affectedIds.join("<br />")}}
+              />
+            </AffectedIdsDisplay>
+          )}
           {alert.description && (
             <AlertDescription lightBg={colorful && lightBg}>
               {alert.description}

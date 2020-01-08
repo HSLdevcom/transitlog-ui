@@ -1,5 +1,4 @@
 import gql from "graphql-tag";
-import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
 
 export const RouteFieldsFragment = gql`
@@ -13,13 +12,9 @@ export const RouteFieldsFragment = gql`
     name
     origin
     originStopId
-    alerts {
-      ...AlertFieldsFragment
-    }
     cancellations {
       ...CancellationFieldsFragment
     }
   }
-  ${AlertFieldsFragment}
   ${CancellationFieldsFragment}
 `;

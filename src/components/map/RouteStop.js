@@ -21,13 +21,11 @@ import CalculateTerminalTime from "../journeypanel/CalculateTerminalTime";
 import getDelayType from "../../helpers/getDelayType";
 import StopPopupContent, {
   StopContentWrapper,
-  StopAlerts,
   StopPopupContentSection,
   StopStreetViewWrapper,
 } from "./StopPopupContent";
 import MapPopup from "./MapPopup";
 import {Button} from "../Forms";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import StopMarker from "./StopMarker";
 import {inject} from "../../helpers/inject";
 
@@ -124,15 +122,6 @@ class RouteStop extends React.Component {
     const isPlanned = departure.type === "PLANNED";
     const isTimingStop = get(arrival || departure || stop, "isTimingStop", false);
 
-    const stopDepartureDateTime = get(
-      departure,
-      "recordedAt",
-      get(departure, "plannedDateTime", date)
-    );
-
-    const stopAlerts = getAlertsInEffect(stop, stopDepartureDateTime);
-    const departureAlerts = getAlertsInEffect(departure);
-
     const firstDeparture = firstStop;
 
     const departureDiff = get(departure, "plannedTimeDifference", 0);
@@ -149,8 +138,6 @@ class RouteStop extends React.Component {
 
     const stopArrivalTime = get(arrival, "recordedTime", "");
     const stopDepartureTime = get(departure, "recordedTime", "");
-
-    // Calculate the duration values
 
     let plannedDuration = 0;
     let observedDuration = 0;
@@ -329,7 +316,6 @@ class RouteStop extends React.Component {
             )}
           </StopContentWrapper>
         </StopPopupContentSection>
-        <StopAlerts alerts={[...stopAlerts, ...departureAlerts]} />
         <StopStreetViewWrapper>
           <Button onClick={this.onShowStreetView}>
             <Text>map.stops.show_in_streetview</Text>
@@ -384,7 +370,6 @@ class RouteStop extends React.Component {
         isTimingStop={get(stop, "isTimingStop", false)}
         isTerminal={isTerminal}
         stop={stop}
-        alerts={stopAlerts}
         showRadius={showRadius}>
         {markerChildren}
       </StopMarker>

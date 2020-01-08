@@ -12,12 +12,10 @@ import {
 } from "../../helpers/time";
 import {applyTooltip} from "../../hooks/useTooltip";
 import {getDayTypeFromDate, dayTypes} from "../../helpers/getDayTypeFromDate";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import {createCompositeJourney} from "../../stores/journeyActions";
 import Tooltip from "../Tooltip";
 import {text} from "../../helpers/text";
 import styled from "styled-components";
-import AlertIcons from "../AlertIcons";
 import {ColoredBackgroundSlot} from "../TagButton";
 import {cancelledStyle} from "../commonComponents";
 import Timetable from "../../icons/Timetable";
@@ -86,11 +84,6 @@ const JourneyInstanceDisplay = styled.span`
 const SpecialDayDisplay = styled(JourneyInstanceDisplay)`
   background: var(--lighter-blue);
   margin-left: ${({largeMargin = false}) => (largeMargin ? "0.5rem" : "0.2rem")};
-`;
-
-const JourneyAlertIcons = styled(AlertIcons)`
-  bottom: -3px;
-  left: 0.875rem;
 `;
 
 const TimetableIcon = styled(Timetable)`
@@ -184,9 +177,6 @@ const RouteDepartureItem = decorate(
               )}
             </span>
           </Tooltip>
-          {get(departure, "alerts", []).length !== 0 && (
-            <JourneyAlertIcons alerts={getAlertsInEffect(departure)} />
-          )}
         </JourneyListRow>
       );
     }
@@ -247,14 +237,6 @@ const RouteDepartureItem = decorate(
           )}
         </JourneyRowLeft>
         {observedJourney}
-        {get(departure, "journey.alerts", []).length !== 0 && (
-          <JourneyAlertIcons
-            alerts={getAlertsInEffect(
-              departure.journey,
-              departure.observedDepartureTime.departureDateTime
-            )}
-          />
-        )}
       </JourneyListRow>
     );
   }
