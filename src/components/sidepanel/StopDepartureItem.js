@@ -21,6 +21,7 @@ import {getDayTypeFromDate, dayTypes} from "../../helpers/getDayTypeFromDate";
 import TimingStop from "../../icons/TimingStop";
 import {cancelledStyle} from "../commonComponents";
 import getTransportType from "../../helpers/getTransportType";
+import {createCompositeJourney} from "../../stores/journeyActions";
 
 const ListRow = styled.div`
   padding: 0.25rem 0.5rem 0.25rem 0.75rem;
@@ -84,15 +85,39 @@ const StopDepartureItem = observer((props) => {
     return null;
   }
 
+  let journeyId = getJourneyId(departure.journey);
+  let selectedJourneyId = getJourneyId(selectedJourney);
+
   const stopMode = getTransportType(departure.routeId);
   const currentTransportColor = get(transportColor, stopMode, "var(--light-grey)");
-  const selectedJourneyId = getJourneyId(selectedJourney);
+
   const isTimingStop = departure.isTimingStop;
   const instance = get(departure, "journey._numInstance", 0);
 
-  const journeyIsSelected =
-    !!selectedJourneyId &&
-    selectedJourneyId === getJourneyId(departure.journey || departure);
+  const compositeJourney = useMemo(() => {
+    // Important to get the time of the origin departure, not the departure from the current stop.
+    const departureDate = departure.originDepartureTime.departureDate;
+    const departureTime = departure.originDepartureTime.departureTime;
+
+    return createCompositeJourney(departureDate, departure, departureTime);
+  }, [departure]);
+
+  if (!departure.journey) {
+    selectedJourneyId = getJourneyId(selectedJourney, false);
+    journeyId = getJourneyId(compositeJourney, false);
+  }
+
+  const journeyIsSelected = useMemo(() => {
+    if (!selectedJourney) {
+      return false;
+    }
+
+    if (departure.journey) {
+      return selectedJourneyId && selectedJourneyId === journeyId;
+    }
+
+    return selectedJourneyId === journeyId;
+  }, [selectedJourneyId, departure, journeyId]);
 
   const isSpecialDayType =
     getDayTypeFromDate(departure.plannedDepartureTime.departureDate) !==
