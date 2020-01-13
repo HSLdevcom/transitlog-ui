@@ -130,7 +130,7 @@ const StopDepartureItem = observer((props) => {
     // Diff planned and observed times
     const observedTimeString = observedTime.departureTime;
     const diff = observedTime.departureTimeDifference;
-    const delayType = getDelayType(diff);
+    const delayType = getDelayType(diff, !!isTimingStop);
     const {hours, minutes, seconds} = secondsToTimeObject(diff);
 
     observed = (

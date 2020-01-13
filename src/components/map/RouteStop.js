@@ -125,7 +125,10 @@ class RouteStop extends React.Component {
     const firstDeparture = firstStop;
 
     const departureDiff = get(departure, "plannedTimeDifference", 0);
-    const departureDelayType = !isPlanned ? getDelayType(departureDiff) : "planned";
+    const departureDelayType = !isPlanned
+      ? getDelayType(departureDiff, !!isTimingStop)
+      : "planned";
+
     const departureDiffTime = secondsToTimeObject(departureDiff);
 
     const arrivalDiff = get(arrival, "plannedTimeDifference", 0);

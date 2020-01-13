@@ -23,6 +23,7 @@ const JourneyStopsLayer = decorate(
           !!evt.stopId
       );
 
+      // Group stops by ID and sort each group by time and and stop index.
       const stopGroups = orderBy(
         Object.values(groupBy(stopEvents, "stopId")),
         (events) => {

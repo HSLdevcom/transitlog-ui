@@ -17,7 +17,7 @@ export const getJourneyStopDiffs = (journeyEvents) => {
     const departureDiff = get(event, "plannedTimeDifference", false);
 
     if (departureDiff) {
-      const departureDelayType = getDelayType(departureDiff);
+      const departureDelayType = getDelayType(departureDiff, !!event.isTimingStop);
       departureColor = getTimelinessColor(departureDelayType, "var(--light-green)");
       y = departureDiff;
       stopId = event.stopId;
