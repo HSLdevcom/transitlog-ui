@@ -200,7 +200,7 @@ export const JourneyStopEvent = decorate(
     }
 
     const timeDiff = event.plannedTimeDifference;
-    const delayType = getDelayType(timeDiff);
+    const delayType = getDelayType(timeDiff, !!event.isTimingStop);
     const diffObject = secondsToTimeObject(timeDiff);
 
     return (
