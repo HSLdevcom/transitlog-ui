@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import get from "lodash/get";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import gql from "graphql-tag";
 import {createRouteId} from "../helpers/keys";
 

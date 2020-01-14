@@ -1,6 +1,6 @@
 import React, {useRef} from "react";
 import gql from "graphql-tag";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import get from "lodash/get";
 import {useRefetch} from "../hooks/useRefetch";
 

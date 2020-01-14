@@ -4,7 +4,7 @@ import {inject} from "../helpers/inject";
 import flow from "lodash/flow";
 import get from "lodash/get";
 import gql from "graphql-tag";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 
 const exceptionDaysQuery = gql`
   query exceptionDays($year: String!) {

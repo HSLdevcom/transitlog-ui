@@ -1,6 +1,6 @@
 import React, {useMemo} from "react";
 import {observer} from "mobx-react-lite";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import gql from "graphql-tag";
 import get from "lodash/get";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
