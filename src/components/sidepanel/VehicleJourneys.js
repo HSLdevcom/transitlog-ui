@@ -18,19 +18,21 @@ import getDelayType from "../../helpers/getDelayType";
 import doubleDigit from "../../helpers/doubleDigit";
 import PlusMinusInput from "../PlusMinusInput";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
-import VehicleJourneysQuery from "../../queries/VehicleJourneysQuery";
-import {secondsToTimeObject} from "../../helpers/time";
+import {secondsToTimeObject, timeToSeconds} from "../../helpers/time";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import EmptyView from "../EmptyView";
+import gql from "graphql-tag";
+import {useQueryData} from "../../hooks/useQueryData";
+import orderBy from "lodash/orderBy";
 
 const JourneyListRow = styled.div`
   position: relative;
-  padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+  padding: 0.25rem 0.4rem 0.25rem 0.4rem;
   margin: 0;
   background: ${({selected = false}) => (selected ? "var(--blue)" : "transparent")};
 
   &:first-child {
-    margin-top: 1rem;
+    margin-top: 0.25rem;
   }
 `;
 
@@ -63,6 +65,49 @@ const NextPrevLabel = styled.div`
   justify-content: center;
 `;
 
+const vehicleJourneysQuery = gql`
+  query vehicleJourneys($date: Date!, $uniqueVehicleId: VehicleId!) {
+    vehicleJourneys(date: $date, uniqueVehicleId: $uniqueVehicleId) {
+      id
+      journeyType
+      routeId
+      direction
+      departureDate
+      departureTime
+      uniqueVehicleId
+      operatorId
+      vehicleId
+      headsign
+      mode
+      recordedAt
+      recordedAtUnix
+      recordedTime
+      timeDifference
+    }
+  }
+`;
+
+const driverEventsQuery = gql`
+  query driverEvents($date: Date!, $uniqueVehicleId: VehicleId!) {
+    driverEvents(date: $date, uniqueVehicleId: $uniqueVehicleId) {
+      id
+      journeyType
+      eventType
+      uniqueVehicleId
+      operatorId
+      vehicleId
+      mode
+      recordedAt
+      recordedAtUnix
+      recordedTime
+      lat
+      lng
+      mode
+      receivedAt
+    }
+  }
+`;
+
 const decorate = flow(
   observer,
   inject("Journey", "Time")
@@ -72,9 +117,52 @@ const VehicleJourneys = decorate((props) => {
   const {Time, Journey, state} = props;
   const {selectedJourney, date, vehicle, user} = state;
 
+  let [operatorId, vehicleNumber] = (vehicle || "").split("/");
+
+  operatorId = parseInt(operatorId, 10);
+  vehicleNumber = parseInt(vehicleNumber, 10);
+
+  const uniqueVehicleId = `${operatorId}/${vehicleNumber}`;
+
+  // Vehicle journeys
   const selectedJourneyIndex = useRef(0);
   const [nextJourneyIndex, setNextJourneyIndex] = useState(0);
-  const fetchedJourneys = useRef([]);
+
+  const queryProps = {
+    date,
+    uniqueVehicleId,
+  };
+
+  const {data: journeyData = [], loading, error} = useQueryData(
+    vehicleJourneysQuery,
+    {
+      variables: queryProps,
+    },
+    "vehicle journeys"
+  );
+
+  // Driver events
+
+  const {data: driverData = [], loading: driverLoading} = useQueryData(
+    driverEventsQuery,
+    {
+      variables: queryProps,
+    },
+    "driver events"
+  );
+
+  const journeysAndDriverEvents = orderBy(
+    [...(driverData || []), ...(journeyData || [])],
+    (event) => {
+      const time = get(event, "departureTime", get(event, "recordedTime"), "");
+
+      if (!time) {
+        return 0;
+      }
+
+      return timeToSeconds(time);
+    }
+  );
 
   const selectJourney = useCallback(
     (journey) => {
@@ -119,7 +207,10 @@ const VehicleJourneys = decorate((props) => {
   }, [selectedJourneyIndex.current]);
 
   useEffect(() => {
-    const journeys = fetchedJourneys.current;
+    const journeys = journeysAndDriverEvents.filter(
+      (evt) => !evt.id.startsWith("driver_event")
+    );
+
     let useIndex = nextJourneyIndex;
 
     if (!journeys || journeys.length === 0) {
@@ -142,106 +233,110 @@ const VehicleJourneys = decorate((props) => {
     ) {
       selectJourney(nextSelectedJourney);
     }
-  }, [nextJourneyIndex, selectedJourney, selectJourney]);
+  }, [journeysAndDriverEvents, nextJourneyIndex, selectedJourney, selectJourney]);
 
   const selectedJourneyId = getJourneyId(selectedJourney, false);
 
+  let journeyIndex = 0;
+
   return (
-    <VehicleJourneysQuery vehicleId={vehicle} date={date}>
-      {({journeys = [], loading, error}) => {
-        fetchedJourneys.current = journeys;
-
-        return (
-          <SidepanelList
-            testIdPrefix="vehicle-block"
-            focusKey={selectedJourneyId}
-            loading={loading}
-            header={
-              <>
-                <HeaderRowLeft>
-                  <PlusMinusInput
-                    plusLabel={<>&raquo;</>}
-                    minusLabel={<>&laquo;</>}
-                    onDecrease={selectPreviousVehicleJourney}
-                    onIncrease={selectNextVehicleJourney}>
-                    <NextPrevLabel>
-                      {selectedJourney ? (
-                        <>
-                          {vehicle}, {selectedJourney.departureTime.slice(0, -3)}
-                        </>
-                      ) : (
-                        vehicle
-                      )}
-                    </NextPrevLabel>
-                  </PlusMinusInput>
-                </HeaderRowLeft>
-              </>
-            }>
-            {(scrollRef) =>
-              (!journeys || journeys.length === 0) && !loading ? (
-                <EmptyView
-                  error={error}
-                  text={
-                    user
-                      ? "message.emptyview.novehicleevents"
-                      : "message.emptyview.vehicleauth"
-                  }
-                />
-              ) : (
-                journeys.map((journey, journeyIndex) => {
-                  const journeyId = getJourneyId(journey, false);
-
-                  const mode = get(journey, "mode", "").toUpperCase();
-                  const journeyTime = get(journey, "departureTime", "");
-                  const lineNumber = parseLineNumber(get(journey, "routeId", ""));
-
-                  const plannedObservedDiff = journey.timeDifference;
-                  const observedTimeString = journey.recordedTime;
-                  const diffTime = secondsToTimeObject(plannedObservedDiff);
-                  const delayType = getDelayType(plannedObservedDiff);
-
-                  const journeyIsSelected =
-                    selectedJourney && selectedJourneyId === journeyId;
-
-                  if (journeyIsSelected) {
-                    selectedJourneyIndex.current = journeyIndex;
-                  }
-
-                  return (
-                    <JourneyListRow
-                      selected={journeyIsSelected}
-                      key={`vehicle_journey_row_${journeyId}`}
-                      ref={journeyIsSelected ? scrollRef : null}>
-                      <TagButton
-                        data-testid="vehicle-departure-option"
-                        selected={journeyIsSelected}
-                        onClick={onSelectJourney(journey)}>
-                        <HeadsignSlot
-                          color={get(transportColor, mode, "var(--light-grey)")}>
-                          {lineNumber}/{journey.direction}
-                        </HeadsignSlot>
-                        <TimeSlot>{journeyTime.slice(0, -3)}</TimeSlot>
-                        <ColoredBackgroundSlot
-                          color={delayType === "late" ? "var(--dark-grey)" : "white"}
-                          backgroundColor={getTimelinessColor(
-                            delayType,
-                            "var(--light-green)"
-                          )}>
-                          {plannedObservedDiff < 0 ? "-" : ""}
-                          {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
-                          {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
-                        </ColoredBackgroundSlot>
-                        <PlainSlotSmall>{observedTimeString}</PlainSlotSmall>
-                      </TagButton>
-                    </JourneyListRow>
-                  );
-                })
-              )
+    <SidepanelList
+      testIdPrefix="vehicle-block"
+      focusKey={selectedJourneyId}
+      loading={loading}
+      header={
+        <>
+          <HeaderRowLeft>
+            <PlusMinusInput
+              plusLabel={<>&raquo;</>}
+              minusLabel={<>&laquo;</>}
+              onDecrease={selectPreviousVehicleJourney}
+              onIncrease={selectNextVehicleJourney}>
+              <NextPrevLabel>
+                {selectedJourney ? (
+                  <>
+                    {vehicle}, {selectedJourney.departureTime.slice(0, -3)}
+                  </>
+                ) : (
+                  vehicle
+                )}
+              </NextPrevLabel>
+            </PlusMinusInput>
+          </HeaderRowLeft>
+        </>
+      }>
+      {(scrollRef) =>
+        journeysAndDriverEvents.length === 0 && !loading && !driverLoading ? (
+          <EmptyView
+            error={error}
+            text={
+              user ? "message.emptyview.novehicleevents" : "message.emptyview.vehicleauth"
             }
-          </SidepanelList>
-        );
-      }}
-    </VehicleJourneysQuery>
+          />
+        ) : (
+          journeysAndDriverEvents.map((journey) => {
+            if (journey.id.startsWith("driver_event")) {
+              return (
+                <JourneyListRow key={journey.id}>
+                  <TagButton data-testid="driver-event-row">
+                    <PlainSlot>
+                      {journey.eventType === "DA"
+                        ? "Driver signed in"
+                        : "Driver signed out"}
+                    </PlainSlot>
+                    <PlainSlotSmall>{journey.recordedTime}</PlainSlotSmall>
+                  </TagButton>
+                </JourneyListRow>
+              );
+            }
+
+            const journeyId = getJourneyId(journey, false);
+
+            const mode = get(journey, "mode", "").toUpperCase();
+            const journeyTime = get(journey, "departureTime", "");
+            const lineNumber = parseLineNumber(get(journey, "routeId", ""));
+
+            const plannedObservedDiff = journey.timeDifference;
+            const observedTimeString = journey.recordedTime;
+            const diffTime = secondsToTimeObject(plannedObservedDiff);
+            const delayType = getDelayType(plannedObservedDiff);
+
+            const journeyIsSelected = selectedJourney && selectedJourneyId === journeyId;
+
+            if (journeyIsSelected) {
+              selectedJourneyIndex.current = journeyIndex;
+            }
+
+            journeyIndex++;
+
+            return (
+              <JourneyListRow
+                selected={journeyIsSelected}
+                key={`vehicle_journey_row_${journeyId}`}
+                ref={journeyIsSelected ? scrollRef : null}>
+                <TagButton
+                  data-testid="vehicle-departure-option"
+                  selected={journeyIsSelected}
+                  onClick={onSelectJourney(journey)}>
+                  <HeadsignSlot color={get(transportColor, mode, "var(--light-grey)")}>
+                    {lineNumber}/{journey.direction}
+                  </HeadsignSlot>
+                  <TimeSlot>{journeyTime.slice(0, -3)}</TimeSlot>
+                  <ColoredBackgroundSlot
+                    color={delayType === "late" ? "var(--dark-grey)" : "white"}
+                    backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+                    {plannedObservedDiff < 0 ? "-" : ""}
+                    {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
+                    {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
+                  </ColoredBackgroundSlot>
+                  <PlainSlotSmall>{observedTimeString}</PlainSlotSmall>
+                </TagButton>
+              </JourneyListRow>
+            );
+          })
+        )
+      }
+    </SidepanelList>
   );
 });
 
