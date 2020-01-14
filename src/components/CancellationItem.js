@@ -41,7 +41,7 @@ const ChildWrapper = styled.div`
   }
 `;
 
-const ChildHeading = styled(Heading).attrs({level: 6})`
+const ChildHeading = styled(Heading).attrs(() => ({level: 6}))`
   margin-left: 1rem;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -104,7 +104,7 @@ export const CancellationTime = styled.div`
   }
 `;
 
-export const CancellationTitle = styled(Heading).attrs({level: 5})`
+export const CancellationTitle = styled(Heading).attrs(() => ({level: 5}))`
   margin: 0 0 0.75rem;
   font-size: 0.875rem;
   font-weight: bold;

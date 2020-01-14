@@ -14,7 +14,7 @@ const Bar = styled.div`
   flex: 1 0 auto;
 `;
 
-const ControlButton = styled(Button).attrs({small: true, transparent: true})`
+const ControlButton = styled(Button).attrs(() => ({small: true, transparent: true}))`
   font-size: 0.75rem;
   padding: 0.2rem 0.75rem;
   margin-right: 1rem;
@@ -24,7 +24,7 @@ const ControlButton = styled(Button).attrs({small: true, transparent: true})`
   }
 `;
 
-const PollToggle = styled(ToggleButton).attrs({inverted: true})`
+const PollToggle = styled(ToggleButton).attrs(() => ({inverted: true}))`
   flex: 0;
   color: white;
 `;

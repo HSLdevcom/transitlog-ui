@@ -102,10 +102,10 @@ export const Button = React.forwardRef(({helpText, ...props}, ref) => (
   <StyledButton {...props} {...useTooltip(helpText)} ref={ref} />
 ));
 
-export const ClearButton = styled(Button).attrs({
+export const ClearButton = styled(Button).attrs(() => ({
   primary: true,
   children: <CrossThick fill="white" width="0.75rem" height="0.75rem" />,
-})`
+}))`
   padding: 0.25rem 0.7rem;
   border-radius: 0.25rem;
   outline: none;

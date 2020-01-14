@@ -91,11 +91,11 @@ const TotalHealthIndicator = styled.div`
   }
 `;
 
-const HealthAlert = styled(Alert).attrs({
+const HealthAlert = styled(Alert).attrs(() => ({
   width: "2.1rem",
   height: "2.1rem",
   fill: "var(--red)",
-})`
+}))`
   margin-right: 1rem;
   flex-shrink: 0;
 `;

@@ -29,7 +29,7 @@ const StopOptionButton = styled.button`
   }
 `;
 
-const ChooseStopHeading = styled(Heading).attrs({level: 4})`
+const ChooseStopHeading = styled(Heading).attrs(() => ({level: 4}))`
   margin-top: 0;
   margin-bottom: 0.5rem;
 `;

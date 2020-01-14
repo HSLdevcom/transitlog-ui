@@ -29,7 +29,7 @@ const Logo = styled.img`
   flex: 0 0 auto;
 `;
 
-const MainHeading = styled(Heading).attrs({level: 1})`
+const MainHeading = styled(Heading).attrs(() => ({level: 1}))`
   color: white;
   margin: 0 0 0 1rem;
   font-size: 1.25rem;
@@ -77,7 +77,7 @@ const Username = styled.div`
   margin-right: 0.75rem;
 `;
 
-const IconButton = styled(Button).attrs({small: true, transparent: true})`
+const IconButton = styled(Button).attrs(() => ({small: true, transparent: true}))`
   font-size: 0.75rem;
   padding: 0.2rem 0.75rem;
   border: 0;

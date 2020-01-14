@@ -45,12 +45,12 @@ const LineIdHeading = styled.span`
   margin: 0;
 `;
 
-const LineNameHeading = styled(Heading).attrs({level: 4})`
+const LineNameHeading = styled(Heading).attrs(() => ({level: 4}))`
   font-weight: normal;
   margin: 0;
 `;
 
-const MainHeaderRow = styled(Heading).attrs({level: 3})`
+const MainHeaderRow = styled(Heading).attrs(() => ({level: 3}))`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -136,11 +136,11 @@ const HealthIndicator = styled.button`
   }
 `;
 
-const HealthAlert = styled(Alert).attrs({
+const HealthAlert = styled(Alert).attrs(() => ({
   width: "1.5rem",
   height: "1.5rem",
   fill: "var(--red)",
-})`
+}))`
   flex-shrink: 0;
 `;
 

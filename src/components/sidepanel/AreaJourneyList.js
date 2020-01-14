@@ -85,7 +85,7 @@ const RouteFilterContainer = styled.div`
   }
 `;
 
-const ApplyButton = styled(Button).attrs({small: true, primary: true})`
+const ApplyButton = styled(Button).attrs(() => ({small: true, primary: true}))`
   margin-left: 0.5rem;
   margin-bottom: 1px;
 `;

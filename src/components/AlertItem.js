@@ -92,7 +92,7 @@ const AlertIconStyle = styled.svg`
   margin-left: -0.25rem;
 `;
 
-const AlertTitle = styled(Heading).attrs({level: 5})`
+const AlertTitle = styled(Heading).attrs(() => ({level: 5}))`
   margin: 0;
   font-size: 0.875rem;
   font-weight: bold;

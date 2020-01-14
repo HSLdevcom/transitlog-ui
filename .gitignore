@@ -25,3 +25,4 @@ cypress/integration/examples/*.js
 cypress/fixtures/example.json
 cypress/videos
 cypress/screenshots
+.env.local

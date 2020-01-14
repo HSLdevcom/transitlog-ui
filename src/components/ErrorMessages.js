@@ -27,7 +27,7 @@ const Error = styled.div`
   border-top: 1px solid #a72828;
 `;
 
-const DismissButton = styled(Button).attrs({small: true, primary: false})`
+const DismissButton = styled(Button).attrs(() => ({small: true, primary: false}))`
   border: 1px solid white;
   color: white;
   background: transparent;

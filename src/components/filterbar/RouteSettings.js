@@ -17,7 +17,7 @@ const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
 
-const RouteEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
+const RouteEventsLoading = styled(Loading).attrs(() => ({inline: true, size: 20}))`
   margin-left: auto;
   position: relative;
   top: 5px;

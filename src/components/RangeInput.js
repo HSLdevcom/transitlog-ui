@@ -24,7 +24,7 @@ const SliderTrack = css`
   background-clip: content-box;
 `;
 
-const Slider = styled.input.attrs({type: "range", step: 1})`
+const Slider = styled.input.attrs(() => ({type: "range", step: 1}))`
   -webkit-appearance: none;
   -moz-appearance: none;
   width: 100%;
