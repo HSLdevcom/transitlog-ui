@@ -3,7 +3,7 @@ import get from "lodash/get";
 import orderBy from "lodash/orderBy";
 import gql from "graphql-tag";
 import {observer} from "mobx-react-lite";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import {timeToSeconds} from "../helpers/time";
 import {useRefetch} from "../hooks/useRefetch";
 
