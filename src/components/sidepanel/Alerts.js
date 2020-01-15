@@ -44,16 +44,16 @@ const Alerts = decorate(({state}) => {
           {({cancellations = [], loading: cancellationsLoading}) => (
             <Observer>
               {() => {
-                const alertsInEffect = getAlertsInEffect(
-                  !isFiltered
-                    ? alerts
-                    : {
+                const alertsInEffect = !isFiltered
+                  ? alerts
+                  : getAlertsInEffect(
+                      {
                         routeId: routeId || undefined,
                         stopId: stop || undefined,
                         alerts,
                       },
-                  state.timeMoment
-                );
+                      state.timeMoment
+                    );
 
                 return (
                   <SidepanelList loading={alertsLoading || cancellationsLoading}>
