@@ -529,9 +529,6 @@ const JourneysByWeek = decorate(
                                               : "var(--light-grey)"
                                           }
                                         />
-                                        <TableCellIcons
-                                          alerts={getAlertsInEffect(departure)}
-                                        />
                                       </TableCellButton>
                                     </Tooltip>
                                   );
@@ -585,9 +582,6 @@ const JourneysByWeek = decorate(
                                       {plannedObservedDiff < 0 ? "-" : ""}
                                       {doubleDigit(diffTime.minutes)}:
                                       {doubleDigit(diffTime.seconds)}
-                                      <TableCellIcons
-                                        alerts={getAlertsInEffect(departure)}
-                                      />
                                     </TableCellButton>
                                   </Tooltip>
                                 );
