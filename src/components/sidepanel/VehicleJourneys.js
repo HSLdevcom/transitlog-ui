@@ -201,7 +201,6 @@ const VehicleJourneys = decorate((props) => {
   );
 
   const selectPreviousVehicleJourney = useCallback(() => {
-    console.log(selectedJourneyIndex);
     let nextIndex = selectedJourneyIndex - 1;
 
     // Clamp to 0
