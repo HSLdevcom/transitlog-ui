@@ -70,6 +70,7 @@ export default (state) => {
       mapView: latLng([lat, lng]),
       mapZoom: intval(urlZoom) || 13,
       mapBounds: null,
+      mapDriverEvent: null,
     },
     {
       selectedBounds: observable.ref,
