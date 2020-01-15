@@ -1,8 +1,7 @@
 import Metolib from "@fmidev/metolib";
-import {FMI_APIKEY} from "../constants";
 import weatherQueue from "./weatherQueue";
 
-const SERVER_URL = `https://data.fmi.fi/fmi-apikey/${FMI_APIKEY}/wfs`;
+const SERVER_URL = `https://opendata.fmi.fi/wfs`;
 const STORED_QUERY_OBSERVATION = "livi::observations::road::multipointcoverage";
 
 export async function getRoadConditionsForArea(
