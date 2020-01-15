@@ -71,6 +71,10 @@ export const PlainSlot = styled.span`
   justify-content: left;
   font-size: 0.875rem;
   hyphens: auto;
+
+  &:first-child {
+    border-left: 0;
+  }
 `;
 
 export const PlainSlotSmall = styled.span`

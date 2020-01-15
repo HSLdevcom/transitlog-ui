@@ -6,8 +6,6 @@ import {inject} from "../../helpers/inject";
 import {Marker} from "react-leaflet";
 import {divIcon} from "leaflet";
 import Logout from "../../icons/Logout";
-import Latest from "../../icons/Latest";
-import Checkmark from "../../icons/Checkmark";
 import Checkmark2 from "../../icons/Checkmark2";
 
 const decorate = flow(
@@ -20,7 +18,7 @@ const loginIconHTML = ReactDOMServer.renderToStaticMarkup(
 );
 
 const logoutIconHTML = ReactDOMServer.renderToStaticMarkup(
-  <Logout width={16} height={16} fill="var(--red)" />
+  <Logout width={14} height={14} fill="var(--red)" />
 );
 
 const DriverEventLayer = decorate(({state}) => {
@@ -42,7 +40,7 @@ justify-content: center;
 background-color: white">${
         mapDriverEvent.eventType === "DA" ? loginIconHTML : logoutIconHTML
       }</div>`,
-      iconSize: [30, 30],
+      iconSize: [28, 28],
     });
   }
 
