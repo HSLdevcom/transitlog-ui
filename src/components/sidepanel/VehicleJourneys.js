@@ -37,6 +37,10 @@ const JourneyListRow = styled.div`
   }
 `;
 
+const DriverEventRow = styled(JourneyListRow)`
+  background: ${({selected = false}) => (selected ? "var(--light-blue)" : "transparent")};
+`;
+
 const HeaderRowLeft = styled.span`
   margin-right: 1rem;
   display: block;
@@ -323,9 +327,12 @@ const VehicleJourneys = decorate((props) => {
           journeysAndDriverEvents.map((journey) => {
             // Render driver event
             if (journey.id.startsWith("driver_event")) {
+              const isSelected = mapDriverEvent && mapDriverEvent.id === journey.id;
+
               return (
-                <JourneyListRow key={journey.id}>
+                <DriverEventRow selected={isSelected} key={journey.id}>
                   <TagButton
+                    selected={isSelected}
                     onClick={onSelectEvent(journey)}
                     data-testid="driver-event-row">
                     <PlainSlot>
@@ -335,7 +342,7 @@ const VehicleJourneys = decorate((props) => {
                     </PlainSlot>
                     <PlainSlotSmall>{journey.recordedTime}</PlainSlotSmall>
                   </TagButton>
-                </JourneyListRow>
+                </DriverEventRow>
               );
             }
 
