@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback, useMemo} from "react";
+import React, {useEffect, useState, useCallback, useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import SidepanelList from "./SidepanelList";
 import styled from "styled-components";
