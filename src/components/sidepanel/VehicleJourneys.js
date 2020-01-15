@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useMemo} from "react";
+import React, {useEffect, useState, useCallback, useMemo, useRef} from "react";
 import {observer} from "mobx-react-lite";
 import SidepanelList from "./SidepanelList";
 import styled from "styled-components";
@@ -123,22 +123,19 @@ const VehicleJourneys = decorate((props) => {
   const {selectedJourney, date, vehicle, user, mapDriverEvent} = state;
 
   const [selectedJourneyIndex, setSelectedJourneyIndex] = useState(0);
-  const [nextJourneyIndex, setNextJourneyIndex] = useState(0);
-  const [journeyIsSelected, setJourneyIsSelected] = useState(!!selectedJourney);
 
+  // Get a correct unique vehicle ID for the request (without leading zeroes)
   let [operatorId, vehicleNumber] = (vehicle || "").split("/");
-
   operatorId = parseInt(operatorId, 10);
   vehicleNumber = parseInt(vehicleNumber, 10);
-
   const uniqueVehicleId = `${operatorId}/${vehicleNumber}`;
-
-  // Vehicle journeys
 
   const queryProps = {
     date,
     uniqueVehicleId,
   };
+
+  // Vehicle journeys
 
   const {data: journeyData = [], loading, error} = useQueryData(
     vehicleJourneysQuery,
@@ -188,10 +185,6 @@ const VehicleJourneys = decorate((props) => {
         }
       }
 
-      if (!journeyToSelect) {
-        setJourneyIsSelected(false);
-      }
-
       Journey.setSelectedJourney(journeyToSelect);
     },
     [selectedJourneyId, Time, Journey]
@@ -227,6 +220,44 @@ const VehicleJourneys = decorate((props) => {
     [UI, mapDriverEvent]
   );
 
+  const journeysOnly = useMemo(
+    () => journeysAndDriverEvents.filter((evt) => !evt.id.startsWith("driver_event")),
+    [journeysAndDriverEvents]
+  );
+
+  // Mark next journey (as set by the prev/next functions above) as selected.
+  const selectJourneyAtIndex = useCallback(
+    (index) => {
+      if (!journeysOnly || journeysOnly.length === 0) {
+        return;
+      }
+
+      let useIndex = index;
+
+      if (useIndex > journeysOnly.length - 1) {
+        useIndex = journeysOnly.length - 1;
+      } else if (useIndex <= 0) {
+        useIndex = 0;
+      }
+
+      if (useIndex === selectedJourneyIndex) {
+        return;
+      }
+
+      const nextJourney = journeysOnly[useIndex];
+
+      // If the index corresponds to a journey, and it isn't already selected,
+      // select it as the selected journey.
+      if (
+        nextJourney &&
+        (!selectedJourney || selectedJourneyId !== getJourneyId(nextJourney, false))
+      ) {
+        selectJourney(nextJourney);
+      }
+    },
+    [journeysOnly, selectedJourney, selectJourney]
+  );
+
   const selectPreviousVehicleJourney = useCallback(() => {
     let nextIndex = selectedJourneyIndex - 1;
 
@@ -235,47 +266,19 @@ const VehicleJourneys = decorate((props) => {
       nextIndex = 0;
     }
 
-    setNextJourneyIndex(nextIndex);
-    setJourneyIsSelected(true);
+    selectJourneyAtIndex(nextIndex);
   }, [selectedJourneyIndex]);
 
   const selectNextVehicleJourney = useCallback(() => {
-    setNextJourneyIndex(selectedJourneyIndex + 1);
-    setJourneyIsSelected(true);
+    const nextIndex = selectedJourneyIndex + 1;
+    selectJourneyAtIndex(nextIndex);
   }, [selectedJourneyIndex]);
-
-  const journeysOnly = useMemo(
-    () => journeysAndDriverEvents.filter((evt) => !evt.id.startsWith("driver_event")),
-    [journeysAndDriverEvents]
-  );
-
-  // Mark next journey (as set by the prev/next functions above) as selected.
-  useEffect(() => {
-    const outOfBounds = nextJourneyIndex > journeysOnly.length - 1;
-
-    if (!journeyIsSelected || !journeysOnly || journeysOnly.length === 0 || outOfBounds) {
-      setNextJourneyIndex(selectedJourneyIndex);
-      return;
-    }
-
-    const nextJourney = journeysOnly[nextJourneyIndex];
-
-    // If the index corresponds to a journey, and it isn't already selected,
-    // select it as the selected journey.
-    if (
-      nextJourney &&
-      (!selectedJourney || getJourneyId(nextJourney, false) !== selectedJourneyId)
-    ) {
-      selectJourney(nextJourney);
-    }
-  }, [journeysOnly, nextJourneyIndex]);
 
   // Sync local selectedJourneyIndex state with actual selected journey state.
   useEffect(() => {
     let idx = 0;
 
     if (!selectedJourney) {
-      setJourneyIsSelected(false);
       return;
     }
 
@@ -283,11 +286,12 @@ const VehicleJourneys = decorate((props) => {
       if (selectedJourneyId === getJourneyId(journey, false)) {
         // Save the index of the selected journey in local state.
         setSelectedJourneyIndex(idx);
+        break;
       }
 
       idx++;
     }
-  }, [journeysAndDriverEvents]);
+  }, [journeysOnly, selectedJourney]);
 
   return (
     <SidepanelList
