@@ -59,13 +59,13 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
         vehiclePositions={unsignedEvents}
         name={`unsigned/${journey.uniqueVehicleId}`}
       />
-      {currentEvent ? (
+      {currentEvent && (
         <HfpMarkerLayer
           currentEvent={useEvent}
           isSelectedJourney={false}
           journey={journey}
         />
-      ) : null}
+      )}
     </>
   );
 });

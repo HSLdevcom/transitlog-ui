@@ -54,6 +54,7 @@ export type Alert = {
   title: Scalars['String'],
   description: Scalars['String'],
   url?: Maybe<Scalars['String']>,
+  bulletinId: Scalars['String'],
 };
 
 export enum AlertCategory {
@@ -260,6 +261,7 @@ export type Departure = {
   terminalTime?: Maybe<Scalars['Int']>,
   recoveryTime?: Maybe<Scalars['Int']>,
   departureId: Scalars['Int'],
+  operatingUnit?: Maybe<Scalars['String']>,
   departureTime: Scalars['Time'],
   departureDate: Scalars['Date'],
   extraDeparture: Scalars['String'],
@@ -300,7 +302,6 @@ export type DepartureJourney = {
   departureTime: Scalars['Time'],
   uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
   mode?: Maybe<Scalars['String']>,
-  events?: Maybe<Array<VehiclePosition>>,
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
   isCancelled: Scalars['Boolean'],
@@ -308,18 +309,35 @@ export type DepartureJourney = {
 };
 
 
+export type DriverEvent = {
+   __typename?: 'DriverEvent',
+  id: Scalars['ID'],
+  journeyType: Scalars['String'],
+  eventType: Scalars['String'],
+  uniqueVehicleId?: Maybe<Scalars['VehicleId']>,
+  operatorId?: Maybe<Scalars['String']>,
+  vehicleId?: Maybe<Scalars['String']>,
+  mode?: Maybe<Scalars['String']>,
+  recordedAt: Scalars['DateTime'],
+  recordedAtUnix: Scalars['Int'],
+  recordedTime: Scalars['Time'],
+  receivedAt?: Maybe<Scalars['DateTime']>,
+  lat?: Maybe<Scalars['Float']>,
+  lng?: Maybe<Scalars['Float']>,
+};
+
 export type Equipment = {
    __typename?: 'Equipment',
   id: Scalars['ID'],
   vehicleId: Scalars['String'],
   operatorId: Scalars['String'],
   operatorName?: Maybe<Scalars['String']>,
-  registryNr: Scalars['String'],
-  age: Scalars['Int'],
-  type: Scalars['String'],
-  exteriorColor: Scalars['String'],
-  emissionDesc: Scalars['String'],
-  emissionClass: Scalars['String'],
+  registryNr?: Maybe<Scalars['String']>,
+  age?: Maybe<Scalars['Int']>,
+  type?: Maybe<Scalars['String']>,
+  exteriorColor?: Maybe<Scalars['String']>,
+  emissionDesc?: Maybe<Scalars['String']>,
+  emissionClass?: Maybe<Scalars['String']>,
   inService?: Maybe<Scalars['Boolean']>,
   _matchScore?: Maybe<Scalars['Float']>,
 };
@@ -335,8 +353,10 @@ export type ExceptionDay = {
   id: Scalars['ID'],
   exceptionDate: Scalars['Date'],
   effectiveDayTypes: Array<Scalars['String']>,
+  scopedDayType: Scalars['String'],
   dayType: Scalars['String'],
-  modeScope?: Maybe<Scalars['String']>,
+  modeScope: Scalars['String'],
+  scope: Scalars['String'],
   description?: Maybe<Scalars['String']>,
   exclusive: Scalars['Boolean'],
   startTime?: Maybe<Scalars['Time']>,
@@ -358,10 +378,13 @@ export type Journey = {
   headsign?: Maybe<Scalars['String']>,
   name?: Maybe<Scalars['String']>,
   mode?: Maybe<Scalars['String']>,
+  journeyLength?: Maybe<Scalars['Int']>,
+  journeyDurationMinutes?: Maybe<Scalars['Int']>,
   equipment?: Maybe<Equipment>,
   vehiclePositions: Array<VehiclePosition>,
   events: Array<JourneyEventType>,
   departure?: Maybe<Departure>,
+  routeDepartures?: Maybe<Array<Departure>>,
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
   isCancelled: Scalars['Boolean'],
@@ -389,12 +412,14 @@ export type JourneyEvent = {
    __typename?: 'JourneyEvent',
   id: Scalars['ID'],
   type: Scalars['String'],
+  receivedAt: Scalars['DateTime'],
   recordedAt: Scalars['DateTime'],
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
   stopId?: Maybe<Scalars['String']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
+  _isVirtual?: Maybe<Scalars['Boolean']>,
 };
 
 export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent;
@@ -403,6 +428,7 @@ export type JourneyStopEvent = {
    __typename?: 'JourneyStopEvent',
   id: Scalars['ID'],
   type: Scalars['String'],
+  receivedAt: Scalars['DateTime'],
   recordedAt: Scalars['DateTime'],
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
@@ -413,6 +439,7 @@ export type JourneyStopEvent = {
   plannedDate?: Maybe<Scalars['Date']>,
   plannedTime?: Maybe<Scalars['Time']>,
   plannedDateTime?: Maybe<Scalars['DateTime']>,
+  plannedUnix?: Maybe<Scalars['Int']>,
   plannedTimeDifference?: Maybe<Scalars['Int']>,
   isNextDay?: Maybe<Scalars['Boolean']>,
   departureId?: Maybe<Scalars['Int']>,
@@ -423,6 +450,7 @@ export type JourneyStopEvent = {
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
   unplannedStop: Scalars['Boolean'],
+  _isVirtual?: Maybe<Scalars['Boolean']>,
 };
 
 export type ObservedArrival = {
@@ -501,6 +529,7 @@ export type Query = {
   journey?: Maybe<Journey>,
   journeys: Array<Maybe<Journey>>,
   vehicleJourneys: Array<Maybe<VehicleJourney>>,
+  driverEvents: Array<Maybe<DriverEvent>>,
   journeysByBbox: Array<Maybe<Journey>>,
   unsignedVehicleEvents: Array<Maybe<VehiclePosition>>,
   alerts: Array<Alert>,
@@ -607,6 +636,12 @@ export type QueryVehicleJourneysArgs = {
 };
 
 
+export type QueryDriverEventsArgs = {
+  uniqueVehicleId: Scalars['VehicleId'],
+  date: Scalars['Date']
+};
+
+
 export type QueryJourneysByBboxArgs = {
   minTime: Scalars['DateTime'],
   maxTime: Scalars['DateTime'],
@@ -645,6 +680,8 @@ export type Route = {
   name?: Maybe<Scalars['String']>,
   destinationStopId?: Maybe<Scalars['String']>,
   originStopId: Scalars['String'],
+  routeLength?: Maybe<Scalars['Int']>,
+  routeDurationMinutes?: Maybe<Scalars['Int']>,
   mode?: Maybe<Scalars['String']>,
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
@@ -688,7 +725,7 @@ export type RouteSegment = Position & {
   lng: Scalars['Float'],
   name?: Maybe<Scalars['String']>,
   radius?: Maybe<Scalars['Float']>,
-  modes: Array<Maybe<Scalars['String']>>,
+  modes?: Maybe<Array<Scalars['String']>>,
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
 };
@@ -759,6 +796,7 @@ export type VehiclePosition = Position & {
    __typename?: 'VehiclePosition',
   id: Scalars['ID'],
   journeyType: Scalars['String'],
+  receivedAt: Scalars['DateTime'],
   recordedAt: Scalars['DateTime'],
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],

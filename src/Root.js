@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import {hot} from "react-hot-loader/root";
 import App from "./components/App";
 import {getClient} from "./api";
-import {ApolloProvider} from "react-apollo";
+import {ApolloProvider} from "@apollo/react-common";
 import {observer} from "mobx-react-lite";
 import {GlobalFormStyle} from "./components/Forms";
 import {ModalProvider, BaseModalBackground} from "styled-react-modal";
