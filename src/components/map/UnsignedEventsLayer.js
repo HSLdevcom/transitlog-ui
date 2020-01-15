@@ -4,8 +4,6 @@ import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import HfpMarkerLayer from "./HfpMarkerLayer";
 import JourneyLayer from "./JourneyLayer";
-import {Marker} from "react-leaflet";
-import {divIcon} from "leaflet";
 
 const decorate = flow(
   observer,
@@ -13,10 +11,8 @@ const decorate = flow(
 );
 
 const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
-  const {unixTime, mapDriverEvent} = state;
+  const {unixTime} = state;
   const prevEvent = useRef(null);
-
-  console.log(mapDriverEvent);
 
   const currentEvent = useMemo(() => {
     let event = null;
@@ -55,15 +51,6 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
       : null;
   }, [unsignedEvents[0]]);
 
-  let icon = null;
-
-  if (mapDriverEvent) {
-    icon = divIcon({
-      html: `<div class="event-icon" style="background-color: #ccc">${mapDriverEvent.eventType}</div>`,
-      iconSize: [8, 8],
-    });
-  }
-
   return (
     <>
       <JourneyLayer
@@ -77,13 +64,6 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
           currentEvent={useEvent}
           isSelectedJourney={false}
           journey={journey}
-        />
-      )}
-      {mapDriverEvent && (
-        <Marker
-          key={mapDriverEvent.id}
-          icon={icon}
-          position={[mapDriverEvent.lat, mapDriverEvent.lng]}
         />
       )}
     </>

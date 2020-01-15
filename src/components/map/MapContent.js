@@ -20,6 +20,7 @@ import {WeatherWidget, JourneyWeatherWidget} from "./WeatherWidget";
 import get from "lodash/get";
 import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
+import DriverEventLayer from "./DriverEventLayer";
 
 const decorate = flow(
   observer,
@@ -180,6 +181,7 @@ const MapContent = decorate(
                 />
               );
             })}
+        <DriverEventLayer />
         {mapOverlays.includes("Weather") && (
           <WeatherDisplay key="weather_map" position={mapView} />
         )}
