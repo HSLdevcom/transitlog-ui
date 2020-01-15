@@ -111,12 +111,12 @@ const driverEventsQuery = gql`
 
 const decorate = flow(
   observer,
-  inject("Journey", "Time")
+  inject("Journey", "Time", "UI")
 );
 
 const VehicleJourneys = decorate((props) => {
-  const {Time, Journey, state} = props;
-  const {selectedJourney, date, vehicle, user} = state;
+  const {Time, Journey, UI, state} = props;
+  const {selectedJourney, date, vehicle, user, mapDriverEvent} = state;
 
   const [selectedJourneyIndex, setSelectedJourneyIndex] = useState(0);
   const [nextJourneyIndex, setNextJourneyIndex] = useState(0);
@@ -199,6 +199,28 @@ const VehicleJourneys = decorate((props) => {
       selectJourney(journey);
     },
     [selectJourney]
+  );
+
+  const onSelectEvent = useCallback(
+    (driverEvent) => (e) => {
+      e.preventDefault();
+
+      if (mapDriverEvent && mapDriverEvent.id === driverEvent.id) {
+        UI.setMapDriverEvent(null);
+      } else {
+        const {id, eventType, lat, lng} = driverEvent;
+
+        const mapEvent = {
+          id,
+          eventType,
+          lat,
+          lng,
+        };
+
+        UI.setMapDriverEvent(mapEvent);
+      }
+    },
+    [UI, mapDriverEvent]
   );
 
   const selectPreviousVehicleJourney = useCallback(() => {
@@ -303,7 +325,9 @@ const VehicleJourneys = decorate((props) => {
             if (journey.id.startsWith("driver_event")) {
               return (
                 <JourneyListRow key={journey.id}>
-                  <TagButton data-testid="driver-event-row">
+                  <TagButton
+                    onClick={onSelectEvent(journey)}
+                    data-testid="driver-event-row">
                     <PlainSlot>
                       {journey.eventType === "DA"
                         ? text("journey.event.DA")
