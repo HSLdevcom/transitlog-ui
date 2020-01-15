@@ -24,6 +24,7 @@ import EmptyView from "../EmptyView";
 import gql from "graphql-tag";
 import {useQueryData} from "../../hooks/useQueryData";
 import orderBy from "lodash/orderBy";
+import {text} from "../../helpers/text";
 
 const JourneyListRow = styled.div`
   position: relative;
@@ -305,8 +306,8 @@ const VehicleJourneys = decorate((props) => {
                   <TagButton data-testid="driver-event-row">
                     <PlainSlot>
                       {journey.eventType === "DA"
-                        ? "Driver signed in"
-                        : "Driver signed out"}
+                        ? text("journey.event.DA")
+                        : text("journey.event.DOUT")}
                     </PlainSlot>
                     <PlainSlotSmall>{journey.recordedTime}</PlainSlotSmall>
                   </TagButton>
