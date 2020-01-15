@@ -96,6 +96,22 @@ type DepartureJourney {
   uniqueVehicleId: VehicleId
 }
 
+type DriverEvent {
+  eventType: String!
+  id: ID!
+  journeyType: String!
+  lat: Float
+  lng: Float
+  mode: String
+  operatorId: String
+  receivedAt: DateTime
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  uniqueVehicleId: VehicleId
+  vehicleId: String
+}
+
 type Equipment {
   _matchScore: Float
   age: Int
@@ -261,6 +277,7 @@ type Query {
   alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
   departures(date: Date!, filter: DepartureFilterInput, stopId: String!): [Departure]!
+  driverEvents(date: Date!, uniqueVehicleId: VehicleId!): [DriverEvent]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
   exceptionDays(year: String!): [ExceptionDay]!
   journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey

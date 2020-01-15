@@ -1,6 +1,6 @@
 import React, {useMemo} from "react";
 import gql from "graphql-tag";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import get from "lodash/get";
 import {RouteFieldsFragment} from "./RouteFieldsFragment";
 import {observer} from "mobx-react-lite";
