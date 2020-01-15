@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback} from "react";
+import React, {useEffect, useState, useRef, useCallback, useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import SidepanelList from "./SidepanelList";
 import styled from "styled-components";
@@ -117,6 +117,10 @@ const VehicleJourneys = decorate((props) => {
   const {Time, Journey, state} = props;
   const {selectedJourney, date, vehicle, user} = state;
 
+  const [selectedJourneyIndex, setSelectedJourneyIndex] = useState(0);
+  const [nextJourneyIndex, setNextJourneyIndex] = useState(0);
+  const [journeyIsSelected, setJourneyIsSelected] = useState(!!selectedJourney);
+
   let [operatorId, vehicleNumber] = (vehicle || "").split("/");
 
   operatorId = parseInt(operatorId, 10);
@@ -125,8 +129,6 @@ const VehicleJourneys = decorate((props) => {
   const uniqueVehicleId = `${operatorId}/${vehicleNumber}`;
 
   // Vehicle journeys
-  const selectedJourneyIndex = useRef(0);
-  const [nextJourneyIndex, setNextJourneyIndex] = useState(0);
 
   const queryProps = {
     date,
@@ -151,6 +153,7 @@ const VehicleJourneys = decorate((props) => {
     "driver events"
   );
 
+  // Combine vehicle journeys and driver events, and sort by time.
   const journeysAndDriverEvents = orderBy(
     [...(driverData || []), ...(journeyData || [])],
     (event) => {
@@ -164,23 +167,29 @@ const VehicleJourneys = decorate((props) => {
     }
   );
 
+  const selectedJourneyId = getJourneyId(selectedJourney, false);
+
   const selectJourney = useCallback(
     (journey) => {
       let journeyToSelect = null;
 
       if (journey) {
-        const journeyId = getJourneyId(journey);
+        const journeyId = getJourneyId(journey, false);
 
         // Only set these if the journey is truthy and was not already selected
-        if (journeyId && getJourneyId(state.selectedJourney) !== journeyId) {
+        if (journeyId && selectedJourneyId !== journeyId) {
           Time.setTime(journey.departureTime);
           journeyToSelect = journey;
         }
       }
 
+      if (!journeyToSelect) {
+        setJourneyIsSelected(false);
+      }
+
       Journey.setSelectedJourney(journeyToSelect);
     },
-    [state, Time, Journey]
+    [selectedJourneyId, Time, Journey]
   );
 
   const onSelectJourney = useCallback(
@@ -192,7 +201,8 @@ const VehicleJourneys = decorate((props) => {
   );
 
   const selectPreviousVehicleJourney = useCallback(() => {
-    let nextIndex = selectedJourneyIndex.current - 1;
+    console.log(selectedJourneyIndex);
+    let nextIndex = selectedJourneyIndex - 1;
 
     // Clamp to 0
     if (nextIndex < 0) {
@@ -200,44 +210,58 @@ const VehicleJourneys = decorate((props) => {
     }
 
     setNextJourneyIndex(nextIndex);
-  }, [selectedJourneyIndex.current]);
+    setJourneyIsSelected(true);
+  }, [selectedJourneyIndex]);
 
   const selectNextVehicleJourney = useCallback(() => {
-    setNextJourneyIndex(selectedJourneyIndex.current + 1);
-  }, [selectedJourneyIndex.current]);
+    setNextJourneyIndex(selectedJourneyIndex + 1);
+    setJourneyIsSelected(true);
+  }, [selectedJourneyIndex]);
 
+  const journeysOnly = useMemo(
+    () => journeysAndDriverEvents.filter((evt) => !evt.id.startsWith("driver_event")),
+    [journeysAndDriverEvents]
+  );
+
+  // Mark next journey (as set by the prev/next functions above) as selected.
   useEffect(() => {
-    const journeys = journeysAndDriverEvents.filter(
-      (evt) => !evt.id.startsWith("driver_event")
-    );
+    const outOfBounds = nextJourneyIndex > journeysOnly.length - 1;
 
-    let useIndex = nextJourneyIndex;
-
-    if (!journeys || journeys.length === 0) {
+    if (!journeyIsSelected || !journeysOnly || journeysOnly.length === 0 || outOfBounds) {
+      setNextJourneyIndex(selectedJourneyIndex);
       return;
     }
 
-    // Select the last journey if we're out of bounds
-    if (useIndex > journeys.length - 1) {
-      useIndex = journeys.length - 1;
-    }
-
-    const nextSelectedJourney = journeys[useIndex];
+    const nextJourney = journeysOnly[nextJourneyIndex];
 
     // If the index corresponds to a journey, and it isn't already selected,
     // select it as the selected journey.
     if (
-      nextSelectedJourney &&
-      (!selectedJourney ||
-        getJourneyId(nextSelectedJourney) !== getJourneyId(selectedJourney))
+      nextJourney &&
+      (!selectedJourney || getJourneyId(nextJourney, false) !== selectedJourneyId)
     ) {
-      selectJourney(nextSelectedJourney);
+      selectJourney(nextJourney);
     }
-  }, [journeysAndDriverEvents, nextJourneyIndex, selectedJourney, selectJourney]);
+  }, [journeysOnly, nextJourneyIndex]);
 
-  const selectedJourneyId = getJourneyId(selectedJourney, false);
+  // Sync local selectedJourneyIndex state with actual selected journey state.
+  useEffect(() => {
+    let idx = 0;
 
-  let journeyIndex = 0;
+    if (!selectedJourney) {
+      setJourneyIsSelected(false);
+      return;
+    }
+
+    for (const journey of journeysOnly) {
+      if (selectedJourneyId === getJourneyId(journey, false)) {
+        // Save the index of the selected journey in local state.
+        setSelectedJourneyIndex(idx);
+      }
+
+      idx++;
+    }
+  }, [journeysAndDriverEvents]);
 
   return (
     <SidepanelList
@@ -275,6 +299,7 @@ const VehicleJourneys = decorate((props) => {
           />
         ) : (
           journeysAndDriverEvents.map((journey) => {
+            // Render driver event
             if (journey.id.startsWith("driver_event")) {
               return (
                 <JourneyListRow key={journey.id}>
@@ -290,24 +315,20 @@ const VehicleJourneys = decorate((props) => {
               );
             }
 
+            // The rest of the function is about rendering vehicle journeys.
+
             const journeyId = getJourneyId(journey, false);
 
             const mode = get(journey, "mode", "").toUpperCase();
             const journeyTime = get(journey, "departureTime", "");
             const lineNumber = parseLineNumber(get(journey, "routeId", ""));
 
-            const plannedObservedDiff = journey.timeDifference;
+            const plannedObservedDiff = journey.timeDifference || 0;
             const observedTimeString = journey.recordedTime;
             const diffTime = secondsToTimeObject(plannedObservedDiff);
             const delayType = getDelayType(plannedObservedDiff);
 
             const journeyIsSelected = selectedJourney && selectedJourneyId === journeyId;
-
-            if (journeyIsSelected) {
-              selectedJourneyIndex.current = journeyIndex;
-            }
-
-            journeyIndex++;
 
             return (
               <JourneyListRow
