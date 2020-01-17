@@ -24,11 +24,12 @@ const logoutIconHTML = ReactDOMServer.renderToStaticMarkup(
 const DriverEventLayer = decorate(({state}) => {
   const {mapDriverEvent} = state;
 
-  let icon = null;
+  if (!mapDriverEvent || !(mapDriverEvent.lat && mapDriverEvent.lng)) {
+    return null;
+  }
 
-  if (mapDriverEvent) {
-    icon = divIcon({
-      html: `<div style="
+  let icon = divIcon({
+    html: `<div style="
 width: 100%;
 height: 100%;
 border-radius: 50%;
@@ -38,15 +39,10 @@ display: flex;
 align-items: center;
 justify-content: center;
 background-color: white">${
-        mapDriverEvent.eventType === "DA" ? loginIconHTML : logoutIconHTML
-      }</div>`,
-      iconSize: [28, 28],
-    });
-  }
-
-  if (!mapDriverEvent) {
-    return null;
-  }
+      mapDriverEvent.eventType === "DA" ? loginIconHTML : logoutIconHTML
+    }</div>`,
+    iconSize: [28, 28],
+  });
 
   return (
     <Marker

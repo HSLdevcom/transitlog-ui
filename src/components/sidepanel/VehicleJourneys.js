@@ -293,6 +293,9 @@ const VehicleJourneys = decorate((props) => {
     }
   }, [journeysOnly, selectedJourney]);
 
+  // Remove the driver event marker when the vehicle changes or this component unmounts.
+  useEffect(() => () => UI.setMapDriverEvent(null), [vehicle]);
+
   return (
     <SidepanelList
       testIdPrefix="vehicle-block"
