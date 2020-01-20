@@ -43,6 +43,7 @@ import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../icons/RoutesFail";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {LocBadge} from "../commonComponents";
 
 const StopWrapper = styled(DefaultStopWrapper)`
   padding: 0;
@@ -77,17 +78,6 @@ const IconBackground = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const LocBadge = styled.span`
-  padding: 2px 3px;
-  border-radius: 3px;
-  background: ${(p) => (p.red ? "var(--red)" : "var(--light-grey)")};
-  font-size: 0.6rem;
-  font-weight: bold;
-  color: white;
-  margin-left: auto;
-  align-self: center;
 `;
 
 const StopTime = styled(TagButton)``;

@@ -65,6 +65,7 @@ export const routeJourneysQuery = gql`
         arrivalDateTime
         arrivalTime
         arrivalTimeDifference
+        loc
       }
       plannedDepartureTime {
         id
@@ -79,6 +80,7 @@ export const routeJourneysQuery = gql`
         departureDateTime
         departureTime
         departureTimeDifference
+        loc
       }
     }
   }

@@ -26,3 +26,14 @@ export const cancelledStyle = css`
         `
       : ""}
 `;
+
+export const LocBadge = styled.span`
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: ${(p) => (p.red ? "var(--red)" : "var(--light-grey)")};
+  font-size: 9px;
+  font-weight: bold;
+  color: white;
+  margin-left: auto;
+  align-self: center;
+`;
