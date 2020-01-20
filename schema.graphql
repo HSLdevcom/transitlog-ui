@@ -102,6 +102,7 @@ type DriverEvent {
   journeyType: String!
   lat: Float
   lng: Float
+  loc: String
   mode: String
   operatorId: String
   receivedAt: DateTime
@@ -189,6 +190,7 @@ type JourneyEvent {
   id: ID!
   lat: Float
   lng: Float
+  loc: String
   receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
@@ -208,6 +210,7 @@ type JourneyStopEvent {
   isTimingStop: Boolean!
   lat: Float
   lng: Float
+  loc: String
   nextStopId: String!
   plannedDate: Date
   plannedDateTime: DateTime
@@ -231,6 +234,7 @@ type ObservedArrival {
   arrivalTime: Time!
   arrivalTimeDifference: Int!
   id: ID!
+  loc: String
 }
 
 type ObservedDeparture {
@@ -239,6 +243,7 @@ type ObservedDeparture {
   departureTime: Time!
   departureTimeDifference: Int!
   id: ID!
+  loc: String
 }
 
 type PlannedArrival {
@@ -405,6 +410,7 @@ type VehiclePosition implements Position {
   journeyType: String!
   lat: Float
   lng: Float
+  loc: String
   mode: String
   nextStopId: String
   operatorId: String

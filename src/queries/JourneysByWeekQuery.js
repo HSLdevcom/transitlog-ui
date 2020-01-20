@@ -79,6 +79,7 @@ export const routeJourneysByWeekQuery = gql`
         departureDateTime
         departureTime
         departureTimeDifference
+        loc
       }
       observedArrivalTime {
         id
@@ -86,6 +87,7 @@ export const routeJourneysByWeekQuery = gql`
         arrivalDateTime
         arrivalTime
         arrivalTimeDifference
+        loc
       }
       originDepartureTime {
         id

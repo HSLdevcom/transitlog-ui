@@ -31,6 +31,7 @@ const areaJourneysQuery = gql`
         stop
         lat
         lng
+        loc
         doorStatus
         velocity
         delay

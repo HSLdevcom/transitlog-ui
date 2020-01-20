@@ -324,6 +324,7 @@ export type DriverEvent = {
   receivedAt?: Maybe<Scalars['DateTime']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
+  loc?: Maybe<Scalars['String']>,
 };
 
 export type Equipment = {
@@ -419,6 +420,7 @@ export type JourneyEvent = {
   stopId?: Maybe<Scalars['String']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
+  loc?: Maybe<Scalars['String']>,
   _isVirtual?: Maybe<Scalars['Boolean']>,
 };
 
@@ -449,6 +451,7 @@ export type JourneyStopEvent = {
   stop?: Maybe<Stop>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
+  loc?: Maybe<Scalars['String']>,
   unplannedStop: Scalars['Boolean'],
   _isVirtual?: Maybe<Scalars['Boolean']>,
 };
@@ -460,6 +463,7 @@ export type ObservedArrival = {
   arrivalTime: Scalars['Time'],
   arrivalDateTime: Scalars['DateTime'],
   arrivalTimeDifference: Scalars['Int'],
+  loc?: Maybe<Scalars['String']>,
 };
 
 export type ObservedDeparture = {
@@ -469,6 +473,7 @@ export type ObservedDeparture = {
   departureTime: Scalars['Time'],
   departureDateTime: Scalars['DateTime'],
   departureTimeDifference: Scalars['Int'],
+  loc?: Maybe<Scalars['String']>,
 };
 
 export type PlannedArrival = {
@@ -807,6 +812,7 @@ export type VehiclePosition = Position & {
   vehicleId?: Maybe<Scalars['String']>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
+  loc?: Maybe<Scalars['String']>,
   velocity?: Maybe<Scalars['Float']>,
   doorStatus?: Maybe<Scalars['Boolean']>,
   delay?: Maybe<Scalars['Int']>,
