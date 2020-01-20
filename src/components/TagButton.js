@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {LocBadge} from "./commonComponents";
 
 export const TagButton = styled.button`
   display: flex;
@@ -16,6 +17,10 @@ export const TagButton = styled.button`
   font-size: 1rem;
   padding: 0;
   cursor: pointer;
+
+  ${LocBadge} {
+    margin-left: auto;
+  }
 `;
 
 export const ColoredSlot = styled.span`
@@ -53,6 +58,8 @@ export const ColoredBackgroundSlot = styled.span`
   color: ${({color}) => color};
   transform: translate(1px, -2px);
   margin-bottom: -4px;
+  margin-left: auto;
+  margin-right: auto;
   min-width: 5rem;
 
   &:empty {
@@ -84,7 +91,7 @@ export const PlainSlotSmall = styled.span`
   border-left: 0;
   font-weight: normal;
   min-width: 6rem;
-  padding: 3px 8px;
+  padding: 3px 5px;
   font-size: 0.875rem;
   font-family: "Courier New", Courier, monospace;
 `;

@@ -28,6 +28,7 @@ export const routeJourneysQuery = gql`
         heading
         lat
         lng
+        loc
         stop
         recordedAt
         recordedAtUnix

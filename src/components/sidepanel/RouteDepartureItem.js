@@ -17,7 +17,7 @@ import Tooltip from "../Tooltip";
 import {text} from "../../helpers/text";
 import styled from "styled-components";
 import {ColoredBackgroundSlot} from "../TagButton";
-import {cancelledStyle} from "../commonComponents";
+import {cancelledStyle, LocBadge} from "../commonComponents";
 import Timetable from "../../icons/Timetable";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
@@ -121,6 +121,7 @@ const RouteDepartureItem = decorate(
 
     let journeyId = getJourneyId(departure.journey, matchVehicle);
 
+    // Create new journey ID based on the JORE data if the journey (HFP event based data) doesn't exist.
     if (!departure.journey) {
       matchVehicle = false;
       selectedJourneyId = getJourneyId(selectedJourney, matchVehicle);
@@ -181,13 +182,13 @@ const RouteDepartureItem = decorate(
       );
     }
 
-    const plannedObservedDiff = departure.observedDepartureTime
-      ? departure.observedDepartureTime.departureTimeDifference
-      : 0;
-
-    const observedTimeString = departure.observedDepartureTime
-      ? departure.observedDepartureTime.departureTime
-      : "";
+    const plannedObservedDiff = get(
+      departure,
+      "observedDepartureTime.departureTimeDifference",
+      ""
+    );
+    const observedTimeString = get(departure, "observedDepartureTime.departureTime", "");
+    const loc = get(departure, "observedDepartureTime.loc", "?");
 
     const diffTime = secondsToTimeObject(plannedObservedDiff);
     const delayType = getDelayType(plannedObservedDiff);
@@ -204,6 +205,7 @@ const RouteDepartureItem = decorate(
             {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
           </DelaySlot>
         </Tooltip>
+        {loc && <LocBadge green={loc === "GPS"}>{loc}</LocBadge>}
         <Tooltip helpText="Journey list observed">
           <TimeSlot>{observedTimeString}</TimeSlot>
         </Tooltip>

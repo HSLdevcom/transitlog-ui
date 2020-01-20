@@ -28,6 +28,7 @@ import MapPopup from "./MapPopup";
 import {Button} from "../Forms";
 import StopMarker from "./StopMarker";
 import {inject} from "../../helpers/inject";
+import {LocBadge} from "../commonComponents";
 
 const PopupParagraph = styled(P)`
   font-family: var(--font-family);
@@ -182,6 +183,9 @@ class RouteStop extends React.Component {
               {doubleDigit(get(departureDiffTime, "minutes", 0))}:
               {doubleDigit(get(departureDiffTime, "seconds", 0))}
             </ColoredBackgroundSlot>
+            {departure && departure.loc && (
+              <LocBadge red={departure.loc !== "GPS"}>{departure.loc}</LocBadge>
+            )}
             <PlainSlotSmall>{getNormalTime(stopDepartureTime)}</PlainSlotSmall>
           </>
         )}
@@ -211,6 +215,9 @@ class RouteStop extends React.Component {
                   {diffHours ? doubleDigit(diffHours) + ":" : ""}
                   {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                 </ColoredBackgroundSlot>
+                {arrival && arrival.loc && (
+                  <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+                )}
                 <PlainSlotSmall>{getNormalTime(stopArrivalTime)}</PlainSlotSmall>
               </StopArrivalTime>
               <SmallText>
@@ -237,6 +244,9 @@ class RouteStop extends React.Component {
                 {diffHours ? doubleDigit(diffHours) + ":" : ""}
                 {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
               </ColoredBackgroundSlot>
+              {arrival && arrival.loc && (
+                <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+              )}
               <PlainSlotSmall>{getNormalTime(stopArrivalTime)}</PlainSlotSmall>
             </StopArrivalTime>
           )}
@@ -254,6 +264,9 @@ class RouteStop extends React.Component {
             {doubleDigit(get(arrivalDiffTime, "minutes", 0))}:
             {doubleDigit(get(arrivalDiffTime, "seconds", 0))}
           </ColoredBackgroundSlot>
+          {arrival && arrival.loc && (
+            <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+          )}
           <PlainSlotSmall>{getNormalTime(stopArrivalTime)}</PlainSlotSmall>
         </StopArrivalTime>
       );
