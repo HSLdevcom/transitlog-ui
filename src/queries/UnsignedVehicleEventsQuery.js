@@ -14,6 +14,7 @@ export const unsignedEventsQuery = gql`
       heading
       lat
       lng
+      loc
       operatorId
       recordedAt
       recordedAtUnix

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useMemo, useRef} from "react";
+import React, {useEffect, useState, useCallback, useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import SidepanelList from "./SidepanelList";
 import styled from "styled-components";
@@ -107,6 +107,7 @@ const driverEventsQuery = gql`
       recordedTime
       lat
       lng
+      loc
       mode
       receivedAt
     }

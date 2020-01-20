@@ -49,7 +49,8 @@ const StopWrapper = styled(DefaultStopWrapper)`
 `;
 
 const EventTypeHeading = styled.span`
-  display: block;
+  display: flex;
+  align-items: baseline;
   margin-top: 0.25rem;
   color: var(--dark-grey);
   font-size: 0.875rem;
@@ -76,6 +77,17 @@ const IconBackground = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const LocBadge = styled.span`
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: ${(p) => (p.red ? "var(--red)" : "var(--light-grey)")};
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: white;
+  margin-left: auto;
+  align-self: center;
 `;
 
 const StopTime = styled(TagButton)``;
@@ -106,17 +118,17 @@ export const JourneyEvent = decorate(
         </StopElementsWrapper>
         <StopContent>
           <StopTime onClick={selectTime}>
-            <PlainSlot
-              {...applyTooltip(event.type)}
-              dangerouslySetInnerHTML={{
-                __html:
-                  text(`journey.event.${event.type}`) +
-                  (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
-              }}
-            />
-            <PlainSlotSmall style={{marginLeft: "auto"}}>
-              {timestamp.format("HH:mm:ss")}
-            </PlainSlotSmall>
+            <PlainSlot {...applyTooltip(event.type)}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html:
+                    text(`journey.event.${event.type}`) +
+                    (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
+                }}
+              />
+            </PlainSlot>
+            <LocBadge green={event.loc === "GPS"}>{event.loc}</LocBadge>
+            <PlainSlotSmall>{timestamp.format("HH:mm:ss")}</PlainSlotSmall>
           </StopTime>
         </StopContent>
       </StopWrapper>
@@ -225,7 +237,11 @@ export const JourneyStopEvent = decorate(
           </EventHeadingButton>
           <EventTypeHeading>
             {text(`journey.event.${event.type}`)}{" "}
-            <span style={{fontSize: "0.75rem", color: "var(--grey)"}}>{event.type}</span>
+            <span
+              style={{fontSize: "0.75rem", color: "var(--grey)", marginLeft: "0.5rem"}}>
+              {event.type}
+            </span>
+            <LocBadge red={event.loc !== "GPS"}>{event.loc}</LocBadge>
           </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>

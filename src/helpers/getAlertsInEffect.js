@@ -20,18 +20,6 @@ export const AlertDistribution = {
   Network: "NETWORK",
 };
 
-const timeProps = [
-  "recordedAt",
-  "vehiclePositions[0].recordedAt",
-  "journey.vehiclePositions[0].recordedAt",
-  "events[0].recordedAt",
-  "journey.events[0].recordedAt",
-  "observedDepartureTime.departureDateTime",
-  "plannedDepartureTime.departureDateTime",
-  "observedArrivalTime.arrivalDateTime",
-  "plannedArrivalTime.arrivalDateTime",
-];
-
 export const orderAlerts = (alerts, compareDate = new Date()) => {
   const sortedAlerts = orderBy(
     alerts,

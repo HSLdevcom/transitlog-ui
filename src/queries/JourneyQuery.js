@@ -65,6 +65,7 @@ export const journeyQuery = gql`
         heading
         lat
         lng
+        loc
         stop
         nextStopId
         receivedAt
@@ -114,6 +115,7 @@ export const journeyQuery = gql`
           isTimingStop
           lat
           lng
+          loc
           _isVirtual
           stop {
             id
@@ -162,6 +164,7 @@ export const journeyQuery = gql`
           stopId
           lat
           lng
+          loc
           _isVirtual
         }
       }
@@ -208,6 +211,7 @@ export const journeyQuery = gql`
           arrivalDateTime
           arrivalTime
           arrivalTimeDifference
+          loc
         }
         observedDepartureTime {
           id
@@ -215,6 +219,7 @@ export const journeyQuery = gql`
           departureTime
           departureDateTime
           departureTimeDifference
+          loc
         }
         plannedDepartureTime {
           id

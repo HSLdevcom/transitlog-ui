@@ -25,8 +25,6 @@ import {text, Text} from "../../helpers/text";
 import {TransportIcon} from "../transportModes";
 import SomethingWrong from "../../icons/SomethingWrong";
 import Cross from "../../icons/Cross";
-import AlertIcons from "../AlertIcons";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import {cancelledStyle} from "../commonComponents";
 import CrossThick from "../../icons/CrossThick";
 import Timetable from "../../icons/Timetable";
@@ -102,26 +100,6 @@ const TableCellButton = styled(TableCell)`
   font-family: inherit;
   outline: 0;
   ${cancelledStyle}
-`;
-
-const TableCellIcons = styled(AlertIcons)`
-  bottom: 2px;
-  left: 2px;
-  padding: 0 2px;
-  border-radius: 2px;
-  background: white;
-  height: 0.75rem;
-  display: flex;
-  align-items: center;
-
-  svg {
-    width: 0.5rem !important;
-    height: 0.5rem !important;
-  }
-
-  &:empty {
-    padding: 0;
-  }
 `;
 
 const TableHeader = styled(TableRow)`
