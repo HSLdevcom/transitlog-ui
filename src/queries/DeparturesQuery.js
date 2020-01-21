@@ -65,6 +65,7 @@ export const departuresQuery = gql`
         departureTime
         departureDateTime
         departureTimeDifference
+        loc
       }
       plannedDepartureTime {
         id
