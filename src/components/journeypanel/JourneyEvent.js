@@ -80,6 +80,14 @@ const IconBackground = styled.div`
   justify-content: center;
 `;
 
+const AlignedLocBadge = styled(LocBadge)`
+  margin-left: auto;
+`;
+
+const AlignedPlainSlotMono = styled(PlainSlotMono)`
+  margin-left: 0;
+`;
+
 const StopTime = styled(TagButton)``;
 
 const decorate = flow(
@@ -117,8 +125,8 @@ export const JourneyEvent = decorate(
                 }}
               />
             </PlainSlot>
-            <LocBadge green={event.loc === "GPS"}>{event.loc}</LocBadge>
-            <PlainSlotMono>{timestamp.format("HH:mm:ss")}</PlainSlotMono>
+            <AlignedLocBadge red={event.loc !== "GPS"}>{event.loc}</AlignedLocBadge>
+            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
         </StopContent>
       </StopWrapper>
