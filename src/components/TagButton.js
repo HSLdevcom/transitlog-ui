@@ -95,7 +95,7 @@ export const TagButton = styled.button`
   
   /* Apply styles on LocBadge only when inside a TagButton. */
   ${ColoredBackgroundSlot} + ${LocBadge} {
-    margin-left: 0;
-    margin-right: -27px;
+    margin-left: 5px;
+    margin-right: -7px;
   }
 `;
