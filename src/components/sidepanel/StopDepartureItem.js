@@ -9,7 +9,7 @@ import {
   PlainSlot,
   ColoredSlot,
   TagButton,
-  PlainSlotSmall,
+  PlainSlotMono,
 } from "../TagButton";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import styled from "styled-components";
@@ -49,7 +49,7 @@ const TimetableButton = styled(TagButton)`
   justify-content: flex-start;
 `;
 
-const ObservedTimeDisplay = styled(PlainSlotSmall)`
+const ObservedTimeDisplay = styled(PlainSlotMono)`
   margin-left: auto;
 `;
 

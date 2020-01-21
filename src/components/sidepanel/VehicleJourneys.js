@@ -12,7 +12,7 @@ import {
   TagButton,
   PlainSlot,
   ColoredBackgroundSlot,
-  PlainSlotSmall,
+  PlainSlotMono,
 } from "../TagButton";
 import getDelayType from "../../helpers/getDelayType";
 import doubleDigit from "../../helpers/doubleDigit";
@@ -352,7 +352,7 @@ const VehicleJourneys = decorate((props) => {
                         : text("journey.event.DOUT")}
                     </PlainSlot>
                     <LocBadge red={journey.loc !== "GPS"}>{journey.loc}</LocBadge>
-                    <PlainSlotSmall>{journey.recordedTime}</PlainSlotSmall>
+                    <PlainSlotMono>{journey.recordedTime}</PlainSlotMono>
                   </TagButton>
                 </DriverEventRow>
               );
@@ -394,7 +394,7 @@ const VehicleJourneys = decorate((props) => {
                     {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
                     {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>{observedTimeString}</PlainSlotSmall>
+                  <PlainSlotMono>{observedTimeString}</PlainSlotMono>
                 </TagButton>
               </JourneyListRow>
             );
