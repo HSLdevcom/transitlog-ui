@@ -521,6 +521,10 @@ const JourneysByWeek = decorate(
                                   : departure.observedDepartureTime
                                       .departureTimeDifference;
 
+                                const loc = showLastStopArrival
+                                  ? departure.observedArrivalTime.loc
+                                  : departure.observedDepartureTime.loc;
+
                                 const diffTime = secondsToTimeObject(plannedObservedDiff);
                                 const delayType = getDelayType(plannedObservedDiff);
 
@@ -536,32 +540,28 @@ const JourneysByWeek = decorate(
                                 );
 
                                 return (
-                                  <Tooltip
-                                    helpText="Journey list diff"
-                                    key={`departure_day_${departure.dayType}_${plannedTime}`}>
-                                    <TableCellButton
-                                      as="button"
-                                      data-testid={`weekly-departure-${departureStatus}`}
-                                      isCancelled={departure.isCancelled}
-                                      highlight={idx === currentDayTypeIndex}
-                                      onClick={() =>
-                                        selectJourney(departure.journey, true)
-                                      }
-                                      color={
-                                        journeyIsSelected
-                                          ? delayType === "late"
-                                            ? "var(--dark-grey)"
-                                            : "white"
-                                          : color
-                                      }
-                                      backgroundColor={
-                                        journeyIsSelected ? bgColor : "transparent"
-                                      }>
-                                      {plannedObservedDiff < 0 ? "-" : ""}
-                                      {doubleDigit(diffTime.minutes)}:
-                                      {doubleDigit(diffTime.seconds)}
-                                    </TableCellButton>
-                                  </Tooltip>
+                                  <TableCellButton
+                                    title={loc}
+                                    key={`departure_day_${departure.dayType}_${plannedTime}`}
+                                    as="button"
+                                    data-testid={`weekly-departure-${departureStatus}`}
+                                    isCancelled={departure.isCancelled}
+                                    highlight={idx === currentDayTypeIndex}
+                                    onClick={() => selectJourney(departure.journey, true)}
+                                    color={
+                                      journeyIsSelected
+                                        ? delayType === "late"
+                                          ? "var(--dark-grey)"
+                                          : "white"
+                                        : color
+                                    }
+                                    backgroundColor={
+                                      journeyIsSelected ? bgColor : "transparent"
+                                    }>
+                                    {plannedObservedDiff < 0 ? "-" : ""}
+                                    {doubleDigit(diffTime.minutes)}:
+                                    {doubleDigit(diffTime.seconds)}
+                                  </TableCellButton>
                                 );
                               })}
                             </TableRow>
