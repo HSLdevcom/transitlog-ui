@@ -12,7 +12,7 @@ import {
   StopArrivalTime,
   SmallText,
 } from "../StopElements";
-import {TagButton, PlainSlot, ColoredBackgroundSlot, PlainSlotSmall} from "../TagButton";
+import {TagButton, PlainSlot, ColoredBackgroundSlot, PlainSlotMono} from "../TagButton";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {text, alertText, Text} from "../../helpers/text";
@@ -118,7 +118,7 @@ export const JourneyEvent = decorate(
               />
             </PlainSlot>
             <LocBadge green={event.loc === "GPS"}>{event.loc}</LocBadge>
-            <PlainSlotSmall>{timestamp.format("HH:mm:ss")}</PlainSlotSmall>
+            <PlainSlotMono>{timestamp.format("HH:mm:ss")}</PlainSlotMono>
           </StopTime>
         </StopContent>
       </StopWrapper>
@@ -258,7 +258,7 @@ export const JourneyStopEvent = decorate(
                       {sign === "-" ? "-" : ""}
                       {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                     </ColoredBackgroundSlot>
-                    <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+                    <PlainSlotMono>{getNormalTime(observedTime)}</PlainSlotMono>
                   </StopArrivalTime>
                   <SmallText>
                     * <Text>journey.departure_minus_terminal</Text>
@@ -285,7 +285,7 @@ export const JourneyStopEvent = decorate(
                       {sign === "-" ? "-" : ""}
                       {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                     </ColoredBackgroundSlot>
-                    <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+                    <PlainSlotMono>{getNormalTime(observedTime)}</PlainSlotMono>
                   </StopArrivalTime>
                 </>
               )}
@@ -304,7 +304,7 @@ export const JourneyStopEvent = decorate(
                 {doubleDigit(get(diffObject, "minutes", 0))}:
                 {doubleDigit(get(diffObject, "seconds", 0))}
               </ColoredBackgroundSlot>
-              <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+              <PlainSlotMono>{getNormalTime(observedTime)}</PlainSlotMono>
             </StopTime>
           )}
         </StopContent>
