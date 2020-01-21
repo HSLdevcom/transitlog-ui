@@ -25,6 +25,8 @@ import gql from "graphql-tag";
 import {useQueryData} from "../../hooks/useQueryData";
 import orderBy from "lodash/orderBy";
 import {text} from "../../helpers/text";
+import Tooltip from "../Tooltip";
+import {LocBadge} from "../commonComponents";
 
 const JourneyListRow = styled.div`
   position: relative;
@@ -88,6 +90,7 @@ const vehicleJourneysQuery = gql`
       recordedAtUnix
       recordedTime
       timeDifference
+      loc
     }
   }
 `;
@@ -348,6 +351,7 @@ const VehicleJourneys = decorate((props) => {
                         ? text("journey.event.DA")
                         : text("journey.event.DOUT")}
                     </PlainSlot>
+                    <LocBadge red={journey.loc !== "GPS"}>{journey.loc}</LocBadge>
                     <PlainSlotSmall>{journey.recordedTime}</PlainSlotSmall>
                   </TagButton>
                 </DriverEventRow>
@@ -371,6 +375,7 @@ const VehicleJourneys = decorate((props) => {
 
             return (
               <JourneyListRow
+                title={journey.loc}
                 selected={journeyIsSelected}
                 key={`vehicle_journey_row_${journeyId}`}
                 ref={journeyIsSelected ? scrollRef : null}>

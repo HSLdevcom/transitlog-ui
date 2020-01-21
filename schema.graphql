@@ -391,6 +391,7 @@ type VehicleJourney {
   id: ID!
   isCancelled: Boolean!
   journeyType: String!
+  loc: String
   mode: String
   operatorId: String
   recordedAt: DateTime!
