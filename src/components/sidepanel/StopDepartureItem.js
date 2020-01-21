@@ -22,6 +22,7 @@ import TimingStop from "../../icons/TimingStop";
 import {cancelledStyle} from "../commonComponents";
 import getTransportType from "../../helpers/getTransportType";
 import {createCompositeJourney} from "../../stores/journeyActions";
+import Tooltip from "../Tooltip";
 
 const ListRow = styled.div`
   padding: 0.25rem 0.5rem 0.25rem 0.75rem;
@@ -135,14 +136,18 @@ const StopDepartureItem = observer((props) => {
 
     observed = (
       <>
-        <ColoredBackgroundSlot
-          color={delayType === "late" ? "var(--dark-grey)" : "white"}
-          backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
-          {diff < 0 === "-" ? "-" : ""}
-          {hours ? doubleDigit(hours) + ":" : ""}
-          {doubleDigit(minutes)}:{doubleDigit(seconds)}
-        </ColoredBackgroundSlot>
-        <ObservedTimeDisplay>{observedTimeString}</ObservedTimeDisplay>
+        <Tooltip helpText={observedTime.loc}>
+          <ColoredBackgroundSlot
+            color={delayType === "late" ? "var(--dark-grey)" : "white"}
+            backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+            {diff < 0 === "-" ? "-" : ""}
+            {hours ? doubleDigit(hours) + ":" : ""}
+            {doubleDigit(minutes)}:{doubleDigit(seconds)}
+          </ColoredBackgroundSlot>
+        </Tooltip>
+        <Tooltip helpText={observedTime.loc}>
+          <ObservedTimeDisplay>{observedTimeString}</ObservedTimeDisplay>
+        </Tooltip>
       </>
     );
   }
