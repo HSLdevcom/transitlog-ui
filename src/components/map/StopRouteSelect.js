@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import flow from "lodash/flow";
 import groupBy from "lodash/groupBy";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import {withStop} from "../../hoc/withStop";
 import {inject} from "../../helpers/inject";
 import TimingStop from "../../icons/TimingStop";
@@ -25,8 +25,19 @@ const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
   justify-content: flex-start;
   font-family: var(--font-family);
   font-size: 0.875rem;
-  padding: 0.25rem 1rem 0.25rem 0.5rem;
+  padding: 0.35rem 1rem 0.35rem 0.5rem;
   height: auto;
+  width: 100%;
+
+  ${(p) =>
+    p.selected
+      ? css`
+          border: 2px solid white;
+          box-shadow: 0 0 0 2px
+            ${({color = "var(--lightest-grey)"}) =>
+              color ? color : "var(--lightest-grey)"};
+        `
+      : ""}
 
   &:hover {
     background: ${({color = "var(--lightest-grey)"}) =>
@@ -36,10 +47,11 @@ const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
 `;
 
 const RouteData = styled.div`
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
   margin-left: 0.5rem;
 `;
 
@@ -54,10 +66,7 @@ const RouteGroupHeading = styled.h5`
   border-bottom: 1px solid var(--lighter-grey);
 `;
 
-const RouteGroupContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
+const RouteGroupContainer = styled.div``;
 
 const decorate = flow(
   observer,
@@ -65,11 +74,13 @@ const decorate = flow(
   inject("Filters")
 );
 
-export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters}) => {
+export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters, state}) => {
   const onSelectRoute = useCallback(
     (route) => () => route && Filters.setRoute(route),
     []
   );
+
+  const selectedRoute = get(state, "route", null);
 
   const routeGroups = useMemo(() => {
     const routes = get(stop, "routes", []);
@@ -92,6 +103,11 @@ export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters}) =>
 
               return (
                 <StopOptionButton
+                  selected={
+                    selectedRoute &&
+                    selectedRoute.routeId === route.routeId &&
+                    selectedRoute.direction === route.direction
+                  }
                   isTimingStop={route.isTimingStop}
                   color={buttonColor}
                   key={`route_${route.routeId}_${route.direction}`}

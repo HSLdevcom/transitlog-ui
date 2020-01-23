@@ -11,13 +11,8 @@ import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import {latLng} from "leaflet";
 
-export const StopAlerts = styled(AlertsList)`
-  padding: 0;
-  margin-top: 1rem;
-`;
-
 export const StopPopupContentSection = styled.div`
-  padding: 0 1rem;
+  padding: 0 1rem 0.5rem;
 
   &:first-child {
     padding-top: 1rem;
@@ -32,7 +27,6 @@ export const StopContentWrapper = styled(StopContent)`
   font-family: inherit;
   font-size: 1rem;
   padding: 0;
-  min-width: 400px;
 `;
 
 export const StopStreetViewWrapper = styled(StopPopupContentSection)`
