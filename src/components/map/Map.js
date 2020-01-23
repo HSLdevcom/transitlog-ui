@@ -85,8 +85,12 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
 
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
+
+  // CanSetView guards the initial state against changes before it
+  // has had a chance to be focused on.
   const [canSetView, setCanSetView] = useState(true);
 
+  // Gets the Leaflet object that enables all this goodness.
   const leafletMap = useMemo(() => {
     return get(mapRef, "current.leafletElement", null);
   }, [mapRef.current, mapReady]);
@@ -100,10 +104,12 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     setCurrentBaseLayer(name);
   });
 
+  // Sync map state with the app state. This runs when the map center changes.
+  // If view setting is not allowed, only the bounds and url state will change.
   const setMapState = useCallback(
-    (mapObj) => {
-      const center = mapObj.getCenter();
-      const nextBounds = mapObj.getBounds();
+    ({target}) => {
+      const center = target.getCenter();
+      const nextBounds = target.getBounds();
 
       if (canSetView) {
         setMapView(center);
@@ -115,21 +121,11 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     [canSetView]
   );
 
-  const setMapZoomState = useCallback((mapObj) => {
-    const zoom = mapObj.getZoom();
+  // Sync the map zoom state with the app state. Will run always when map zoom is updated.
+  const setMapZoomState = useCallback(({target}) => {
+    const zoom = target.getZoom();
     setMapZoom(zoom);
     setUrlValue("mapZoom", zoom);
-  }, []);
-
-  const onMapMoved = useCallback(
-    (event) => {
-      setMapState(event.target);
-    },
-    [setMapState]
-  );
-
-  const onMapZoomed = useCallback((event) => {
-    setMapZoomState(event.target);
   }, []);
 
   // Invalidate map size to refresh map items layout
@@ -139,14 +135,17 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         leafletMap.invalidateSize(true);
       }, 300);
     }
+    // When these change, the size is invalidated.
   }, [leafletMap, detailsOpen, sidePanelVisible, currentMapillaryViewerLocation]);
 
-  // De-observed initial map state
+  // De-observed initial map state, because an update loop would be created otherwise.
   const initialViewport = useMemo(() => {
     const {mapView, mapZoom} = state;
     return [mapView, mapZoom];
   }, []);
 
+  // Copy the internal state of the map into our app state.
+  // This runs ONCE as soon as the leafletMap is available.
   useEffectOnce(() => {
     if (leafletMap) {
       setMapBounds(leafletMap.getBounds());
@@ -157,6 +156,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     return false;
   }, [leafletMap]);
 
+  // React to changes to state.mapView and center the map accordingly.
   useEffect(() => {
     return reaction(
       () => state.mapView,
@@ -167,12 +167,18 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             validBounds(currentView) &&
             !leafletMap.getBounds().equals(currentView)
           ) {
+            // If mapView is a bounds which does NOT equal the current map view,
+            // set the map view to the bounds and forbid the state to change for
+            // 3 seconds. There may be a better way to do this but this works for now.
             leafletMap.fitBounds(currentView);
             setCanSetView(false);
+            setTimeout(() => setCanSetView(true), 3000);
           } else if (
             currentView instanceof LatLng &&
             !leafletMap.getCenter().equals(currentView)
           ) {
+            // If mapView is a latLng which does NOT equal the current map center,
+            // set the map center to mapView.
             leafletMap.setView(currentView, state.mapZoom, {animate: false});
           }
         }
@@ -180,12 +186,6 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
       {name: "map view reaction", fireImmediately: true}
     );
   }, [leafletMap]);
-
-  useEffect(() => {
-    if (canSetView === false) {
-      setTimeout(() => setCanSetView(true), 3000);
-    }
-  }, [canSetView]);
 
   return (
     <MapContainer className={className}>
@@ -199,8 +199,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         onBaselayerchange={onChangeBaseLayer}
         onOverlayadd={changeOverlay("add")}
         onOverlayremove={changeOverlay("remove")}
-        onZoomend={onMapZoomed}
-        onMoveend={onMapMoved}>
+        onZoomend={setMapZoomState}
+        onMoveend={setMapState}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer
             name="Digitransit"
