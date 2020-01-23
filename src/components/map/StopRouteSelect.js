@@ -8,7 +8,7 @@ import {withStop} from "../../hoc/withStop";
 import {inject} from "../../helpers/inject";
 import TimingStop from "../../icons/TimingStop";
 import {getModeColor} from "../../helpers/vehicleColor";
-import {text, Text} from "../../helpers/text";
+import {text} from "../../helpers/text";
 import {Button} from "../Forms";
 import {withLeaflet} from "react-leaflet";
 

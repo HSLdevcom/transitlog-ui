@@ -171,42 +171,43 @@ function App({route, state, UI}) {
                               <>
                                 <Observer>
                                   {() => {
+                                    if (live) {
+                                      return null;
+                                    }
+
                                     // Set the map center from a selected
                                     // stop position or selected
                                     // selectedJourney position.
-                                    if (!live) {
-                                      const stopPosition = stop
-                                        ? latLng([stop.lat, stop.lng])
+                                    const stopPosition = stop
+                                      ? latLng([stop.lat, stop.lng])
+                                      : false;
+
+                                    const selectedJourneyPosition =
+                                      currentJourneyPositions.size === 1 &&
+                                      selectedJourneyId
+                                        ? currentJourneyPositions.get(
+                                            selectedJourneyId
+                                          ) || false
                                         : false;
 
-                                      const selectedJourneyPosition =
-                                        currentJourneyPositions.size === 1 &&
-                                        selectedJourneyId
-                                          ? currentJourneyPositions.get(
-                                              selectedJourneyId
-                                            ) || false
-                                          : false;
+                                    const {lat, lng} = selectedJourneyPosition || {};
 
-                                      const {lat, lng} = selectedJourneyPosition || {};
+                                    // If a journey is selected, use the
+                                    // journey position if available.
+                                    // Else use the selected stop
+                                    // position if available.
+                                    let centerPosition = false;
 
-                                      // If a journey is selected, use the
-                                      // journey position if available.
-                                      // Else use the selected stop
-                                      // position if available.
-                                      let centerPosition = false;
+                                    if (state.currentMapillaryMapLocation) {
+                                      centerPosition = state.currentMapillaryMapLocation;
+                                    } else if (lat && lng && selectedJourney) {
+                                      centerPosition = latLng([lat, lng]);
+                                    } else if (!selectedJourney) {
+                                      centerPosition = stopPosition;
+                                    }
 
-                                      if (state.currentMapillaryMapLocation) {
-                                        centerPosition =
-                                          state.currentMapillaryMapLocation;
-                                      } else if (lat && lng && selectedJourney) {
-                                        centerPosition = latLng([lat, lng]);
-                                      } else if (!selectedJourney) {
-                                        centerPosition = stopPosition;
-                                      }
-
-                                      if (centerPosition) {
-                                        UI.setMapView(centerPosition);
-                                      }
+                                    if (centerPosition) {
+                                      UI.setMapView(centerPosition);
                                     }
 
                                     return null;
