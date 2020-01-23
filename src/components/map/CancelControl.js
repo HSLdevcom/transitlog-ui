@@ -2,7 +2,7 @@ import * as L from "leaflet";
 import {MapControl, withLeaflet} from "react-leaflet";
 import {css} from "styled-components";
 import React from "react";
-import {renderToStaticMarkup} from "react-dom/server.browser";
+import {renderToStaticMarkup} from "react-dom/server";
 import Cross from "../../icons/Cross";
 
 const controlStyle = css`
