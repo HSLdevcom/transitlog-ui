@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useMemo, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import flow from "lodash/flow";
@@ -10,6 +10,7 @@ import TimingStop from "../../icons/TimingStop";
 import {getModeColor} from "../../helpers/vehicleColor";
 import {text, Text} from "../../helpers/text";
 import {Button} from "../Forms";
+import {withLeaflet} from "react-leaflet";
 
 const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
   text-decoration: none;
@@ -70,60 +71,81 @@ const RouteGroupContainer = styled.div``;
 
 const decorate = flow(
   observer,
+  withLeaflet,
   withStop,
   inject("Filters")
 );
 
-export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters, state}) => {
-  const onSelectRoute = useCallback(
-    (route) => () => route && Filters.setRoute(route),
-    []
-  );
+export const StopRouteSelect = decorate(
+  ({stop, stopLoading, color, Filters, state, leaflet}) => {
+    const onSelectRoute = useCallback(
+      (route) => () => route && Filters.setRoute(route),
+      []
+    );
 
-  const selectedRoute = get(state, "route", null);
+    const selectedRoute = get(state, "route", null);
 
-  const routeGroups = useMemo(() => {
-    const routes = get(stop, "routes", []);
-    return Object.entries(groupBy(routes, (route) => route.routeId.slice(0, 4)));
-  }, [stop]);
+    const routeGroups = useMemo(() => {
+      const routes = get(stop, "routes", []);
+      return Object.entries(groupBy(routes, (route) => route.routeId.slice(0, 4)));
+    }, [stop]);
 
-  return stopLoading
-    ? text("general.loading")
-    : routeGroups.map(([routeGroupName, routes]) => (
-        <React.Fragment key={`route_group_${routeGroupName}`}>
-          <RouteGroupHeading>{routeGroupName}</RouteGroupHeading>
-          <RouteGroupContainer>
-            {routes.map((route) => {
-              const buttonColor = getModeColor(route.mode) || color;
+    useEffect(() => {
+      if (stopLoading) {
+        return;
+      }
 
-              return (
-                <StopOptionButton
-                  selected={
-                    selectedRoute &&
-                    selectedRoute.routeId === route.routeId &&
-                    selectedRoute.direction === route.direction
-                  }
-                  isTimingStop={route.isTimingStop}
-                  color={buttonColor}
-                  key={`route_${route.routeId}_${route.direction}`}
-                  onClick={onSelectRoute(route)}>
-                  {route.isTimingStop && (
-                    <TimingStop fill="white" width="1rem" height="1rem" />
-                  )}
-                  <RouteData>
-                    <span>
-                      {route.routeId} / {route.direction}
-                    </span>
-                    <RouteName>
-                      {route.origin} - {route.destination}
-                    </RouteName>
-                  </RouteData>
-                </StopOptionButton>
-              );
-            })}
-          </RouteGroupContainer>
-        </React.Fragment>
-      ));
-});
+      setTimeout(() => {
+        const popup = leaflet.popupContainer._popup;
+
+        if (!popup) {
+          return;
+        }
+
+        const px = leaflet.map.project(popup._latlng); // find the pixel location on the map where the popup anchor is
+        px.y -= popup._container.clientHeight / 2; // find the height of the popup container, divide by 2, subtract from the Y axis of marker location
+        leaflet.map.panTo(leaflet.map.unproject(px), {animate: true}); // pan to new center
+      }, 100);
+    }, [stopLoading]);
+
+    return stopLoading
+      ? text("general.loading")
+      : routeGroups.map(([routeGroupName, routes]) => (
+          <React.Fragment key={`route_group_${routeGroupName}`}>
+            <RouteGroupHeading>{routeGroupName}</RouteGroupHeading>
+            <RouteGroupContainer>
+              {routes.map((route) => {
+                const buttonColor = getModeColor(route.mode) || color;
+
+                return (
+                  <StopOptionButton
+                    selected={
+                      selectedRoute &&
+                      selectedRoute.routeId === route.routeId &&
+                      selectedRoute.direction === route.direction
+                    }
+                    isTimingStop={route.isTimingStop}
+                    color={buttonColor}
+                    key={`route_${route.routeId}_${route.direction}`}
+                    onClick={onSelectRoute(route)}>
+                    {route.isTimingStop && (
+                      <TimingStop fill="white" width="1rem" height="1rem" />
+                    )}
+                    <RouteData>
+                      <span>
+                        {route.routeId} / {route.direction}
+                      </span>
+                      <RouteName>
+                        {route.origin} - {route.destination}
+                      </RouteName>
+                    </RouteData>
+                  </StopOptionButton>
+                );
+              })}
+            </RouteGroupContainer>
+          </React.Fragment>
+        ));
+  }
+);
 
 export default StopRouteSelect;
