@@ -87,14 +87,9 @@ export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters, sta
     return Object.entries(groupBy(routes, (route) => route.routeId.slice(0, 4)));
   }, [stop]);
 
-  return stopLoading ? (
-    text("general.loading")
-  ) : (
-    <>
-      <p>
-        <Text text="map.stops.stop_routes_select" />
-      </p>
-      {routeGroups.map(([routeGroupName, routes]) => (
+  return stopLoading
+    ? text("general.loading")
+    : routeGroups.map(([routeGroupName, routes]) => (
         <React.Fragment key={`route_group_${routeGroupName}`}>
           <RouteGroupHeading>{routeGroupName}</RouteGroupHeading>
           <RouteGroupContainer>
@@ -128,9 +123,7 @@ export const StopRouteSelect = decorate(({stop, stopLoading, color, Filters, sta
             })}
           </RouteGroupContainer>
         </React.Fragment>
-      ))}
-    </>
-  );
+      ));
 });
 
 export default StopRouteSelect;
