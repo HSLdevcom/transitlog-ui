@@ -4,7 +4,7 @@ import {Heading} from "../Typography";
 import get from "lodash/get";
 import compact from "lodash/compact";
 import uniq from "lodash/uniq";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import {latLng} from "leaflet";
 import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
 import StopPopupContent, {StopPopupContentSection} from "./StopPopupContent";
@@ -12,23 +12,46 @@ import MapPopup from "./MapPopup";
 import StopMarker from "./StopMarker";
 import {Text} from "../../helpers/text";
 import {Tooltip} from "react-leaflet";
+import {Button} from "../Forms";
 
-const StopOptionButton = styled.button`
+const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
   text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  background: var(--lightest-grey);
-  margin: 0 0 0.5rem 0;
-  display: block;
-  border: ${({color = "var(--lightest-grey)"}) =>
-    color ? `3px solid ${color}` : "3px solid var(--lightest-grey)"};
+  color: white;
+  border: 0;
+  margin: 0 0.5rem 0.5rem 0;
+  background: ${({color = "var(--lightest-grey)"}) =>
+    color ? color : "var(--lightest-grey)"};
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: var(--font-family);
+  font-size: 0.875rem;
+  padding: 0.25rem 1rem 0.25rem 0.5rem;
+  height: auto;
+
+  ${(p) =>
+    p.selected
+      ? css`
+          border: 2px solid white;
+          box-shadow: 0 0 0 2px
+            ${({color = "var(--lightest-grey)"}) =>
+              color ? color : "var(--lightest-grey)"};
+        `
+      : ""}
 
   &:hover {
-    background-color: var(--lighter-grey);
+    background: ${({color = "var(--lightest-grey)"}) =>
+      color ? color : "var(--lightest-grey)"};
+    border: 0;
   }
 `;
 
+const StopGroupContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
 const ChooseStopHeading = styled(Heading).attrs({level: 4})`
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -103,23 +126,28 @@ const CompoundStopMarker = observer(
         <MapPopup
           onClose={() => (popupOpen.current = false)}
           onOpen={() => (popupOpen.current = true)}>
-          <StopPopupContentSection>
+          <StopPopupContentSection style={{backgroundColor: "var(--lightest-grey)"}}>
             <ChooseStopHeading>
               <Text>map.stops.select_stop</Text>
             </ChooseStopHeading>
-            {stops.map((stopInGroup) => {
-              const mode = getPriorityMode(get(stopInGroup, "modes", []));
-              const stopColor = getModeColor(mode);
+            <StopGroupContainer>
+              {stops.map((stopInGroup) => {
+                const mode = getPriorityMode(get(stopInGroup, "modes", []));
+                const stopColor = getModeColor(mode);
 
-              return (
-                <StopOptionButton
-                  color={stopColor}
-                  onClick={() => setStop(stopInGroup.stopId)}
-                  key={`stop_select_${stopInGroup.stopId}`}>
-                  {stopInGroup.stopId} - {stopInGroup.name}
-                </StopOptionButton>
-              );
-            })}
+                return (
+                  <StopOptionButton
+                    selected={
+                      !!selectedStopObj && selectedStopObj.stopId === stopInGroup.stopId
+                    }
+                    color={stopColor}
+                    onClick={() => setStop(stopInGroup.stopId)}
+                    key={`stop_select_${stopInGroup.stopId}`}>
+                    {stopInGroup.stopId} - {stopInGroup.name}
+                  </StopOptionButton>
+                );
+              })}
+            </StopGroupContainer>
           </StopPopupContentSection>
           {selectedStopObj && (
             <StopPopupContent
