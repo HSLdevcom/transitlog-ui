@@ -1,5 +1,10 @@
 # Transitlog UI changelog
 
+## Version 1.6.1, deployed 2020-01-23 @ 10:00
+
+- Update for route select buttons and stop select buttons in stop popup. Also adds more information and makes the view clearer.
+- Added a badge to many views that show which method the HFP event location and time was measured with; GPS or ODO.
+
 ## Version 1.6.0, deployed 2020-01-17 @ 10:00
 
 - Show driver events (DA, DOUT) in vehicle journeys list.
