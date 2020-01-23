@@ -3,7 +3,6 @@ import StopRouteSelect from "./StopRouteSelect";
 import {Text} from "../../helpers/text";
 import React from "react";
 import styled from "styled-components";
-import AlertsList from "../AlertsList";
 import {StopContent} from "../StopElements";
 import {Button} from "../Forms";
 import {observer} from "mobx-react-lite";
