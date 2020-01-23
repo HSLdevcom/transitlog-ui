@@ -32,6 +32,7 @@ export const StopContentWrapper = styled(StopContent)`
   font-family: inherit;
   font-size: 1rem;
   padding: 0;
+  min-width: 400px;
 `;
 
 export const StopStreetViewWrapper = styled(StopPopupContentSection)`

@@ -25,7 +25,6 @@ import gql from "graphql-tag";
 import {useQueryData} from "../../hooks/useQueryData";
 import orderBy from "lodash/orderBy";
 import {text} from "../../helpers/text";
-import Tooltip from "../Tooltip";
 import {LocBadge} from "../commonComponents";
 
 const JourneyListRow = styled.div`

@@ -45,6 +45,7 @@
   "map.stops.show_in_streetview": "Visa i gatuvy",
   "map.stops.doors_not_open": "Dörrarna öppnades aldrig på denna hållplats",
   "map.stops.select_stop": "Välj hållplats",
+  "map.stops.stop_routes_select": "Hållplatsens rutter. Välj en rutt för att se dens tidtabeller för denna hållplats.",
   "map.road": "Väg",
   "map.aerial": "Luftbild",
   "map.weather": "Väder",
