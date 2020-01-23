@@ -169,6 +169,7 @@ type Journey {
 }
 
 type JourneyCancellationEvent {
+  _sort: Int
   cancellationEffect: CancellationEffect!
   cancellationType: CancellationType!
   category: AlertCategory!
@@ -187,6 +188,7 @@ type JourneyCancellationEvent {
 
 type JourneyEvent {
   _isVirtual: Boolean
+  _sort: Int
   id: ID!
   lat: Float
   lng: Float
@@ -201,10 +203,11 @@ type JourneyEvent {
 
 type JourneyStopEvent {
   _isVirtual: Boolean
+  _sort: Int
   departureId: Int
   doorsOpened: Boolean
   id: ID!
-  index: Int
+  index: Int!
   isNextDay: Boolean
   isOrigin: Boolean
   isTimingStop: Boolean!
@@ -263,9 +266,10 @@ type PlannedDeparture {
 }
 
 type PlannedStopEvent {
+  _sort: Int
   departureId: Int
   id: ID!
-  index: Int
+  index: Int!
   isNextDay: Boolean
   isOrigin: Boolean
   isTimingStop: Boolean!
@@ -368,10 +372,13 @@ type Stop implements Position {
 }
 
 type StopRoute {
+  destination: String
   direction: Direction!
   id: ID!
   isTimingStop: Boolean!
   mode: String
+  name: String
+  origin: String
   originStopId: String
   routeId: String!
 }
@@ -404,6 +411,7 @@ type VehicleJourney {
 }
 
 type VehiclePosition implements Position {
+  _sort: Int
   delay: Int
   doorStatus: Boolean
   heading: Int

@@ -46,7 +46,7 @@ const MapPopup = ({className, children, onClose, onOpen}) => {
         onClose={onClose}
         offset={[0, -10]}
         minWidth={350}
-        maxWidth={550}>
+        maxWidth={500}>
         {children}
       </Popup>
     </>
