@@ -1,12 +1,11 @@
 import {Text} from "../../helpers/text";
-import React, {useMemo, memo} from "react";
+import React, {useMemo} from "react";
 import styled from "styled-components";
 import {useWeather} from "../../hooks/useWeather";
 import {useWeatherData} from "../../hooks/useWeatherData";
 import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
-import {useJourneyWeather} from "../../hooks/useJourneyWeather";
 import {getMomentFromDateTime} from "../../helpers/time";
 
 const WeatherContainer = styled.div`
@@ -73,15 +72,8 @@ export const WeatherWidget = decorate(({className, state}) => {
     [date]
   );
 
-  const [weatherData] = useWeather("all", endDate, startDate);
+  const [weatherData] = useWeather(endDate, startDate);
   const parsedWeatherData = useWeatherData(weatherData, unixTime);
-
-  return <WeatherWidgetComponent {...parsedWeatherData} className={className} />;
-});
-
-export const JourneyWeatherWidget = memo(({events, time, className}) => {
-  const [weatherData] = useJourneyWeather(events);
-  const parsedWeatherData = useWeatherData(weatherData, time);
 
   return <WeatherWidgetComponent {...parsedWeatherData} className={className} />;
 });

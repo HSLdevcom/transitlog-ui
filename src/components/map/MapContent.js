@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import StopLayer from "./StopLayer";
 import RouteGeometryQuery from "../../queries/RouteGeometryQuery";
@@ -16,8 +16,7 @@ import {createRouteId} from "../../helpers/keys";
 import {inject} from "../../helpers/inject";
 import WeatherDisplay from "./WeatherDisplay";
 import JourneyStopsLayer from "./JourneyStopsLayer";
-import {WeatherWidget, JourneyWeatherWidget} from "./WeatherWidget";
-import get from "lodash/get";
+import {WeatherWidget} from "./WeatherWidget";
 import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
 import DriverEventLayer from "./DriverEventLayer";
@@ -42,7 +41,6 @@ const MapContent = decorate(
       date,
       mapOverlays,
       areaEventsStyle,
-      unixTime,
       areaSearchRangeMinutes,
       mapView,
       mapZoom,
@@ -52,10 +50,6 @@ const MapContent = decorate(
     const showStopRadius = expr(() => mapOverlays.indexOf("Stop radius") !== -1);
 
     const selectedJourneyId = getJourneyId(selectedJourney);
-    const selectedJourneyEvents = useMemo(
-      () => get(journeys.find((j) => j.id === selectedJourneyId) || {}, "events", []),
-      [selectedJourneyId, journeys.length !== 0]
-    );
 
     return (
       <>
@@ -185,16 +179,9 @@ const MapContent = decorate(
         {mapOverlays.includes("Weather") && (
           <WeatherDisplay key="weather_map" position={mapView} />
         )}
-        {mapOverlays.includes("Weather") &&
-          (!selectedJourneyId ? (
-            <WeatherWidget key="map_weather" position={mapView} />
-          ) : (
-            <JourneyWeatherWidget
-              time={unixTime}
-              key={`journey_weather_${selectedJourneyId}`}
-              events={selectedJourneyEvents}
-            />
-          ))}
+        {mapOverlays.includes("Weather") && (
+          <WeatherWidget key="map_weather" position={mapView} />
+        )}
       </>
     );
   }
