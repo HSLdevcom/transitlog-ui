@@ -53,7 +53,7 @@ const MapContent = decorate(
 
     return (
       <>
-        <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
+        <AreaSelect enabled={areaSearchRangeMinutes} />
         {!selectedJourney && (
           <StopLayer showRadius={showStopRadius} date={date} selectedStop={stop} />
         )}

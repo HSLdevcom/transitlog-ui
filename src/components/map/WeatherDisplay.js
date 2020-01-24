@@ -39,58 +39,38 @@ const WeatherMarker = ({children, location, color}) => (
 
 const WeatherDisplay = decorate(({state}) => {
   const {date, unixTime} = state;
-
-  // For this component, we only need the weather stations
-  // and we don't want to update the data too often.
-
-  const [startDate, endDate] = useMemo(
-    () => [
-      getMomentFromDateTime(date)
-        .startOf("day")
-        .toISOString(true),
-      getMomentFromDateTime(date)
-        .endOf("day")
-        .toISOString(true),
-    ],
-    [date]
-  );
-
-  const [weatherData] = useWeather(endDate, startDate);
+  const {weather, roadCondition} = useWeather(date);
 
   const [weatherLocations, roadLocations] = useMemo(() => {
-    const weatherLocations = compact(get(weatherData, "weather.locations", [])).map(
-      (location) => {
-        const locationData = get(location, "data.t2m.timeValuePairs", []);
+    const weatherLocations = compact(get(weather, "locations", [])).map((location) => {
+      const locationData = get(location, "data.t2m.timeValuePairs", []);
 
-        if (!location || !locationData || locationData.length === 0) {
-          return null;
-        }
-
-        return {
-          data: locationData,
-          id: get(location, "info.id", ""),
-          location: latLng(get(location, "info.position", []).map((c) => parseFloat(c))),
-        };
+      if (!location || !locationData || locationData.length === 0) {
+        return null;
       }
-    );
 
-    const roadLocations = get(weatherData, "roadCondition.locations", []).map(
-      (location) => {
-        if (!location) {
-          return null;
-        }
+      return {
+        data: locationData,
+        id: get(location, "info.id", ""),
+        location: latLng(get(location, "info.position", []).map((c) => parseFloat(c))),
+      };
+    });
 
-        const roadStatus = getRoadStatus([location], unixTime);
-        return {
-          data: roadStatus,
-          id: get(location, "info.id", ""),
-          location: latLng(get(location, "info.position", []).map((c) => parseFloat(c))),
-        };
+    const roadLocations = get(roadCondition, "locations", []).map((location) => {
+      if (!location) {
+        return null;
       }
-    );
+
+      const roadStatus = getRoadStatus([location], unixTime);
+      return {
+        data: roadStatus,
+        id: get(location, "info.id", ""),
+        location: latLng(get(location, "info.position", []).map((c) => parseFloat(c))),
+      };
+    });
 
     return [weatherLocations, roadLocations];
-  }, [weatherData.weather, weatherData.roadCondition]);
+  }, [weather, roadCondition]);
 
   return (
     <>
