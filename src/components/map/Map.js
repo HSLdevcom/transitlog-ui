@@ -86,10 +86,6 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
 
-  // CanSetView guards the initial state against changes before it
-  // has had a chance to be focused on.
-  const [canSetView, setCanSetView] = useState(true);
-
   // Gets the Leaflet object that enables all this goodness.
   const leafletMap = useMemo(() => {
     return get(mapRef, "current.leafletElement", null);
@@ -106,20 +102,15 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
 
   // Sync map state with the app state. This runs when the map center changes.
   // If view setting is not allowed, only the bounds and url state will change.
-  const setMapState = useCallback(
-    ({target}) => {
-      const center = target.getCenter();
-      const nextBounds = target.getBounds();
+  const setMapState = useCallback(({target}) => {
+    const center = target.getCenter();
+    const nextBounds = target.getBounds();
 
-      if (canSetView) {
-        setMapView(center);
-      }
+    setMapView(center);
 
-      setMapBounds(nextBounds);
-      debouncedSetUrlValue("mapView", `${center.lat},${center.lng}`);
-    },
-    [canSetView]
-  );
+    setMapBounds(nextBounds);
+    debouncedSetUrlValue("mapView", `${center.lat},${center.lng}`);
+  }, []);
 
   // Sync the map zoom state with the app state. Will run always when map zoom is updated.
   const setMapZoomState = useCallback(({target}) => {
@@ -171,8 +162,6 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             // set the map view to the bounds and forbid the state to change for
             // 3 seconds. There may be a better way to do this but this works for now.
             leafletMap.fitBounds(currentView);
-            setCanSetView(false);
-            setTimeout(() => setCanSetView(true), 3000);
           } else if (
             currentView instanceof LatLng &&
             !leafletMap.getCenter().equals(currentView)

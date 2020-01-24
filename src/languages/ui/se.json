@@ -150,6 +150,17 @@
   "domain.alerts.subset": "Undantagsinformation",
   "domain.cancelled": "Annullerad",
 
+  "roadcondition.unknown": "Okänd",
+  "roadcondition.dry": "Torrt",
+  "roadcondition.damp": "Fuktigt",
+  "roadcondition.wet": "Blött",
+  "roadcondition.wet-salted": "Blött och saltat",
+  "roadcondition.frost": "Frost",
+  "roadcondition.snow": "Snöigt",
+  "roadcondition.ice": "Isigt",
+  "roadcondition.damp-salted": "Förmodligen fuktigt och saltat",
+  "roadcondition.ice-slush": "Slaskigt",
+
   "auth.login": "Logga in (HSL ID)",
   "auth.logout": "Logga ut",
   "auth.create_account": "Skapa Reittiloki account",

@@ -4,6 +4,7 @@ import meanBy from "lodash/meanBy";
 import orderBy from "lodash/orderBy";
 import uniqBy from "lodash/uniqBy";
 import groupBy from "lodash/groupBy";
+import {text} from "../helpers/text";
 
 function getValues(locations, value) {
   const timeValues = locations.reduce((values, {data}) => {
@@ -55,16 +56,17 @@ export function getTimeValue(timestamp, locations, value) {
   return get(timeValue, "value", false);
 }
 
-// TODO: add the correct road states.
+// These will be translated
 const roadConditionStatus = {
   "1": "dry",
   "2": "damp",
   "3": "wet",
-  "4": "wet snow",
+  "4": "wet-salted",
   "5": "frost",
-  "6": "partly icy",
-  "7": "dry snow",
-  "8": "icy",
+  "6": "snow",
+  "7": "ice",
+  "8": "damp-salted",
+  "9": "ice-slush",
 };
 
 export function getRoadStatus(locations, timestamp) {
@@ -76,7 +78,11 @@ export function getRoadStatus(locations, timestamp) {
   } else {
     status = orderBy(uniqBy(timeValues, "value"), "value", "desc")[0];
   }
-  return get(roadConditionStatus, `${Math.min(get(status, "value", 1), 8)}`, "");
+
+  const statusValue = Math.round(Math.min(get(status, "value", 1), 9));
+  const conditionStatusTerm = get(roadConditionStatus, `${statusValue}`, "unknown");
+
+  return text(`roadcondition.${conditionStatusTerm}`);
 }
 
 export const useWeatherData = (weatherData, timestamp) => {

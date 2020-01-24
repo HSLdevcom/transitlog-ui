@@ -151,6 +151,17 @@
   "domain.alerts.subset": "Alerts",
   "domain.cancelled": "Cancelled",
 
+  "roadcondition.unknown": "Unknown",
+  "roadcondition.dry": "Dry",
+  "roadcondition.damp": "Damp",
+  "roadcondition.wet": "Wet",
+  "roadcondition.wet-salted": "Wet and salted",
+  "roadcondition.frost": "Frost",
+  "roadcondition.snow": "Snow",
+  "roadcondition.ice": "Ice",
+  "roadcondition.damp-salted": "Probably damp and salted",
+  "roadcondition.ice-slush": "Ice slush",
+
   "auth.login": "Log in (HSL ID)",
   "auth.logout": "Log out",
   "auth.create_account": "Create Reittiloki account",

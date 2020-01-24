@@ -7,11 +7,11 @@ import {LatLngBounds, latLngBounds} from "leaflet";
 import uniq from "lodash/uniq";
 import difference from "lodash/difference";
 import {TIMEZONE} from "../constants";
-import {useDebouncedValue} from "./useDebouncedValue";
 import {getRoundedBbox} from "../helpers/getRoundedBbox";
 import isValid from "date-fns/isValid";
 
 import {legacyParse} from "@date-fns/upgrade/v2";
+import {useDebouncedCallback} from "use-debounce";
 
 export function getWeatherSamplePoint(location) {
   let validPoint = location || null;
@@ -104,67 +104,86 @@ export const useWeather = (location, endTime, startTime = null, which = "display
     return [];
   }, [location]);
 
-  // Debounce the values to prevent too frequent fetches
-  const querySites = useDebouncedValue(sites, 1000);
-  const debouncedEndTime = useDebouncedValue(endTime, 100);
-  const debouncedStartTime = useDebouncedValue(startTime, 100);
-
   const [queryStartTime, queryEndTime] = useMemo(() => {
     // Get the base date that is used in the weather request. Also ensure the date
     // isn't further in the future from the real world time.
     const endDate = moment.min(
-      ceilMoment(moment.tz(debouncedEndTime, TIMEZONE), 10, "minutes"),
+      ceilMoment(moment.tz(endTime, TIMEZONE), 10, "minutes"),
       floorMoment(moment.tz(), 10, "minutes")
     );
 
     // Get a nice startDate by flooring the time to the nearest 10 minute mark.
     const startDate = floorMoment(
-      debouncedStartTime
-        ? moment.tz(debouncedStartTime, TIMEZONE)
+      startTime
+        ? moment.tz(startTime, TIMEZONE)
         : endDate.clone().subtract(10, "minutes"),
       10,
       "minutes"
     );
 
     return [startDate.toDate(), endDate.toDate()];
-  }, [debouncedEndTime, debouncedStartTime]);
+  }, [endTime, startTime]);
+
+  const [debouncedFetchWeather] = useDebouncedCallback(
+    (sites, queryStart, queryEnd, onData) => {
+      // If we got to here, a new weather request will be made.
+      weatherLoading.current = true;
+
+      // Start the requests. Each promise returns an object containing
+      // the data and request namespace.
+      getWeatherForArea(sites, queryStart, queryEnd, (cancelCb) =>
+        cancelCallbacks.current.push({type: "weather", func: cancelCb})
+      )
+        .then(onData)
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          weatherLoading.current = false;
+        });
+    },
+    1000
+  );
+
+  const [debouncedFetchRoad] = useDebouncedCallback((queryStart, queryEnd, onData) => {
+    // If we got to here, a new weather request will be made.
+    roadLoading.current = true;
+
+    getRoadConditionsForArea(hslBBox, queryStartTime, queryEndTime, (cancelCb) =>
+      cancelCallbacks.current.push({type: "road", func: cancelCb})
+    )
+      .then(onData)
+      .catch((err) => console.error(err))
+      .finally(() => (roadLoading.current = false));
+  });
 
   useEffect(() => {
     // Bail directly if it is loading or we don't have all the data we need yet.
     if (
       weatherLoading.current ||
-      !querySites ||
+      !sites ||
       (!queryStartTime || !isValid(legacyParse(queryStartTime))) ||
       (!queryEndTime || !isValid(legacyParse(queryEndTime)))
     ) {
       return () => {};
     }
 
-    let isCancelled = false;
+    let cancelled = false;
 
-    // If we got to here, a new weather request will be made.
-    weatherLoading.current = true;
+    const onFetchedData = (data) => {
+      if (!cancelled) {
+        setWeatherData(data);
+      }
+    };
 
-    // Start the requests. Each promise returns an object containing
-    // the data and request namespace.
-    getWeatherForArea(querySites, queryStartTime, queryEndTime, (cancelCb) =>
-      cancelCallbacks.current.push({type: "weather", func: cancelCb})
-    )
-      .then((data) => {
-        if (!isCancelled) {
-          setWeatherData(data);
-        }
-      })
-      .catch((err) => console.error(err))
-      .finally(() => {
-        weatherLoading.current = false;
-      });
+    debouncedFetchWeather(sites, queryStartTime, queryEndTime, onFetchedData);
 
     return () => {
-      isCancelled = true;
+      cancelled = true;
+      weatherLoading.current = false;
       onCancel("weather");
     }; // The effect will cancel the connections if refreshed (or unmounted).
-  }, [queryStartTime.valueOf(), queryEndTime.valueOf(), querySites]); // Only refresh the effect if these props change.
+  }, [queryStartTime, queryEndTime, sites]); // Only refresh the effect if these props change.
 
   useEffect(() => {
     // Bail directly if it is loading or we don't have all the data we need yet.
@@ -176,24 +195,19 @@ export const useWeather = (location, endTime, startTime = null, which = "display
       return () => {};
     }
 
-    let isCancelled = false;
+    let cancelled = false;
 
-    // If we got to here, a new weather request will be made.
-    roadLoading.current = true;
+    const onFetchedData = (data) => {
+      if (!cancelled) {
+        setRoadData(data);
+      }
+    };
 
-    getRoadConditionsForArea(hslBBox, queryStartTime, queryEndTime, (cancelCb) =>
-      cancelCallbacks.current.push({type: "road", func: cancelCb})
-    )
-      .then((data) => {
-        if (!isCancelled) {
-          setRoadData(data);
-        }
-      })
-      .catch((err) => console.error(err))
-      .finally(() => (roadLoading.current = false));
+    debouncedFetchRoad(queryStartTime, queryEndTime, onFetchedData);
 
     return () => {
-      isCancelled = true;
+      cancelled = true;
+      roadLoading.current = false;
       onCancel("road");
     };
   }, [queryStartTime.valueOf(), queryEndTime.valueOf()]);
