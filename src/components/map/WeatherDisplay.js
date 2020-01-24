@@ -10,7 +10,6 @@ import {getRoadStatus, getClosestTimeValue} from "../../hooks/useWeatherData";
 import {CircleMarker, Tooltip} from "react-leaflet";
 import {latLng} from "leaflet";
 import {text, Text} from "../../helpers/text";
-import {getMomentFromDateTime} from "../../helpers/time";
 
 const TooltipText = styled.div`
   font-family: var(--font-family);

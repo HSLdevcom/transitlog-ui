@@ -64,8 +64,6 @@ class AreaSelect extends Component {
   render() {
     const {enabled = true, state} = this.props;
 
-    console.log(state.selectedBounds);
-
     return (
       <FeatureGroup ref={this.featureLayer}>
         <EditControl
