@@ -1,12 +1,11 @@
 import {Text} from "../../helpers/text";
-import React, {useMemo} from "react";
+import React from "react";
 import styled from "styled-components";
 import {useWeather} from "../../hooks/useWeather";
 import {useWeatherData} from "../../hooks/useWeatherData";
 import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
-import {getMomentFromDateTime} from "../../helpers/time";
 
 const WeatherContainer = styled.div`
   position: absolute;
@@ -60,19 +59,7 @@ const WeatherWidgetComponent = ({
 export const WeatherWidget = decorate(({className, state}) => {
   const {unixTime, date} = state;
 
-  const [startDate, endDate] = useMemo(
-    () => [
-      getMomentFromDateTime(date)
-        .startOf("day")
-        .toISOString(true),
-      getMomentFromDateTime(date)
-        .endOf("day")
-        .toISOString(true),
-    ],
-    [date]
-  );
-
-  const [weatherData] = useWeather(endDate, startDate);
+  const weatherData = useWeather(date);
   const parsedWeatherData = useWeatherData(weatherData, unixTime);
 
   return <WeatherWidgetComponent {...parsedWeatherData} className={className} />;
