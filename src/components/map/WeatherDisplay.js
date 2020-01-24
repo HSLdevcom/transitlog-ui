@@ -3,6 +3,7 @@ import React, {useMemo} from "react";
 import styled from "styled-components";
 import flow from "lodash/flow";
 import get from "lodash/get";
+import compact from "lodash/compact";
 import {inject} from "../../helpers/inject";
 import {useWeather} from "../../hooks/useWeather";
 import {getRoadStatus, getClosestTimeValue} from "../../hooks/useWeatherData";
@@ -54,21 +55,31 @@ const WeatherDisplay = decorate(({state}) => {
     [date]
   );
 
-  const [weatherData] = useWeather("all", endDate, startDate);
+  const [weatherData] = useWeather(endDate, startDate);
 
   const [weatherLocations, roadLocations] = useMemo(() => {
-    const weatherLocations = get(weatherData, "weather.locations", []).map((location) => {
-      const locationData = get(location, "data.t2m.timeValuePairs", []);
+    const weatherLocations = compact(get(weatherData, "weather.locations", [])).map(
+      (location) => {
+        const locationData = get(location, "data.t2m.timeValuePairs", []);
 
-      return {
-        data: locationData,
-        id: get(location, "info.id", ""),
-        location: latLng(get(location, "info.position", []).map((c) => parseFloat(c))),
-      };
-    });
+        if (!location || !locationData || locationData.length === 0) {
+          return null;
+        }
+
+        return {
+          data: locationData,
+          id: get(location, "info.id", ""),
+          location: latLng(get(location, "info.position", []).map((c) => parseFloat(c))),
+        };
+      }
+    );
 
     const roadLocations = get(weatherData, "roadCondition.locations", []).map(
       (location) => {
+        if (!location) {
+          return null;
+        }
+
         const roadStatus = getRoadStatus([location], unixTime);
         return {
           data: roadStatus,
@@ -86,11 +97,16 @@ const WeatherDisplay = decorate(({state}) => {
       {weatherLocations &&
         weatherLocations.length !== 0 &&
         weatherLocations.map((weatherLocation) => {
-          let temp = getClosestTimeValue(weatherLocation.data, unixTime);
+          if (!weatherLocation || !weatherLocation.location) {
+            return null;
+          }
 
-          temp = isNaN(temp.value)
+          let temp = getClosestTimeValue(weatherLocation.data, unixTime);
+          const value = get(temp, "value", 0);
+
+          temp = isNaN(value)
             ? text("general.no_data")
-            : Math.round(temp.value * 10) / 10 + " &deg;C";
+            : Math.round(value * 10) / 10 + " &deg;C";
 
           return (
             <WeatherMarker
@@ -103,16 +119,22 @@ const WeatherDisplay = decorate(({state}) => {
         })}
       {roadLocations &&
         roadLocations.length !== 0 &&
-        roadLocations.map((roadLocation) => (
-          <WeatherMarker
-            color="var(--light-grey)"
-            location={roadLocation.location}
-            key={`road_marker_${roadLocation.id}`}>
-            <TooltipText>
-              <Text>map.road</Text>: {roadLocation.data || text("general.no_data")}
-            </TooltipText>
-          </WeatherMarker>
-        ))}
+        roadLocations.map((roadLocation) => {
+          if (!roadLocation || !roadLocation.location) {
+            return null;
+          }
+
+          return (
+            <WeatherMarker
+              color="var(--light-grey)"
+              location={roadLocation.location}
+              key={`road_marker_${roadLocation.id}`}>
+              <TooltipText>
+                <Text>map.road</Text>: {roadLocation.data || text("general.no_data")}
+              </TooltipText>
+            </WeatherMarker>
+          );
+        })}
     </>
   );
 });

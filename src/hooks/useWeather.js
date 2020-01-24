@@ -4,7 +4,6 @@ import {getWeatherForArea} from "../helpers/getWeatherForArea";
 import {getRoadConditionsForArea} from "../helpers/getRoadConditionsForArea";
 import {floorMoment, ceilMoment} from "../helpers/roundMoment";
 import {LatLngBounds, latLngBounds} from "leaflet";
-import uniq from "lodash/uniq";
 import difference from "lodash/difference";
 import {TIMEZONE} from "../constants";
 import {getRoundedBbox} from "../helpers/getRoundedBbox";
@@ -24,48 +23,28 @@ export function getWeatherSamplePoint(location) {
 }
 
 const hslBBox = getRoundedBbox(
-  latLngBounds([[59.91326, 23.983637], [60.629925, 25.285678]])
+  latLngBounds([
+    [59.974192356660275, 23.80462646484375],
+    [60.67707371703147, 25.749206542968754],
+  ])
 ).toBBoxString();
 
-const sitesBbox = {
-  "100996,100971,101004,101003,101009,151028,103943": latLngBounds([
-    [60.101928, 24.826448],
-    [60.277468, 25.239808],
-  ]),
-  "852678,874863,100976": latLngBounds([[60.091573, 24.552476], [60.354147, 24.844987]]),
-  "100968": latLngBounds([[60.235056, 24.787309], [60.364335, 25.299546]]),
-  "100974,100997": latLngBounds([[59.928889, 24.310777], [60.333082, 24.700791]]),
-  "101029,105392": latLngBounds([[60.131948, 25.130632], [60.549869, 25.619523]]),
-  "100974": latLngBounds([[59.98458, 24.09929], [60.268445, 24.364335]]),
-  "103786": latLngBounds([[60.356864, 24.818208], [60.487691, 25.235688]]),
-};
+const allSites = [
+  "100971",
+  "101004",
+  "101009",
+  "151028",
+  "103943",
+  "852678",
+  "874863",
+  "100976",
+  "100968",
+  "100974",
+  "100974",
+  "103786",
+];
 
-export function getWeatherSampleSites(point) {
-  if (!point) {
-    return [];
-  }
-
-  return Object.entries(sitesBbox)
-    .reduce((querySites, [site, bounds]) => {
-      if (bounds.contains(point)) {
-        querySites = querySites.concat(site.split(","));
-      }
-
-      return querySites;
-    }, [])
-    .sort();
-}
-
-function getAllSites() {
-  return uniq(
-    Object.keys(sitesBbox).reduce(
-      (allSites, site) => [...allSites, ...site.split(",")],
-      []
-    )
-  ).sort();
-}
-
-export const useWeather = (location, endTime, startTime = null, which = "display") => {
+export const useWeather = (endTime, startTime = null) => {
   // Collect cancellation callbacks and use one function to run them all.
   const cancelCallbacks = useRef([]);
   const onCancel = useCallback(
@@ -92,17 +71,7 @@ export const useWeather = (location, endTime, startTime = null, which = "display
 
   // Metolib cannot cache if we use a bbox, so map all locations, points or bboxes
   // supplied to this hook to sites that can be cached by metolib.
-  let sites = useMemo(() => {
-    if (Array.isArray(location)) {
-      return location;
-    } else if (location === "all" || !location) {
-      return getAllSites();
-    } else if (!!location) {
-      const point = getWeatherSamplePoint(location);
-      return getWeatherSampleSites(point);
-    }
-    return [];
-  }, [location]);
+  let sites = allSites;
 
   const [queryStartTime, queryEndTime] = useMemo(() => {
     // Get the base date that is used in the weather request. Also ensure the date
