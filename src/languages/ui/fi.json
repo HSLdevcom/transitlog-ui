@@ -152,6 +152,17 @@
   "domain.alerts.subset": "Poikkeustiedotteet",
   "domain.cancelled": "Peruutettu",
 
+  "roadcondition.unknown": "Ei tiedossa",
+  "roadcondition.dry": "Kuiva",
+  "roadcondition.damp": "Kostea",
+  "roadcondition.wet": "Märkä",
+  "roadcondition.wet-salted": "Märkä ja suolattu",
+  "roadcondition.frost": "Kuura",
+  "roadcondition.snow": "Lumi",
+  "roadcondition.ice": "Jää",
+  "roadcondition.damp-salted": "Tod.näk. kostea ja suolainen",
+  "roadcondition.ice-slush": "Sohjo",
+
   "auth.login": "Kirjaudu (HSL ID)",
   "auth.logout": "Kirjaudu ulos",
   "auth.create_account": "Tee Reittiloki-tunnus",
