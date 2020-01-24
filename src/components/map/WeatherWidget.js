@@ -58,7 +58,7 @@ const WeatherWidgetComponent = ({
     </WeatherContainer>
   );
 
-export const WeatherWidget = decorate(({position, className, state}) => {
+export const WeatherWidget = decorate(({className, state}) => {
   const {unixTime, date} = state;
 
   const [startDate, endDate] = useMemo(
@@ -73,7 +73,7 @@ export const WeatherWidget = decorate(({position, className, state}) => {
     [date]
   );
 
-  const [weatherData] = useWeather(position, endDate, startDate);
+  const [weatherData] = useWeather("all", endDate, startDate);
   const parsedWeatherData = useWeatherData(weatherData, unixTime);
 
   return <WeatherWidgetComponent {...parsedWeatherData} className={className} />;
