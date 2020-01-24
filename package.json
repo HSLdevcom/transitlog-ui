@@ -104,7 +104,7 @@
     "react-vis": "^1.11.7",
     "resolve": "^1.11.0",
     "sass-loader": "^8.0.0",
-    "serve": "^11.0.1",
+    "serve": "^11.3.0",
     "style-loader": "^1.0.0",
     "styled-components": "^4.4.0",
     "styled-react-modal": "^2.0.0",
