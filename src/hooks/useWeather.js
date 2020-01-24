@@ -107,6 +107,8 @@ export const useWeather = (date) => {
 
     const onFetchedWeatherData = (data) => {
       if (!cancelled) {
+        const validLocations = data.locations.filter((loc) => !!loc.info);
+        data.locations = validLocations;
         setWeatherData(data);
       }
     };
