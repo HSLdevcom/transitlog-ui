@@ -38,10 +38,7 @@ const TooltipDataRow = styled.div`
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const HfpTooltip = decorate(
   ({

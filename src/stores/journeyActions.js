@@ -59,8 +59,8 @@ export default (state) => {
 
       if (
         !get(state, "route.routeId", "") ||
-        (state.route.routeId !== journeyRoute.routeId ||
-          state.route.direction !== journeyRoute.direction)
+        state.route.routeId !== journeyRoute.routeId ||
+        state.route.direction !== journeyRoute.direction
       ) {
         filters.setRoute(journeyRoute);
       }

@@ -67,10 +67,7 @@ const Title = styled.div`
   padding: 5px;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Filters", "UI")
-);
+const decorate = flow(observer, inject("Filters", "UI"));
 
 const Graph = decorate((props) => {
   const {events, vehiclePositions, graphExpanded, UI, Filters, width} = props;

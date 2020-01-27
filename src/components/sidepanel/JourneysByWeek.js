@@ -120,10 +120,7 @@ const TimeTypeButton = styled(ToggleButton)`
   width: auto;
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI", "Journey", "Filters", "Time")
-);
+const decorate = flow(observer, inject("UI", "Journey", "Filters", "Time"));
 
 const JourneysByWeek = decorate(
   ({state, Time, UI, Filters, Journey, route: propsRoute}) => {

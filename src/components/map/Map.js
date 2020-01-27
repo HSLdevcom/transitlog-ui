@@ -59,10 +59,7 @@ export const visualizeBounds = action((boundsOrPoint) => {
   }
 });
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 const debouncedSetUrlValue = debounce(setUrlValue, 500);
 

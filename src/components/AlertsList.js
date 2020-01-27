@@ -19,10 +19,7 @@ const AlertsListWrapper = styled.div`
   overflow-x: hidden;
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const AlertsList = decorate(
   ({

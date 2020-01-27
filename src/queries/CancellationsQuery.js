@@ -31,10 +31,7 @@ const cancellationsQuery = gql`
   ${CancellationFieldsFragment}
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const updateListenerName = "cancellations query";
 

@@ -14,7 +14,10 @@ function timeRangeFromEvents(events) {
   const firstTime = get(firstEvent, "recordedAtUnix", 0);
   const lastTime = get(lastEvent, "recordedAtUnix", 0);
 
-  return [{time: firstTime, event: firstEvent}, {time: lastTime, event: lastEvent}];
+  return [
+    {time: firstTime, event: firstEvent},
+    {time: lastTime, event: lastEvent},
+  ];
 }
 
 const MAX_TIME_DIFF = 300;
@@ -140,10 +143,7 @@ const getIndexedEvents = (time, timeIndex, journeys) => {
   return journeysForTime;
 };
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const JourneyPosition = decorate(({journeys, state, children}) => {
   const timeIndex = useMemo(() => {

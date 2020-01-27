@@ -7,10 +7,7 @@ import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import AllStopsQuery from "../../queries/AllStopsQuery";
 
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
+const decorate = flow(observer, inject("Filters"));
 
 const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
   const {stop: selectedStopId, highlightedStop} = state;

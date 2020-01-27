@@ -90,10 +90,7 @@ const AlignedPlainSlotMono = styled(PlainSlotMono)`
 
 const StopTime = styled(TagButton)``;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 export const JourneyEvent = decorate(
   ({event, color, date, isFirst, isLast, onSelectTime}) => {

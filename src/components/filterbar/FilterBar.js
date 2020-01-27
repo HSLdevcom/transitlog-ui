@@ -51,10 +51,7 @@ const CalendarRoot = styled.div`
   margin-left: 2.5rem;
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const FilterBar = decorate(
   ({className, journeys = [], unsignedEventsLoading, routeEventsLoading, state}) => {

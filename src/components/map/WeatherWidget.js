@@ -31,10 +31,7 @@ const RoadStatus = styled.div`
   color: ${({uncertain = false}) => (uncertain ? "var(--light-grey)" : "var(--blue)")};
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const WeatherWidgetComponent = ({
   className,

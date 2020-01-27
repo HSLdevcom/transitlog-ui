@@ -55,10 +55,7 @@ const CurrentValue = styled.div`
   pointer-events: none;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Time", "UI")
-);
+const decorate = flow(observer, inject("Time", "UI"));
 
 const TimeSlider = decorate(({className, Time, state, journeys}) => {
   const {timeValue: currentValue, rangeMin, rangeMax} = useMemo(

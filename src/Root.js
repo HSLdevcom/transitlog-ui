@@ -15,10 +15,7 @@ const SpecialModalBackground = styled(BaseModalBackground)`
   background: rgba(0, 0, 0, 0.1);
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 const Root = decorate(({UI}) => {
   const client = useMemo(() => getClient(UI), []);

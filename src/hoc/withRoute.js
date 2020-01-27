@@ -6,10 +6,7 @@ import get from "lodash/get";
 import {inject} from "../helpers/inject";
 import {createRouteId} from "../helpers/keys";
 
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
+const decorate = flow(observer, inject("Filters"));
 
 export const withRoute = (Component) =>
   decorate((props) => {

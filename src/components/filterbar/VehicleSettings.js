@@ -23,10 +23,7 @@ const UnsignedEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
   right: -10px;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
+const decorate = flow(observer, inject("Filters"));
 
 const VehicleSettings = decorate(({Filters, state, unsignedEventsLoading}) => {
   const onSelectVehicle = useCallback((value) => Filters.setVehicle(value), [Filters]);

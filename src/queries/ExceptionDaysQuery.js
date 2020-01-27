@@ -22,10 +22,7 @@ const exceptionDaysQuery = gql`
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const ExceptionDaysQuery = decorate(({state, children}) => {
   const year = state.date.slice(0, 4);

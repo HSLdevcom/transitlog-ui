@@ -6,10 +6,7 @@ import {inject} from "../helpers/inject";
 import {createRouteId} from "../helpers/keys";
 import EnsureJourneySelection from "../helpers/EnsureJourneySelection";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const SelectedJourneyEvents = decorate(({children, state}) => {
   const {selectedJourney, route} = state;

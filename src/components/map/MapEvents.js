@@ -9,10 +9,7 @@ import UnsignedVehicleEvents from "../UnsignedVehicleEvents";
 import {inject} from "../../helpers/inject";
 import RouteJourneys from "../RouteJourneys";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const MapEvents = decorate(({children, state}) => {
   const {areaEventsRouteFilter} = state;

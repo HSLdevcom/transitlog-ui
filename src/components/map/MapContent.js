@@ -21,10 +21,7 @@ import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
 import DriverEventLayer from "./DriverEventLayer";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const MapContent = decorate(
   ({

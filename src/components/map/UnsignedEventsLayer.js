@@ -5,10 +5,7 @@ import {inject} from "../../helpers/inject";
 import HfpMarkerLayer from "./HfpMarkerLayer";
 import JourneyLayer from "./JourneyLayer";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
   const {unixTime} = state;

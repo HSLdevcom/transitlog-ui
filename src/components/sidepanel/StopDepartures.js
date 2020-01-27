@@ -77,11 +77,7 @@ const renderTimetableRow = ({
   </div>
 );
 
-const decorate = flow(
-  observer,
-  withStop,
-  inject("Filters", "Journey", "Time")
-);
+const decorate = flow(observer, withStop, inject("Filters", "Journey", "Time"));
 
 const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
   const {date, selectedJourney, stop: stopId, timetableFilters} = state;

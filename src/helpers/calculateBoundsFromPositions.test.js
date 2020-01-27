@@ -4,7 +4,12 @@ import calculateBoundsFromPositions from "./calculateBoundsFromPositions";
 
 describe("calculateBoundsFromPositions", () => {
   test("Calculates a Leaflet latLngBounds from an array of positions", () => {
-    const coordinates = [[60.0, 24.0], [60.1, 24.0], [60.1, 24.1], [60.0, 24.1]];
+    const coordinates = [
+      [60.0, 24.0],
+      [60.1, 24.0],
+      [60.1, 24.1],
+      [60.0, 24.1],
+    ];
     const expectBboxString = "24,60,24.1,60";
 
     const bounds = calculateBoundsFromPositions(coordinates);
