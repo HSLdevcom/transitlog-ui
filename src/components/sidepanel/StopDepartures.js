@@ -82,7 +82,8 @@ const decorate = flow(observer, withStop, inject("Filters", "Journey", "Time"));
 const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
   const {date, selectedJourney, stop: stopId, timetableFilters} = state;
 
-  const filterValues = Object.values(timetableFilters);
+  const filterValues = Object.values(timetableFilters || {});
+
   const filterButtonClears =
     filterValues.some((v) => v.current !== "") &&
     filterValues.every((v) => v.current === v.pending);
@@ -151,7 +152,7 @@ const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
     setHourFilter("maxHour", get(e, "target.value", ""));
   }, []);
 
-  const {minHour, maxHour, route} = timetableFilters;
+  const {minHour = "", maxHour = "", route = ""} = timetableFilters || {};
 
   return (
     <DeparturesQuery
