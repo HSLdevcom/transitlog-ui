@@ -1,8 +1,7 @@
-import React, {useEffect, useCallback} from "react";
+import React from "react";
 import get from "lodash/get";
 import gql from "graphql-tag";
 import {Query} from "@apollo/react-components";
-import {setUpdateListener, removeUpdateListener} from "../stores/UpdateManager";
 import {useRefetch} from "../hooks/useRefetch";
 import {observer} from "mobx-react-lite";
 
@@ -58,11 +57,7 @@ const RouteJourneysQuery = observer((props) => {
   });
 
   return (
-    <Query
-      partialRefetch={true}
-      skip={shouldSkip}
-      query={routeJourneysQuery}
-      variables={queryProps}>
+    <Query skip={shouldSkip} query={routeJourneysQuery} variables={queryProps}>
       {({data, loading, error, refetch}) => {
         if (!data || loading) {
           return children({routeJourneys: [], loading, error});
