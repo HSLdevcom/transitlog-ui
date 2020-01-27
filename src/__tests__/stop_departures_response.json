@@ -3,6 +3,14 @@
     "departures": [
       {
         "id": "/1016_2_05_38_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
         "stopId": "1420104",
         "routeId": "1016",
         "direction": 2,
@@ -24,6 +32,8 @@
         "alerts": [],
         "journey": {
           "id": "departure_journey_2019-05-28_05:30:00_1016_2_0017/26",
+          "type": "DEP",
+          "journeyType": "journey",
           "routeId": "1016",
           "lineId": null,
           "direction": 2,
@@ -40,6 +50,7 @@
           "departureTime": "05:39:05",
           "departureDateTime": "2019-05-28T05:39:05.000+03:00",
           "departureTimeDifference": 65,
+          "loc": "GPS",
           "__typename": "ObservedDeparture"
         },
         "plannedDepartureTime": {
@@ -53,6 +64,14 @@
       },
       {
         "id": "/1016_2_06_09_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
         "stopId": "1420104",
         "routeId": "1016",
         "direction": 2,
@@ -90,6 +109,8 @@
         ],
         "journey": {
           "id": "departure_journey_2019-05-28_06:00:00_1016_2_0017/25",
+          "type": "DEP",
+          "journeyType": "journey",
           "routeId": "1016",
           "lineId": null,
           "direction": 2,
@@ -106,6 +127,7 @@
           "departureTime": "06:08:49",
           "departureDateTime": "2019-05-28T06:08:49.000+03:00",
           "departureTimeDifference": -11,
+          "loc": "GPS",
           "__typename": "ObservedDeparture"
         },
         "plannedDepartureTime": {
@@ -119,6 +141,14 @@
       },
       {
         "id": "/1016_2_22_48_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
         "stopId": "1420104",
         "routeId": "1016",
         "direction": 2,
@@ -167,6 +197,14 @@
       },
       {
         "id": "/1016_2_23_18_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
         "stopId": "1420104",
         "routeId": "1016",
         "direction": 2,

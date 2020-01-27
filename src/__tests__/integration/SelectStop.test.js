@@ -1,5 +1,5 @@
 import React from "react";
-import "jest-dom/extend-expect";
+import "@testing-library/jest-dom/extend-expect";
 import "jest-styled-components";
 import {
   render,
@@ -185,7 +185,7 @@ describe("Stop search and filtering", () => {
 
     fireEvent.click(getByText(text("sidepanel.tabs.timetables", "fi")));
 
-    // const firstDeparture = await findByTestId("virtual-list");
-    // expect(firstDeparture).toHaveTextContent("05:38");
+    const departuresList = await findByTestId("stop-departures-list");
+    expect(departuresList).toBeTruthy();
   });
 });
