@@ -90,10 +90,7 @@ const TimetableIcon = styled(Timetable)`
   margin-bottom: -3.5px; // Uniform row height
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const RouteDepartureItem = decorate(
   ({departure, scrollRef, selectJourney, state: {selectedJourney}}) => {

@@ -16,10 +16,7 @@ const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
+const decorate = flow(observer, inject("Filters"));
 
 const StopSettings = decorate(({Filters, state}) => {
   const {stop, date} = state;

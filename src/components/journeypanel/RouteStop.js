@@ -34,10 +34,7 @@ const StopInfo = styled.span`
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const RouteStop = decorate(
   ({stop, onClick = () => {}, onHover = () => {}, isFirst, isLast, color}) => {

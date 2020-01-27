@@ -22,10 +22,7 @@ const EventsList = styled.div`
   color: var(--light-grey);
 `;
 
-const decorate = flow(
-  observer,
-  inject("Time", "Filters", "UI", "Journey")
-);
+const decorate = flow(observer, inject("Time", "Filters", "UI", "Journey"));
 
 const JourneyEvents = decorate(
   ({events = [], originDeparture, date, Filters, UI, Time, Journey, state, color}) => {
@@ -108,12 +105,12 @@ const JourneyEvents = decorate(
       // DEP for origins and timing stops, PDE for everything else.
       if (
         event.type === "PAS" ||
-        ((typeof event.isOrigin !== "undefined" &&
+        (typeof event.isOrigin !== "undefined" &&
           (isOrigin || isTimingStop) &&
           event.type === "DEP") ||
-          (typeof event.isOrigin !== "undefined" &&
-            !(isOrigin || isTimingStop) &&
-            event.type === "PDE"))
+        (typeof event.isOrigin !== "undefined" &&
+          !(isOrigin || isTimingStop) &&
+          event.type === "PDE")
       ) {
         types.push("DEPARTURE");
       }

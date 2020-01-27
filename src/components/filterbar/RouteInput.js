@@ -10,10 +10,7 @@ import {parseLineNumber} from "../../helpers/parseLineNumber";
 import sortBy from "lodash/sortBy";
 import {text} from "../../helpers/text";
 
-const decorate = flow(
-  observer,
-  inject("Filters")
-);
+const decorate = flow(observer, inject("Filters"));
 
 const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
   const route = getFullRoute(routes, suggestion);

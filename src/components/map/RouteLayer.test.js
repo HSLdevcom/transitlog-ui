@@ -21,7 +21,12 @@ describe("RouteLayer", () => {
   afterEach(cleanup);
 
   test("Renders RouteLayer with coordinates", () => {
-    const coordinates = [[0, 0], [4, 0], [4, 4], [0, 4]];
+    const coordinates = [
+      [0, 0],
+      [4, 0],
+      [4, 4],
+      [0, 4],
+    ];
 
     const {getByText} = render({
       coordinates: coordinates,
@@ -31,7 +36,12 @@ describe("RouteLayer", () => {
   });
 
   test("Calls setMapBounds with the bounds containing the route polyline.", () => {
-    const coordinates = [[60.0, 24.0], [60.1, 24.0], [60.1, 24.1], [60.0, 24.1]];
+    const coordinates = [
+      [60.0, 24.0],
+      [60.1, 24.0],
+      [60.1, 24.1],
+      [60.0, 24.1],
+    ];
     const expectBboxString = "24,60,24.1,60";
     const setMapView = jest.fn();
 

@@ -116,10 +116,7 @@ const driverEventsQuery = gql`
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject("Journey", "Time", "UI")
-);
+const decorate = flow(observer, inject("Journey", "Time", "UI"));
 
 const VehicleJourneys = decorate((props) => {
   const {Time, Journey, UI, state} = props;

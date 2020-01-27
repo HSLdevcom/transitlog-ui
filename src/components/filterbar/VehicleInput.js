@@ -86,7 +86,10 @@ export default enhance(({value = "", onSelect, vehicles = []}) => {
     vehicles,
     (queryVal) =>
       isNumeric(queryVal)
-        ? [{name: "vehicleId", weight: 0.45}, {name: "operatorId", weight: 0.65}]
+        ? [
+            {name: "vehicleId", weight: 0.45},
+            {name: "operatorId", weight: 0.65},
+          ]
         : [
             {name: "id", weight: 0.2},
             {name: "operatorName", weight: 0.3},

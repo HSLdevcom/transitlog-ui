@@ -69,12 +69,7 @@ const RouteGroupHeading = styled.h5`
 
 const RouteGroupContainer = styled.div``;
 
-const decorate = flow(
-  observer,
-  withLeaflet,
-  withStop,
-  inject("Filters")
-);
+const decorate = flow(observer, withLeaflet, withStop, inject("Filters"));
 
 export const StopRouteSelect = decorate(
   ({stop, stopLoading, color, Filters, state, leaflet}) => {

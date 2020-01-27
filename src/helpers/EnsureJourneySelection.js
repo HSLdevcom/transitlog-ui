@@ -7,10 +7,7 @@ import {inject} from "./inject";
   A helper component to ensure that the correct vehicle ID is set when a journey is selected.
  */
 
-const decorate = flow(
-  observer,
-  inject("Journey", "Filters")
-);
+const decorate = flow(observer, inject("Journey", "Filters"));
 
 const EnsureJourneySelection = decorate(
   ({Filters, Journey, children, journey, loading}) => {

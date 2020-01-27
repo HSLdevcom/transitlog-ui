@@ -8,10 +8,7 @@ import {divIcon} from "leaflet";
 import Logout from "../../icons/Logout";
 import Checkmark2 from "../../icons/Checkmark2";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const loginIconHTML = ReactDOMServer.renderToStaticMarkup(
   <Checkmark2 width={14} height={14} fill="var(--green)" />

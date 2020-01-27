@@ -26,10 +26,7 @@ const JourneyListHeader = styled.div`
   width: 100%;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Journey", "Filters", "Time")
-);
+const decorate = flow(observer, inject("Journey", "Filters", "Time"));
 
 const RouteDepartures = decorate(({state, Time, Journey}) => {
   const {date, route, selectedJourney} = state;

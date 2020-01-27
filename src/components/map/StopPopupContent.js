@@ -34,10 +34,7 @@ export const StopStreetViewWrapper = styled(StopPopupContentSection)`
   margin-top: 1rem;
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 const StopPopupContent = decorate(({UI, color, stop}) => {
   return (

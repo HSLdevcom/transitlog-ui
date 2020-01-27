@@ -57,10 +57,7 @@ export function getLineChunksByDelay(events) {
     }, []);
 }
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const JourneyLayer = decorate(
   ({name, journey, state, vehiclePositions = journey.vehiclePositions}) => {

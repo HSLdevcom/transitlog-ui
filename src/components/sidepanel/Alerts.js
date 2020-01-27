@@ -10,10 +10,7 @@ import AlertsList from "../AlertsList";
 import CancellationsQuery from "../../queries/CancellationsQuery";
 import CancellationsList from "../CancellationsList";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const Alerts = decorate(({state}) => {
   const searchTime = state.date;

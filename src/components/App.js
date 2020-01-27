@@ -67,11 +67,7 @@ const GraphContainer = styled.div`
   padding: ${({journeyGraphOpen}) => (journeyGraphOpen ? "0.5rem" : "0")};
 `;
 
-const decorate = flow(
-  observer,
-  withRoute,
-  inject("UI")
-);
+const decorate = flow(observer, withRoute, inject("UI"));
 
 function App({route, state, UI}) {
   const {

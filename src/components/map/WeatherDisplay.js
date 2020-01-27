@@ -18,10 +18,7 @@ const TooltipText = styled.div`
   color: var(--blue);
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const WeatherMarker = ({children, location, color}) => (
   <CircleMarker
