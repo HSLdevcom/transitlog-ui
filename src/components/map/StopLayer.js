@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useEffect} from "react";
+import React, {useMemo, useRef, useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
@@ -123,6 +123,7 @@ export const allStopsQuery = gql`
 
 const StopLayer = decorate(({showRadius, state, UI}) => {
   const {date, stop, mapBounds: bounds, mapZoom: zoom, route} = state;
+  const [currentStop, setCurrentStop] = useState(null);
 
   const boundsAreValid =
     !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
@@ -138,6 +139,12 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
     },
     "single stop query"
   );
+
+  useEffect(() => {
+    if (stop && selectedStop && stop === selectedStop.stopId) {
+      setCurrentStop(stop);
+    }
+  }, [stop, selectedStop]);
 
   const {data: stopsData} = useQueryData(
     allStopsQuery,
@@ -157,7 +164,7 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
 
     const position = latLng([selectedStop.lat, selectedStop.lng]);
     UI.setMapView(position);
-  }, [selectedStop]);
+  }, [currentStop]);
 
   if (hideStops && !selectedStop) {
     return null;
