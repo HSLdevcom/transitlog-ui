@@ -134,6 +134,7 @@ function App({route, state, UI}) {
           unsignedEvents,
           currentJourneys,
           routeAndSelected,
+          tlpEvents,
           areaJourneysLoading,
           unsignedEventsLoading,
           routeEventsLoading,
@@ -215,6 +216,7 @@ function App({route, state, UI}) {
                                   journeys={currentJourneys}
                                   journeyPositions={currentJourneyPositions}
                                   unsignedEvents={unsignedEvents}
+                                  tlpEvents={tlpEvents}
                                   route={route}
                                   stop={stop}
                                   routeStops={routeStops}

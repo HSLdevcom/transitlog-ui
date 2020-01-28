@@ -8,6 +8,7 @@ import MergedJourneys from "../MergedJourneys";
 import UnsignedVehicleEvents from "../UnsignedVehicleEvents";
 import {inject} from "../../helpers/inject";
 import RouteJourneys from "../RouteJourneys";
+import TlpEvents from "../TlpEvents";
 
 const decorate = flow(observer, inject("state"));
 
@@ -33,36 +34,44 @@ const MapEvents = decorate(({children, state}) => {
         return (
           <RouteJourneys>
             {({routeJourneys, loading: routeEventsLoading = false}) => (
-              <SelectedJourneyEvents>
-                {({
-                  journey: selectedJourney = null,
-                  loading: selectedJourneyLoading = false,
-                }) => (
-                  <UnsignedVehicleEvents>
-                    {({unsignedEvents = [], loading: unsignedEventsLoading = false}) => (
-                      <MergedJourneys
-                        routeJourneys={routeJourneys}
-                        areaJourneys={areaJourneys}
-                        selectedJourney={selectedJourney}>
-                        {({currentJourneys = [], routeAndSelected = []}) =>
-                          children({
-                            selectedJourney,
-                            routeJourneys,
-                            areaJourneys,
-                            unsignedEvents,
-                            currentJourneys,
-                            routeAndSelected,
-                            areaJourneysLoading,
-                            unsignedEventsLoading,
-                            routeEventsLoading,
-                            selectedJourneyLoading: selectedJourneyLoading,
-                          })
-                        }
-                      </MergedJourneys>
+              <TlpEvents>
+                {({tlpEvents, loading = false}) => (
+                  <SelectedJourneyEvents>
+                    {({
+                      journey: selectedJourney = null,
+                      loading: selectedJourneyLoading = false,
+                    }) => (
+                      <UnsignedVehicleEvents>
+                        {({
+                          unsignedEvents = [],
+                          loading: unsignedEventsLoading = false,
+                        }) => (
+                          <MergedJourneys
+                            routeJourneys={routeJourneys}
+                            areaJourneys={areaJourneys}
+                            selectedJourney={selectedJourney}>
+                            {({currentJourneys = [], routeAndSelected = []}) =>
+                              children({
+                                selectedJourney,
+                                routeJourneys,
+                                areaJourneys,
+                                unsignedEvents,
+                                currentJourneys,
+                                routeAndSelected,
+                                tlpEvents,
+                                areaJourneysLoading,
+                                unsignedEventsLoading,
+                                routeEventsLoading,
+                                selectedJourneyLoading: selectedJourneyLoading,
+                              })
+                            }
+                          </MergedJourneys>
+                        )}
+                      </UnsignedVehicleEvents>
                     )}
-                  </UnsignedVehicleEvents>
+                  </SelectedJourneyEvents>
                 )}
-              </SelectedJourneyEvents>
+              </TlpEvents>
             )}
           </RouteJourneys>
         );

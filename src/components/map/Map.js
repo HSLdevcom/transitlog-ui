@@ -264,6 +264,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         <Pane name="hfp-events-2" style={{zIndex: 485}} />
         <Pane name="hfp-markers" style={{zIndex: 500}} />
         <Pane name="hfp-markers-primary" style={{zIndex: 550}} />
+        <Pane name="tlp-events" style={{zIndex: 570}} />
         <Pane name="popups" style={{zIndex: 600}} />
         <ZoomControl position="topright" />
         <ScaleControl position="bottomleft" imperial={false} />

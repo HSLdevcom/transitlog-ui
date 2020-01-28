@@ -20,6 +20,7 @@ import {WeatherWidget} from "./WeatherWidget";
 import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
 import DriverEventLayer from "./DriverEventLayer";
+import TlpEventsLayer from "./TlpEventsLayer";
 
 const decorate = flow(observer, inject("state"));
 
@@ -33,6 +34,7 @@ const MapContent = decorate(
     stop,
     centerOnRoute = true,
     routeStops = [],
+    tlpEvents = [],
     state: {
       selectedJourney,
       date,
@@ -173,6 +175,7 @@ const MapContent = decorate(
               );
             })}
         <DriverEventLayer />
+        <TlpEventsLayer tlpEvents={tlpEvents} />
         {mapOverlays.includes("Weather") && (
           <WeatherDisplay key="weather_map" position={mapView} />
         )}
