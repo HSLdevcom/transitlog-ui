@@ -4,7 +4,6 @@ import get from "lodash/get";
 import flow from "lodash/flow";
 import groupBy from "lodash/groupBy";
 import styled, {css} from "styled-components";
-import {withStop} from "../../hoc/withStop";
 import {inject} from "../../helpers/inject";
 import TimingStop from "../../icons/TimingStop";
 import {getModeColor} from "../../helpers/vehicleColor";
