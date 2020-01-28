@@ -173,7 +173,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
           }
         }
       },
-      {name: "map view reaction", fireImmediately: true}
+      {name: "map view reaction"}
     );
   }, [leafletMap]);
 

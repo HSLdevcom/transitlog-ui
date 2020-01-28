@@ -10,7 +10,6 @@ import {
 import {observable, action} from "mobx";
 import {MobxProviders} from "../util/MobxProviders";
 import {MockedProvider} from "@apollo/react-testing";
-import {allStopsQuery} from "../../queries/AllStopsQuery";
 import mockStopResponse from "../stop_options_response.json";
 import mockStopDeparturesResponse from "../stop_departures_response.json";
 import mockSingleStopResponse from "../single_stop_response.json";
@@ -19,7 +18,7 @@ import get from "lodash/get";
 import SidePanel from "../../components/sidepanel/SidePanel";
 import {text} from "../../helpers/text";
 import {departuresQuery} from "../../queries/DeparturesQuery";
-import {singleStopQuery} from "../../queries/SingleStopQuery";
+import {allStopsQuery, singleStopQuery} from "../../components/map/StopLayer";
 
 const date = "2019-05-27";
 

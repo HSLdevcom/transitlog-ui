@@ -1,12 +1,10 @@
-import React, {useMemo, useEffect} from "react";
+import React, {useMemo} from "react";
 import FilterBar from "./filterbar/FilterBar";
-import {Observer, observer} from "mobx-react-lite";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import SidePanel from "./sidepanel/SidePanel";
 import JourneyPosition from "./JourneyPosition";
 import MapContent from "./map/MapContent";
-import {latLng} from "leaflet";
-import SingleStopQuery from "../queries/SingleStopQuery";
 import ErrorMessages from "./ErrorMessages";
 import SharingModal from "./SharingModal";
 import getJourneyId from "../helpers/getJourneyId";
@@ -72,7 +70,6 @@ const decorate = flow(observer, withRoute, inject("UI"));
 function App({route, state, UI}) {
   const {
     date,
-    stop: selectedStopId,
     selectedJourney,
     live,
     journeyGraphOpen,
@@ -132,20 +129,15 @@ function App({route, state, UI}) {
                           detailsOpen={detailsAreOpen}
                         />
                         <Map detailsOpen={detailsAreOpen}>
-                          <SingleStopQuery date={date} stopId={selectedStopId}>
-                            {({stop}) => (
-                              <MapContent
-                                centerOnRoute={areaJourneys.length === 0}
-                                routeJourneys={routeJourneys}
-                                journeys={currentJourneys}
-                                journeyPositions={currentJourneyPositions}
-                                unsignedEvents={unsignedEvents}
-                                route={route}
-                                stop={stop}
-                                routeStops={routeStops}
-                              />
-                            )}
-                          </SingleStopQuery>
+                          <MapContent
+                            centerOnRoute={areaJourneys.length === 0}
+                            routeJourneys={routeJourneys}
+                            journeys={currentJourneys}
+                            journeyPositions={currentJourneyPositions}
+                            unsignedEvents={unsignedEvents}
+                            route={route}
+                            routeStops={routeStops}
+                          />
                           {selectedJourney && (
                             <GraphContainer
                               data-testid="journey-graph-container"
