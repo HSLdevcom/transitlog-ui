@@ -1,7 +1,6 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import StopLayer from "./StopLayer";
-import RouteGeometryQuery from "../../queries/RouteGeometryQuery";
 import RouteLayer from "./RouteLayer";
 import flow from "lodash/flow";
 import getJourneyId from "../../helpers/getJourneyId";
@@ -12,7 +11,6 @@ import AreaSelect from "./AreaSelect";
 import {expr} from "mobx-utils";
 import {areaEventsStyles} from "../../stores/UIStore";
 import SimpleHfpLayer from "./SimpleHfpLayer";
-import {createRouteId} from "../../helpers/keys";
 import {inject} from "../../helpers/inject";
 import WeatherDisplay from "./WeatherDisplay";
 import JourneyStopsLayer from "./JourneyStopsLayer";
@@ -30,7 +28,6 @@ const MapContent = decorate(
     journeyPositions,
     unsignedEvents,
     route,
-    stop,
     centerOnRoute = true,
     routeStops = [],
     state: {
@@ -51,30 +48,10 @@ const MapContent = decorate(
     return (
       <>
         <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
-        {!selectedJourney && (
-          <StopLayer showRadius={showStopRadius} date={date} selectedStop={stop} />
-        )}
+        {!selectedJourney && <StopLayer showRadius={showStopRadius} date={date} />}
         {hasRoute && (
           <>
-            <RouteGeometryQuery
-              key={`route_query_${createRouteId(route, true)}`}
-              route={route}
-              date={date}>
-              {({routeGeometry = null}) =>
-                routeGeometry && routeGeometry.coordinates.length !== 0 ? (
-                  <RouteLayer
-                    routeId={
-                      routeGeometry.coordinates.length !== 0 ? createRouteId(route) : null
-                    }
-                    mode={routeGeometry.mode || "BUS"}
-                    coordinates={routeGeometry.coordinates}
-                    canCenterOnRoute={centerOnRoute}
-                    key={`route_line_${createRouteId(route, true)}`}
-                  />
-                ) : null
-              }
-            </RouteGeometryQuery>
-
+            <RouteLayer canCenterOnRoute={centerOnRoute} />
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (

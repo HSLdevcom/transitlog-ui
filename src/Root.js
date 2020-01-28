@@ -1,5 +1,4 @@
 import React, {useMemo} from "react";
-import {hot} from "react-hot-loader/root";
 import App from "./components/App";
 import {getClient} from "./api";
 import {ApolloProvider} from "@apollo/react-common";
@@ -32,4 +31,4 @@ const Root = decorate(({UI}) => {
   );
 });
 
-export default hot(Root);
+export default Root;
