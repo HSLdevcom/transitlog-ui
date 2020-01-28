@@ -37,6 +37,12 @@ export default (state, initialState = {}) => {
       minHour: {current: "", pending: ""},
       maxHour: {current: "", pending: ""},
     },
+    tlp: {
+      all: null,
+      junctionId: 26,
+      signalGroupId: null,
+      signalGroupNbr: null,
+    },
   };
 
   const actions = filterActions(state);
