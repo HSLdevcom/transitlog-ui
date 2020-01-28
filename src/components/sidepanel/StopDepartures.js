@@ -12,7 +12,6 @@ import StopDepartureItem from "./StopDepartureItem";
 import {getDepartureByTime} from "../../helpers/getDepartureByTime";
 import getJourneyId from "../../helpers/getJourneyId";
 import DeparturesQuery from "../../queries/DeparturesQuery";
-import {withStop} from "../../hoc/withStop";
 import {createCompositeJourney} from "../../stores/journeyActions";
 import {inject} from "../../helpers/inject";
 import {intval} from "../../helpers/isWithinRange";
@@ -77,7 +76,7 @@ const renderTimetableRow = ({
   </div>
 );
 
-const decorate = flow(observer, withStop, inject("Filters", "Journey", "Time"));
+const decorate = flow(observer, inject("Filters", "Journey", "Time"));
 
 const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
   const {date, selectedJourney, stop: stopId, timetableFilters} = state;
