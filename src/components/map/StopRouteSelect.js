@@ -99,7 +99,7 @@ export const StopRouteSelect = decorate(
     }, [stop]);
 
     useEffect(() => {
-      if (stopLoading) {
+      if (stopLoading || !state.objectCenteringAllowed) {
         return;
       }
 

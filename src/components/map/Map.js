@@ -153,7 +153,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     return reaction(
       () => state.mapView,
       (currentView) => {
-        if (leafletMap) {
+        if (leafletMap && state.objectCenteringAllowed) {
           if (
             currentView instanceof LatLngBounds &&
             validBounds(currentView) &&
