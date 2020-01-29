@@ -206,6 +206,10 @@ export default (state) => {
     state.currentMapillaryMapLocation = location;
   });
 
+  const allowObjectCentering = action((setTo = true) => {
+    state.objectCenteringAllowed = setTo;
+  });
+
   return {
     toggleSidePanel,
     toggleJourneyDetails,
@@ -229,5 +233,6 @@ export default (state) => {
     setMapView,
     setMapBounds,
     setMapDriverEvent,
+    allowObjectCentering,
   };
 };

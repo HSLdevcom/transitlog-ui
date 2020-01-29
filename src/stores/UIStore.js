@@ -1,4 +1,4 @@
-import {extendObservable, observable, reaction, set} from "mobx";
+import {extendObservable, observable, reaction, set, runInAction} from "mobx";
 import {getUrlValue, onHistoryChange} from "./UrlManager";
 import uiActions from "./uiActions";
 import get from "lodash/get";
@@ -71,6 +71,7 @@ export default (state) => {
       mapZoom: intval(urlZoom) || 13,
       mapBounds: null,
       mapDriverEvent: null,
+      objectCenteringAllowed: !urlCenter,
     },
     {
       selectedBounds: observable.ref,
@@ -106,6 +107,10 @@ export default (state) => {
       ),
     });
   });
+
+  setTimeout(() => {
+    actions.allowObjectCentering(true);
+  }, 10000);
 
   return actions;
 };

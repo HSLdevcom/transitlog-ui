@@ -18,6 +18,10 @@ const timeActions = (state) => {
   const setSeconds = (setValue = 0) => {
     const {hours, minutes, seconds} = secondsToTimeObject(setValue);
     setTime(`${doubleDigit(hours)}:${doubleDigit(minutes)}:${doubleDigit(seconds)}`);
+
+    if (!state.objectCenteringAllowed && state.selectedJourney) {
+      state.objectCenteringAllowed = true;
+    }
   };
 
   const setTimeIncrement = action("Set time increment", (timeIncrementValue = 0) => {
