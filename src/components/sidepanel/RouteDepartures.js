@@ -26,9 +26,9 @@ const JourneyListHeader = styled.div`
   width: 100%;
 `;
 
-const decorate = flow(observer, inject("Journey", "Filters", "Time"));
+const decorate = flow(observer, inject("Journey", "Filters", "Time", "UI"));
 
-const RouteDepartures = decorate(({state, Time, Journey}) => {
+const RouteDepartures = decorate(({state, Time, Journey, UI}) => {
   const {date, route, selectedJourney} = state;
   const selectedJourneyId = getJourneyId(selectedJourney);
 
@@ -38,6 +38,8 @@ const RouteDepartures = decorate(({state, Time, Journey}) => {
     if (journey) {
       const journeyId = getJourneyId(journey, matchVehicle);
       const selectedJourneyId = getJourneyId(state.selectedJourney, matchVehicle);
+
+      UI.allowObjectCentering(true);
 
       // Only set these if the journey is truthy and was not already selected
       if (journeyId && selectedJourneyId !== journeyId) {

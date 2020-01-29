@@ -22,6 +22,7 @@ const filterActions = (state) => {
   const setStop = action("Set stop", (stop = "") => {
     // Either get the stopId prop or treat the stop arg as the stopId.
     state.stop = get(stop, "stopId", stop);
+    state.objectCenteringAllowed = true;
     setUrlValue("stop", state.stop);
   });
 

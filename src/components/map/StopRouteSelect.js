@@ -4,13 +4,14 @@ import get from "lodash/get";
 import flow from "lodash/flow";
 import groupBy from "lodash/groupBy";
 import styled, {css} from "styled-components";
-import {withStop} from "../../hoc/withStop";
 import {inject} from "../../helpers/inject";
 import TimingStop from "../../icons/TimingStop";
 import {getModeColor} from "../../helpers/vehicleColor";
 import {text} from "../../helpers/text";
 import {Button} from "../Forms";
 import {withLeaflet} from "react-leaflet";
+import {useQueryData} from "../../hooks/useQueryData";
+import {singleStopQuery} from "./StopLayer";
 
 const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
   text-decoration: none;
@@ -69,10 +70,22 @@ const RouteGroupHeading = styled.h5`
 
 const RouteGroupContainer = styled.div``;
 
-const decorate = flow(observer, withLeaflet, withStop, inject("Filters"));
+const decorate = flow(observer, withLeaflet, inject("Filters"));
 
 export const StopRouteSelect = decorate(
-  ({stop, stopLoading, color, Filters, state, leaflet}) => {
+  ({stopId, stopLoading, color, Filters, state, leaflet}) => {
+    const {data: stop} = useQueryData(
+      singleStopQuery,
+      {
+        skip: !stopId,
+        variables: {
+          stopId,
+          date: state.date,
+        },
+      },
+      "single stop query"
+    );
+
     const onSelectRoute = useCallback(
       (route) => () => route && Filters.setRoute(route),
       []
@@ -86,7 +99,7 @@ export const StopRouteSelect = decorate(
     }, [stop]);
 
     useEffect(() => {
-      if (stopLoading) {
+      if (stopLoading || !state.objectCenteringAllowed) {
         return;
       }
 

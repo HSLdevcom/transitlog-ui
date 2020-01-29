@@ -1,13 +1,15 @@
-import React, {useMemo, useRef} from "react";
+import React, {useMemo, useRef, useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
 import CompoundStopMarker from "./CompoundStopMarker";
 import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
-import AllStopsQuery from "../../queries/AllStopsQuery";
+import {useQueryData} from "../../hooks/useQueryData";
+import gql from "graphql-tag";
+import {StopFieldsFragment} from "../../queries/StopFieldsFragment";
 
-const decorate = flow(observer, inject("Filters"));
+const decorate = flow(observer, inject("Filters", "UI"));
 
 const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
   const {stop: selectedStopId, highlightedStop} = state;
@@ -95,47 +97,98 @@ const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
   );
 });
 
-const StopLayer = decorate(({showRadius, state, selectedStop}) => {
-  const {date, mapBounds: bounds, mapZoom: zoom, route} = state;
+export const singleStopQuery = gql`
+  query singleStopQuery($stopId: String!, $date: Date!) {
+    stop(date: $date, stopId: $stopId) {
+      ...StopFieldsFragment
+    }
+  }
+  ${StopFieldsFragment}
+`;
+
+export const allStopsQuery = gql`
+  query allStopsQuery($date: Date, $search: String) {
+    stops(date: $date, filter: {search: $search}) {
+      id
+      stopId
+      shortId
+      lat
+      lng
+      name
+      radius
+      modes
+    }
+  }
+`;
+
+const StopLayer = decorate(({showRadius, state, UI}) => {
+  const {date, stop, mapBounds: bounds, mapZoom: zoom, route} = state;
+  const [currentStop, setCurrentStop] = useState(null);
 
   const boundsAreValid =
     !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
 
+  const {data: selectedStop} = useQueryData(
+    singleStopQuery,
+    {
+      skip: !stop,
+      variables: {
+        stopId: stop,
+        date,
+      },
+    },
+    "single stop query"
+  );
+
+  useEffect(() => {
+    if (stop && selectedStop && stop === selectedStop.stopId) {
+      setCurrentStop(stop);
+    }
+  }, [stop, selectedStop]);
+
+  const {data: stopsData} = useQueryData(
+    allStopsQuery,
+    {variables: {date}},
+    "all stops query"
+  );
+
+  const stops = stopsData || [];
+
+  const hideStops =
+    zoom < 14 || stops.length === 0 || !boundsAreValid || (!!route && !!route.routeId);
+
+  useEffect(() => {
+    if (!selectedStop) {
+      return;
+    }
+
+    const position = latLng([selectedStop.lat, selectedStop.lng]);
+    UI.setMapView(position);
+  }, [currentStop]);
+
+  if (hideStops && !selectedStop) {
+    return null;
+  }
+
+  if (hideStops && selectedStop) {
+    return (
+      <StopMarker
+        selected={true}
+        showRadius={showRadius}
+        stop={selectedStop}
+        date={date}
+      />
+    );
+  }
+
+  const stopsInArea = stops.filter(({lat, lng}) => bounds.contains([lat, lng]));
+
   return (
-    <AllStopsQuery date={date}>
-      {({stops = []}) => {
-        const hideStops =
-          zoom < 14 ||
-          stops.length === 0 ||
-          !boundsAreValid ||
-          (!!route && !!route.routeId);
-
-        if (hideStops && !selectedStop) {
-          return null;
-        }
-
-        if (hideStops && selectedStop) {
-          return (
-            <StopMarker
-              selected={true}
-              showRadius={showRadius}
-              stop={selectedStop}
-              date={date}
-            />
-          );
-        }
-
-        const stopsInArea = stops.filter(({lat, lng}) => bounds.contains([lat, lng]));
-
-        return (
-          <StopLayerContent
-            key="stop layer content"
-            stops={stopsInArea}
-            showRadius={showRadius}
-          />
-        );
-      }}
-    </AllStopsQuery>
+    <StopLayerContent
+      key="stop layer content"
+      stops={stopsInArea}
+      showRadius={showRadius}
+    />
   );
 });
 

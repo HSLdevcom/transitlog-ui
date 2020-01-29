@@ -98,14 +98,18 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   });
 
   // Sync map state with the app state. This runs when the map center changes.
-  // If view setting is not allowed, only the bounds and url state will change.
-  const setMapState = useCallback(({target}) => {
+  // The Leaflet map is like a controlled component, and this is the onChange handler.
+  // When Leaflet reports a view change, this will feed the view state back into the
+  // Map through the app state, giving other parts of the app a chance to react.
+  const setMapViewState = useCallback(({target}) => {
     const center = target.getCenter();
     const nextBounds = target.getBounds();
 
+    // Set the center of the map. Will be reacted to and applied to the Leaflet map.
     setMapView(center);
-
+    // Set the current map view bounds in the state. Will be used for other app functions.
     setMapBounds(nextBounds);
+    // Set the map state in the URL
     debouncedSetUrlValue("mapView", `${center.lat},${center.lng}`);
   }, []);
 
@@ -149,7 +153,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     return reaction(
       () => state.mapView,
       (currentView) => {
-        if (leafletMap) {
+        if (leafletMap && state.objectCenteringAllowed) {
           if (
             currentView instanceof LatLngBounds &&
             validBounds(currentView) &&
@@ -169,7 +173,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
           }
         }
       },
-      {name: "map view reaction", fireImmediately: true}
+      {name: "map view reaction"}
     );
   }, [leafletMap]);
 
@@ -186,7 +190,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         onOverlayadd={changeOverlay("add")}
         onOverlayremove={changeOverlay("remove")}
         onZoomend={setMapZoomState}
-        onMoveend={setMapState}>
+        onMoveend={setMapViewState}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer
             name="Digitransit"
