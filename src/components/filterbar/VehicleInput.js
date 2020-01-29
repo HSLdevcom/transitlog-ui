@@ -69,7 +69,7 @@ const getVehicleGroups = (vehicles = [], sortByMatchScore = false) => {
       ),
       (vehicles, groupLabel) => ({
         operator: groupLabel,
-        vehicles: orderBy(vehicles, "vehicleId", sortDirection).slice(0, 50),
+        vehicles: orderBy(vehicles, "vehicleId", sortDirection),
       })
     ),
     ({operator}) => /\(([^)]+)\)/.exec(operator),
@@ -94,8 +94,6 @@ export default enhance(({value = "", onSelect, vehicles = []}) => {
             {name: "id", weight: 0.2},
             {name: "operatorName", weight: 0.3},
             {name: "registryNr", weight: 0.3},
-            {name: "exteriorColor", weight: 0.1},
-            {name: "emissionDesc", weight: 0.1},
           ],
     {threshold: 0.2}
   );
