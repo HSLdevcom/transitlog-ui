@@ -1,4 +1,4 @@
-import {extendObservable, observable, reaction, set, runInAction} from "mobx";
+import {extendObservable, observable, reaction, set} from "mobx";
 import {getUrlValue, onHistoryChange} from "./UrlManager";
 import uiActions from "./uiActions";
 import get from "lodash/get";
