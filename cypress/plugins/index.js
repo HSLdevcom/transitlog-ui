@@ -32,7 +32,7 @@ async function readEnvVars() {
   const envPaths = [path.resolve(appRoot, ".testsecret")];
   const envObjects = [];
 
-  // Read env config
+  // Read env vars from file
   for (const envPath of envPaths) {
     const pathExists = await fs.exists(envPath);
 
@@ -46,14 +46,24 @@ async function readEnvVars() {
   }
 
   const combinedFiles = _.merge({}, ...envObjects);
-
+  // Only include env vars that start with CYPRESS_
   const CYPRESS_PREFIX = /^CYPRESS_/i;
 
   // Add CYPRESS-prefixed vars to the config.
   Object.entries(combinedFiles).forEach(([key, value]) => {
-    const cypressKey = key.replace(CYPRESS_PREFIX, "");
-    config[cypressKey] = value;
+    if (key.match(CYPRESS_PREFIX)) {
+      const cypressKey = key.replace(CYPRESS_PREFIX, "");
+      config[cypressKey] = value;
+    }
   });
+
+  // Add CYPRESS-prefixed vars from the environment to the config.
+  for (const [envName, envValue] of Object.entries(process.env)) {
+    if (envName.match(CYPRESS_PREFIX)) {
+      const cypressKey = envName.replace(CYPRESS_PREFIX, "");
+      config[cypressKey] = envValue;
+    }
+  }
 
   return config;
 }
