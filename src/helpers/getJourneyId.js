@@ -54,21 +54,20 @@ const getJourneyIdFromJourney = (journey = {}, matchVehicle = true) => {
 
 export default getJourneyId;
 
-export function createDepartureJourneyId(departure, departureTime) {
-  const originDepartureTime = get(
-    departure,
-    "originDepartureTime",
-    get(departure, "plannedDepartureTime", null)
-  );
+export function createDepartureJourneyId(departure) {
+  const plannedDepartureTime = get(departure, "plannedDepartureTime", null);
+  const originDepartureTime = get(departure, "originDepartureTime", null);
 
-  if (!originDepartureTime) {
+  const useDepartureTime = originDepartureTime || plannedDepartureTime;
+
+  if (!useDepartureTime) {
     return "";
   }
 
   const compositeJourney = createCompositeJourney(
-    originDepartureTime.departureDate,
+    useDepartureTime.departureDate,
     departure,
-    departureTime ? departureTime : originDepartureTime.departureTime
+    useDepartureTime ? useDepartureTime : useDepartureTime.departureTime
   );
 
   return getJourneyId(compositeJourney, false);
