@@ -81,7 +81,7 @@ const TableCell = styled.div`
   border-right: 1px solid var(--lightest-grey);
   font-size: 0.75rem;
   font-weight: ${({strong = false}) => (strong ? "bold" : "normal")};
-  background: ${({backgroundColor = "transparent", highlight = false}) =>
+  background-color: ${({backgroundColor = "transparent", highlight = false}) =>
     (!backgroundColor || backgroundColor === "transparent") && highlight
       ? "#f6fcff"
       : backgroundColor};
