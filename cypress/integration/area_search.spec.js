@@ -14,15 +14,15 @@ describe("Area search", () => {
     const drawStart = {x: 834, y: 712};
     const drawEnd = {x: 844, y: 722};
 
-    cy.getTestElement("time-input").type("8:00");
+    cy.getTestElement("time-input").type("08:00");
     cy.getTestElement("date-day-decrease").click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.get(".leaflet-draw-draw-rectangle").click();
 
     drawRectangle(drawStart, drawEnd);
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
@@ -36,9 +36,9 @@ describe("Area search", () => {
 
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
-      `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
+      `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=09%3A00%3A00&date=${yesterday}`
     );
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
@@ -52,16 +52,16 @@ describe("Area search", () => {
 
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
-      `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=08%3A00%3A00&date=${yesterday}`
+      `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=09%3A00%3A00&date=${yesterday}`
     );
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
     cy.getTestElement("area-journey-item-journey")
       .first()
       .click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("sidebar-tab-journeys").should("exist");

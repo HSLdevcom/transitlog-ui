@@ -8,8 +8,6 @@ describe("App opening smoke tests", () => {
   });
 
   it("Opens the app", () => {
-    cy.waitUntilLoadingFinishes();
-
     cy.get("@consoleError", {timeout: 1}).should((errorLog) =>
       expect(errorLog).to.have.callCount(0)
     );
@@ -78,7 +76,7 @@ describe("App opening smoke tests", () => {
 
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("reset-button").click();
