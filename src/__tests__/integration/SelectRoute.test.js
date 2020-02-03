@@ -7,9 +7,10 @@ import {
   fireEvent,
   getByText as getByTextUtil,
 } from "@testing-library/react";
-import RouteDepartures from "../../components/sidepanel/RouteDepartures";
+import RouteDepartures, {
+  routeJourneysQuery,
+} from "../../components/sidepanel/RouteDepartures";
 import {MockedProvider} from "@apollo/react-testing";
-import {routeJourneysQuery} from "../../queries/RouteDeparturesQuery";
 import mockJourneysResponse from "../route_journeys_response";
 import mockRouteOptionsResponse from "../route_options_response";
 import {MobxProviders} from "../util/MobxProviders";

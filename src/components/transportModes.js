@@ -12,6 +12,7 @@ export const transportIcons = {
   TRAM: TramIcon,
   RAIL: RailIcon,
   SUBWAY: SubwayIcon,
+  METRO: SubwayIcon,
   FERRY: FerryIcon,
 };
 
@@ -21,6 +22,7 @@ export const transportColor = {
   TRAM: "var(--green)",
   RAIL: "var(--purple)",
   SUBWAY: "var(--orange)",
+  METRO: "var(--orange)",
   FERRY: "var(--light-blue)",
 };
 
@@ -29,9 +31,9 @@ export const TransportIcon = ({className, mode = "", width = 16, height = 16}) =
     return null;
   }
 
-  return React.createElement(get(transportIcons, mode), {
+  return React.createElement(get(transportIcons, mode.toUpperCase()), {
     className,
-    fill: get(transportColor, mode, "var(--light-grey)"),
+    fill: get(transportColor, mode.toUpperCase(), "var(--light-grey)"),
     width,
     height,
   });

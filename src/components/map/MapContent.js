@@ -18,6 +18,7 @@ import {WeatherWidget} from "./WeatherWidget";
 import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
 import DriverEventLayer from "./DriverEventLayer";
+import RouteEventsLayer from "./RouteEventsLayer";
 
 const decorate = flow(observer, inject("state"));
 
@@ -95,25 +96,9 @@ const MapContent = decorate(
                   ) : null,
                 ];
               })}
-            {routeJourneys.length !== 0 &&
-              routeJourneys
-                .filter(({id}) => id !== selectedJourneyId)
-                .map((journey) => {
-                  const event = journeyPositions.get(journey.id);
-
-                  if (!event) {
-                    return null;
-                  }
-
-                  return (
-                    <HfpMarkerLayer
-                      key={`hfp_markers_${journey.id}`}
-                      currentEvent={event}
-                      journey={journey}
-                      isSelectedJourney={false}
-                    />
-                  );
-                })}
+            <RouteEventsLayer
+              key={`route_hfp_markers_${route.routeId}_${route.direction}`}
+            />
           </>
         )}
         {!selectedJourney && unsignedEvents && unsignedEvents.length !== 0 && (

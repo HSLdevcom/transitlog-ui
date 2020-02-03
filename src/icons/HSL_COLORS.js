@@ -42,9 +42,11 @@ export const Colors = {
   // If you need to, add some custom colors of your own to theme instead
   transport: {
     bus: "#0079c9",
+    trunk: "#0079c9",
     rail: "#8b4799",
     tram: "#00985f",
     subway: "#ff621a",
+    metro: "#ff621a",
     ferry: "#01b9e4",
     bike: "#fbb800",
   },

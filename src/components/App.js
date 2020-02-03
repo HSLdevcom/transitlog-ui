@@ -95,20 +95,17 @@ function App({route, state, UI}) {
       <MapEvents>
         {({
           selectedJourney,
-          routeJourneys,
           areaJourneys,
           unsignedEvents,
           currentJourneys,
           routeAndSelected,
           areaJourneysLoading,
           unsignedEventsLoading,
-          routeEventsLoading,
           selectedJourneyLoading,
         }) => (
           <AppGrid>
             <ServerMessage />
             <FilterBar
-              routeEventsLoading={routeEventsLoading}
               unsignedEventsLoading={unsignedEventsLoading}
               journeys={currentJourneys}
             />
@@ -131,7 +128,6 @@ function App({route, state, UI}) {
                         <Map detailsOpen={detailsAreOpen}>
                           <MapContent
                             centerOnRoute={areaJourneys.length === 0}
-                            routeJourneys={routeJourneys}
                             journeys={currentJourneys}
                             journeyPositions={currentJourneyPositions}
                             unsignedEvents={unsignedEvents}
