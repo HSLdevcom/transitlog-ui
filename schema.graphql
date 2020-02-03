@@ -96,6 +96,23 @@ type DepartureJourney {
   uniqueVehicleId: VehicleId
 }
 
+type DriverEvent {
+  eventType: String!
+  id: ID!
+  journeyType: String!
+  lat: Float
+  lng: Float
+  loc: String
+  mode: String
+  operatorId: String
+  receivedAt: DateTime
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  uniqueVehicleId: VehicleId
+  vehicleId: String
+}
+
 type Equipment {
   _matchScore: Float
   age: Int
@@ -152,6 +169,7 @@ type Journey {
 }
 
 type JourneyCancellationEvent {
+  _sort: Int
   cancellationEffect: CancellationEffect!
   cancellationType: CancellationType!
   category: AlertCategory!
@@ -170,9 +188,11 @@ type JourneyCancellationEvent {
 
 type JourneyEvent {
   _isVirtual: Boolean
+  _sort: Int
   id: ID!
   lat: Float
   lng: Float
+  loc: String
   receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
@@ -183,15 +203,17 @@ type JourneyEvent {
 
 type JourneyStopEvent {
   _isVirtual: Boolean
+  _sort: Int
   departureId: Int
   doorsOpened: Boolean
   id: ID!
-  index: Int
+  index: Int!
   isNextDay: Boolean
   isOrigin: Boolean
   isTimingStop: Boolean!
   lat: Float
   lng: Float
+  loc: String
   nextStopId: String!
   plannedDate: Date
   plannedDateTime: DateTime
@@ -215,6 +237,7 @@ type ObservedArrival {
   arrivalTime: Time!
   arrivalTimeDifference: Int!
   id: ID!
+  loc: String
 }
 
 type ObservedDeparture {
@@ -223,6 +246,7 @@ type ObservedDeparture {
   departureTime: Time!
   departureTimeDifference: Int!
   id: ID!
+  loc: String
 }
 
 type PlannedArrival {
@@ -242,9 +266,10 @@ type PlannedDeparture {
 }
 
 type PlannedStopEvent {
+  _sort: Int
   departureId: Int
   id: ID!
-  index: Int
+  index: Int!
   isNextDay: Boolean
   isOrigin: Boolean
   isTimingStop: Boolean!
@@ -261,6 +286,7 @@ type Query {
   alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
   departures(date: Date!, filter: DepartureFilterInput, stopId: String!): [Departure]!
+  driverEvents(date: Date!, uniqueVehicleId: VehicleId!): [DriverEvent]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
   exceptionDays(year: String!): [ExceptionDay]!
   journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey
@@ -346,10 +372,13 @@ type Stop implements Position {
 }
 
 type StopRoute {
+  destination: String
   direction: Direction!
   id: ID!
   isTimingStop: Boolean!
   mode: String
+  name: String
+  origin: String
   originStopId: String
   routeId: String!
 }
@@ -369,6 +398,7 @@ type VehicleJourney {
   id: ID!
   isCancelled: Boolean!
   journeyType: String!
+  loc: String
   mode: String
   operatorId: String
   recordedAt: DateTime!
@@ -381,6 +411,7 @@ type VehicleJourney {
 }
 
 type VehiclePosition implements Position {
+  _sort: Int
   delay: Int
   doorStatus: Boolean
   heading: Int
@@ -388,6 +419,7 @@ type VehiclePosition implements Position {
   journeyType: String!
   lat: Float
   lng: Float
+  loc: String
   mode: String
   nextStopId: String
   operatorId: String

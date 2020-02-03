@@ -6,6 +6,7 @@ import {TIMEZONE} from "../../constants";
 import BusStop from "../../icons/BusStop";
 import styled from "styled-components";
 import flow from "lodash/flow";
+import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import Time2 from "../../icons/Time2";
 import Bus from "../../icons/Bus";
@@ -14,6 +15,8 @@ import RealTime2 from "../../icons/RealTime2";
 import BusLine from "../../icons/BusLine";
 import Timetable from "../../icons/Timetable";
 import ArrowRight from "../../icons/ArrowRight";
+import {text} from "../../helpers/text";
+import LocationMarker from "../../icons/LocationMarker";
 
 const TooltipWrapper = styled.div``;
 
@@ -35,10 +38,7 @@ const TooltipDataRow = styled.div`
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const HfpTooltip = decorate(
   ({
@@ -119,6 +119,10 @@ const HfpTooltip = decorate(
               sek.
             </TooltipDataRow>
           )}
+          <TooltipDataRow>
+            <LocationMarker fill="var(--blue)" width="1rem" height="1rem" />{" "}
+            {get(usingEvent, "loc", text("general.unknown"))}
+          </TooltipDataRow>
         </TooltipWrapper>
       </Tooltip>
     );

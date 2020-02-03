@@ -178,10 +178,7 @@ const AlertTimeDisplay = observer(({alert}) => {
   );
 });
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const AlertItem = decorate(({alert, state}) => {
   const {Icon, color} = getAlertStyle(alert);

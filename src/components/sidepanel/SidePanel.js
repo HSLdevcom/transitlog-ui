@@ -109,10 +109,7 @@ const JourneyPanelWrapper = styled.div`
   border-right: 1px solid var(--alt-grey);
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 const SidePanel = decorate((props) => {
   const {

@@ -1,22 +1,5 @@
 import styled from "styled-components";
-
-export const TagButton = styled.button`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  justify-content: space-between;
-  border-radius: 4px;
-  border: 1px solid ${({selected}) => (selected ? "var(--blue)" : "var(--lighter-grey)")};
-  background: #fefefe;
-  outline: 0;
-  width: 100%;
-  max-width: 100%;
-  font-family: var(--font-family);
-  font-size: 1rem;
-  padding: 0;
-  cursor: pointer;
-`;
+import {LocBadge} from "./commonComponents";
 
 export const ColoredSlot = styled.span`
   padding: 3px 3px 3px 5px;
@@ -53,6 +36,8 @@ export const ColoredBackgroundSlot = styled.span`
   color: ${({color}) => color};
   transform: translate(1px, -2px);
   margin-bottom: -4px;
+  margin-left: auto;
+  margin-right: auto;
   min-width: 5rem;
 
   &:empty {
@@ -61,7 +46,7 @@ export const ColoredBackgroundSlot = styled.span`
 `;
 
 export const PlainSlot = styled.span`
-  padding: 3px 5px;
+  padding: 3px 5px 3px 2px;
   border-left: 1px solid var(--lighter-grey);
   min-width: 6rem;
   font-weight: normal;
@@ -71,16 +56,46 @@ export const PlainSlot = styled.span`
   justify-content: left;
   font-size: 0.875rem;
   hyphens: auto;
+  margin-right: auto;
+
+  &:first-child {
+    border-left: 0;
+  }
 `;
 
-export const PlainSlotSmall = styled.span`
+export const PlainSlotMono = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-left: 0;
   font-weight: normal;
   min-width: 6rem;
-  padding: 3px 8px;
+  padding: 3px 5px;
   font-size: 0.875rem;
+  margin-left: auto;
   font-family: "Courier New", Courier, monospace;
+`;
+
+export const TagButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: flex-end;
+  border-radius: 4px;
+  border: 1px solid ${({selected}) => (selected ? "var(--blue)" : "var(--lighter-grey)")};
+  background: #fefefe;
+  outline: 0;
+  width: 100%;
+  max-width: 100%;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  padding: 0;
+  cursor: pointer;
+  
+  /* Apply styles on LocBadge only when inside a TagButton. */
+  ${ColoredBackgroundSlot} + ${LocBadge} {
+    margin-left: 5px;
+    margin-right: -7px;
+  }
 `;

@@ -16,6 +16,9 @@ export const StopFieldsFragment = gql`
       isTimingStop
       originStopId
       routeId
+      destination
+      origin
+      name
       mode
     }
   }

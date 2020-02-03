@@ -25,8 +25,6 @@ import {text, Text} from "../../helpers/text";
 import {TransportIcon} from "../transportModes";
 import SomethingWrong from "../../icons/SomethingWrong";
 import Cross from "../../icons/Cross";
-import AlertIcons from "../AlertIcons";
-import {getAlertsInEffect} from "../../helpers/getAlertsInEffect";
 import {cancelledStyle} from "../commonComponents";
 import CrossThick from "../../icons/CrossThick";
 import Timetable from "../../icons/Timetable";
@@ -83,7 +81,7 @@ const TableCell = styled.div`
   border-right: 1px solid var(--lightest-grey);
   font-size: 0.75rem;
   font-weight: ${({strong = false}) => (strong ? "bold" : "normal")};
-  background: ${({backgroundColor = "transparent", highlight = false}) =>
+  background-color: ${({backgroundColor = "transparent", highlight = false}) =>
     (!backgroundColor || backgroundColor === "transparent") && highlight
       ? "#f6fcff"
       : backgroundColor};
@@ -104,26 +102,6 @@ const TableCellButton = styled(TableCell)`
   ${cancelledStyle}
 `;
 
-const TableCellIcons = styled(AlertIcons)`
-  bottom: 2px;
-  left: 2px;
-  padding: 0 2px;
-  border-radius: 2px;
-  background: white;
-  height: 0.75rem;
-  display: flex;
-  align-items: center;
-
-  svg {
-    width: 0.5rem !important;
-    height: 0.5rem !important;
-  }
-
-  &:empty {
-    padding: 0;
-  }
-`;
-
 const TableHeader = styled(TableRow)`
   font-weight: bold;
   border-bottom-width: 1px;
@@ -142,10 +120,7 @@ const TimeTypeButton = styled(ToggleButton)`
   width: auto;
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI", "Journey", "Filters", "Time")
-);
+const decorate = flow(observer, inject("UI", "Journey", "Filters", "Time"));
 
 const JourneysByWeek = decorate(
   ({state, Time, UI, Filters, Journey, route: propsRoute}) => {
@@ -529,9 +504,6 @@ const JourneysByWeek = decorate(
                                               : "var(--light-grey)"
                                           }
                                         />
-                                        <TableCellIcons
-                                          alerts={getAlertsInEffect(departure)}
-                                        />
                                       </TableCellButton>
                                     </Tooltip>
                                   );
@@ -545,6 +517,10 @@ const JourneysByWeek = decorate(
                                   ? departure.observedArrivalTime.arrivalTimeDifference
                                   : departure.observedDepartureTime
                                       .departureTimeDifference;
+
+                                const loc = showLastStopArrival
+                                  ? departure.observedArrivalTime.loc
+                                  : departure.observedDepartureTime.loc;
 
                                 const diffTime = secondsToTimeObject(plannedObservedDiff);
                                 const delayType = getDelayType(plannedObservedDiff);
@@ -561,35 +537,28 @@ const JourneysByWeek = decorate(
                                 );
 
                                 return (
-                                  <Tooltip
-                                    helpText="Journey list diff"
-                                    key={`departure_day_${departure.dayType}_${plannedTime}`}>
-                                    <TableCellButton
-                                      as="button"
-                                      data-testid={`weekly-departure-${departureStatus}`}
-                                      isCancelled={departure.isCancelled}
-                                      highlight={idx === currentDayTypeIndex}
-                                      onClick={() =>
-                                        selectJourney(departure.journey, true)
-                                      }
-                                      color={
-                                        journeyIsSelected
-                                          ? delayType === "late"
-                                            ? "var(--dark-grey)"
-                                            : "white"
-                                          : color
-                                      }
-                                      backgroundColor={
-                                        journeyIsSelected ? bgColor : "transparent"
-                                      }>
-                                      {plannedObservedDiff < 0 ? "-" : ""}
-                                      {doubleDigit(diffTime.minutes)}:
-                                      {doubleDigit(diffTime.seconds)}
-                                      <TableCellIcons
-                                        alerts={getAlertsInEffect(departure)}
-                                      />
-                                    </TableCellButton>
-                                  </Tooltip>
+                                  <TableCellButton
+                                    title={loc}
+                                    key={`departure_day_${departure.dayType}_${plannedTime}`}
+                                    as="button"
+                                    data-testid={`weekly-departure-${departureStatus}`}
+                                    isCancelled={departure.isCancelled}
+                                    highlight={idx === currentDayTypeIndex}
+                                    onClick={() => selectJourney(departure.journey, true)}
+                                    color={
+                                      journeyIsSelected
+                                        ? delayType === "late"
+                                          ? "var(--dark-grey)"
+                                          : "white"
+                                        : color
+                                    }
+                                    backgroundColor={
+                                      journeyIsSelected ? bgColor : "transparent"
+                                    }>
+                                    {plannedObservedDiff < 0 ? "-" : ""}
+                                    {doubleDigit(diffTime.minutes)}:
+                                    {doubleDigit(diffTime.seconds)}
+                                  </TableCellButton>
                                 );
                               })}
                             </TableRow>

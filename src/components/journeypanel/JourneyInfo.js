@@ -86,10 +86,7 @@ const ObservedValue = styled.span`
   border-color: transparent;
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 export default decorate(({departure, state, journey, date}) => {
   if (!departure) {

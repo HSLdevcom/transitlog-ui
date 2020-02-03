@@ -1,5 +1,20 @@
 # Transitlog UI changelog
 
+## Version 1.6.1, deployed 2020-01-23 @ 12:00
+
+- Update for route select buttons and stop select buttons in stop popup. Also adds more information and makes the view clearer.
+- Added a badge to many views that show which method the HFP event location and time was measured with; GPS or ODO.
+
+## Version 1.6.0, deployed 2020-01-17 @ 10:00
+
+- Show driver events (DA, DOUT) in vehicle journeys list.
+- Shows all alerts per day, not limited by time.
+- Update weather API url.
+- Stricter early checking for timing stops.
+- Enable selecting a departure without a time in stop departures list.
+- Add transport mode color for ferries.
+- Updates for new Citus database (deployed 2020-01-08).
+
 ## Version 1.5.5, deployed 2019-12-20 @ 11:00
 
 - Refactor app structure regarding stop fetching

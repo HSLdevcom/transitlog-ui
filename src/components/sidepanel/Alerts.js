@@ -10,10 +10,7 @@ import AlertsList from "../AlertsList";
 import CancellationsQuery from "../../queries/CancellationsQuery";
 import CancellationsList from "../CancellationsList";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const Alerts = decorate(({state}) => {
   const searchTime = state.date;
@@ -44,16 +41,16 @@ const Alerts = decorate(({state}) => {
           {({cancellations = [], loading: cancellationsLoading}) => (
             <Observer>
               {() => {
-                const alertsInEffect = getAlertsInEffect(
-                  !isFiltered
-                    ? alerts
-                    : {
+                const alertsInEffect = !isFiltered
+                  ? alerts
+                  : getAlertsInEffect(
+                      {
                         routeId: routeId || undefined,
                         stopId: stop || undefined,
                         alerts,
                       },
-                  state.timeMoment
-                );
+                      state.timeMoment
+                    );
 
                 return (
                   <SidepanelList loading={alertsLoading || cancellationsLoading}>

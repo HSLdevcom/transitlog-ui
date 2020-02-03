@@ -150,10 +150,7 @@ const Accordion = styled(ToggleView)`
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const CancellationItem = decorate(
   ({

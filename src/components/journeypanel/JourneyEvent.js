@@ -12,7 +12,7 @@ import {
   StopArrivalTime,
   SmallText,
 } from "../StopElements";
-import {TagButton, PlainSlot, ColoredBackgroundSlot, PlainSlotSmall} from "../TagButton";
+import {TagButton, PlainSlot, ColoredBackgroundSlot, PlainSlotMono} from "../TagButton";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {text, alertText, Text} from "../../helpers/text";
@@ -43,13 +43,15 @@ import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../icons/RoutesFail";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {LocBadge} from "../commonComponents";
 
 const StopWrapper = styled(DefaultStopWrapper)`
   padding: 0;
 `;
 
 const EventTypeHeading = styled.span`
-  display: block;
+  display: flex;
+  align-items: baseline;
   margin-top: 0.25rem;
   color: var(--dark-grey);
   font-size: 0.875rem;
@@ -78,12 +80,17 @@ const IconBackground = styled.div`
   justify-content: center;
 `;
 
+const AlignedLocBadge = styled(LocBadge)`
+  margin-left: auto;
+`;
+
+const AlignedPlainSlotMono = styled(PlainSlotMono)`
+  margin-left: 0;
+`;
+
 const StopTime = styled(TagButton)``;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 export const JourneyEvent = decorate(
   ({event, color, date, isFirst, isLast, onSelectTime}) => {
@@ -106,17 +113,17 @@ export const JourneyEvent = decorate(
         </StopElementsWrapper>
         <StopContent>
           <StopTime onClick={selectTime}>
-            <PlainSlot
-              {...applyTooltip(event.type)}
-              dangerouslySetInnerHTML={{
-                __html:
-                  text(`journey.event.${event.type}`) +
-                  (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
-              }}
-            />
-            <PlainSlotSmall style={{marginLeft: "auto"}}>
-              {timestamp.format("HH:mm:ss")}
-            </PlainSlotSmall>
+            <PlainSlot {...applyTooltip(event.type)}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html:
+                    text(`journey.event.${event.type}`) +
+                    (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
+                }}
+              />
+            </PlainSlot>
+            <AlignedLocBadge red={event.loc !== "GPS"}>{event.loc}</AlignedLocBadge>
+            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
         </StopContent>
       </StopWrapper>
@@ -225,7 +232,11 @@ export const JourneyStopEvent = decorate(
           </EventHeadingButton>
           <EventTypeHeading>
             {text(`journey.event.${event.type}`)}{" "}
-            <span style={{fontSize: "0.75rem", color: "var(--grey)"}}>{event.type}</span>
+            <span
+              style={{fontSize: "0.75rem", color: "var(--grey)", marginLeft: "0.5rem"}}>
+              {event.type}
+            </span>
+            <LocBadge red={event.loc !== "GPS"}>{event.loc}</LocBadge>
           </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>
@@ -252,7 +263,7 @@ export const JourneyStopEvent = decorate(
                       {sign === "-" ? "-" : ""}
                       {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                     </ColoredBackgroundSlot>
-                    <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+                    <PlainSlotMono>{getNormalTime(observedTime)}</PlainSlotMono>
                   </StopArrivalTime>
                   <SmallText>
                     * <Text>journey.departure_minus_terminal</Text>
@@ -279,7 +290,7 @@ export const JourneyStopEvent = decorate(
                       {sign === "-" ? "-" : ""}
                       {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                     </ColoredBackgroundSlot>
-                    <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+                    <PlainSlotMono>{getNormalTime(observedTime)}</PlainSlotMono>
                   </StopArrivalTime>
                 </>
               )}
@@ -298,7 +309,7 @@ export const JourneyStopEvent = decorate(
                 {doubleDigit(get(diffObject, "minutes", 0))}:
                 {doubleDigit(get(diffObject, "seconds", 0))}
               </ColoredBackgroundSlot>
-              <PlainSlotSmall>{getNormalTime(observedTime)}</PlainSlotSmall>
+              <PlainSlotMono>{getNormalTime(observedTime)}</PlainSlotMono>
             </StopTime>
           )}
         </StopContent>

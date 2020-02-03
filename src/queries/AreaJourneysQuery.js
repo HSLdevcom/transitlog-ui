@@ -1,5 +1,5 @@
 import React from "react";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import get from "lodash/get";
 import gql from "graphql-tag";
 import {observer} from "mobx-react-lite";
@@ -31,6 +31,7 @@ const areaJourneysQuery = gql`
         stop
         lat
         lng
+        loc
         doorStatus
         velocity
         delay

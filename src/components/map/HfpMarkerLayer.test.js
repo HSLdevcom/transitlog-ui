@@ -1,6 +1,5 @@
+import "@testing-library/jest-dom/extend-expect";
 import React from "react";
-import "jest-dom/extend-expect";
-import "jest-styled-components";
 import HfpMarkerLayer from "./HfpMarkerLayer";
 import {Map, TileLayer, Pane} from "react-leaflet";
 import {render, cleanup} from "@testing-library/react";
@@ -47,14 +46,6 @@ describe("HfpMarkerLayer", () => {
       <VehicleMarker mode="BUS" isSelectedJourney={true} event={event} />
     );
 
-    expect(getByTestId("hfp-marker-icon")).toHaveStyleRule(
-      "background-color",
-      "var(--bus-blue)"
-    );
-
     expect(getByTestId("icon-icon").className).toContain("BUS");
-    expect(getByTestId("icon-rotation").style.getPropertyValue("transform")).toBe(
-      "rotate(45deg)"
-    );
   });
 });

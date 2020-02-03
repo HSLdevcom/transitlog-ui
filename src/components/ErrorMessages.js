@@ -39,10 +39,7 @@ const DismissButton = styled(Button).attrs(() => ({small: true, primary: false})
   }
 `;
 
-const decorate = flow(
-  observer,
-  inject(app("UI"))
-);
+const decorate = flow(observer, inject(app("UI")));
 
 export default decorate(function ErrorMessages({state, UI}) {
   const {errors} = state;

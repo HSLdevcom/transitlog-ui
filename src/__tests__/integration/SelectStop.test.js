@@ -1,5 +1,5 @@
 import React from "react";
-import "jest-dom/extend-expect";
+import "@testing-library/jest-dom/extend-expect";
 import "jest-styled-components";
 import {
   render,
@@ -9,8 +9,7 @@ import {
 } from "@testing-library/react";
 import {observable, action} from "mobx";
 import {MobxProviders} from "../util/MobxProviders";
-import {MockedProvider} from "react-apollo/test-utils";
-import {allStopsQuery} from "../../queries/AllStopsQuery";
+import {MockedProvider} from "@apollo/react-testing";
 import mockStopResponse from "../stop_options_response.json";
 import mockStopDeparturesResponse from "../stop_departures_response.json";
 import mockSingleStopResponse from "../single_stop_response.json";
@@ -19,7 +18,7 @@ import get from "lodash/get";
 import SidePanel from "../../components/sidepanel/SidePanel";
 import {text} from "../../helpers/text";
 import {departuresQuery} from "../../queries/DeparturesQuery";
-import {singleStopQuery} from "../../queries/SingleStopQuery";
+import {allStopsQuery, singleStopQuery} from "../../components/map/StopLayer";
 
 const date = "2019-05-27";
 
@@ -185,7 +184,7 @@ describe("Stop search and filtering", () => {
 
     fireEvent.click(getByText(text("sidepanel.tabs.timetables", "fi")));
 
-    // const firstDeparture = await findByTestId("virtual-list");
-    // expect(firstDeparture).toHaveTextContent("05:38");
+    const departuresList = await findByTestId("stop-departures-list");
+    expect(departuresList).toBeTruthy();
   });
 });

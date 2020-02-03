@@ -19,10 +19,7 @@ const AlertsListWrapper = styled.div`
   overflow-x: hidden;
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const AlertsList = decorate(
   ({
@@ -38,7 +35,12 @@ const AlertsList = decorate(
 
     // Debounce time value to only update when the date updates. This is only
     // used for sorting, so it doesn't need the absolute newest value.
-    const sortTime = useMemo(() => state.timeMoment.toDate(), [state.date]);
+    const sortTime = useMemo(() => {
+      if (!state.timeMoment) {
+        return false;
+      }
+      return state.timeMoment.toDate();
+    }, [state.date]);
 
     // Separate alerts that can be grouped
     const [groupableAlerts, ungroupableAlerts] = partition(
@@ -48,7 +50,7 @@ const AlertsList = decorate(
 
     let groupedAlerts = validAlerts;
 
-    if (groupableAlerts.length !== 0) {
+    if (groupableAlerts.length !== 0 && sortTime) {
       groupedAlerts = Object.values(groupBy(groupableAlerts, "bulletinId"))
         .map((alertGroup) => {
           const representative = alertGroup[0];

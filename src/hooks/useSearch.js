@@ -5,13 +5,14 @@ import {search} from "../helpers/search";
 export const useSearch = (items, keys, searchOptions = {}) => {
   const searchFn = useCallback(
     (value = "") => {
+      let resultItems = items;
       const searchTerm = get(value, "value", value);
 
       if (searchTerm) {
-        return search(items, searchTerm, keys, searchOptions);
+        resultItems = search(items, searchTerm, keys, searchOptions);
       }
 
-      return items;
+      return resultItems;
     },
     [keys, items]
   );

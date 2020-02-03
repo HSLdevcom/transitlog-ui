@@ -4,10 +4,7 @@ import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
 import RouteJourneysQuery from "../queries/RouteJourneysQuery";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const RouteJourneys = decorate(({children, state}) => {
   const {selectedJourney, route, date} = state;

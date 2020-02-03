@@ -3,7 +3,6 @@ import StopRouteSelect from "./StopRouteSelect";
 import {Text} from "../../helpers/text";
 import React from "react";
 import styled from "styled-components";
-import AlertsList from "../AlertsList";
 import {StopContent} from "../StopElements";
 import {Button} from "../Forms";
 import {observer} from "mobx-react-lite";
@@ -11,13 +10,8 @@ import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import {latLng} from "leaflet";
 
-export const StopAlerts = styled(AlertsList)`
-  padding: 0;
-  margin-top: 1rem;
-`;
-
 export const StopPopupContentSection = styled.div`
-  padding: 0 1rem;
+  padding: 0 1rem 0.5rem;
 
   &:first-child {
     padding-top: 1rem;
@@ -40,10 +34,7 @@ export const StopStreetViewWrapper = styled(StopPopupContentSection)`
   margin-top: 1rem;
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 const StopPopupContent = decorate(({UI, color, stop}) => {
   return (

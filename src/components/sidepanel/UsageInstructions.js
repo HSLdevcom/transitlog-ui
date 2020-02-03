@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {TagButton, ColoredBackgroundSlot, PlainSlotSmall} from "../TagButton";
+import {TagButton, ColoredBackgroundSlot, PlainSlotMono} from "../TagButton";
 
 const ExampleSlotWrapper = styled.div`
   margin-left: 20px;
@@ -85,37 +85,37 @@ export function UsageInstructions({language}) {
             <ExampleSlotWrapper>
               <li>
                 <TagButton style={{marginTop: "0.5rem", marginBottom: "1rem"}}>
-                  <PlainSlotSmall>18:00:00</PlainSlotSmall>
+                  <PlainSlotMono>18:00:00</PlainSlotMono>
                   <ColoredBackgroundSlot
                     color="white"
                     backgroundColor="var(--light-green)">
                     00:25
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>18:00:25</PlainSlotSmall>
+                  <PlainSlotMono>18:00:25</PlainSlotMono>
                 </TagButton>
                 The vehicle departured less than 3 minutes after the scheduled departure
                 time so it is on time.
               </li>
               <li>
                 <TagButton style={{marginTop: "0.5rem", marginBottom: "1rem"}}>
-                  <PlainSlotSmall>18:00:00</PlainSlotSmall>
+                  <PlainSlotMono>18:00:00</PlainSlotMono>
                   <ColoredBackgroundSlot
                     color="white"
                     backgroundColor="var(--dark-yellow)">
                     03:04
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>18:03:04</PlainSlotSmall>
+                  <PlainSlotMono>18:03:04</PlainSlotMono>
                 </TagButton>
                 The vehicle departured more than 3 minutes after the scheduled departure
                 time so it is late.
               </li>
               <li>
                 <TagButton style={{marginTop: "0.5rem", marginBottom: "1rem"}}>
-                  <PlainSlotSmall>18:00:00</PlainSlotSmall>
+                  <PlainSlotMono>18:00:00</PlainSlotMono>
                   <ColoredBackgroundSlot color="white" backgroundColor="var(--red)">
                     -00:30
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>17:59:30</PlainSlotSmall>
+                  <PlainSlotMono>17:59:30</PlainSlotMono>
                 </TagButton>
                 The vehicle departured more than 10 seconds before the scheduled departure
                 so it is early.
@@ -217,13 +217,13 @@ export function UsageInstructions({language}) {
             <ExampleSlotWrapper>
               <li>
                 <TagButton style={{marginTop: "0.5rem", marginBottom: "1rem"}}>
-                  <PlainSlotSmall>18:00:00</PlainSlotSmall>
+                  <PlainSlotMono>18:00:00</PlainSlotMono>
                   <ColoredBackgroundSlot
                     color="white"
                     backgroundColor="var(--light-green)">
                     00:25
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>18:00:25</PlainSlotSmall>
+                  <PlainSlotMono>18:00:25</PlainSlotMono>
                 </TagButton>
                 <p>
                   {" "}
@@ -233,13 +233,13 @@ export function UsageInstructions({language}) {
               </li>
               <li>
                 <TagButton style={{marginTop: "0.5rem", marginBottom: "1rem"}}>
-                  <PlainSlotSmall>18:00:00</PlainSlotSmall>
+                  <PlainSlotMono>18:00:00</PlainSlotMono>
                   <ColoredBackgroundSlot
                     color="white"
                     backgroundColor="var(--dark-yellow)">
                     03:04
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>18:03:04</PlainSlotSmall>
+                  <PlainSlotMono>18:03:04</PlainSlotMono>
                 </TagButton>
                 <p>
                   {" "}
@@ -249,11 +249,11 @@ export function UsageInstructions({language}) {
               </li>
               <li>
                 <TagButton style={{marginTop: "0.5rem", marginBottom: "1rem"}}>
-                  <PlainSlotSmall>18:00:00</PlainSlotSmall>
+                  <PlainSlotMono>18:00:00</PlainSlotMono>
                   <ColoredBackgroundSlot color="white" backgroundColor="var(--red)">
                     -00:30
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>17:59:30</PlainSlotSmall>
+                  <PlainSlotMono>17:59:30</PlainSlotMono>
                 </TagButton>
                 Lähtö on tapahtunut 10 sekuntia ennen suunniteltua lähtöä eli lähtö on
                 etuajassa.

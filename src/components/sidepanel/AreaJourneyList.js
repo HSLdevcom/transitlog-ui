@@ -90,10 +90,7 @@ const ApplyButton = styled(Button).attrs(() => ({small: true, primary: true}))`
   margin-bottom: 1px;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Journey", "Time", "UI")
-);
+const decorate = flow(observer, inject("Journey", "Time", "UI"));
 
 const AreaJourneyList = decorate(
   ({

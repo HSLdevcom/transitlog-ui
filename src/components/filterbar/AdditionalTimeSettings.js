@@ -17,10 +17,7 @@ const IncrementValueInput = styled(Input)`
   width: auto;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Time")
-);
+const decorate = flow(observer, inject("Time"));
 
 const AdditionalTimeSettings = decorate(({state, Time}) => {
   const {timeIncrement, areaSearchRangeMinutes} = state;

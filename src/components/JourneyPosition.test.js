@@ -1,5 +1,5 @@
 import React from "react";
-import "jest-dom/extend-expect";
+import "@testing-library/jest-dom/extend-expect";
 import "jest-styled-components";
 import {cleanup} from "@testing-library/react";
 import JourneyPosition from "./JourneyPosition";
@@ -17,7 +17,8 @@ describe("JourneyPosition", () => {
     const journeys = [
       {
         id: "test",
-        events: [
+        events: [],
+        vehiclePositions: [
           {recordedAtUnix: 1, lat: 1, lng: 1},
           {recordedAtUnix: 10, lat: 1, lng: 1},
           {recordedAtUnix: 20, lat: 1, lng: 1},
@@ -51,7 +52,8 @@ describe("JourneyPosition", () => {
     const journeys = [
       {
         id: "test",
-        events: [
+        events: [],
+        vehiclePositions: [
           {recordedAtUnix: 10, lat: 1, lng: 1},
           {recordedAtUnix: 20, lat: 1, lng: 1},
           {recordedAtUnix: 30, lat: 1, lng: 1},

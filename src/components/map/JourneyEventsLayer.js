@@ -6,10 +6,7 @@ import JourneyMapEvent from "./JourneyMapEvent";
 import {createGlobalStyle} from "styled-components";
 import {latLng} from "leaflet";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const IconStyle = createGlobalStyle`
   .event-icon {

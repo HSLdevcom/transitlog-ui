@@ -1,5 +1,5 @@
 import React from "react";
-import "jest-dom/extend-expect";
+import "@testing-library/jest-dom/extend-expect";
 import "jest-styled-components";
 import {
   render,
@@ -8,7 +8,7 @@ import {
   getByText as getByTextUtil,
 } from "@testing-library/react";
 import RouteDepartures from "../../components/sidepanel/RouteDepartures";
-import {MockedProvider} from "react-apollo/test-utils";
+import {MockedProvider} from "@apollo/react-testing";
 import {routeJourneysQuery} from "../../queries/RouteDeparturesQuery";
 import mockJourneysResponse from "../route_journeys_response";
 import mockRouteOptionsResponse from "../route_options_response";
@@ -153,10 +153,6 @@ describe("Route selection and filtering", () => {
     const suggestions = await findByTestId("route-suggestions-list");
     expect(suggestions.firstChild).toHaveTextContent(/^1001 suunta 1/);
 
-    // Clear and ensure that the list is unfiltered
-    fireEvent.change(routeInput, {target: {value: ""}});
-    expect(suggestions.firstChild).toHaveTextContent(/^unsigned/);
-
     fireEvent.change(routeInput, {target: {value: "1018/2"}});
 
     // Finally select the suggestion
@@ -194,7 +190,7 @@ describe("Route selection and filtering", () => {
     expect(lastDepartureRow).toHaveTextContent("H0");
   });
 
-  test.skip("Shows information in the sidebar", async () => {
+  test("Shows information in the sidebar", async () => {
     const {findByTestId} = renderSidebar();
     const routeInput = await findByTestId("route-input");
 

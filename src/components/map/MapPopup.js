@@ -1,6 +1,8 @@
 import React from "react";
 import {Popup} from "react-leaflet";
 import {createGlobalStyle} from "styled-components";
+import {observer} from "mobx-react-lite";
+import flow from "lodash/flow";
 
 const PopupStyle = createGlobalStyle`
   .leaflet-container {
@@ -9,7 +11,7 @@ const PopupStyle = createGlobalStyle`
 
   .leaflet-popup-content {
     margin: 0 !important;
-    max-height: 550px; // Sometimes leaflet does not apply a maxHeight so we're doing it here.
+    max-height: 500px; // Sometimes leaflet does not apply a maxHeight so we're doing it here.
     overflow-y: auto;
   }
   
@@ -32,7 +34,9 @@ const PopupStyle = createGlobalStyle`
   }
 `;
 
-const MapPopup = ({className, children, onClose, onOpen}) => {
+const decorate = flow(observer);
+
+const MapPopup = decorate(({className, children, onClose, onOpen}) => {
   return (
     <>
       <PopupStyle />
@@ -46,11 +50,11 @@ const MapPopup = ({className, children, onClose, onOpen}) => {
         onClose={onClose}
         offset={[0, -10]}
         minWidth={350}
-        maxWidth={550}>
+        maxWidth={450}>
         {children}
       </Popup>
     </>
   );
-};
+});
 
 export default MapPopup;

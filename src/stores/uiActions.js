@@ -59,6 +59,10 @@ export default (state) => {
     }
   });
 
+  const setMapDriverEvent = action((driverEvent = null) => {
+    state.mapDriverEvent = driverEvent;
+  });
+
   const toggleShareModal = action((setTo = !state.shareModalOpen) => {
     state.shareModalOpen = setTo;
   });
@@ -202,6 +206,10 @@ export default (state) => {
     state.currentMapillaryMapLocation = location;
   });
 
+  const allowObjectCentering = action((setTo = true) => {
+    state.objectCenteringAllowed = setTo;
+  });
+
   return {
     toggleSidePanel,
     toggleJourneyDetails,
@@ -224,5 +232,7 @@ export default (state) => {
     setMapZoom,
     setMapView,
     setMapBounds,
+    setMapDriverEvent,
+    allowObjectCentering,
   };
 };

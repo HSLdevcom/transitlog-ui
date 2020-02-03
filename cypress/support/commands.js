@@ -38,6 +38,14 @@ Cypress.Commands.add("hslLogin", () => {
   const HSL_TESTING_HSLID_USERNAME = Cypress.env("HSL_TESTING_HSLID_USERNAME");
   const HSL_TESTING_HSLID_PASSWORD = Cypress.env("HSL_TESTING_HSLID_PASSWORD");
 
+  console.log(
+    AUTH_URI,
+    CLIENT_ID,
+    CLIENT_SECRET,
+    HSL_TESTING_HSLID_PASSWORD,
+    HSL_TESTING_HSLID_USERNAME
+  );
+
   const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
 
   Cypress.log({
@@ -97,7 +105,11 @@ Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
 
 Cypress.Commands.add("waitUntilLoadingFinishes", (loadingElementSelector) => {
   const testId = loadingElementSelector || "loading";
-  cy.waitUntil(() => cy.getTestElement(testId).should("exist"));
+
+  cy.waitUntil(() => cy.getTestElement(testId).should("exist"), {
+    timeout: 60 * 60 * 1000,
+  });
+
   return cy.waitUntil(
     () => cy.getTestElement(testId, {timeout: 60 * 60 * 1000}).should("have.length", 0),
     {

@@ -58,7 +58,7 @@ describe("Area search", () => {
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("area-journeys-list").should("exist");
-    cy.getTestElement("area-journey-item-journey", {timeout: 60000})
+    cy.getTestElement("area-journey-item-journey")
       .first()
       .click();
   

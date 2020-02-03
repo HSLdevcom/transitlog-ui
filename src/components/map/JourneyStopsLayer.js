@@ -9,10 +9,7 @@ import {inject} from "../../helpers/inject";
 import {TIMEZONE} from "../../constants";
 import moment from "moment-timezone";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const JourneyStopsLayer = decorate(
   ({state: {date, selectedJourney}, showRadius, journey = null}) => {

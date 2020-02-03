@@ -29,6 +29,10 @@
       "routes": [
         {
           "id": "stop_route_1016_2_2017-09-01_2050-12-31",
+          "name": "route",
+          "origin": "origin",
+          "destination": "destination",
+          "mode": "BUS",
           "direction": 2,
           "isTimingStop": false,
           "originStopId": "1420120",
@@ -38,6 +42,10 @@
         },
         {
           "id": "stop_route_1086N_2_2019-02-01_2019-06-16",
+          "name": "route",
+          "origin": "origin",
+          "destination": "destination",
+          "mode": "BUS",
           "direction": 2,
           "isTimingStop": false,
           "originStopId": "1510107",
@@ -47,6 +55,10 @@
         },
         {
           "id": "stop_route_1016X_2_2018-08-13_2019-06-16",
+          "name": "route",
+          "origin": "origin",
+          "destination": "destination",
+          "mode": "BUS",
           "direction": 2,
           "isTimingStop": false,
           "originStopId": "1420120",

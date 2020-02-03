@@ -9,10 +9,7 @@ import SignIn from "../icons/SignIn";
 import NoConnection from "../icons/NoConnection";
 import {Text} from "../helpers/text";
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 const EmptyViewWrapper = styled.div`
   padding: 1rem;

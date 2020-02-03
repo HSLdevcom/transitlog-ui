@@ -70,6 +70,8 @@ export default (state) => {
       mapView: latLng([lat, lng]),
       mapZoom: intval(urlZoom) || 13,
       mapBounds: null,
+      mapDriverEvent: null,
+      objectCenteringAllowed: !urlCenter,
     },
     {
       selectedBounds: observable.ref,
@@ -105,6 +107,10 @@ export default (state) => {
       ),
     });
   });
+
+  setTimeout(() => {
+    actions.allowObjectCentering(true);
+  }, 10000);
 
   return actions;
 };

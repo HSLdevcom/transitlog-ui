@@ -4,6 +4,8 @@ import meanBy from "lodash/meanBy";
 import orderBy from "lodash/orderBy";
 import uniqBy from "lodash/uniqBy";
 import groupBy from "lodash/groupBy";
+import {text} from "../helpers/text";
+import {intval} from "../helpers/isWithinRange";
 
 function getValues(locations, value) {
   const timeValues = locations.reduce((values, {data}) => {
@@ -55,28 +57,67 @@ export function getTimeValue(timestamp, locations, value) {
   return get(timeValue, "value", false);
 }
 
-// TODO: add the correct road states.
+function getMajorityValue(values) {
+  const countedValues = values.reduce((valueGroups, {value}) => {
+    const roundedValue = Math.round(value);
+
+    if (!get(valueGroups, roundedValue + "")) {
+      valueGroups[roundedValue] = 1;
+    } else {
+      valueGroups[roundedValue] += 1;
+    }
+
+    return valueGroups;
+  }, {});
+
+  const countedEntries = Object.entries(countedValues);
+  const orderedValues = orderBy(
+    countedEntries,
+    [([, count]) => count, ([value]) => value],
+    ["desc", "desc"]
+  );
+
+  return intval(get(orderedValues, "[0][0]", get(values, "[0].value", 0)));
+}
+
+// These will be translated
 const roadConditionStatus = {
   "1": "dry",
   "2": "damp",
   "3": "wet",
-  "4": "wet snow",
+  "4": "wet-salted",
   "5": "frost",
-  "6": "partly icy",
-  "7": "dry snow",
-  "8": "icy",
+  "6": "snow",
+  "7": "ice",
+  "8": "damp-salted",
+  "9": "ice-slush",
 };
 
-export function getRoadStatus(locations, timestamp) {
-  const timeValues = getValues(locations, "rscst");
+export function getRoadStatus(locations, timestamp, calculateAverage = false) {
+  let timeValues = getValues(locations, "rscst");
   let status = {value: 1};
+
+  if (calculateAverage) {
+    const roadConditionTimeGroups = groupBy(timeValues, "time");
+
+    timeValues = Object.entries(roadConditionTimeGroups).map(
+      ([timestamp, conditionGroup]) => {
+        const majorityValue = getMajorityValue(conditionGroup);
+        return {time: parseInt(timestamp, 10), value: majorityValue};
+      }
+    );
+  }
 
   if (timestamp) {
     status = getClosestTimeValue(timeValues, timestamp);
   } else {
     status = orderBy(uniqBy(timeValues, "value"), "value", "desc")[0];
   }
-  return get(roadConditionStatus, `${Math.min(get(status, "value", 1), 8)}`, "");
+
+  const statusValue = Math.round(Math.min(get(status, "value", 1), 9));
+  const conditionStatusTerm = get(roadConditionStatus, `${statusValue}`, "unknown");
+
+  return text(`roadcondition.${conditionStatusTerm}`);
 }
 
 export const useWeatherData = (weatherData, timestamp) => {
@@ -92,7 +133,7 @@ export const useWeatherData = (weatherData, timestamp) => {
       ? getTimeValue(timestamp, weatherLocations, "t2m")
       : getAverageValue(weatherLocations, "t2m");
 
-    const roadStatus = getRoadStatus(roadConditionLocations, timestamp);
+    const roadStatus = getRoadStatus(roadConditionLocations, timestamp, true);
 
     const temperature =
       areaTemperature !== false

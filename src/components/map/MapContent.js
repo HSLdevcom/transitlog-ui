@@ -1,7 +1,6 @@
-import React, {useMemo} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import StopLayer from "./StopLayer";
-import RouteGeometryQuery from "../../queries/RouteGeometryQuery";
 import RouteLayer from "./RouteLayer";
 import flow from "lodash/flow";
 import getJourneyId from "../../helpers/getJourneyId";
@@ -12,19 +11,15 @@ import AreaSelect from "./AreaSelect";
 import {expr} from "mobx-utils";
 import {areaEventsStyles} from "../../stores/UIStore";
 import SimpleHfpLayer from "./SimpleHfpLayer";
-import {createRouteId} from "../../helpers/keys";
 import {inject} from "../../helpers/inject";
 import WeatherDisplay from "./WeatherDisplay";
 import JourneyStopsLayer from "./JourneyStopsLayer";
-import {WeatherWidget, JourneyWeatherWidget} from "./WeatherWidget";
-import get from "lodash/get";
+import {WeatherWidget} from "./WeatherWidget";
 import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
+import DriverEventLayer from "./DriverEventLayer";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const MapContent = decorate(
   ({
@@ -33,7 +28,6 @@ const MapContent = decorate(
     journeyPositions,
     unsignedEvents,
     route,
-    stop,
     centerOnRoute = true,
     routeStops = [],
     state: {
@@ -41,7 +35,6 @@ const MapContent = decorate(
       date,
       mapOverlays,
       areaEventsStyle,
-      unixTime,
       areaSearchRangeMinutes,
       mapView,
       mapZoom,
@@ -51,38 +44,14 @@ const MapContent = decorate(
     const showStopRadius = expr(() => mapOverlays.indexOf("Stop radius") !== -1);
 
     const selectedJourneyId = getJourneyId(selectedJourney);
-    const selectedJourneyEvents = useMemo(
-      () => get(journeys.find((j) => j.id === selectedJourneyId) || {}, "events", []),
-      [selectedJourneyId, journeys.length !== 0]
-    );
 
     return (
       <>
         <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
-        {!selectedJourney && (
-          <StopLayer showRadius={showStopRadius} date={date} selectedStop={stop} />
-        )}
+        {!selectedJourney && <StopLayer showRadius={showStopRadius} date={date} />}
         {hasRoute && (
           <>
-            <RouteGeometryQuery
-              key={`route_query_${createRouteId(route, true)}`}
-              route={route}
-              date={date}>
-              {({routeGeometry = null}) =>
-                routeGeometry && routeGeometry.coordinates.length !== 0 ? (
-                  <RouteLayer
-                    routeId={
-                      routeGeometry.coordinates.length !== 0 ? createRouteId(route) : null
-                    }
-                    mode={routeGeometry.mode || "BUS"}
-                    coordinates={routeGeometry.coordinates}
-                    canCenterOnRoute={centerOnRoute}
-                    key={`route_line_${createRouteId(route, true)}`}
-                  />
-                ) : null
-              }
-            </RouteGeometryQuery>
-
+            <RouteLayer canCenterOnRoute={centerOnRoute} />
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (
@@ -180,19 +149,13 @@ const MapContent = decorate(
                 />
               );
             })}
+        <DriverEventLayer />
         {mapOverlays.includes("Weather") && (
           <WeatherDisplay key="weather_map" position={mapView} />
         )}
-        {mapOverlays.includes("Weather") &&
-          (!selectedJourneyId ? (
-            <WeatherWidget key="map_weather" position={mapView} />
-          ) : (
-            <JourneyWeatherWidget
-              time={unixTime}
-              key={`journey_weather_${selectedJourneyId}`}
-              events={selectedJourneyEvents}
-            />
-          ))}
+        {mapOverlays.includes("Weather") && (
+          <WeatherWidget key="map_weather" position={mapView} />
+        )}
       </>
     );
   }

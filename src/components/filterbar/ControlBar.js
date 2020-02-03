@@ -29,10 +29,7 @@ const PollToggle = styled(ToggleButton).attrs(() => ({inverted: true}))`
   color: white;
 `;
 
-const decorate = flow(
-  observer,
-  inject("Filters", "Update", "Time", "UI")
-);
+const decorate = flow(observer, inject("Filters", "Update", "Time", "UI"));
 
 const ControlBar = decorate(
   ({className, UI, Filters, Update, Time, state: {live, timeIsCurrent}}) => {

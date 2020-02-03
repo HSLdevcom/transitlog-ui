@@ -40,6 +40,7 @@ class TimeSettings extends Component {
     const {
       state: {time},
     } = this.props;
+
     // Display either the state value or the local value in the input.
     return this.isDirty ? this.timeInput : time;
   }
@@ -69,7 +70,7 @@ class TimeSettings extends Component {
   };
 
   setTimeValue = action((value, dirtyVal = true) => {
-    this.timeInput = value;
+    this.timeInput = value || "";
     this.isDirty = dirtyVal;
   });
 

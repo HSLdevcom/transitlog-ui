@@ -7,7 +7,7 @@ import Login from "../icons/Login";
 import {applyTooltip} from "../hooks/useTooltip";
 import {logout, authorize} from "../auth/authService";
 import {redirectToLogin} from "../stores/UrlManager";
-import {withApollo} from "react-apollo";
+import {withApollo} from "@apollo/react-hoc";
 import {LoadingDisplay} from "./Loading";
 import {text, Text} from "../helpers/text";
 

@@ -16,14 +16,12 @@ describe("CalculateTerminalTime", () => {
     const date = "2019-01-30";
 
     const departure = {
-      plannedArrivalTime: {
-        arrivalDateTime: "2019-01-30T16:10:00.000Z",
-      },
       terminalTime: 2,
       recoveryTime: 2,
     };
 
     const event = {
+      plannedDateTime: "2019-01-30T16:10:00.000Z",
       recordedAt: "2019-01-30T16:07:00.000Z", // 3 minutes before departure, 1 minute before terminal time
     };
 
@@ -48,14 +46,12 @@ describe("CalculateTerminalTime", () => {
 
   test("wasLate is true when the vehicle was late for the terminal time", () => {
     const departure = {
-      plannedArrivalTime: {
-        arrivalDateTime: "2019-01-30T16:10:00.000Z",
-      },
       terminalTime: 2,
       recoveryTime: 2,
     };
 
     const event = {
+      plannedDateTime: "2019-01-30T16:10:00.000Z",
       recordedAt: "2019-01-30T16:10:00.000Z", // right on time, but late for the terminal time
     };
 
@@ -83,14 +79,12 @@ describe("CalculateTerminalTime", () => {
     const date = "2019-01-30";
 
     const departure = {
-      plannedArrivalTime: {
-        arrivalDateTime: "2019-01-30T16:10:00.000Z",
-      },
       terminalTime: 2,
       recoveryTime: 2,
     };
 
     const event = {
+      plannedDateTime: "2019-01-30T16:10:00.000Z",
       recordedAt: "2019-01-30T16:11:00.000Z", // 1 minute after arrival time, within the recovery time.
     };
 
@@ -113,21 +107,19 @@ describe("CalculateTerminalTime", () => {
     const date = "2019-01-30";
 
     const departure = {
-      plannedArrivalTime: {
-        arrivalDateTime: "2019-01-30T16:10:00.000Z",
-      },
       terminalTime: 2,
       recoveryTime: 2,
     };
 
     const event = {
-      recordedAt: "2019-01-30T16:13:00.000Z", // 1 minute after arrival time, 1 minute after the recovery time.
+      plannedDateTime: "2019-01-30T16:10:00.000Z",
+      recordedAt: "2019-01-30T16:15:00.000Z", // 1 minute after arrival time, 1 minute after the recovery time.
     };
 
     function assert({offsetTime, wasLate, diffMinutes, diffSeconds, sign}) {
       expect(wasLate).toBe(true);
       expect(sign).toBe("+");
-      expect(diffMinutes).toBe(3);
+      expect(diffMinutes).toBe(5);
       expect(diffSeconds).toBe(0);
       return null;
     }

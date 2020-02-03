@@ -4,10 +4,7 @@ import RouteStop from "./RouteStop";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const RouteStopsLayer = decorate(
   ({state: {date, selectedJourney}, routeStops = [], showRadius}) => {

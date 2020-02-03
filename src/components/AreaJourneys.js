@@ -7,10 +7,7 @@ import {inject} from "../helpers/inject";
 import {setUpdateListener} from "../stores/UpdateManager";
 import {getMomentFromDateTime} from "../helpers/time";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const updateListenerName = "area hfp query";
 

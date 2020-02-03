@@ -5,10 +5,7 @@ import {inject} from "../../helpers/inject";
 import HfpMarkerLayer from "./HfpMarkerLayer";
 import JourneyLayer from "./JourneyLayer";
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
   const {unixTime} = state;
@@ -59,13 +56,13 @@ const UnsignedEventsLayer = decorate(({unsignedEvents, state}) => {
         vehiclePositions={unsignedEvents}
         name={`unsigned/${journey.uniqueVehicleId}`}
       />
-      {currentEvent ? (
+      {currentEvent && (
         <HfpMarkerLayer
           currentEvent={useEvent}
           isSelectedJourney={false}
           journey={journey}
         />
-      ) : null}
+      )}
     </>
   );
 });

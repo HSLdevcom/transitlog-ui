@@ -1,13 +1,11 @@
 import {Text} from "../../helpers/text";
-import React, {useMemo, memo} from "react";
+import React from "react";
 import styled from "styled-components";
 import {useWeather} from "../../hooks/useWeather";
 import {useWeatherData} from "../../hooks/useWeatherData";
 import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
-import {useJourneyWeather} from "../../hooks/useJourneyWeather";
-import {getMomentFromDateTime} from "../../helpers/time";
 
 const WeatherContainer = styled.div`
   position: absolute;
@@ -33,10 +31,7 @@ const RoadStatus = styled.div`
   color: ${({uncertain = false}) => (uncertain ? "var(--light-grey)" : "var(--blue)")};
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const WeatherWidgetComponent = ({
   className,
@@ -58,30 +53,11 @@ const WeatherWidgetComponent = ({
     </WeatherContainer>
   );
 
-export const WeatherWidget = decorate(({position, className, state}) => {
+export const WeatherWidget = decorate(({className, state}) => {
   const {unixTime, date} = state;
 
-  const [startDate, endDate] = useMemo(
-    () => [
-      getMomentFromDateTime(date)
-        .startOf("day")
-        .toISOString(true),
-      getMomentFromDateTime(date)
-        .endOf("day")
-        .toISOString(true),
-    ],
-    [date]
-  );
-
-  const [weatherData] = useWeather(position, endDate, startDate);
+  const weatherData = useWeather(date);
   const parsedWeatherData = useWeatherData(weatherData, unixTime);
-
-  return <WeatherWidgetComponent {...parsedWeatherData} className={className} />;
-});
-
-export const JourneyWeatherWidget = memo(({events, time, className}) => {
-  const [weatherData] = useJourneyWeather(events);
-  const parsedWeatherData = useWeatherData(weatherData, time);
 
   return <WeatherWidgetComponent {...parsedWeatherData} className={className} />;
 });

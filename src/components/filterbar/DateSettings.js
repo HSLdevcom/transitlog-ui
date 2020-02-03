@@ -117,10 +117,7 @@ const CalendarContainer = (root) => ({className, children}) =>
     ? createPortal(<div className={className}>{children}</div>, root.current)
     : null;
 
-const decorate = flow(
-  observer,
-  inject("Filters", "Time")
-);
+const decorate = flow(observer, inject("Filters", "Time"));
 
 const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, live}}) => {
   const setDate = useCallback(

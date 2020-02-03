@@ -3,7 +3,7 @@ import {Tooltip} from "react-leaflet";
 import {latLng} from "leaflet";
 import {observer} from "mobx-react";
 import {P} from "../Typography";
-import {ColoredBackgroundSlot, PlainSlot, PlainSlotSmall, TagButton} from "../TagButton";
+import {ColoredBackgroundSlot, PlainSlot, PlainSlotMono, TagButton} from "../TagButton";
 import styled from "styled-components";
 import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
 import get from "lodash/get";
@@ -28,6 +28,7 @@ import MapPopup from "./MapPopup";
 import {Button} from "../Forms";
 import StopMarker from "./StopMarker";
 import {inject} from "../../helpers/inject";
+import {LocBadge} from "../commonComponents";
 
 const PopupParagraph = styled(P)`
   font-family: var(--font-family);
@@ -182,7 +183,10 @@ class RouteStop extends React.Component {
               {doubleDigit(get(departureDiffTime, "minutes", 0))}:
               {doubleDigit(get(departureDiffTime, "seconds", 0))}
             </ColoredBackgroundSlot>
-            <PlainSlotSmall>{getNormalTime(stopDepartureTime)}</PlainSlotSmall>
+            {departure && departure.loc && (
+              <LocBadge red={departure.loc !== "GPS"}>{departure.loc}</LocBadge>
+            )}
+            <PlainSlotMono>{getNormalTime(stopDepartureTime)}</PlainSlotMono>
           </>
         )}
       </TagButton>
@@ -211,7 +215,10 @@ class RouteStop extends React.Component {
                   {diffHours ? doubleDigit(diffHours) + ":" : ""}
                   {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                 </ColoredBackgroundSlot>
-                <PlainSlotSmall>{getNormalTime(stopArrivalTime)}</PlainSlotSmall>
+                {arrival && arrival.loc && (
+                  <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+                )}
+                <PlainSlotMono>{getNormalTime(stopArrivalTime)}</PlainSlotMono>
               </StopArrivalTime>
               <SmallText>
                 * <Text>journey.departure_minus_terminal</Text>
@@ -237,7 +244,10 @@ class RouteStop extends React.Component {
                 {diffHours ? doubleDigit(diffHours) + ":" : ""}
                 {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
               </ColoredBackgroundSlot>
-              <PlainSlotSmall>{getNormalTime(stopArrivalTime)}</PlainSlotSmall>
+              {arrival && arrival.loc && (
+                <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+              )}
+              <PlainSlotMono>{getNormalTime(stopArrivalTime)}</PlainSlotMono>
             </StopArrivalTime>
           )}
         </CalculateTerminalTime>
@@ -254,7 +264,10 @@ class RouteStop extends React.Component {
             {doubleDigit(get(arrivalDiffTime, "minutes", 0))}:
             {doubleDigit(get(arrivalDiffTime, "seconds", 0))}
           </ColoredBackgroundSlot>
-          <PlainSlotSmall>{getNormalTime(stopArrivalTime)}</PlainSlotSmall>
+          {arrival && arrival.loc && (
+            <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+          )}
+          <PlainSlotMono>{getNormalTime(stopArrivalTime)}</PlainSlotMono>
         </StopArrivalTime>
       );
     }
@@ -313,7 +326,7 @@ class RouteStop extends React.Component {
                     {doubleDigit(get(durationDiff, "minutes", 0))}:
                     {doubleDigit(get(durationDiff, "seconds", 0))}
                   </ColoredBackgroundSlot>
-                  <PlainSlotSmall>{secondsToTime(observedDuration)}</PlainSlotSmall>
+                  <PlainSlotMono>{secondsToTime(observedDuration)}</PlainSlotMono>
                 </TagButton>
               </>
             )}

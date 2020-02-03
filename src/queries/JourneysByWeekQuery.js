@@ -1,7 +1,7 @@
 import React, {useRef, useMemo} from "react";
 import get from "lodash/get";
 import gql from "graphql-tag";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import {observer} from "mobx-react-lite";
 import {AlertFieldsFragment} from "./AlertFieldsFragment";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
@@ -79,6 +79,7 @@ export const routeJourneysByWeekQuery = gql`
         departureDateTime
         departureTime
         departureTimeDifference
+        loc
       }
       observedArrivalTime {
         id
@@ -86,6 +87,7 @@ export const routeJourneysByWeekQuery = gql`
         arrivalDateTime
         arrivalTime
         arrivalTimeDifference
+        loc
       }
       originDepartureTime {
         id

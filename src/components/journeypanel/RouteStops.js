@@ -15,10 +15,7 @@ const StopsList = styled.div`
   color: var(--light-grey);
 `;
 
-const decorate = flow(
-  observer,
-  inject("Filters", "UI")
-);
+const decorate = flow(observer, inject("Filters", "UI"));
 
 const RouteStops = decorate(({routeStops, color, Filters, UI}) => {
   const onClick = useCallback(

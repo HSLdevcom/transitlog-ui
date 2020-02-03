@@ -46,10 +46,7 @@ const JourneyPanelContent = styled.div`
   width: 100%;
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI", "Time", "Filters")
-);
+const decorate = flow(observer, inject("UI", "Time", "Filters"));
 
 const JourneyPanel = decorate(
   ({

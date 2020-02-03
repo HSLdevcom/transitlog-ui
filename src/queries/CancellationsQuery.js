@@ -1,6 +1,6 @@
 import React, {useMemo} from "react";
 import gql from "graphql-tag";
-import {Query} from "react-apollo";
+import {Query} from "@apollo/react-components";
 import get from "lodash/get";
 import {observer} from "mobx-react";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
@@ -31,10 +31,7 @@ const cancellationsQuery = gql`
   ${CancellationFieldsFragment}
 `;
 
-const decorate = flow(
-  observer,
-  inject("state")
-);
+const decorate = flow(observer, inject("state"));
 
 const updateListenerName = "cancellations query";
 

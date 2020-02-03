@@ -97,10 +97,7 @@ const EnvName = styled.span`
   font-size: 1rem;
 `;
 
-const decorate = flow(
-  observer,
-  inject("UI")
-);
+const decorate = flow(observer, inject("UI"));
 
 function HeaderComponent({state, UI, className}) {
   const {user} = state;

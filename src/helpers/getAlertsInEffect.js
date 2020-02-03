@@ -20,18 +20,6 @@ export const AlertDistribution = {
   Network: "NETWORK",
 };
 
-const timeProps = [
-  "recordedAt",
-  "vehiclePositions[0].recordedAt",
-  "journey.vehiclePositions[0].recordedAt",
-  "events[0].recordedAt",
-  "journey.events[0].recordedAt",
-  "observedDepartureTime.departureDateTime",
-  "plannedDepartureTime.departureDateTime",
-  "observedArrivalTime.arrivalDateTime",
-  "plannedArrivalTime.arrivalDateTime",
-];
-
 export const orderAlerts = (alerts, compareDate = new Date()) => {
   const sortedAlerts = orderBy(
     alerts,
@@ -75,14 +63,7 @@ export const getAlertsInEffect = (
   time,
   includeNetworkAlerts = false
 ) => {
-  // The first priority is to get the time from the object with the alerts
-  // according to the possible timeProps above. If that fails, use the `time` argument.
-  const objectTimeProp = timeProps.find((tp) => get(objectWithAlerts, tp, false));
-  let alertTime = get(objectWithAlerts, objectTimeProp, time);
-  // If the time is a shorter string, that means that it is a date without the time part.
-  // In that case we should show all alerts for the day.
-  const timeIsDate = typeof alertTime === "string" && alertTime.length < 11;
-  const currentMoment = moment.tz(alertTime, TIMEZONE);
+  const currentMoment = moment.tz(time, TIMEZONE);
 
   const alerts = get(
     objectWithAlerts,
@@ -91,12 +72,7 @@ export const getAlertsInEffect = (
   );
 
   function filterByDate(alert) {
-    return currentMoment.isBetween(
-      alert.startDateTime,
-      alert.endDateTime,
-      timeIsDate ? "day" : "hour",
-      "[]"
-    );
+    return currentMoment.isBetween(alert.startDateTime, alert.endDateTime, "day", "[]");
   }
 
   const alertsInEffect = alerts.filter(filterByDate);
