@@ -1,4 +1,4 @@
-FROM cypress/browsers:node12.13.0-chrome78-ff70-brave78
+FROM cypress/browsers:node12.14.0-chrome79-ff71
 
 ENV WORK /opt/transitlog
 
@@ -13,10 +13,5 @@ COPY ./cypress/ ${WORK}/cypress/
 
 COPY run_cypress.sh ${WORK}
 COPY cypress.json ${WORK}
-
-ARG BUILD_ENV=production
-ENV TEST_ENV=${BUILD_ENV}
-
-COPY cypress.${BUILD_ENV}.json ${WORK}
 
 CMD yarn start

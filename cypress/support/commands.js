@@ -79,17 +79,17 @@ Cypress.Commands.add("hslLogin", () => {
 
 Cypress.Commands.add("assertRouteSelected", (routeId) => {
   if (routeId) {
-    cy.getTestElement("journey-details-header", {timeout: 60000}).contains(routeId);
+    cy.getTestElement("journey-details-header").contains(routeId);
   } else {
-    cy.getTestElement("journey-details-header", {timeout: 60000}).should("exist");
+    cy.getTestElement("journey-details-header").should("exist");
   }
 
-  cy.get(".test-class-route-stop", {timeout: 60000}).should("have.length.least", 2);
+  cy.get(".test-class-route-stop").should("have.length.least", 2);
 });
 
 Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
   cy.assertRouteSelected(routeId);
-  cy.getTestElement("journey-stop-event", {timeout: 60000}).should("exist");
+  cy.getTestElement("journey-stop-event").should("exist");
   cy.getTestElement("date-input")
     .invoke("val")
     .then((selectedDate) => {
@@ -107,13 +107,13 @@ Cypress.Commands.add("waitUntilLoadingFinishes", (loadingElementSelector) => {
   const testId = loadingElementSelector || "loading";
 
   cy.waitUntil(() => cy.getTestElement(testId).should("exist"), {
-    timeout: 60 * 60 * 1000,
+    timeout: 60000,
   });
 
   return cy.waitUntil(
-    () => cy.getTestElement(testId, {timeout: 60 * 60 * 1000}).should("have.length", 0),
+    () => cy.getTestElement(testId, {timeout: 240000}).should("have.length", 0),
     {
-      timeout: 60 * 60 * 1000,
+      timeout: 240000,
     }
   );
 });
