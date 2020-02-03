@@ -1,9 +1,9 @@
 # Transitlog UI changelog
 
-## Version 1.7.0, deployed 2020-02-03 @ 09:00
+## Version 1.7.0, deployed 2020-02-03 @ 10:00
 
 - Uses JORE data from Citus
-- Cypress test fixes
+- Cypress test fixes and updates
 - Improve weather feature with correct road conditions
 - Enable route journeys (route vehicles on map without selecting a departure)
 - Update tests
