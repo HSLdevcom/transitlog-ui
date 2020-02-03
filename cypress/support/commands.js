@@ -90,10 +90,12 @@ Cypress.Commands.add("assertRouteSelected", (routeId) => {
 Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
   cy.assertRouteSelected(routeId);
   cy.getTestElement("journey-stop-event").should("exist");
-  cy.getTestElement("date-input")
-    .invoke("val")
-    .then((selectedDate) => {
-      const urlDate = selectedDate.replace(/-/g, "");
+  cy.getTestElement("selected-journey-date")
+    .should("exist")
+    .invoke("text")
+    .then((journeyDate) => {
+      // The date in the url doesn't have dashes.
+      const urlDate = journeyDate.replace(/-/g, "");
 
       if (routeId && departureTime) {
         cy.url().should("include", `/journey/${urlDate}/${departureTime}/${routeId}/1`);

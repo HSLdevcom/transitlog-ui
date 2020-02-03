@@ -1,4 +1,8 @@
 describe("Area search", () => {
+  const yesterday = Cypress.moment()
+    .subtract(1, "day")
+    .format("YYYY-MM-DD");
+
   beforeEach(() => {
     cy.visit("/");
   });
@@ -30,10 +34,6 @@ describe("Area search", () => {
   });
 
   it("Selects an area from URL bounds", () => {
-    const yesterday = Cypress.moment()
-      .subtract(1, "day")
-      .format("YYYY-MM-DD");
-
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
       `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=09%3A00%3A00&date=${yesterday}`
@@ -46,10 +46,6 @@ describe("Area search", () => {
   });
 
   it("Selects a journey from the area results", () => {
-    const yesterday = Cypress.moment()
-      .subtract(1, "day")
-      .format("YYYY-MM-DD");
-
     cy.visit(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
       `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=09%3A00%3A00&date=${yesterday}`

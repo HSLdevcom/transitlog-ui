@@ -207,7 +207,7 @@ export default observer(
               <DateTimeHeading>
                 <HeaderText>
                   <Calendar fill="var(--blue)" width="1rem" height="1rem" />
-                  {departureDate}
+                  <span data-testid="selected-journey-date">{departureDate}</span>
                 </HeaderText>
                 <HeaderText>
                   <Time2 fill="var(--blue)" width="1rem" height="1rem" />
