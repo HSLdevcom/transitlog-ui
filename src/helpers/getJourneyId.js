@@ -67,7 +67,7 @@ export function createDepartureJourneyId(departure) {
   const compositeJourney = createCompositeJourney(
     useDepartureTime.departureDate,
     departure,
-    useDepartureTime ? useDepartureTime : useDepartureTime.departureTime
+    useDepartureTime.departureTime
   );
 
   return getJourneyId(compositeJourney, false);

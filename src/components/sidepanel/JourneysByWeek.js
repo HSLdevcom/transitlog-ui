@@ -382,10 +382,7 @@ const JourneysByWeek = decorate(
 
                             // Check if the row contains a selected departure
                             if (dep) {
-                              const journeyId = createDepartureJourneyId(
-                                dep,
-                                showLastStopArrival ? false : plannedTime
-                              );
+                              const journeyId = createDepartureJourneyId(dep);
 
                               if (
                                 selectedJourney &&
