@@ -104,7 +104,7 @@
     "sass-loader": "^8.0.0",
     "serve": "^11.3.0",
     "style-loader": "^1.0.0",
-    "styled-components": "^4.4.0",
+    "styled-components": "^4.4.1",
     "styled-react-modal": "^2.0.0",
     "terser-webpack-plugin": "^2.1.0",
     "url-loader": "^2.0.0",
