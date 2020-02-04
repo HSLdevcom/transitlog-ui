@@ -1,12 +1,11 @@
-import React, {useMemo, useRef} from "react";
+import React, {useMemo} from "react";
 import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import HfpMarkerLayer from "./HfpMarkerLayer";
-import JourneyLayer from "./JourneyLayer";
 import gql from "graphql-tag";
 import {useQueryData} from "../../hooks/useQueryData";
-import {useCurrentEvent} from "../../hooks/useCurrentEvent";
+import {getCurrentEvent} from "../../hooks/useCurrentEvent";
 
 const routeJourneysQuery = gql`
   query routeJourneyQuery(
@@ -47,11 +46,9 @@ const RouteEventsLayer = decorate(({state}) => {
   const {unixTime, route, selectedJourney, date} = state;
   const {routeId = null, direction = null} = route;
 
-  const prevEvent = useRef(null);
-
   const shouldSkip = !!selectedJourney || !routeId || !direction;
 
-  const {data: routeEventsData = [], loading} = useQueryData(routeJourneysQuery, {
+  const {data: routeJourneysData = [], loading} = useQueryData(routeJourneysQuery, {
     skip: shouldSkip,
     variables: {
       routeId,
@@ -60,33 +57,35 @@ const RouteEventsLayer = decorate(({state}) => {
     },
   });
 
-  const routeEvents = routeEventsData || [];
-  const currentEvent = useCurrentEvent(routeEvents, unixTime);
+  const routeJourneys = routeJourneysData || [];
 
-  if (currentEvent) {
-    prevEvent.current = currentEvent;
-  }
+  const currentEvents = useMemo(() => {
+    const results = [];
 
-  const useEvent = currentEvent || prevEvent.current;
-  const journeyEvent = routeEvents[0];
+    for (const journey of routeJourneys) {
+      if (!journey || journey.vehiclePositions.length === 0) {
+        continue;
+      }
 
-  const journey = useMemo(() => {
-    return journeyEvent
-      ? {
-          journeyType: journeyEvent.journeyType,
-          mode: journeyEvent.mode,
-          uniqueVehicleId: journeyEvent.uniqueVehicleId,
-        }
-      : null;
-  }, [journeyEvent]);
+      const currentJourneyEvent = getCurrentEvent(journey.vehiclePositions, unixTime);
+      results.push({journey, currentEvent: currentJourneyEvent});
+    }
 
-  if (!!selectedJourney || !useEvent || !journey) {
+    return results;
+  }, [unixTime, routeJourneys]);
+
+  if (!!selectedJourney || currentEvents.length === 0) {
     return null;
   }
 
-  return (
-    <HfpMarkerLayer currentEvent={useEvent} isSelectedJourney={false} journey={journey} />
-  );
+  return currentEvents.map(({journey, currentEvent}) => (
+    <HfpMarkerLayer
+      key={journey.id}
+      currentEvent={currentEvent}
+      isSelectedJourney={false}
+      journey={journey}
+    />
+  ));
 });
 
 export default RouteEventsLayer;
