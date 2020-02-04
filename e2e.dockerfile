@@ -14,4 +14,4 @@ COPY ./cypress/ ${WORK}/cypress/
 COPY run_cypress.sh ${WORK}
 COPY cypress.json ${WORK}
 
-CMD yarn start
+CMD ["yarn", "start"]
