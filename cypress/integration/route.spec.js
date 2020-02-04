@@ -11,28 +11,28 @@ describe("Route smoke tests", () => {
 
   it("Finds a route and can select it", () => {
     cy.visit(`/?date=${yesterday}`);
-  
+
     cy.waitUntilLoadingFinishes();
-  
+
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-    
+
     cy.url().should((url) =>
       expect(url).to.include(`route.routeId=1018/1&route.direction=1`)
     );
 
     cy.getTestElement("journey-list").should("exist");
-    cy.assertRouteSelected("1018/1");
+    cy.assertRouteSelected("1018");
   });
 
   it("Selects a journey of the route", () => {
     cy.visit(`/?date=${yesterday}`);
-  
+
     cy.waitUntilLoadingFinishes();
-  
+
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-    
+
     cy.getTestElement("observed-journey")
       .first()
       .click()
@@ -49,12 +49,12 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure", () => {
     // Go to the previous week
     cy.visit(`/?date=${oneWeekAgo}`);
-  
+
     cy.waitUntilLoadingFinishes();
-  
+
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-    
+
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
@@ -73,12 +73,12 @@ describe("Route smoke tests", () => {
   it("Can select a weekly departure in last stop arrival mode", () => {
     // Go to the previous week
     cy.visit(`/?date=${oneWeekAgo}`);
-  
+
     cy.waitUntilLoadingFinishes();
-  
+
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-    
+
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
@@ -118,12 +118,12 @@ describe("Route smoke tests", () => {
 
   it("Can display the journey graph", () => {
     cy.visit(`/?date=${yesterday}`);
-  
+
     cy.waitUntilLoadingFinishes();
-  
+
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-    
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("observed-journey")
