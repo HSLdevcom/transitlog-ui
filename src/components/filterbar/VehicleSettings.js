@@ -25,10 +25,10 @@ const UnsignedEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
 
 const decorate = flow(observer, inject("Filters"));
 
-const VehicleSettings = decorate(({Filters, state, unsignedEventsLoading}) => {
+const VehicleSettings = decorate(({Filters, state}) => {
   const onSelectVehicle = useCallback((value) => Filters.setVehicle(value), [Filters]);
 
-  const {vehicle = "", date, selectedJourney} = state;
+  const {vehicle = "", date, selectedJourney, unsignedEventsLoading} = state;
   const isDisabled = !!selectedJourney;
   const fieldLabel = text("filterpanel.filter_by_vehicle");
 

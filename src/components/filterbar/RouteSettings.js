@@ -27,7 +27,7 @@ const RouteEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
 const decorate = flow(observer, inject("Filters", "Journey"));
 
 const RouteSettings = decorate(
-  ({routeEventsLoading, Filters, Journey, state: {route, date}}) => {
+  ({Filters, Journey, state: {route, date, routeJourneysLoading}}) => {
     return (
       <RouteOptionsQuery date={date}>
         {({routes = [], loading}) => (
@@ -76,7 +76,7 @@ const RouteSettings = decorate(
                         <br />
                         {selectedRoute.origin} - {selectedRoute.destination}
                       </SuggestionText>
-                      {routeEventsLoading && <RouteEventsLoading _testWait={false} />}
+                      {routeJourneysLoading && <RouteEventsLoading _testWait={false} />}
                     </SelectedOptionDisplay>
                   )}
                 </>

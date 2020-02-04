@@ -47,7 +47,7 @@ const UnsignedEventsLayer = decorate(({state, UI}) => {
   });
 
   useEffect(() => {
-    UI.toggleRouteJourneysLoading(loading);
+    UI.toggleUnsignedEventsLoading(loading);
   }, [loading]);
 
   const unsignedEvents = unsignedEventsData || [];
