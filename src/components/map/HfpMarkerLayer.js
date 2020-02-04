@@ -42,7 +42,7 @@ class HfpMarkerLayer extends Component {
         ref={this.markerRef} // Needs ref for testing
         onClick={this.onMarkerClick}
         position={[event.lat, event.lng]}
-        iconSize={isSelectedJourney ? [36, 36] : [20, 20]}
+        iconSize={isSelectedJourney ? [30, 30] : [20, 20]}
         icon={
           <VehicleMarker
             mode={journey.mode}
