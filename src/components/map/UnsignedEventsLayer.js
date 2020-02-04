@@ -38,13 +38,17 @@ const UnsignedEventsLayer = decorate(({state, UI}) => {
   const {unixTime, vehicle, date, user, selectedJourney} = state;
   const shouldSkip = !!selectedJourney || !user || !vehicle;
 
-  const {data: unsignedEventsData = [], loading} = useQueryData(unsignedEventsQuery, {
-    skip: shouldSkip,
-    variables: {
-      vehicleId: vehicle,
-      date: date,
+  const {data: unsignedEventsData = [], loading} = useQueryData(
+    unsignedEventsQuery,
+    {
+      skip: shouldSkip,
+      variables: {
+        vehicleId: vehicle,
+        date: date,
+      },
     },
-  });
+    "unsigned events"
+  );
 
   useEffect(() => {
     UI.toggleUnsignedEventsLoading(loading);

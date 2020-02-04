@@ -28,7 +28,9 @@ export const useRefetch = (name, props = {}, reactToAuto = false) => {
 
   return useCallback(
     (queryRefetcher) => {
-      setUpdateListener(name, createRefetcher(queryRefetcher, props), reactToAuto);
+      if (name) {
+        setUpdateListener(name, createRefetcher(queryRefetcher, props), reactToAuto);
+      }
     },
     [name, createRefetcher, reactToAuto, props]
   );
