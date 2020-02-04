@@ -18,8 +18,6 @@ describe("Route smoke tests", () => {
   it("Finds a route and can select it", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
