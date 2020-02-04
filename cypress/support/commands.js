@@ -26,6 +26,14 @@
 
 const _ = require("lodash");
 
+Cypress.Commands.add("visitAndSpy", (path) => {
+  return cy.visit(path, {
+    onBeforeLoad: (win) => {
+      cy.spy(win.console, "error").as("consoleError");
+    },
+  });
+});
+
 Cypress.Commands.add("getTestElement", (selector, options = {}) => {
   return cy.get(`[data-testid~="${selector}"]`, options);
 });
@@ -73,7 +81,7 @@ Cypress.Commands.add("hslLogin", () => {
 
     expect(response.status).to.eq(200);
     expect(access_token).to.be.ok;
-    cy.visit(`/?code=${access_token}&is_test=true`);
+    cy.visitAndSpy(`/?code=${access_token}&is_test=true`);
   });
 });
 

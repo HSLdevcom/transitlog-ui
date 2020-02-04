@@ -4,7 +4,13 @@ describe("Area search", () => {
     .format("YYYY-MM-DD");
 
   beforeEach(() => {
-    cy.visit("/");
+    cy.visitAndSpy("/");
+  });
+
+  afterEach(() => {
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
+      expect(errorLog).to.have.callCount(0)
+    );
   });
 
   function drawRectangle(from, to) {
@@ -34,7 +40,7 @@ describe("Area search", () => {
   });
 
   it("Selects an area from URL bounds", () => {
-    cy.visit(
+    cy.visitAndSpy(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
       `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=09%3A00%3A00&date=${yesterday}`
     );
@@ -46,7 +52,7 @@ describe("Area search", () => {
   });
 
   it("Selects a journey from the area results", () => {
-    cy.visit(
+    cy.visitAndSpy(
       // Select an area in front of Lasipalatsi in Helsinki at 8:00
       `/?selectedBounds=24.93656158447266%2C60.16976407053985%2C24.93827819824219%2C60.17061760538285&time=09%3A00%3A00&date=${yesterday}`
     );

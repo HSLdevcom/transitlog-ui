@@ -1,6 +1,12 @@
 describe("Time smoke tests", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visitAndSpy("/");
+  });
+  
+  afterEach(() => {
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
+      expect(errorLog).to.have.callCount(0)
+    );
   });
 
   it("Can simulate time", () => {
@@ -10,7 +16,7 @@ describe("Time smoke tests", () => {
     );
 
     // Go to yesterday so that we don't trigger live-update here.
-    cy.visit(`/?date=${yesterday.format("YYYY-MM-DD")}`);
+    cy.visitAndSpy(`/?date=${yesterday.format("YYYY-MM-DD")}`);
     cy.clock(yesterday.valueOf());
 
     cy.getTestElement("time-input")

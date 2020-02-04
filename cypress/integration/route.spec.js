@@ -9,8 +9,14 @@ describe("Route smoke tests", () => {
     .startOf("isoWeek")
     .format("YYYY-MM-DD");
 
+  afterEach(() => {
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
+      expect(errorLog).to.have.callCount(0)
+    );
+  });
+
   it("Finds a route and can select it", () => {
-    cy.visit(`/?date=${yesterday}`);
+    cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.waitUntilLoadingFinishes();
 
@@ -26,8 +32,7 @@ describe("Route smoke tests", () => {
   });
 
   it("Selects a journey of the route", () => {
-    cy.visit(`/?date=${yesterday}`);
-
+    cy.visitAndSpy(`/?date=${yesterday}`);
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("route-input").type("1018/1");
@@ -48,7 +53,7 @@ describe("Route smoke tests", () => {
 
   it("Can select a weekly departure", () => {
     // Go to the previous week
-    cy.visit(`/?date=${oneWeekAgo}`);
+    cy.visitAndSpy(`/?date=${oneWeekAgo}`);
 
     cy.waitUntilLoadingFinishes();
 
@@ -72,7 +77,7 @@ describe("Route smoke tests", () => {
 
   it("Can select a weekly departure in last stop arrival mode", () => {
     // Go to the previous week
-    cy.visit(`/?date=${oneWeekAgo}`);
+    cy.visitAndSpy(`/?date=${oneWeekAgo}`);
 
     cy.waitUntilLoadingFinishes();
 
@@ -117,7 +122,7 @@ describe("Route smoke tests", () => {
   });
 
   it("Can display the journey graph", () => {
-    cy.visit(`/?date=${yesterday}`);
+    cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.waitUntilLoadingFinishes();
 

@@ -1,17 +1,15 @@
 describe("App opening smoke tests", () => {
   beforeEach(() => {
-    cy.visit("/", {
-      onBeforeLoad: (win) => {
-        cy.spy(win.console, "error").as("consoleError");
-      },
-    });
+    cy.visitAndSpy("/");
+  });
+
+  afterEach(() => {
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
+      expect(errorLog).to.have.callCount(0)
+    );
   });
 
   it("Opens the app", () => {
-    cy.get("@consoleError", {timeout: 1}).should((errorLog) =>
-      expect(errorLog).to.have.callCount(0)
-    );
-
     cy.contains("Reittiloki");
   });
 

@@ -1,12 +1,18 @@
 describe("Stop smoke tests", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visitAndSpy("/");
+  });
+
+  afterEach(() => {
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
+      expect(errorLog).to.have.callCount(0)
+    );
   });
 
   it("Finds a stop and can select it", () => {
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
@@ -21,20 +27,20 @@ describe("Stop smoke tests", () => {
   it("Can select a departure", () => {
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
-  
+
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("departure-option")
       .first()
       .click();
-  
+
     cy.waitUntilLoadingFinishes();
-    
+
     cy.assertJourneySelected();
   });
 
   it("Can select a stop from the map", () => {
-    cy.visit("/?mapZoom=14");
+    cy.visitAndSpy("/?mapZoom=14");
 
     cy.get(".test-class-stop-marker").should("have.length.least", 2);
     cy.get(".test-class-stop-marker-1010115").click();
