@@ -6,36 +6,13 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
-  /** A Date string in YYYY-MM-DD format. The timezone is assumed to be Europe/Helsinki. */
   Date: any,
-  /** The direction of a route. An integer of either 1 or 2. */
   Direction: any,
-  /** A DateTime string in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). Timezone will be converted to Europe/Helsinki. */
   DateTime: any,
-  /** 
- * Time is seconds from 00:00:00 in format HH:mm:ss. The hours value can be more
-   * than 23. The timezone is assumed to be Europe/Helsinki
- **/
   Time: any,
-  /** 
- * A string that uniquely identifies a vehicle. The format is [operator
-   * ID]/[vehicle ID]. The operator ID is padded to have a length of 4 characters.
- **/
   VehicleId: any,
-  /** 
- * A string that defines a bounding box. The coordinates should be in the format
-   * `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's
-   * LatLngBounds.toBBoxString() returns. The precise bbox is not rounded.
- **/
   PreciseBBox: any,
-  /** 
- * A string that defines a bounding box. The coordinates should be in the format
-   * `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's
-   * LatLngBounds.toBBoxString() returns. Toe coordinates will be rounded, use
-   * PreciseBBox if this is not desired.
- **/
   BBox: any,
-  /** The `Upload` scalar type represents a file upload. */
   Upload: any,
 };
 
@@ -407,6 +384,7 @@ export type JourneyCancellationEvent = {
   isCancelled: Scalars['Boolean'],
   cancellationType: CancellationType,
   cancellationEffect: CancellationEffect,
+  _sort?: Maybe<Scalars['Int']>,
 };
 
 export type JourneyEvent = {
@@ -422,6 +400,7 @@ export type JourneyEvent = {
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
   _isVirtual?: Maybe<Scalars['Boolean']>,
+  _sort?: Maybe<Scalars['Int']>,
 };
 
 export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent;
@@ -447,13 +426,14 @@ export type JourneyStopEvent = {
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
   isOrigin?: Maybe<Scalars['Boolean']>,
-  index?: Maybe<Scalars['Int']>,
+  index: Scalars['Int'],
   stop?: Maybe<Stop>,
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
   unplannedStop: Scalars['Boolean'],
   _isVirtual?: Maybe<Scalars['Boolean']>,
+  _sort?: Maybe<Scalars['Int']>,
 };
 
 export type ObservedArrival = {
@@ -507,11 +487,11 @@ export type PlannedStopEvent = {
   departureId?: Maybe<Scalars['Int']>,
   isTimingStop: Scalars['Boolean'],
   isOrigin?: Maybe<Scalars['Boolean']>,
-  index?: Maybe<Scalars['Int']>,
+  index: Scalars['Int'],
   stop?: Maybe<Stop>,
+  _sort?: Maybe<Scalars['Int']>,
 };
 
-/** Any object that describes something with a position implements this interface. */
 export type Position = {
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
@@ -763,6 +743,9 @@ export type StopRoute = {
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
   isTimingStop: Scalars['Boolean'],
+  destination?: Maybe<Scalars['String']>,
+  origin?: Maybe<Scalars['String']>,
+  name?: Maybe<Scalars['String']>,
   mode?: Maybe<Scalars['String']>,
 };
 
@@ -792,6 +775,7 @@ export type VehicleJourney = {
   recordedAtUnix: Scalars['Int'],
   recordedTime: Scalars['Time'],
   timeDifference: Scalars['Int'],
+  loc?: Maybe<Scalars['String']>,
   alerts: Array<Alert>,
   cancellations: Array<Cancellation>,
   isCancelled: Scalars['Boolean'],
@@ -818,4 +802,5 @@ export type VehiclePosition = Position & {
   delay?: Maybe<Scalars['Int']>,
   heading?: Maybe<Scalars['Int']>,
   mode?: Maybe<Scalars['String']>,
+  _sort?: Maybe<Scalars['Int']>,
 };
