@@ -5,7 +5,6 @@ import get from "lodash/get";
 import AreaJourneys from "../AreaJourneys";
 import SelectedJourneyEvents from "../SelectedJourneyEvents";
 import MergedJourneys from "../MergedJourneys";
-import UnsignedVehicleEvents from "../UnsignedVehicleEvents";
 import {inject} from "../../helpers/inject";
 
 const decorate = flow(observer, inject("state"));
@@ -35,26 +34,20 @@ const MapEvents = decorate(({children, state}) => {
               journey: selectedJourney = null,
               loading: selectedJourneyLoading = false,
             }) => (
-              <UnsignedVehicleEvents>
-                {({unsignedEvents = [], loading: unsignedEventsLoading = false}) => (
-                  <MergedJourneys
-                    areaJourneys={areaJourneys}
-                    selectedJourney={selectedJourney}>
-                    {({currentJourneys = [], routeAndSelected = []}) =>
-                      children({
-                        selectedJourney,
-                        areaJourneys,
-                        unsignedEvents,
-                        currentJourneys,
-                        routeAndSelected,
-                        areaJourneysLoading,
-                        unsignedEventsLoading,
-                        selectedJourneyLoading: selectedJourneyLoading,
-                      })
-                    }
-                  </MergedJourneys>
-                )}
-              </UnsignedVehicleEvents>
+              <MergedJourneys
+                areaJourneys={areaJourneys}
+                selectedJourney={selectedJourney}>
+                {({currentJourneys = [], routeAndSelected = []}) =>
+                  children({
+                    selectedJourney,
+                    areaJourneys,
+                    currentJourneys,
+                    routeAndSelected,
+                    areaJourneysLoading,
+                    selectedJourneyLoading: selectedJourneyLoading,
+                  })
+                }
+              </MergedJourneys>
             )}
           </SelectedJourneyEvents>
         );

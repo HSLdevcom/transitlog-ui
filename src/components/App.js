@@ -96,19 +96,14 @@ function App({route, state, UI}) {
         {({
           selectedJourney,
           areaJourneys,
-          unsignedEvents,
           currentJourneys,
           routeAndSelected,
           areaJourneysLoading,
-          unsignedEventsLoading,
           selectedJourneyLoading,
         }) => (
           <AppGrid>
             <ServerMessage />
-            <FilterBar
-              unsignedEventsLoading={unsignedEventsLoading}
-              journeys={currentJourneys}
-            />
+            <FilterBar journeys={currentJourneys} />
             <SidepanelAndMapWrapper>
               <StopsByRouteQuery date={date} route={route} skip={!route}>
                 {({stops: routeStops}) => (
@@ -130,7 +125,6 @@ function App({route, state, UI}) {
                             centerOnRoute={areaJourneys.length === 0}
                             journeys={currentJourneys}
                             journeyPositions={currentJourneyPositions}
-                            unsignedEvents={unsignedEvents}
                             route={route}
                             routeStops={routeStops}
                           />

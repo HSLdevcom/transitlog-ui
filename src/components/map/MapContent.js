@@ -25,9 +25,7 @@ const decorate = flow(observer, inject("state"));
 const MapContent = decorate(
   ({
     journeys = [],
-    routeJourneys = [],
     journeyPositions,
-    unsignedEvents,
     route,
     centerOnRoute = true,
     routeStops = [],
@@ -53,6 +51,7 @@ const MapContent = decorate(
         {hasRoute && (
           <>
             <RouteLayer canCenterOnRoute={centerOnRoute} />
+
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (
@@ -96,14 +95,15 @@ const MapContent = decorate(
                   ) : null,
                 ];
               })}
+
             <RouteEventsLayer
               key={`route_hfp_markers_${route.routeId}_${route.direction}`}
             />
           </>
         )}
-        {!selectedJourney && unsignedEvents && unsignedEvents.length !== 0 && (
-          <UnsignedEventsLayer unsignedEvents={unsignedEvents} />
-        )}
+
+        <UnsignedEventsLayer />
+
         {journeys.length !== 0 &&
           journeys
             .filter(({id}) => id !== selectedJourneyId)

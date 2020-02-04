@@ -72,6 +72,8 @@ export default (state) => {
       mapBounds: null,
       mapDriverEvent: null,
       objectCenteringAllowed: !urlCenter,
+      routeJourneysLoading: false,
+      unsignedEventsLoading: false,
     },
     {
       selectedBounds: observable.ref,

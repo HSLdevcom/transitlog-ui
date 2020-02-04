@@ -210,6 +210,14 @@ export default (state) => {
     state.objectCenteringAllowed = setTo;
   });
 
+  const toggleRouteJourneysLoading = action((setTo = true) => {
+    state.routeJourneysLoading = setTo;
+  });
+
+  const toggleUnsignedEventsLoading = action((setTo = true) => {
+    state.unsignedEventsLoading = setTo;
+  });
+
   return {
     toggleSidePanel,
     toggleJourneyDetails,
@@ -234,5 +242,7 @@ export default (state) => {
     setMapBounds,
     setMapDriverEvent,
     allowObjectCentering,
+    toggleRouteJourneysLoading,
+    toggleUnsignedEventsLoading,
   };
 };

@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useMemo, useEffect} from "react";
 import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
@@ -40,9 +40,9 @@ const routeJourneysQuery = gql`
   }
 `;
 
-const decorate = flow(observer, inject("state"));
+const decorate = flow(observer, inject("UI"));
 
-const RouteEventsLayer = decorate(({state}) => {
+const RouteEventsLayer = decorate(({state, UI}) => {
   const {unixTime, route, selectedJourney, date} = state;
   const {routeId = null, direction = null} = route;
 
@@ -56,6 +56,10 @@ const RouteEventsLayer = decorate(({state}) => {
       departureDate: date,
     },
   });
+
+  useEffect(() => {
+    UI.toggleRouteJourneysLoading(loading);
+  }, [loading]);
 
   const routeJourneys = routeJourneysData || [];
 
