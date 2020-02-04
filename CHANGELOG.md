@@ -1,10 +1,11 @@
 # Transitlog UI changelog
 
-## Version 1.7.1, deployed 2020-02-04 @ 10:00
+## Version 1.7.1, deployed 2020-02-04 @ 14:00
 
 - Code improvements for route event and unsigned event display on map.
 - Slightly smaller selected vehicle icon.
-- Fixed some E2E test case.
+- Fixed some E2E test cases.
+- Check for console errors in Cypress tests.
 
 ## Version 1.7.0, deployed 2020-02-03 @ 10:00
 
