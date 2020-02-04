@@ -18,7 +18,7 @@ describe("Route smoke tests", () => {
     cy.getTestElement("route-option-1018-1").click();
 
     cy.url().should((url) =>
-      expect(url).to.include(`route.routeId=1018/1&route.direction=1`)
+      expect(url).to.include(`route.routeId=1018&route.direction=1`)
     );
 
     cy.getTestElement("journey-list").should("exist");
