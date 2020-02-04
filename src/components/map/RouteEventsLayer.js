@@ -48,14 +48,18 @@ const RouteEventsLayer = decorate(({state, UI}) => {
 
   const shouldSkip = !!selectedJourney || !routeId || !direction;
 
-  const {data: routeJourneysData = [], loading} = useQueryData(routeJourneysQuery, {
-    skip: shouldSkip,
-    variables: {
-      routeId,
-      direction,
-      departureDate: date,
+  const {data: routeJourneysData = [], loading} = useQueryData(
+    routeJourneysQuery,
+    {
+      skip: shouldSkip,
+      variables: {
+        routeId,
+        direction,
+        departureDate: date,
+      },
     },
-  });
+    "route journeys"
+  );
 
   useEffect(() => {
     UI.toggleRouteJourneysLoading(loading);
