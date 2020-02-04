@@ -29,17 +29,17 @@ describe("Time smoke tests", () => {
   });
 
   it("Can use live mode", () => {
-    cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
+    cy.getTestElement("route-input").type("1018/1");
+    cy.getTestElement("route-option-1018-1").click();
 
     cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("observed-journey")
-      .last()
+      .eq(-1)
       .click();
 
     cy.waitUntilLoadingFinishes();
-    cy.assertJourneySelected("2510");
+    cy.assertJourneySelected("1018");
 
     // Clicking the vehicle marker will pin the tooltip
     cy.getTestElement("hfp-marker-icon").click();
@@ -63,8 +63,8 @@ describe("Time smoke tests", () => {
   });
 
   it.skip("Can update current data", () => {
-    cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
+    cy.getTestElement("route-input").type("1018/1");
+    cy.getTestElement("route-option-1018-1").click();
 
     cy.waitUntilLoadingFinishes();
 
@@ -73,7 +73,7 @@ describe("Time smoke tests", () => {
       .click();
 
     cy.waitUntilLoadingFinishes();
-    cy.assertJourneySelected("2510");
+    cy.assertJourneySelected("1018");
 
     // Clicking the vehicle marker will pin the tooltip
     cy.getTestElement("hfp-marker-icon").click();

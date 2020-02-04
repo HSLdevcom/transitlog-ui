@@ -97,7 +97,6 @@ function App({route, state, UI}) {
           selectedJourney,
           areaJourneys,
           currentJourneys,
-          routeAndSelected,
           areaJourneysLoading,
           selectedJourneyLoading,
         }) => (
@@ -107,7 +106,7 @@ function App({route, state, UI}) {
             <SidepanelAndMapWrapper>
               <StopsByRouteQuery date={date} route={route} skip={!route}>
                 {({stops: routeStops}) => (
-                  <JourneyPosition date={date} journeys={routeAndSelected}>
+                  <JourneyPosition date={date} journeys={currentJourneys}>
                     {(currentJourneyPositions) => (
                       <>
                         <CenterOnPosition journeyPositions={currentJourneyPositions} />

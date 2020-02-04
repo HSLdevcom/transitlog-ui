@@ -37,12 +37,11 @@ const MapEvents = decorate(({children, state}) => {
               <MergedJourneys
                 areaJourneys={areaJourneys}
                 selectedJourney={selectedJourney}>
-                {({currentJourneys = [], routeAndSelected = []}) =>
+                {({currentJourneys = []}) =>
                   children({
                     selectedJourney,
                     areaJourneys,
                     currentJourneys,
-                    routeAndSelected,
                     areaJourneysLoading,
                     selectedJourneyLoading: selectedJourneyLoading,
                   })
