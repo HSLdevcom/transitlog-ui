@@ -1,5 +1,11 @@
 # Transitlog UI changelog
 
+## Version 1.7.1, deployed 2020-02-04 @ 10:00
+
+- Code improvements for route event and unsigned event display on map.
+- Slightly smaller selected vehicle icon.
+- Fixed some E2E test case.
+
 ## Version 1.7.0, deployed 2020-02-03 @ 10:00
 
 - Uses JORE data from Citus
