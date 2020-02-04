@@ -4,6 +4,7 @@ import styled from "styled-components";
 import flow from "lodash/flow";
 import last from "lodash/last";
 import uniqBy from "lodash/uniqBy";
+import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import {
   JourneyStopEvent,
@@ -149,7 +150,7 @@ const JourneyEvents = decorate(
 
             return (
               <Component
-                isOrigin={originDeparture.stopId === event.stopId}
+                isOrigin={get(originDeparture, "stopId", "") === event.stopId}
                 isFirst={index === 0}
                 isLast={index === arr.length - 1}
                 key={event.id}
