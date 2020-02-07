@@ -4858,17 +4858,17 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-commands@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/cypress-commands/-/cypress-commands-0.3.1.tgz#cae100909ffe4122f5c6280cb9f476fd665adf7d"
-  integrity sha512-WwewSrwYjG7aIzWOSEBQsLFtK9cnsRF8PRrHyJXGAe0BWxqFO6JVTWmu+H6dtGYd4uWGVJ+SZpwi2mwiSuzeew==
+cypress-commands@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cypress-commands/-/cypress-commands-1.0.0.tgz#fb49e8827447cbb4aedcb43591cb539a8f7bb818"
+  integrity sha512-q+l8SKALVCHVA2Y3zzDD5vOKDWnF4FIdU6dtC6iGT8P/gcY7xqVPiASiw2+A0K+Y6OjYrXBvxMHix/9eseCLZA==
 
-cypress-wait-until@^1.5.0:
+cypress-wait-until@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/cypress-wait-until/-/cypress-wait-until-1.6.1.tgz#2554191e5ecdc9ff21a045e09289e5a1ee76f6b7"
   integrity sha512-bI4p9Pou6EoIU0v9RyjPOoKH6aiNXg1TIVXyGmlpjcOhdIbg1OVSs3fmMQLxnQAm6xVY4rLWWQg3gbIzuToxTw==
 
-cypress@^3.5.0:
+cypress@^3.8.3:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-3.8.3.tgz#e921f5482f1cbe5814891c878f26e704bbffd8f4"
   integrity sha512-I9L/d+ilTPPA4vq3NC1OPKmw7jJIpMKNdyfR8t1EXYzYCjyqbc59migOm1YSse/VRbISLJ+QGb5k4Y3bz2lkYw==
