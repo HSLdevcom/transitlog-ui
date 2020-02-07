@@ -299,6 +299,7 @@ type Query {
   routes(date: Date, filter: RouteFilterInput): [Route]!
   stop(date: Date!, stopId: String!): Stop
   stops(date: Date, filter: StopFilterInput): [Stop]!
+  terminals(date: Date): [Terminal]!
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
@@ -381,6 +382,15 @@ type StopRoute {
   origin: String
   originStopId: String
   routeId: String!
+}
+
+type Terminal implements Position {
+  id: ID!
+  lat: Float!
+  lng: Float!
+  modes: [String!]
+  name: String!
+  stops: [String!]
 }
 
 type UIMessage {

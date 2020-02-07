@@ -109,21 +109,10 @@ export const singleStopQuery = gql`
 export const allStopsQuery = gql`
   query allStopsQuery($date: Date, $search: String) {
     stops(date: $date, filter: {search: $search}) {
-      id
-      stopId
-      shortId
-      lat
-      lng
-      name
-      radius
-      modes
-      routes {
-        routeId
-        direction
-        isTimingStop
-      }
+      ...StopFieldsFragment
     }
   }
+  ${StopFieldsFragment}
 `;
 
 const StopLayer = decorate(({showRadius, state, UI}) => {

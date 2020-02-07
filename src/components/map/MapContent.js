@@ -19,6 +19,7 @@ import UnsignedEventsLayer from "./UnsignedEventsLayer";
 import JourneyEventsLayer from "./JourneyEventsLayer";
 import DriverEventLayer from "./DriverEventLayer";
 import RouteEventsLayer from "./RouteEventsLayer";
+import TerminalLayer from "./TerminalLayer";
 
 const decorate = flow(observer, inject("state"));
 
@@ -48,6 +49,7 @@ const MapContent = decorate(
       <>
         <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
         {!selectedJourney && <StopLayer showRadius={showStopRadius} date={date} />}
+        <TerminalLayer />
         {hasRoute && (
           <>
             <RouteLayer canCenterOnRoute={centerOnRoute} />

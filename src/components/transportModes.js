@@ -5,6 +5,63 @@ import SubwayIcon from "../icons/Subway";
 import FerryIcon from "../icons/Ferry";
 import React from "react";
 import get from "lodash/get";
+import ReactDOMServer from "react-dom/server";
+import BusRectangle from "../icons/BusRectangle";
+import TramRectangle from "../icons/TramRectangle";
+import RailRectangle from "../icons/RailRectangle";
+import FerryRectangle from "../icons/FerryRectangle";
+import SubwaySign from "../icons/SubwaySign";
+
+export const transportIconsHtml = {
+  BUS: ReactDOMServer.renderToStaticMarkup(
+    <BusRectangle
+      width={20}
+      height={20}
+      fill={{inner: "white", outer: "var(--bus-blue)"}}
+    />
+  ),
+  TRAM: ReactDOMServer.renderToStaticMarkup(
+    <TramRectangle
+      width={20}
+      height={20}
+      fill={{inner: "white", outer: "var(--green)"}}
+    />
+  ),
+  TRUNK: ReactDOMServer.renderToStaticMarkup(
+    <BusRectangle
+      width={20}
+      height={20}
+      fill={{inner: "white", outer: "var(--orange)"}}
+    />
+  ),
+  RAIL: ReactDOMServer.renderToStaticMarkup(
+    <RailRectangle
+      width={20}
+      height={20}
+      fill={{inner: "white", outer: "var(--purple)"}}
+    />
+  ),
+  SUBWAY: ReactDOMServer.renderToStaticMarkup(
+    <SubwaySign width={20} height={20} fill={{inner: "white", outer: "var(--orange)"}} />
+  ),
+  METRO: ReactDOMServer.renderToStaticMarkup(
+    <SubwaySign width={20} height={20} fill={{inner: "white", outer: "var(--orange)"}} />
+  ),
+  FERRY: ReactDOMServer.renderToStaticMarkup(
+    <FerryRectangle
+      width={20}
+      height={20}
+      fill={{inner: "white", outer: "var(--light-blue)"}}
+    />
+  ),
+  DEFAULT: ReactDOMServer.renderToStaticMarkup(
+    <BusRectangle
+      width={20}
+      height={20}
+      fill={{inner: "white", outer: "var(--bus-blue)"}}
+    />
+  ),
+};
 
 export const transportIcons = {
   BUS: BusIcon,

@@ -263,7 +263,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         <Pane name="selected-stop-radius" style={{zIndex: 445}} />
         <Pane name="event-hover" style={{zIndex: 450}} />
         <Pane name="stops" style={{zIndex: 475}} />
-        <Pane name="stopped-markers" style={{zIndex: 476}} />
+        <Pane name="terminal-markers" style={{zIndex: 477}} />
+        <Pane name="stopped-markers" style={{zIndex: 479}} />
         <Pane name="hfp-events" style={{zIndex: 480}} />
         <Pane name="hfp-events-2" style={{zIndex: 485}} />
         <Pane name="hfp-markers" style={{zIndex: 500}} />
