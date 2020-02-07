@@ -29,7 +29,7 @@ async function readEnvVars() {
   const config = {};
 
   const appRoot = await fs.realpath(process.cwd());
-  const envPaths = [path.resolve(appRoot, ".testsecret")];
+  const envPaths = [path.resolve(appRoot, ".env.cypress")];
   const envObjects = [];
 
   // Read env vars from file
