@@ -1,0 +1,43 @@
+name: CI
+
+on: [push, release]
+
+jobs:
+  dev:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build and publish Docker image
+      uses: elgohr/Publish-Docker-Github-Action@2.12
+      with:
+        name: hsldevcom/transitlog-ui
+        username: ddunderfelt
+        password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+        buildargs: BUILD_ENV=dev
+        tags: dev
+    - name: Deploy with Gitlab CI
+      uses: appleboy/gitlab-ci-action@0.0.1
+      with:
+        url: "https://gitlab.hsl.fi"
+        token: ${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }}
+        project_id: 202
+  test-dev:
+    needs: dev
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node12.14.0-chrome79-ff71
+    steps:
+      - uses: actions/checkout@master
+      - name: Cypress tests
+        uses: cypress-io/github-action@v1.16.1
+        with:
+          browser: chrome
+          headless: true
+        env:
+          CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi 
+          CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
+          CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
+          CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
+          CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
+          
