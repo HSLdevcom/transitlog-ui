@@ -21,6 +21,7 @@ jobs:
       with:
         url: "https://gitlab.hsl.fi"
         token: ${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }}
+        debug: true
         project_id: 202
   test-dev:
     needs: dev
