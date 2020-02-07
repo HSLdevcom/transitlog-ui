@@ -46,20 +46,8 @@ Cypress.Commands.add("hslLogin", () => {
   const HSL_TESTING_HSLID_USERNAME = Cypress.env("HSL_TESTING_HSLID_USERNAME");
   const HSL_TESTING_HSLID_PASSWORD = Cypress.env("HSL_TESTING_HSLID_PASSWORD");
 
-  console.log(
-    AUTH_URI,
-    CLIENT_ID,
-    CLIENT_SECRET,
-    HSL_TESTING_HSLID_PASSWORD,
-    HSL_TESTING_HSLID_USERNAME
-  );
-
   const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
-
-  Cypress.log({
-    name: "HSL ID login",
-  });
-
+  
   const options = {
     method: "POST",
     url: AUTH_URI,
