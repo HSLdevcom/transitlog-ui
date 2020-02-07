@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build and publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@2
+      uses: elgohr/Publish-Docker-Github-Action@2.12
       with:
         name: hsldevcom/transitlog-ui
         username: ddunderfelt
@@ -31,7 +31,7 @@ jobs:
           path: ~/.cache
           key: dev-cypress-cache
       - name: Cypress tests
-        uses: cypress-io/github-action@v1
+        uses: cypress-io/github-action@v1.16.1
         with:
           browser: chrome
           headless: true
