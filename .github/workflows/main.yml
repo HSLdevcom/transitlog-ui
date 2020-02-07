@@ -7,9 +7,9 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
     - name: Build and publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@2.12
+      uses: elgohr/Publish-Docker-Github-Action@2
       with:
         name: hsldevcom/transitlog-ui
         username: ddunderfelt
@@ -17,28 +17,39 @@ jobs:
         buildargs: BUILD_ENV=dev
         tags: dev
     - name: Deploy with Gitlab CI
-      uses: appleboy/gitlab-ci-action@0.0.1
-      with:
-        url: "https://gitlab.hsl.fi"
-        token: ${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }}
-        debug: true
-        project_id: 202
+      run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
   test-dev:
     needs: dev
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     container: cypress/browsers:node12.14.0-chrome79-ff71
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - name: Cache dependencies
+        uses: actions/cache@v1
+          with:
+            path: ~/.cache
+            key: dev-cypress-cache
       - name: Cypress tests
-        uses: cypress-io/github-action@v1.16.1
+        uses: cypress-io/github-action@v1
         with:
           browser: chrome
           headless: true
         env:
-          CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi 
+          CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
           CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
           CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
           CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
-          
+      - name: Upload screenshot artifacts
+        uses: actions/upload-artifact@v1
+        if: failure()
+          with:
+            name: cypress-screenshots
+            path: cypress/screenshots
+      - name: Upload video artifacts
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
