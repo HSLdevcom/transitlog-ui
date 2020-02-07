@@ -9,27 +9,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build and publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@2.12
+      uses: whoan/docker-build-with-cache-action@v3
       with:
-        name: hsldevcom/transitlog-ui
+        image_name: hsldevcom/transitlog-ui
         username: ddunderfelt
         password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
-        buildargs: BUILD_ENV=dev
-        tags: dev
+        build_extra_args: --buildarg=BUILD_ENV=dev
+        image_tag: dev
     - name: Deploy with Gitlab CI
       run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
   test-dev:
     needs: dev
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    container: cypress/browsers:node12.14.0-chrome79-ff71
     steps:
       - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache
-          key: dev-cypress-cache
       - name: Cypress tests
         uses: cypress-io/github-action@v1.16.1
         with:
