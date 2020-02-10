@@ -73,7 +73,6 @@ const StopMarker = observer(
     isTimingStop = false,
     children,
     iconChildren,
-    markerRef: ref,
     selected,
     setRoute,
     setStop,
@@ -81,29 +80,10 @@ const StopMarker = observer(
     highlightedStop,
     testId = "stop-marker",
   }) => {
-    const popupOpen = useRef(false);
-    const defaultRef = useRef(null);
-    const markerRef = ref || defaultRef;
-
     const isSelected =
       typeof selected !== "undefined" ? !!selected : stop && selectedStop === stop.stopId;
 
     const isHighlighted = stop && highlightedStop === stop.stopId;
-
-    useEffect(() => {
-      // If this component was supplied a ref, that means that the popup
-      // opening logic is handled in the parent.
-      if (ref || children || !markerRef.current) {
-        return;
-      }
-
-      if (isSelected && !popupOpen.current) {
-        markerRef.current.leafletElement.openPopup();
-        popupOpen.current = true;
-      } else if (!isSelected && popupOpen.current) {
-        markerRef.current.leafletElement.closePopup();
-      }
-    }, [children, ref, isSelected, markerRef.current, popupOpen.current]);
 
     const onSelectStop = useCallback(() => {
       if (stop) {
@@ -124,9 +104,7 @@ const StopMarker = observer(
     const popupElement = children ? (
       children
     ) : stop ? (
-      <MapPopup
-        onClose={() => (popupOpen.current = false)}
-        onOpen={() => (popupOpen.current = true)}>
+      <MapPopup>
         <StopPopupContent stop={stop} color={stopColor} onSelectRoute={setRoute} />
       </MapPopup>
     ) : null;
@@ -172,7 +150,6 @@ const StopMarker = observer(
     const markerElement =
       stopIsTimingStop || iconChildren ? (
         <DivIcon
-          ref={markerRef}
           pane="stops"
           position={markerPosition}
           icon={markerIcon}
@@ -182,7 +159,6 @@ const StopMarker = observer(
       ) : (
         <CircleMarker
           className={`test-class-${testId} test-class-${testId}-${stop.stopId}`}
-          ref={markerRef}
           radius={selected ? 10 : isTerminal ? 9 : 7}
           weight={3}
           color={stopColor}

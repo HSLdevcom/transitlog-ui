@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useEffect, useState} from "react";
+import React, {useMemo, useRef, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
@@ -118,7 +118,6 @@ export const allStopsQuery = gql`
 
 const StopLayer = decorate(({showRadius, state, UI}) => {
   const {date, stop, mapView, mapOverlays, selectedJourney, mapZoom} = state;
-  const [currentStop, setCurrentStop] = useState(null);
 
   const {data: selectedStop} = useQueryData(
     singleStopQuery,
@@ -131,12 +130,6 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
     },
     "single stop query"
   );
-
-  useEffect(() => {
-    if (stop && selectedStop && stop === selectedStop.stopId) {
-      setCurrentStop(stop);
-    }
-  }, [stop, selectedStop]);
 
   const {data: stopsData} = useQueryData(
     allStopsQuery,
@@ -156,7 +149,7 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
 
     const position = latLng([selectedStop.lat, selectedStop.lng]);
     UI.setMapView(position);
-  }, [currentStop]);
+  }, [selectedStop]);
 
   const stopsLimit = mapZoom > 16 ? 100 : mapZoom > 15 ? 300 : mapZoom > 14 ? 500 : 1000;
 
@@ -165,7 +158,10 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
       return [];
     }
 
-    return orderBy(stops, ({lat, lng}) => mapView.distanceTo([lat, lng])).slice(
+    const mapViewCenter =
+      typeof mapView.getCenter === "function" ? mapView.getCenter() : mapView;
+
+    return orderBy(stops, ({lat, lng}) => mapViewCenter.distanceTo([lat, lng])).slice(
       0,
       stopsLimit
     );

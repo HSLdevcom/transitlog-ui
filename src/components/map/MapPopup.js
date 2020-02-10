@@ -39,8 +39,9 @@ const MapPopup = decorate(({className, children, onClose, onOpen}) => {
       <Popup
         pane="popups"
         className={className}
-        autoClose={false}
-        autoPan={false}
+        autoClose={true}
+        closeOnClick={true}
+        autoPan={true}
         keepInView={false}
         onOpen={onOpen}
         onClose={onClose}

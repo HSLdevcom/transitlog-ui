@@ -46,7 +46,7 @@ const getSuggestionInputValue = (suggestion) => {
 
 const renderSuggestion = (suggestion, {isHighlighted}) => {
   const suggestionIsStop = isStop(suggestion);
-  const hoverInfo = (suggestionIsStop ? suggestion.routes : suggestion.stops) || [];
+  const hoverInfo = (suggestionIsStop ? suggestion.routes : suggestion.stopIds) || [];
   const suggestionType = suggestionIsStop ? "stop" : "terminal";
 
   return (
