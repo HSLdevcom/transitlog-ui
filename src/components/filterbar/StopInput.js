@@ -20,7 +20,7 @@ const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
 
-const isStop = (item) =>
+export const isStop = (item) =>
   typeof item.shortId !== "undefined" && typeof item.stopId !== "undefined";
 
 const renderSectionTitle = (section) => {
@@ -41,11 +41,13 @@ const getSuggestionValue = (suggestion) => {
 };
 
 const renderSuggestion = (suggestion, {isHighlighted}) => {
-  const hoverInfo = (isStop(suggestion) ? suggestion.routes : suggestion.stops) || [];
+  const suggestionIsStop = isStop(suggestion);
+  const hoverInfo = (suggestionIsStop ? suggestion.routes : suggestion.stops) || [];
+  const suggestionType = suggestionIsStop ? "stop" : "terminal";
 
   return (
     <SuggestionContent
-      data-testid={`stop-option-${suggestion.id}`}
+      data-testid={`${suggestionType}-option-${suggestion.id}`}
       {...applyTooltip(
         hoverInfo
           .map((item) => {
@@ -214,7 +216,7 @@ const getOptionGroups = (options = []) => {
   );
 };
 
-export default observer(({date, stops, terminals, onSelect, stop, loading}) => {
+export default observer(({date, stops, terminals, onSelect, stop, terminal, loading}) => {
   const allOptions = useMemo(() => [...terminals, ...stops], [stops, terminals]);
   const [options, setOptions] = useState(allOptions);
 
@@ -233,7 +235,7 @@ export default observer(({date, stops, terminals, onSelect, stop, loading}) => {
       testId="stop-input"
       helpText="Select stop"
       minimumInput={0}
-      value={stop}
+      value={stop || terminal}
       onSelect={onSelect}
       getValue={getSuggestionValue}
       highlightFirstSuggestion={true}

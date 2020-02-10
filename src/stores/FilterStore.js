@@ -26,6 +26,7 @@ export default (state, initialState = {}) => {
   const emptyState = {
     date: moment.tz(new Date(), TIMEZONE).format("YYYY-MM-DD"),
     stop: "",
+    terminal: "",
     vehicle: "",
     route: {
       routeId: "",

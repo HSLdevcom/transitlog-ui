@@ -119,7 +119,6 @@ class SuggestionInput extends Component {
     const {
       className,
       placeholder,
-      getValue,
       renderSuggestion,
       minimumInput = 3,
       multiSection,
