@@ -182,7 +182,7 @@ describe("Stop search and filtering", () => {
     expect(firstStopOption).toBeInTheDocument();
   });
 
-  test.skip("Stop is selected when the suggestion is clicked.", async () => {
+  test("Stop is selected when the suggestion is clicked.", async () => {
     const {findByTestId, findByText} = renderStopSettings();
     const stopInput = await findByTestId("stop-input");
 
@@ -193,7 +193,7 @@ describe("Stop search and filtering", () => {
     const firstStopOption = await findByText("Marsalkantie");
 
     fireEvent.click(firstStopOption);
-    expect(setStopMock).toHaveBeenCalledWith("1420104");
+    expect(setStopMock).toHaveBeenCalledWith(expect.objectContaining({id: "1420104"}));
     expect(state.stop).toBe("1420104");
 
     const selectedStopDisplay = await findByTestId("selected-stop-display");
@@ -201,7 +201,7 @@ describe("Stop search and filtering", () => {
     expect(selectedStopDisplay).toHaveTextContent(/Marsalkantie$/g);
   });
 
-  test.skip("The correct stop is suggested when searching", async () => {
+  test("The correct stop is suggested when searching", async () => {
     const {findByTestId} = renderStopSettings();
     const stopInput = await findByTestId("stop-input");
 
@@ -223,11 +223,11 @@ describe("Stop search and filtering", () => {
 
     // Finally select the suggestion
     fireEvent.click(getByTextUtil(suggestions.firstChild, "Matkamiehentie"));
-    expect(setStopMock).toHaveBeenCalledWith("1291162");
+    expect(setStopMock).toHaveBeenCalledWith(expect.objectContaining({id: "1291162"}));
     expect(state.stop).toBe("1291162");
   });
 
-  test.skip("The stop timetables are shown in the sidepanel when a stop is selected.", async () => {
+  test("The stop timetables are shown in the sidepanel when a stop is selected.", async () => {
     jest.setTimeout(100000);
     const {findByTestId, findByText, getByText} = renderWithSidebar();
     const stopInput = await findByTestId("stop-input");

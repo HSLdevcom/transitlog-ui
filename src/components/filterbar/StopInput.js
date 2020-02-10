@@ -32,7 +32,11 @@ const renderSectionTitle = (section) => {
 
 const getSectionSuggestions = (section) => section.options;
 
-const getSuggestionValue = (suggestion) => {
+const getSuggestionItem = (suggestion) => {
+  return suggestion;
+};
+
+const getSuggestionInputValue = (suggestion) => {
   if (typeof suggestion === "string") {
     return suggestion;
   }
@@ -237,7 +241,8 @@ export default observer(({date, stops, terminals, onSelect, stop, terminal, load
       minimumInput={0}
       value={stop || terminal}
       onSelect={onSelect}
-      getValue={getSuggestionValue}
+      getValue={getSuggestionItem}
+      getInputValue={getSuggestionInputValue}
       highlightFirstSuggestion={true}
       multiSection={true}
       renderSectionTitle={renderSectionTitle}

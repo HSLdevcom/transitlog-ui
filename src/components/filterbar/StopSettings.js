@@ -41,7 +41,6 @@ const StopSettings = decorate(({Filters, state}) => {
   const terminals = terminalsData || [];
 
   const onSelectOption = useCallback((item) => {
-    console.log(item);
     if (isStop(item)) {
       Filters.setStop(item);
     } else {
