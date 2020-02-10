@@ -12,7 +12,7 @@ import getTransportType from "../../helpers/getTransportType";
 import {createGlobalStyle} from "styled-components";
 import {getModeColor} from "../../helpers/vehicleColor";
 
-const decorate = flow(observer, inject("state"));
+const decorate = flow(observer, inject("Filters"));
 
 export const terminalsQuery = gql`
   query terminalsQuery($date: Date) {
@@ -43,7 +43,7 @@ const TerminalIconStyle = createGlobalStyle`
 const selectedTerminalStyle = (color = "var(--bus-blue)") =>
   `border: 2px solid white; box-shadow: 0 0 0 2px ${color};`;
 
-const TerminalLayer = decorate(({state: {date, mapOverlays, terminal}}) => {
+const TerminalLayer = decorate(({Filters, state: {date, mapOverlays, terminal}}) => {
   const {data: terminalsData} = useQueryData(
     terminalsQuery,
     {variables: {date}},
@@ -88,6 +88,7 @@ const TerminalLayer = decorate(({state: {date, mapOverlays, terminal}}) => {
 
       return (
         <Marker
+          onClick={() => Filters.setTerminal(currentTerminal.id)}
           key={currentTerminal.id}
           icon={terminalIcon}
           position={[currentTerminal.lat, currentTerminal.lng]}
