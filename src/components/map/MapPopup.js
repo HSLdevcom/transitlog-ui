@@ -5,10 +5,6 @@ import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 
 const PopupStyle = createGlobalStyle`
-  .leaflet-container {
-    font-family: inherit !important;
-  }
-
   .leaflet-popup-content {
     margin: 0 !important;
     max-height: 500px; // Sometimes leaflet does not apply a maxHeight so we're doing it here.

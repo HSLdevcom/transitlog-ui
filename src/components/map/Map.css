@@ -31,3 +31,7 @@
   padding: 0 !important;
   border: 0 !important;
 }
+
+.leaflet-container {
+  font-family: inherit !important;
+}

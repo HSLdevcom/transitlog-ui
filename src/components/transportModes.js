@@ -12,55 +12,89 @@ import RailRectangle from "../icons/RailRectangle";
 import FerryRectangle from "../icons/FerryRectangle";
 import SubwaySign from "../icons/SubwaySign";
 
+const iconCache = {};
+
+const cacheIcon = (name, size, html) => (iconCache[`${name}:${size}`] = html);
+const getCachedIcon = (name, size) => iconCache[`${name}:${size}`] || null;
+
 export const transportIconsHtml = {
-  BUS: ReactDOMServer.renderToStaticMarkup(
-    <BusRectangle
-      width={20}
-      height={20}
-      fill={{inner: "white", outer: "var(--bus-blue)"}}
-    />
-  ),
-  TRAM: ReactDOMServer.renderToStaticMarkup(
-    <TramRectangle
-      width={20}
-      height={20}
-      fill={{inner: "white", outer: "var(--green)"}}
-    />
-  ),
-  TRUNK: ReactDOMServer.renderToStaticMarkup(
-    <BusRectangle
-      width={20}
-      height={20}
-      fill={{inner: "white", outer: "var(--orange)"}}
-    />
-  ),
-  RAIL: ReactDOMServer.renderToStaticMarkup(
-    <RailRectangle
-      width={20}
-      height={20}
-      fill={{inner: "white", outer: "var(--purple)"}}
-    />
-  ),
-  SUBWAY: ReactDOMServer.renderToStaticMarkup(
-    <SubwaySign width={20} height={20} fill={{inner: "white", outer: "var(--orange)"}} />
-  ),
-  METRO: ReactDOMServer.renderToStaticMarkup(
-    <SubwaySign width={20} height={20} fill={{inner: "white", outer: "var(--orange)"}} />
-  ),
-  FERRY: ReactDOMServer.renderToStaticMarkup(
-    <FerryRectangle
-      width={20}
-      height={20}
-      fill={{inner: "white", outer: "var(--light-blue)"}}
-    />
-  ),
-  DEFAULT: ReactDOMServer.renderToStaticMarkup(
-    <BusRectangle
-      width={20}
-      height={20}
-      fill={{inner: "white", outer: "var(--bus-blue)"}}
-    />
-  ),
+  BUS: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <BusRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--bus-blue)"}}
+      />
+    ),
+  TRAM: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <TramRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--green)"}}
+      />
+    ),
+  TRUNK: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <BusRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--orange)"}}
+      />
+    ),
+  RAIL: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <RailRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--purple)"}}
+      />
+    ),
+  SUBWAY: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <SubwaySign
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--orange)"}}
+      />
+    ),
+  METRO: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <SubwaySign
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--orange)"}}
+      />
+    ),
+  FERRY: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <FerryRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--light-blue)"}}
+      />
+    ),
+  DEFAULT: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <BusRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--bus-blue)"}}
+      />
+    ),
+};
+
+export const getTransportIconHtml = (name, size) => {
+  let icon = getCachedIcon(name, size);
+
+  if (icon) {
+    return icon;
+  }
+
+  icon = transportIconsHtml[name](size);
+  cacheIcon(name, size, icon);
+
+  return icon;
 };
 
 export const transportIcons = {
