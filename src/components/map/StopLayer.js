@@ -143,13 +143,17 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
     !mapOverlays.includes("Stops") || stops.length === 0 || !!selectedJourney;
 
   useEffect(() => {
-    if (!selectedStop) {
+    if (!stop || !stops || stops.length === 0) {
       return;
     }
 
-    const position = latLng([selectedStop.lat, selectedStop.lng]);
-    UI.setMapView(position);
-  }, [selectedStop]);
+    const stopObj = stops.find((s) => s.stopId === stop);
+
+    if (stopObj) {
+      const position = latLng([stopObj.lat, stopObj.lng]);
+      UI.setMapView(position);
+    }
+  }, [stop, stops]);
 
   const stopsLimit = mapZoom > 16 ? 100 : mapZoom > 15 ? 300 : mapZoom > 14 ? 500 : 1000;
 

@@ -104,7 +104,7 @@ const StopMarker = observer(
     const popupElement = children ? (
       children
     ) : stop ? (
-      <MapPopup>
+      <MapPopup open={isSelected}>
         <StopPopupContent stop={stop} color={stopColor} onSelectRoute={setRoute} />
       </MapPopup>
     ) : null;

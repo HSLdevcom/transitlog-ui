@@ -74,7 +74,7 @@ const TerminalIconStyle = createGlobalStyle`
 const selectedTerminalStyle = (color = "var(--bus-blue)") =>
   `border: 2px solid white; box-shadow: 0 0 0 2px ${color};`;
 
-const SelectedTerminalPopup = decorate(({terminal, UI, onClose, onOpen}) => {
+const SelectedTerminalPopup = decorate(({terminal, UI, open}) => {
   const terminalMode = getPriorityMode(get(terminal, "modes", []));
   const terminalColor = getModeColor(terminalMode);
 
@@ -83,7 +83,7 @@ const SelectedTerminalPopup = decorate(({terminal, UI, onClose, onOpen}) => {
   const uniqueRoutes = uniqBy(terminalRoutes, (r) => `${r.routeId}/${r.direction}`);
 
   return (
-    <MapPopup onClose={onClose} onOpen={onOpen}>
+    <MapPopup open={open}>
       <StopContentWrapper data-testid={`terminal-popup terminal-popup-${terminal.id}`}>
         <StopPopupContentSection>
           <Heading level={4}>
@@ -174,7 +174,9 @@ const TerminalLayer = decorate(({Filters, state, UI}) => {
           icon={terminalIcon}
           position={[currentTerminal.lat, currentTerminal.lng]}
           pane="terminal-markers">
-          {isSelected && <SelectedTerminalPopup terminal={selectedTerminal} />}
+          {isSelected && (
+            <SelectedTerminalPopup open={true} terminal={selectedTerminal} />
+          )}
           <Tooltip offset={[15, 0]} interactive={false} direction="right">
             <div>
               <strong>{currentTerminal.id}</strong>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useEffect} from "react";
 import {Popup} from "react-leaflet";
 import {createGlobalStyle} from "styled-components";
 import {observer} from "mobx-react-lite";
@@ -32,19 +32,32 @@ const PopupStyle = createGlobalStyle`
 
 const decorate = flow(observer);
 
-const MapPopup = decorate(({className, children, onClose, onOpen}) => {
+const MapPopup = decorate(({className, children, open = false}) => {
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    if (popupRef.current) {
+      const popupElement = popupRef.current.leafletElement;
+
+      if (open && popupElement && popupElement._source) {
+        popupElement._source.openPopup();
+      } else if (popupElement && popupElement._source) {
+        popupElement._source.closePopup();
+      }
+    }
+  }, [popupRef.current, open]);
+
   return (
     <>
       <PopupStyle />
       <Popup
+        ref={popupRef}
         pane="popups"
         className={className}
         autoClose={true}
         closeOnClick={true}
         autoPan={true}
         keepInView={false}
-        onOpen={onOpen}
-        onClose={onClose}
         offset={[0, -10]}
         minWidth={350}
         maxWidth={450}>
