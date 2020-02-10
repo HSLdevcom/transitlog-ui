@@ -3,7 +3,8 @@ import {observer} from "mobx-react-lite";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
 import CompoundStopMarker from "./CompoundStopMarker";
-import {flow} from "lodash";
+import flow from "lodash/flow";
+import orderBy from "lodash/orderBy";
 import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import gql from "graphql-tag";
@@ -116,11 +117,8 @@ export const allStopsQuery = gql`
 `;
 
 const StopLayer = decorate(({showRadius, state, UI}) => {
-  const {date, stop, mapBounds: bounds, mapZoom: zoom, route} = state;
+  const {date, stop, mapView, mapOverlays, selectedJourney, mapZoom} = state;
   const [currentStop, setCurrentStop] = useState(null);
-
-  const boundsAreValid =
-    !!bounds && typeof bounds.isValid === "function" && bounds.isValid();
 
   const {data: selectedStop} = useQueryData(
     singleStopQuery,
@@ -149,7 +147,7 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
   const stops = stopsData || [];
 
   const hideStops =
-    zoom < 14 || stops.length === 0 || !boundsAreValid || (!!route && !!route.routeId);
+    !mapOverlays.includes("Stops") || stops.length === 0 || !!selectedJourney;
 
   useEffect(() => {
     if (!selectedStop) {
@@ -159,6 +157,19 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
     const position = latLng([selectedStop.lat, selectedStop.lng]);
     UI.setMapView(position);
   }, [currentStop]);
+
+  const stopsLimit = mapZoom > 16 ? 100 : mapZoom > 15 ? 300 : mapZoom > 14 ? 500 : 1000;
+
+  const stopsInArea = useMemo(() => {
+    if (!mapView) {
+      return [];
+    }
+
+    return orderBy(stops, ({lat, lng}) => mapView.distanceTo([lat, lng])).slice(
+      0,
+      stopsLimit
+    );
+  }, [stops, mapView, stopsLimit]);
 
   if (hideStops && !selectedStop) {
     return null;
@@ -174,8 +185,6 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
       />
     );
   }
-
-  const stopsInArea = stops.filter(({lat, lng}) => bounds.contains([lat, lng]));
 
   return (
     <StopLayerContent

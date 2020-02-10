@@ -52,7 +52,9 @@ export default (state) => {
       journeyDetailsOpen: getUrlValue("journeysDetailsOpen", true),
       journeyGraphOpen: getUrlValue("journeyGraphOpen", false),
       showInstructions: getUrlValue("showInstructions", false),
-      mapOverlays: getUrlValue("mapOverlays", "Stopped vehicle").split(","),
+      mapOverlays: getUrlValue("mapOverlays", "Stopped vehicle,Terminals,Stops").split(
+        ","
+      ),
       areaEventsStyle: getUrlValue("areaEventsStyle", areaEventsStyles.MARKERS),
       areaEventsRouteFilter: getUrlValue("areaEventsRouteFilter", ""),
       selectedBounds: urlBounds ? boundsFromBBoxString(urlBounds) : null,

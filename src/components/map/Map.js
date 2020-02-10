@@ -226,6 +226,24 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
               onSelectLocation={setMapillaryViewerLocation}
             />
           </LayersControl.Overlay>
+          <LayersControl.Overlay name="Stops" checked={mapOverlays.includes("Stops")}>
+            <FeatureGroup>
+              {/*
+                  The terminal markers are rendered in TerminalLayer. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay
+            name="Terminals"
+            checked={mapOverlays.includes("Terminals")}>
+            <FeatureGroup>
+              {/*
+                  The terminal markers are rendered in TerminalLayer. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
           <LayersControl.Overlay
             name="Stop radius"
             checked={mapOverlays.includes("Stop radius")}>
