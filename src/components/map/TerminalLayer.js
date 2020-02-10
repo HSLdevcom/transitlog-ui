@@ -1,12 +1,14 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {divIcon} from "leaflet";
-import {flow} from "lodash";
+import flow from "lodash/flow";
+import orderBy from "lodash/orderBy";
 import {useQueryData} from "../../hooks/useQueryData";
 import gql from "graphql-tag";
 import {transportIconsHtml} from "../transportModes";
 import {Marker} from "react-leaflet";
 import {inject} from "../../helpers/inject";
+import getTransportType from "../../helpers/getTransportType";
 
 const decorate = flow(observer, inject("state"));
 
@@ -43,10 +45,14 @@ const TerminalLayer = decorate(({state: {date}}) => {
   return (
     <>
       {terminals.map((terminal) => {
-        const mainMode = terminal.modes[0] || "DEFAULT";
+        const orderedModes = orderBy(terminal.modes || ["DEFAULT"], (mode) =>
+          getTransportType(mode, true)
+        );
 
         const terminalIcon = divIcon({
-          html: `<div style="${terminalIconStyle}">${transportIconsHtml[mainMode]}</div>`,
+          html: `<div style="${terminalIconStyle}">${
+            transportIconsHtml[orderedModes[0]]
+          }</div>`,
           iconSize: [20, 20],
         });
 
