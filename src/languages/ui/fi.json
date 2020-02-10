@@ -27,6 +27,8 @@
   "filterpanel.clear.stop": "Tyhjennä pysäkkivalinta",
   "filterpanel.clear.vehicle": "Tyhjennä ajoneuvovalinta",
   "filterpanel.clear.route": "Tyhjennä reittivalinta",
+  "filterpanel.stops": "Pysäkit",
+  "filterpanel.terminals": "Terminaalit",
 
   "sidepanel.tabs.journeys": "Lähdöt",
   "sidepanel.tabs.week_journeys": "Viikon lähdöt",

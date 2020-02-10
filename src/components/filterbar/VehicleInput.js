@@ -27,7 +27,7 @@ const getSuggestionValue = (suggestion) => {
   return get(suggestion, "id", "");
 };
 
-const renderSuggestion = (suggestion, {query, isHighlighted}) => {
+const renderSuggestion = (suggestion, {isHighlighted}) => {
   const registryNr = get(suggestion, "registryNr", "");
   let uniqueVehicleId = getSuggestionValue(suggestion);
 
@@ -74,7 +74,7 @@ const getVehicleGroups = (vehicles = [], sortByMatchScore = false) => {
     ),
     ({operator}) => /\(([^)]+)\)/.exec(operator),
     sortDirection
-  ).slice(0, 5);
+  );
 };
 
 const enhance = flow(observer);

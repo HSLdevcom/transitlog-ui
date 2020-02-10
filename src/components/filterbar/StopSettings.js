@@ -12,6 +12,7 @@ import styled from "styled-components";
 import Loading from "../Loading";
 import {useQueryData} from "../../hooks/useQueryData";
 import {allStopsQuery} from "../map/StopLayer";
+import {terminalsQuery} from "../map/TerminalLayer";
 
 const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
@@ -28,7 +29,14 @@ const StopSettings = decorate(({Filters, state}) => {
     "all stops query"
   );
 
+  const {data: terminalsData} = useQueryData(
+    terminalsQuery,
+    {variables: {date}},
+    "terminals query"
+  );
+
   const stops = stopsData || [];
+  const terminals = terminalsData || [];
 
   if (loading && stops.length === 0) {
     return <LoadingSpinner inline={true} />;
@@ -45,6 +53,7 @@ const StopSettings = decorate(({Filters, state}) => {
             onSelect={Filters.setStop}
             stop={stop}
             stops={stops}
+            terminals={terminals}
             loading={loading}
           />
         </Input>

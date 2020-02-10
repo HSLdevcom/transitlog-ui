@@ -27,6 +27,8 @@
   "filterpanel.clear.stop": "Återställ hållplats",
   "filterpanel.clear.vehicle": "Återställ fordon",
   "filterpanel.clear.route": "Återställ rutt",
+  "filterpanel.stops": "Hållplatser",
+  "filterpanel.terminals": "Terminaler",
 
   "sidepanel.tabs.journeys": "Resor",
   "sidepanel.tabs.week_journeys": "Reseveckan",

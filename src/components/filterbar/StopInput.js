@@ -1,5 +1,9 @@
-import React, {useState, useCallback} from "react";
-import SuggestionInput, {SuggestionContent, SuggestionText} from "./SuggestionInput";
+import React, {useState, useCallback, useMemo} from "react";
+import SuggestionInput, {
+  SuggestionContent,
+  SuggestionText,
+  SuggestionSectionTitle,
+} from "./SuggestionInput";
 import get from "lodash/get";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
@@ -8,36 +12,61 @@ import {applyTooltip} from "../../hooks/useTooltip";
 import sortBy from "lodash/sortBy";
 import orderBy from "lodash/orderBy";
 import {intval} from "../../helpers/isWithinRange";
+import map from "lodash/map";
+import groupBy from "lodash/groupBy";
+import {text} from "../../helpers/text";
 
 const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
+
+const isStop = (item) =>
+  typeof item.shortId !== "undefined" && typeof item.stopId !== "undefined";
+
+const renderSectionTitle = (section) => {
+  const headingToken =
+    section.group === "stops" ? "filterpanel.stops" : "filterpanel.terminals";
+
+  return <SuggestionSectionTitle>{text(headingToken)}</SuggestionSectionTitle>;
+};
+
+const getSectionSuggestions = (section) => section.options;
 
 const getSuggestionValue = (suggestion) => {
   if (typeof suggestion === "string") {
     return suggestion;
   }
 
-  return get(suggestion, "stopId", "");
+  return get(suggestion, "id", "");
 };
 
-const renderSuggestion = (suggestion, {query, isHighlighted}) => {
+const renderSuggestion = (suggestion, {isHighlighted}) => {
+  const hoverInfo = (isStop(suggestion) ? suggestion.routes : suggestion.stops) || [];
+
   return (
     <SuggestionContent
-      data-testid={`stop-option-${suggestion.stopId}`}
+      data-testid={`stop-option-${suggestion.id}`}
       {...applyTooltip(
-        (suggestion.routes || [])
-          .map(
-            ({routeId, direction, isTimingStop}) =>
-              `${routeId}/${direction}${isTimingStop ? " 🕒" : ""}`
-          )
+        hoverInfo
+          .map((item) => {
+            if (typeof item === "string") {
+              return item;
+            }
+
+            const {routeId, direction, isTimingStop} = item;
+            return `${routeId}/${direction}${isTimingStop ? " 🕒" : ""}`;
+          })
           .join("\n")
       )}
       isHighlighted={isHighlighted}>
       <SuggestionText>
-        <strong>
-          {suggestion.stopId} ({suggestion.shortId.replace(/ /g, "")})
-        </strong>
+        {isStop(suggestion) ? (
+          <strong>
+            {suggestion.id} ({suggestion.shortId.replace(/ /g, "")})
+          </strong>
+        ) : (
+          <strong>{suggestion.id}</strong>
+        )}
         <br />
         {suggestion.name}
       </SuggestionText>
@@ -55,6 +84,10 @@ const renderSuggestionsContainer = (loading) => ({containerProps, children, quer
 
 const getFilteredSuggestions = (stops, {value = ""}) => {
   function prepareMatchVal(val) {
+    if (!val) {
+      return "";
+    }
+
     return val
       .trim()
       .replace(/\s/g, "")
@@ -67,25 +100,25 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
   const filteredStops =
     inputLength === 0
       ? stops
-      : stops.filter(({stopId, shortId, name}) => {
-          const matchStopId = prepareMatchVal(stopId);
+      : stops.filter(({id, shortId, name}) => {
+          const matchStopId = prepareMatchVal(id);
           const matchShortId = prepareMatchVal(shortId);
           const matchName = prepareMatchVal(name);
 
           let matches = 0;
 
           if (
-            matchShortId.startsWith(inputValue) ||
+            (matchShortId && matchShortId.startsWith(inputValue)) ||
             matchShortId.substring(1).startsWith(inputValue)
           ) {
             matches++;
           }
 
-          if (matchStopId.startsWith(inputValue)) {
+          if (matchStopId && matchStopId.startsWith(inputValue)) {
             matches++;
           }
 
-          if (matchName.includes(inputValue)) {
+          if (matchName && matchName.includes(inputValue)) {
             matches++;
           }
 
@@ -93,7 +126,7 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
         });
 
   if (inputLength === 0) {
-    return sortBy(filteredStops, ({shortId}) => {
+    return sortBy(filteredStops, ({shortId = ""}) => {
       const cityLetter = shortId[0];
       let sortValue = 0;
 
@@ -105,16 +138,20 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
         sortValue = 30000;
       }
 
+      if (!sortValue) {
+        return sortValue;
+      }
+
       return intval(shortId.substring(1)) + sortValue;
     });
   }
 
   return orderBy(
     filteredStops,
-    ({stopId, shortId, name}) => {
+    ({id, shortId, name}) => {
       let matchScore = 0;
 
-      const cleanStopId = prepareMatchVal(stopId);
+      const cleanStopId = prepareMatchVal(id);
       const cleanShortId = prepareMatchVal(shortId);
       const cleanName = prepareMatchVal(name);
 
@@ -163,16 +200,33 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
   );
 };
 
-export default observer(({date, stops, onSelect, stop, loading}) => {
-  const [options, setOptions] = useState(stops);
+const getOptionGroups = (options = []) => {
+  return orderBy(
+    map(
+      groupBy(options, (item) => (isStop(item) ? "stops" : "terminals")),
+      (groupOptions, groupLabel) => ({
+        group: groupLabel,
+        options: groupOptions.slice(0, 500),
+      })
+    ),
+    ({group}) => (group === "terminals" ? 0 : 1),
+    "asc"
+  );
+};
+
+export default observer(({date, stops, terminals, onSelect, stop, loading}) => {
+  const allOptions = useMemo(() => [...terminals, ...stops], [stops, terminals]);
+  const [options, setOptions] = useState(allOptions);
 
   const onSearch = useCallback(
     (searchQuery) => {
-      const result = getFilteredSuggestions(stops, searchQuery);
+      const result = getFilteredSuggestions(allOptions, searchQuery);
       setOptions(result);
     },
     [stops]
   );
+
+  const optionGroups = useMemo(() => getOptionGroups(options), [options]);
 
   return (
     <SuggestionInput
@@ -183,8 +237,11 @@ export default observer(({date, stops, onSelect, stop, loading}) => {
       onSelect={onSelect}
       getValue={getSuggestionValue}
       highlightFirstSuggestion={true}
+      multiSection={true}
+      renderSectionTitle={renderSectionTitle}
+      getSectionSuggestions={getSectionSuggestions}
       renderSuggestion={renderSuggestion}
-      suggestions={options.slice(0, 50)}
+      suggestions={optionGroups}
       renderSuggestionsContainer={renderSuggestionsContainer(loading)}
       onSuggestionsFetchRequested={onSearch}
     />
