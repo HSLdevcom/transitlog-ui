@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useCallback} from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import get from "lodash/get";

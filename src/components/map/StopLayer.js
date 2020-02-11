@@ -116,8 +116,10 @@ export const allStopsQuery = gql`
   ${StopFieldsFragment}
 `;
 
-const StopLayer = decorate(({showRadius, state, UI}) => {
-  const {date, stop, mapView, mapOverlays, selectedJourney, mapZoom} = state;
+let stopsVisibleBeforeRouteSelected = false;
+
+const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
+  const {date, stop, route, mapView, mapOverlays, mapZoom} = state;
 
   const {data: selectedStop} = useQueryData(
     singleStopQuery,
@@ -139,8 +141,22 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
 
   const stops = stopsData || [];
 
-  const hideStops =
-    !mapOverlays.includes("Stops") || stops.length === 0 || !!selectedJourney;
+  const stopsHidden = !mapOverlays.includes("Stops");
+
+  useEffect(() => {
+    if (!!route.routeId) {
+      if (!stopsHidden) {
+        stopsVisibleBeforeRouteSelected = true;
+        UI.changeOverlay("remove")({name: "Stops"});
+      } else {
+        stopsVisibleBeforeRouteSelected = false;
+      }
+    }
+
+    if (!route.routeId && stopsVisibleBeforeRouteSelected) {
+      UI.changeOverlay("add")({name: "Stops"});
+    }
+  }, [route.routeId]);
 
   useEffect(() => {
     if (!stop || !stops || stops.length === 0) {
@@ -155,7 +171,16 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
     }
   }, [stop, stops]);
 
-  const stopsLimit = mapZoom > 16 ? 100 : mapZoom > 15 ? 300 : mapZoom > 14 ? 500 : 1000;
+  const stopsLimit =
+    mapZoom > 16
+      ? 100
+      : mapZoom > 15
+      ? 300
+      : mapZoom > 14
+      ? 500
+      : mapZoom > 13
+      ? 800
+      : 1000;
 
   const stopsInArea = useMemo(() => {
     if (!mapView) {
@@ -171,16 +196,17 @@ const StopLayer = decorate(({showRadius, state, UI}) => {
     );
   }, [stops, mapView, stopsLimit]);
 
-  if (hideStops && !selectedStop) {
+  if (stopsHidden && !selectedStop) {
     return null;
   }
 
-  if (hideStops && selectedStop) {
+  if (stopsHidden && selectedStop) {
     return (
       <StopMarker
         selected={true}
         showRadius={showRadius}
         stop={selectedStop}
+        setStop={Filters.setStop}
         date={date}
       />
     );
