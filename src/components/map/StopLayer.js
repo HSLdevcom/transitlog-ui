@@ -119,12 +119,21 @@ export const allStopsQuery = gql`
 let stopsVisibleBeforeRouteSelected = false;
 
 const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
-  const {date, stop, route, mapView, mapBounds, mapOverlays, mapZoom} = state;
+  const {
+    date,
+    stop,
+    route,
+    mapView,
+    mapBounds,
+    mapOverlays,
+    mapZoom,
+    selectedJourney,
+  } = state;
 
   const {data: selectedStop} = useQueryData(
     singleStopQuery,
     {
-      skip: !stop,
+      skip: !stop || !!selectedJourney,
       variables: {
         stopId: stop,
         date,
@@ -135,12 +144,11 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
 
   const {data: stopsData} = useQueryData(
     allStopsQuery,
-    {variables: {date}},
+    {skip: !!selectedJourney, variables: {date}},
     "all stops query"
   );
 
   const stops = stopsData || [];
-
   const stopsHidden = !mapOverlays.includes("Stops");
 
   useEffect(() => {
@@ -159,7 +167,7 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
   }, [route.routeId]);
 
   useEffect(() => {
-    if (!stop || !stops || stops.length === 0) {
+    if (selectedJourney || !stop || !stops || stops.length === 0) {
       return;
     }
 
@@ -169,9 +177,13 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
       const position = latLng([stopObj.lat, stopObj.lng]);
       UI.setMapView(position);
     }
-  }, [stop, stops]);
+  }, [stop, stops, selectedJourney]);
 
   const stopsInArea = useMemo(() => {
+    if (selectedJourney) {
+      return [];
+    }
+
     if (mapZoom >= 14 && mapBounds) {
       return stops.filter(
         ({stopId, lat, lng}) => stopId === stop || mapBounds.contains([lat, lng])
@@ -185,9 +197,9 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
         stopId === stop ? 0 : mapViewCenter.distanceTo([lat, lng])
       ).slice(0, 600);
     }
-  }, [stop, stops, mapView, mapBounds, mapZoom]);
+  }, [stop, stops, mapView, mapBounds, mapZoom, selectedJourney]);
 
-  if (stopsHidden && !selectedStop) {
+  if (selectedJourney || (stopsHidden && !selectedStop)) {
     return null;
   }
 
