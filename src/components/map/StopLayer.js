@@ -119,7 +119,7 @@ export const allStopsQuery = gql`
 let stopsVisibleBeforeRouteSelected = false;
 
 const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
-  const {date, stop, route, mapView, mapOverlays, mapZoom} = state;
+  const {date, stop, route, mapView, mapBounds, mapOverlays, mapZoom} = state;
 
   const {data: selectedStop} = useQueryData(
     singleStopQuery,
@@ -171,30 +171,21 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
     }
   }, [stop, stops]);
 
-  const stopsLimit =
-    mapZoom > 16
-      ? 100
-      : mapZoom > 15
-      ? 300
-      : mapZoom > 14
-      ? 500
-      : mapZoom > 13
-      ? 800
-      : 1000;
-
   const stopsInArea = useMemo(() => {
-    if (!mapView) {
-      return [];
+    if (mapZoom >= 14 && mapBounds) {
+      return stops.filter(
+        ({stopId, lat, lng}) => stopId === stop || mapBounds.contains([lat, lng])
+      );
+    } else if (mapView) {
+      // mapView can be either a LatLng or a LatLngBounds. Quack.
+      const mapViewCenter =
+        typeof mapView.getCenter === "function" ? mapView.getCenter() : mapView;
+
+      return orderBy(stops, ({stopId, lat, lng}) =>
+        stopId === stop ? 0 : mapViewCenter.distanceTo([lat, lng])
+      ).slice(0, 600);
     }
-
-    const mapViewCenter =
-      typeof mapView.getCenter === "function" ? mapView.getCenter() : mapView;
-
-    return orderBy(stops, ({lat, lng}) => mapViewCenter.distanceTo([lat, lng])).slice(
-      0,
-      stopsLimit
-    );
-  }, [stops, mapView, stopsLimit]);
+  }, [stop, stops, mapView, mapBounds, mapZoom]);
 
   if (stopsHidden && !selectedStop) {
     return null;
