@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import get from "lodash/get";
@@ -93,13 +93,37 @@ const StopMarker = observer(
 
     const {lat, lng} = stop || position || {};
 
-    if (!stop && !position) {
-      return null;
-    }
-
     const stopIsTimingStop = isTimingStop || !!get(stop, "isTimingStop", false);
     const stopMode = !stop ? mode : getPriorityMode(get(stop, "modes", []));
     const stopColor = color ? color : getModeColor(stopMode);
+
+    // Don't update the icon too often, will result in an update loop.
+    const markerIcon = useMemo(
+      () => (
+        <IconWrapper
+          className={`test-class-${testId} test-class-${testId}-${get(
+            stop,
+            "stopId",
+            ""
+          )}`}>
+          <StopMarkerCircle
+            thickBorder={isTerminal}
+            isSelected={isSelected}
+            isHighlighted={isHighlighted}
+            isTimingStop={stopIsTimingStop}
+            dashed={dashedBorder}
+            big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
+            color={stopColor}>
+            {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
+          </StopMarkerCircle>
+        </IconWrapper>
+      ),
+      [stop]
+    );
+
+    if (!stop && !position) {
+      return null;
+    }
 
     const popupElement = children ? (
       children
@@ -110,26 +134,6 @@ const StopMarker = observer(
     ) : null;
 
     const markerPosition = latLng({lat, lng});
-
-    const markerIcon = (
-      <IconWrapper
-        className={`test-class-${testId} test-class-${testId}-${get(
-          stop,
-          "stopId",
-          ""
-        )}`}>
-        <StopMarkerCircle
-          thickBorder={isTerminal}
-          isSelected={isSelected}
-          isHighlighted={isHighlighted}
-          isTimingStop={stopIsTimingStop}
-          dashed={dashedBorder}
-          big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
-          color={stopColor}>
-          {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
-        </StopMarkerCircle>
-      </IconWrapper>
-    );
 
     const markerChildren = (
       <>
