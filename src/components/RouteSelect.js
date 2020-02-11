@@ -27,6 +27,12 @@ const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
   height: auto;
   width: 100%;
 
+  &:hover {
+    background: ${({color = "var(--lightest-grey)"}) =>
+      color ? color : "var(--lightest-grey)"};
+    border: 0;
+  }
+
   ${(p) =>
     p.selected
       ? css`
@@ -34,14 +40,12 @@ const StopOptionButton = styled(Button).attrs(() => ({small: true}))`
           box-shadow: 0 0 0 2px
             ${({color = "var(--lightest-grey)"}) =>
               color ? color : "var(--lightest-grey)"};
+
+          &:hover {
+            border: 2px solid white;
+          }
         `
       : ""}
-
-  &:hover {
-    background: ${({color = "var(--lightest-grey)"}) =>
-      color ? color : "var(--lightest-grey)"};
-    border: 0;
-  }
 `;
 
 const RouteData = styled.div`
