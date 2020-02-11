@@ -27,6 +27,7 @@ const filterActions = (state) => {
 
     if (state.stop) {
       state.terminal = "";
+      setUrlValue("terminal", state.terminal);
     }
   });
 
@@ -38,6 +39,7 @@ const filterActions = (state) => {
 
     if (state.terminal) {
       state.stop = "";
+      setUrlValue("stop", state.stop);
     }
   });
 

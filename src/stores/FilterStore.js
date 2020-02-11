@@ -70,6 +70,10 @@ export default (state, initialState = {}) => {
         ? pick(inflate(initialStateOrUrlState), ...Object.keys(emptyState))
         : inflate(initialStateOrUrlState);
 
+    if (initialStateProps.stop && initialStateProps.terminal) {
+      initialStateProps.terminal = "";
+    }
+
     if (extend) {
       extendObservable(state, merge({}, emptyState, initialStateProps));
     } else {
