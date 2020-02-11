@@ -1,4 +1,4 @@
-import React, {useMemo, useCallback, useEffect} from "react";
+import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import {divIcon, latLng} from "leaflet";
 import flow from "lodash/flow";
@@ -25,8 +25,10 @@ import {Heading} from "../Typography";
 import {Button} from "../Forms";
 import {StopFieldsFragment} from "../../queries/StopFieldsFragment";
 import RouteSelect from "../RouteSelect";
+import {useCenterOnPopup} from "../../hooks/useCenterOnPopup";
 
 const decorate = flow(observer, inject("Filters", "UI"));
+const decoratePopup = flow(observer, inject("UI"));
 
 export const terminalsQuery = gql`
   query terminalsQuery($date: Date) {
@@ -74,7 +76,7 @@ const TerminalIconStyle = createGlobalStyle`
 const selectedTerminalStyle = (color = "var(--bus-blue)") =>
   `border: 2px solid white; box-shadow: 0 0 0 2px ${color};`;
 
-const SelectedTerminalPopup = decorate(({terminal, UI, open}) => {
+const SelectedTerminalPopup = decoratePopup(({terminal, UI, open}) => {
   const terminalMode = getPriorityMode(get(terminal, "modes", []));
   const terminalColor = getModeColor(terminalMode);
 
@@ -104,8 +106,8 @@ const SelectedTerminalPopup = decorate(({terminal, UI, open}) => {
   );
 });
 
-const TerminalLayer = decorate(({Filters, state, UI}) => {
-  const {date, mapOverlays, terminal} = state;
+const TerminalLayer = decorate(({Filters, state}) => {
+  const {date, mapOverlays, terminal, selectedJourney, objectCenteringAllowed} = state;
 
   const {data: terminalsData} = useQueryData(
     terminalsQuery,
@@ -115,30 +117,16 @@ const TerminalLayer = decorate(({Filters, state, UI}) => {
 
   const terminals = terminalsData || [];
 
-  const {data: selectedTerminalData} = useQueryData(singleTerminalQuery, {
-    skip: !terminal,
-    variables: {
-      date,
-      terminalId: terminal,
-    },
-  });
-
-  const selectedTerminal = useMemo(() => {
-    if (!terminal || !selectedTerminalData) {
-      return null;
+  const {data: selectedTerminal, loading: selectedTerminalLoading} = useQueryData(
+    singleTerminalQuery,
+    {
+      skip: !terminal,
+      variables: {
+        date,
+        terminalId: terminal,
+      },
     }
-
-    return selectedTerminalData;
-  }, [terminal, selectedTerminalData]);
-
-  useEffect(() => {
-    if (!selectedTerminal) {
-      return;
-    }
-
-    const position = latLng([selectedTerminal.lat, selectedTerminal.lng]);
-    UI.setMapView(position);
-  }, [selectedTerminal]);
+  );
 
   const getTerminalIcon = useCallback(
     (currentTerminal) => {
@@ -174,7 +162,7 @@ const TerminalLayer = decorate(({Filters, state, UI}) => {
           icon={terminalIcon}
           position={[currentTerminal.lat, currentTerminal.lng]}
           pane="terminal-markers">
-          {isSelected && (
+          {isSelected && !selectedTerminalLoading && (
             <SelectedTerminalPopup open={true} terminal={selectedTerminal} />
           )}
           <Tooltip offset={[15, 0]} interactive={false} direction="right">
@@ -186,8 +174,16 @@ const TerminalLayer = decorate(({Filters, state, UI}) => {
         </Marker>
       );
     },
-    [terminal, selectedTerminal]
+    [terminal, selectedTerminal, selectedTerminalLoading]
   );
+
+  useCenterOnPopup([
+    !selectedJourney,
+    !!terminal,
+    !!selectedTerminal,
+    !selectedTerminalLoading,
+    objectCenteringAllowed,
+  ]);
 
   const terminalsVisible = mapOverlays.includes("Terminals");
 

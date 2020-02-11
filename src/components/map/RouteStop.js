@@ -92,7 +92,7 @@ class RouteStop extends React.Component {
 
     let stopStreetViewPopup = (
       <MapPopup key={`stop_${stopId}_popup`}>
-        <StopPopupContent stop={stop} onShowStreetView={this.onShowStreetView} />
+        <StopPopupContent stop={stop} />
       </MapPopup>
     );
 

@@ -9,6 +9,7 @@ import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import gql from "graphql-tag";
 import {StopFieldsFragment} from "../../queries/StopFieldsFragment";
+import {useCenterOnPopup} from "../../hooks/useCenterOnPopup";
 
 const decorate = flow(observer, inject("Filters", "UI"));
 
@@ -128,9 +129,10 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
     mapOverlays,
     mapZoom,
     selectedJourney,
+    objectCenteringAllowed,
   } = state;
 
-  const {data: selectedStop} = useQueryData(
+  const {data: selectedStop, loading: selectedStopLoading} = useQueryData(
     singleStopQuery,
     {
       skip: !stop || !!selectedJourney,
@@ -147,6 +149,13 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
     {skip: !!selectedJourney, variables: {date}},
     "all stops query"
   );
+
+  useCenterOnPopup([
+    !!selectedStop,
+    !selectedStopLoading,
+    !selectedJourney,
+    !!objectCenteringAllowed,
+  ]);
 
   const stops = stopsData || [];
   const stopsHidden = !mapOverlays.includes("Stops");
@@ -165,19 +174,6 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
       UI.changeOverlay("add")({name: "Stops"});
     }
   }, [route.routeId]);
-
-  useEffect(() => {
-    if (selectedJourney || !stop || !stops || stops.length === 0) {
-      return;
-    }
-
-    const stopObj = stops.find((s) => s.stopId === stop);
-
-    if (stopObj) {
-      const position = latLng([stopObj.lat, stopObj.lng]);
-      UI.setMapView(position);
-    }
-  }, [stop, stops, selectedJourney]);
 
   const stopsInArea = useMemo(() => {
     if (selectedJourney) {

@@ -22,7 +22,7 @@ import {observable, action, reaction} from "mobx";
 import {inject} from "../../helpers/inject";
 import "leaflet/dist/leaflet.css";
 import {validBounds} from "../../helpers/validBounds";
-import {LatLngBounds, LatLng, Marker as LeafletMarker} from "leaflet";
+import {LatLngBounds, LatLng} from "leaflet";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
 
 const MapContainer = styled.div`
@@ -69,7 +69,6 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     currentMapillaryViewerLocation,
     currentMapillaryMapLocation,
     sidePanelVisible,
-    mapBounds,
   } = state;
 
   const {
