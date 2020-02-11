@@ -17,9 +17,9 @@ import StopSettings from "../../components/filterbar/StopSettings";
 import get from "lodash/get";
 import SidePanel from "../../components/sidepanel/SidePanel";
 import {text} from "../../helpers/text";
-import {departuresQuery} from "../../queries/DeparturesQuery";
 import {allStopsQuery, singleStopQuery} from "../../components/map/StopLayer";
 import {terminalsQuery} from "../../components/map/TerminalLayer";
+import {departuresQuery} from "../../components/sidepanel/StopDepartures";
 
 const date = "2019-05-27";
 
