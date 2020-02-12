@@ -1,5 +1,4 @@
-.BUS:before,
-.U:before {
+.BUS:before {
   background-image: url("../icon-bus.svg");
   color: #007ac9;
 }

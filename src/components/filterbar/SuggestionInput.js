@@ -32,10 +32,10 @@ export const SuggestionContent = styled.div`
     withIcon
       ? `
 &:before {
-    margin-top: 0.15rem;
+    margin-top: -0.5rem;
     content: "";
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 `
       : ""};

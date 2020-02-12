@@ -58,7 +58,7 @@ const StopSettings = decorate(({Filters, state}) => {
   let terminalMode = "BUS";
 
   if (selectedTerminal) {
-    const orderedModes = orderBy(terminal.modes || ["BUS"], (mode) =>
+    const orderedModes = orderBy(selectedTerminal.modes || ["BUS"], (mode) =>
       getTransportType(mode, true)
     );
 
