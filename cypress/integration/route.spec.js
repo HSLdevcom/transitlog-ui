@@ -4,8 +4,8 @@ describe("Route smoke tests", () => {
     .subtract(1, "day")
     .format("YYYY-MM-DD");
 
-  const oneWeekAgo = Cypress.moment()
-    .subtract(1, "week")
+  const startOfWeek = Cypress.moment()
+    .subtract(1, "day")
     .startOf("isoWeek")
     .format("YYYY-MM-DD");
 
@@ -51,7 +51,7 @@ describe("Route smoke tests", () => {
 
   it("Can select a weekly departure", () => {
     // Go to the previous week
-    cy.visitAndSpy(`/?date=${oneWeekAgo}`);
+    cy.visitAndSpy(`/?date=${startOfWeek}`);
 
     cy.waitUntilLoadingFinishes();
 
@@ -75,7 +75,7 @@ describe("Route smoke tests", () => {
 
   it("Can select a weekly departure in last stop arrival mode", () => {
     // Go to the previous week
-    cy.visitAndSpy(`/?date=${oneWeekAgo}`);
+    cy.visitAndSpy(`/?date=${startOfWeek}`);
 
     cy.waitUntilLoadingFinishes();
 
