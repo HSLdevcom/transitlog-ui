@@ -26,6 +26,7 @@ export default (state, initialState = {}) => {
   const emptyState = {
     date: moment.tz(new Date(), TIMEZONE).format("YYYY-MM-DD"),
     stop: "",
+    terminal: "",
     vehicle: "",
     route: {
       routeId: "",
@@ -68,6 +69,10 @@ export default (state, initialState = {}) => {
       process.env.NODE_ENV !== "test"
         ? pick(inflate(initialStateOrUrlState), ...Object.keys(emptyState))
         : inflate(initialStateOrUrlState);
+
+    if (initialStateProps.stop && initialStateProps.terminal) {
+      initialStateProps.terminal = "";
+    }
 
     if (extend) {
       extendObservable(state, merge({}, emptyState, initialStateProps));

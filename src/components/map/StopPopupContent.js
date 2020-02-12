@@ -1,5 +1,4 @@
 import {Heading} from "../Typography";
-import StopRouteSelect from "./StopRouteSelect";
 import {Text} from "../../helpers/text";
 import React from "react";
 import styled from "styled-components";
@@ -9,6 +8,7 @@ import {observer} from "mobx-react-lite";
 import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import {latLng} from "leaflet";
+import RouteSelect from "../RouteSelect";
 
 export const StopPopupContentSection = styled.div`
   padding: 0 1rem 0.5rem;
@@ -43,7 +43,7 @@ const StopPopupContent = decorate(({UI, color, stop}) => {
         <Heading level={4}>
           {stop.name}, {stop.shortId.replace(/ /g, "")} ({stop.stopId})
         </Heading>
-        <StopRouteSelect color={color} stopId={stop.stopId} />
+        <RouteSelect routes={stop.routes || []} color={color} />
       </StopPopupContentSection>
       <StopStreetViewWrapper>
         <Button

@@ -24,6 +24,23 @@ const filterActions = (state) => {
     state.stop = get(stop, "stopId", stop);
     state.objectCenteringAllowed = true;
     setUrlValue("stop", state.stop);
+
+    if (state.stop) {
+      state.terminal = "";
+      setUrlValue("terminal", state.terminal);
+    }
+  });
+
+  const setTerminal = action("Set terminal", (terminal = "") => {
+    // Either get the stopId prop or treat the stop arg as the stopId.
+    state.terminal = get(terminal, "id", terminal);
+    state.objectCenteringAllowed = true;
+    setUrlValue("terminal", state.terminal);
+
+    if (state.terminal) {
+      state.stop = "";
+      setUrlValue("stop", state.stop);
+    }
   });
 
   // The unique_vehicle_id we're interested in.
@@ -82,6 +99,7 @@ const filterActions = (state) => {
   return {
     setDate,
     setStop,
+    setTerminal,
     setVehicle,
     setLine,
     setRoute,

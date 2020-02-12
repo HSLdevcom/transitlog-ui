@@ -9,6 +9,7 @@ import {
 import {latLng, LatLng, LatLngBounds} from "leaflet";
 import {intval} from "../helpers/isWithinRange";
 import {validBounds} from "../helpers/validBounds";
+import uniq from "lodash/uniq";
 
 export default (state) => {
   const setMapZoom = action((value) => {
@@ -152,34 +153,6 @@ export default (state) => {
     }
   };
 
-  const changeOverlay = (changeAction) =>
-    action(({name}) => {
-      const overlays = state.mapOverlays;
-
-      if (changeAction === "remove") {
-        /* TODO: fix this
-        // Be sure to hide the Mapillary viewer if the mapillary layer was turned off.
-        if( name === "Mapillary" ) {
-          this.props.setMapillaryViewerLocation(false);
-        }*/
-
-        const idx = overlays.indexOf(name);
-
-        if (idx !== -1) {
-          overlays.splice(idx, 1);
-        }
-      } else if (changeAction === "add") {
-        overlays.push(name);
-      }
-
-      setUrlValue(
-        "mapOverlays",
-        overlays.length !== 0 ? overlays.filter((name) => !!name).join(",") : null
-      );
-
-      state.mapOverlays.replace(overlays);
-    });
-
   const highlightStop = action((stopId) => {
     state.highlightedStop = stopId;
   });
@@ -205,6 +178,35 @@ export default (state) => {
     const location = latLng({lat, lng: lon});
     state.currentMapillaryMapLocation = location;
   });
+
+  const changeOverlay = (changeAction) =>
+    action(({name}) => {
+      const overlays = [...state.mapOverlays];
+
+      if (changeAction === "remove") {
+        // Be sure to hide the Mapillary viewer if the mapillary layer was turned off.
+        if (name === "Mapillary") {
+          setMapillaryViewerLocation(false);
+        }
+
+        const idx = overlays.indexOf(name);
+
+        if (idx !== -1) {
+          overlays.splice(idx, 1);
+        }
+      } else if (changeAction === "add") {
+        overlays.push(name);
+      }
+
+      const uniqueNames = uniq(overlays);
+
+      setUrlValue(
+        "mapOverlays",
+        uniqueNames.length !== 0 ? uniqueNames.filter((name) => !!name).join(",") : null
+      );
+
+      state.mapOverlays.replace(uniqueNames);
+    });
 
   const allowObjectCentering = action((setTo = true) => {
     state.objectCenteringAllowed = setTo;

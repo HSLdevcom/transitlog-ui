@@ -285,7 +285,7 @@ type PlannedStopEvent {
 type Query {
   alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
-  departures(date: Date!, filter: DepartureFilterInput, stopId: String!): [Departure]!
+  departures(date: Date!, filter: DepartureFilterInput, stopId: String, terminalId: String): [Departure]!
   driverEvents(date: Date!, uniqueVehicleId: VehicleId!): [DriverEvent]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
   exceptionDays(year: String!): [ExceptionDay]!
@@ -299,6 +299,8 @@ type Query {
   routes(date: Date, filter: RouteFilterInput): [Route]!
   stop(date: Date!, stopId: String!): Stop
   stops(date: Date, filter: StopFilterInput): [Stop]!
+  terminal(date: Date, terminalId: String): Terminal
+  terminals(date: Date): [Terminal]!
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
@@ -381,6 +383,16 @@ type StopRoute {
   origin: String
   originStopId: String
   routeId: String!
+}
+
+type Terminal implements Position {
+  id: ID!
+  lat: Float!
+  lng: Float!
+  modes: [String!]
+  name: String!
+  stopIds: [String!]
+  stops: [Stop!]
 }
 
 type UIMessage {

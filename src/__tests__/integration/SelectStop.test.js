@@ -17,8 +17,9 @@ import StopSettings from "../../components/filterbar/StopSettings";
 import get from "lodash/get";
 import SidePanel from "../../components/sidepanel/SidePanel";
 import {text} from "../../helpers/text";
-import {departuresQuery} from "../../queries/DeparturesQuery";
 import {allStopsQuery, singleStopQuery} from "../../components/map/StopLayer";
+import {terminalsQuery} from "../../components/map/TerminalLayer";
+import {departuresQuery} from "../../components/sidepanel/StopDepartures";
 
 const date = "2019-05-27";
 
@@ -52,11 +53,64 @@ const stopRequestMocks = [
     },
     result: mockStopResponse,
   },
+  {
+    request: {
+      query: terminalsQuery,
+      variables: {
+        date,
+      },
+    },
+    result: {
+      data: {
+        terminals: [
+          {
+            id: "1000001",
+            name: "Kamppi (lähiliikenneterminaali)",
+            lat: 60.169002,
+            lng: 24.93166,
+            modes: ["BUS"],
+            stops: [
+              "1040271",
+              "1040272",
+              "1040273",
+              "1040274",
+              "1040275",
+              "1040276",
+              "1040277",
+              "1040278",
+              "1040279",
+            ],
+            __typename: "Terminal",
+          },
+          {
+            id: "1000002",
+            name: "Elielinaukio",
+            lat: 60.171802,
+            lng: 24.93948,
+            modes: ["BUS"],
+            stops: [
+              "1020228",
+              "1020245",
+              "1020239",
+              "1020241",
+              "1020243",
+              "1020128",
+              "1020129",
+              "1020131",
+              "1020132",
+            ],
+            __typename: "Terminal",
+          },
+        ],
+      },
+    },
+  },
 ];
 
 describe("Stop search and filtering", () => {
   let state = {};
   let setStopMock = jest.fn();
+  let setTerminalMock = jest.fn();
 
   const createState = () => {
     state = observable({
@@ -72,6 +126,12 @@ describe("Stop search and filtering", () => {
         state.stop = get(stop, "stopId", stop);
       })
     );
+
+    setTerminalMock = jest.fn(
+      action((terminal) => {
+        state.terminal = get(terminal, "id", terminal);
+      })
+    );
   };
 
   const RenderContext = ({children}) => (
@@ -81,6 +141,7 @@ describe("Stop search and filtering", () => {
         UI: {},
         Filters: {
           setStop: (stop) => setStopMock(stop),
+          setTerminal: (terminal) => setTerminalMock(terminal),
         },
       }}>
       <MockedProvider addTypename={true} mocks={stopRequestMocks}>
@@ -132,7 +193,7 @@ describe("Stop search and filtering", () => {
     const firstStopOption = await findByText("Marsalkantie");
 
     fireEvent.click(firstStopOption);
-    expect(setStopMock).toHaveBeenCalledWith("1420104");
+    expect(setStopMock).toHaveBeenCalledWith(expect.objectContaining({id: "1420104"}));
     expect(state.stop).toBe("1420104");
 
     const selectedStopDisplay = await findByTestId("selected-stop-display");
@@ -162,7 +223,7 @@ describe("Stop search and filtering", () => {
 
     // Finally select the suggestion
     fireEvent.click(getByTextUtil(suggestions.firstChild, "Matkamiehentie"));
-    expect(setStopMock).toHaveBeenCalledWith("1291162");
+    expect(setStopMock).toHaveBeenCalledWith(expect.objectContaining({id: "1291162"}));
     expect(state.stop).toBe("1291162");
   });
 

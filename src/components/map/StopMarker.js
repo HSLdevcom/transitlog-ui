@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import get from "lodash/get";
@@ -73,7 +73,6 @@ const StopMarker = observer(
     isTimingStop = false,
     children,
     iconChildren,
-    markerRef: ref,
     selected,
     setRoute,
     setStop,
@@ -81,29 +80,10 @@ const StopMarker = observer(
     highlightedStop,
     testId = "stop-marker",
   }) => {
-    const popupOpen = useRef(false);
-    const defaultRef = useRef(null);
-    const markerRef = ref || defaultRef;
-
     const isSelected =
       typeof selected !== "undefined" ? !!selected : stop && selectedStop === stop.stopId;
 
     const isHighlighted = stop && highlightedStop === stop.stopId;
-
-    useEffect(() => {
-      // If this component was supplied a ref, that means that the popup
-      // opening logic is handled in the parent.
-      if (ref || children || !markerRef.current) {
-        return;
-      }
-
-      if (isSelected && !popupOpen.current) {
-        markerRef.current.leafletElement.openPopup();
-        popupOpen.current = true;
-      } else if (!isSelected && popupOpen.current) {
-        markerRef.current.leafletElement.closePopup();
-      }
-    }, [children, ref, isSelected, markerRef.current, popupOpen.current]);
 
     const onSelectStop = useCallback(() => {
       if (stop) {
@@ -113,45 +93,47 @@ const StopMarker = observer(
 
     const {lat, lng} = stop || position || {};
 
-    if (!stop && !position) {
-      return null;
-    }
-
     const stopIsTimingStop = isTimingStop || !!get(stop, "isTimingStop", false);
     const stopMode = !stop ? mode : getPriorityMode(get(stop, "modes", []));
     const stopColor = color ? color : getModeColor(stopMode);
 
+    // Don't update the icon too often, will result in an update loop.
+    const markerIcon = useMemo(
+      () => (
+        <IconWrapper
+          className={`test-class-${testId} test-class-${testId}-${get(
+            stop,
+            "stopId",
+            ""
+          )}`}>
+          <StopMarkerCircle
+            thickBorder={isTerminal}
+            isSelected={isSelected}
+            isHighlighted={isHighlighted}
+            isTimingStop={stopIsTimingStop}
+            dashed={dashedBorder}
+            big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
+            color={stopColor}>
+            {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
+          </StopMarkerCircle>
+        </IconWrapper>
+      ),
+      [stop]
+    );
+
+    if (!stop && !position) {
+      return null;
+    }
+
     const popupElement = children ? (
       children
     ) : stop ? (
-      <MapPopup
-        onClose={() => (popupOpen.current = false)}
-        onOpen={() => (popupOpen.current = true)}>
+      <MapPopup open={isSelected}>
         <StopPopupContent stop={stop} color={stopColor} onSelectRoute={setRoute} />
       </MapPopup>
     ) : null;
 
     const markerPosition = latLng({lat, lng});
-
-    const markerIcon = (
-      <IconWrapper
-        className={`test-class-${testId} test-class-${testId}-${get(
-          stop,
-          "stopId",
-          ""
-        )}`}>
-        <StopMarkerCircle
-          thickBorder={isTerminal}
-          isSelected={isSelected}
-          isHighlighted={isHighlighted}
-          isTimingStop={stopIsTimingStop}
-          dashed={dashedBorder}
-          big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
-          color={stopColor}>
-          {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
-        </StopMarkerCircle>
-      </IconWrapper>
-    );
 
     const markerChildren = (
       <>
@@ -172,7 +154,6 @@ const StopMarker = observer(
     const markerElement =
       stopIsTimingStop || iconChildren ? (
         <DivIcon
-          ref={markerRef}
           pane="stops"
           position={markerPosition}
           icon={markerIcon}
@@ -182,7 +163,6 @@ const StopMarker = observer(
       ) : (
         <CircleMarker
           className={`test-class-${testId} test-class-${testId}-${stop.stopId}`}
-          ref={markerRef}
           radius={selected ? 10 : isTerminal ? 9 : 7}
           weight={3}
           color={stopColor}

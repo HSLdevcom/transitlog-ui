@@ -126,6 +126,7 @@ const SidePanel = decorate((props) => {
       date,
       vehicle,
       stop: stateStop,
+      terminal: stateTerminal,
       route: stateRoute,
       selectedJourney,
       sidePanelVisible,
@@ -146,9 +147,10 @@ const SidePanel = decorate((props) => {
   if (hasRoute) suggestedTab = "journeys";
   if (user && vehicle) suggestedTab = "vehicle-journeys";
   if (selectedJourney) suggestedTab = "journeys";
-  if (stateStop) suggestedTab = "timetables";
+  if (stateStop || stateTerminal) suggestedTab = "timetables";
 
-  const allTabsHidden = !hasRoute && !areaSearchActive && !vehicle && !stateStop;
+  const allTabsHidden =
+    !hasRoute && !areaSearchActive && !vehicle && !stateStop && !stateTerminal;
 
   const detailsCanOpen = getJourneyId(selectedJourney) || route;
 
@@ -197,7 +199,7 @@ const SidePanel = decorate((props) => {
                 label={text("sidepanel.tabs.vehicle_journeys")}
               />
             )}
-            {stateStop && (
+            {(stateStop || stateTerminal) && (
               <StopDepartures
                 helpText="Timetable tab"
                 name="timetables"

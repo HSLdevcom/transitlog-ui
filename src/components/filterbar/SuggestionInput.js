@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {InputStyles} from "../Forms";
 import {observable, action} from "mobx";
 import Tooltip from "../Tooltip";
-import AlertIcons from "../AlertIcons";
+import get from "lodash/get";
 
 const AutosuggestWrapper = styled.div`
   width: 100%;
@@ -32,10 +32,10 @@ export const SuggestionContent = styled.div`
     withIcon
       ? `
 &:before {
-    margin-top: 0.15rem;
+    margin-top: -0.5rem;
     content: "";
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
   }
 `
       : ""};
@@ -59,14 +59,13 @@ export const SuggestionSectionTitle = styled.div`
   padding: 0.25rem;
 `;
 
-export const SuggestionAlerts = styled(AlertIcons)`
-  bottom: 3px;
-  right: 3px;
-  left: auto;
-  background: white;
-  padding: 3px 5px;
-  border-radius: 3px;
-`;
+function defaultGetInputValue(item) {
+  if (typeof item === "string") {
+    return item;
+  }
+
+  return get(item, "id", "");
+}
 
 @observer
 class SuggestionInput extends Component {
@@ -80,11 +79,16 @@ class SuggestionInput extends Component {
   inputValue = this.getStringValue(this.props.value);
 
   setValue = action((value) => {
-    this.inputValue = value;
+    this.inputValue = this.getStringValue(value);
   });
 
   getStringValue = (val) => {
-    const {getValue} = this.props;
+    const {getInputValue = defaultGetInputValue} = this.props;
+    return getInputValue(val);
+  };
+
+  getValue = (val) => {
+    const {getValue = defaultGetInputValue} = this.props;
     return getValue(val);
   };
 
@@ -97,9 +101,9 @@ class SuggestionInput extends Component {
   };
 
   onSuggestionSelected = (event, {suggestion}) => {
-    const nextValue = this.getStringValue(suggestion);
+    const nextValue = this.getValue(suggestion);
     this.props.onSelect(nextValue);
-    this.setValue(nextValue);
+    this.setValue(suggestion);
   };
 
   shouldRenderSuggestions = (limit) => (value = "") => {
@@ -110,8 +114,7 @@ class SuggestionInput extends Component {
     const {value} = this.props;
 
     if (value !== prevValue) {
-      const nextValue = this.getStringValue(value);
-      this.setValue(nextValue);
+      this.setValue(value);
     }
   }
 
@@ -119,7 +122,6 @@ class SuggestionInput extends Component {
     const {
       className,
       placeholder,
-      getValue,
       renderSuggestion,
       minimumInput = 3,
       multiSection,
@@ -137,7 +139,7 @@ class SuggestionInput extends Component {
       onChange: this.onChange,
       "data-testid": testId,
       onFocus: () => {
-        this.setValue(this.getStringValue(value));
+        this.setValue(value);
       },
     };
 

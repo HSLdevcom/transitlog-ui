@@ -27,6 +27,8 @@
   "filterpanel.clear.stop": "Clear stop",
   "filterpanel.clear.vehicle": "Clear vehicle",
   "filterpanel.clear.route": "Clear route",
+  "filterpanel.stops": "Stops",
+  "filterpanel.terminals": "Terminals",
 
   "sidepanel.tabs.journeys": "Journeys",
   "sidepanel.tabs.week_journeys": "Week",

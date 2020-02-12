@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import {Heading} from "../Typography";
 import get from "lodash/get";
@@ -68,22 +68,6 @@ const CompoundStopMarker = observer(
     setRoute,
     setStop,
   }) => {
-    const popupOpen = useRef(false);
-    const markerRef = useRef(null);
-
-    useEffect(() => {
-      if (!markerRef.current) {
-        return;
-      }
-
-      if (selected && !popupOpen.current) {
-        markerRef.current.leafletElement.openPopup();
-        popupOpen.current = true;
-      } else if (!selected && popupOpen.current) {
-        markerRef.current.leafletElement.closePopup();
-      }
-    }, [selected, markerRef.current, popupOpen.current]);
-
     const selectedStopObj =
       selectedStop && stops.length !== 0
         ? stops.find((stop) => stop.stopId === selectedStop)
@@ -116,16 +100,13 @@ const CompoundStopMarker = observer(
         position={markerPosition}
         mode={mode}
         showRadius={showRadius}
-        markerRef={markerRef}
         stop={selectedStopObj}
         selectedStop={selectedStop}
         highlightedStop={highlightedStop}
         setRoute={setRoute}
         setStop={setStop}
         iconChildren={stops.length}>
-        <MapPopup
-          onClose={() => (popupOpen.current = false)}
-          onOpen={() => (popupOpen.current = true)}>
+        <MapPopup>
           <StopPopupContentSection style={{backgroundColor: "var(--lightest-grey)"}}>
             <ChooseStopHeading>
               <Text>map.stops.select_stop</Text>

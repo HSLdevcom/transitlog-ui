@@ -14,7 +14,7 @@ import {MockedProvider} from "@apollo/react-testing";
 import mockJourneysResponse from "../route_journeys_response";
 import mockRouteOptionsResponse from "../route_options_response";
 import {MobxProviders} from "../util/MobxProviders";
-import {observable, action} from "mobx";
+import {observable, action, toJS} from "mobx";
 import SidePanel from "../../components/sidepanel/SidePanel";
 import {text} from "../../helpers/text";
 import {routeOptionsQuery} from "../../queries/RouteOptionsQuery";
@@ -28,7 +28,7 @@ const routeDepartureMocks = [
     request: {
       query: routeJourneysQuery,
       variables: {
-        routeId: "1001",
+        routeId: "1018",
         direction: 2,
         stopId: "1304130",
         date,
@@ -163,7 +163,7 @@ describe("Route selection and filtering", () => {
     expect(state.route.direction).toBe(2);
   });
 
-  test.skip("Fetches and renders a list of the route's departures", async () => {
+  test("Fetches and renders a list of the route's departures", async () => {
     const {findByTestId} = renderJourneys();
     const routeInput = await findByTestId("route-input");
 
@@ -175,8 +175,12 @@ describe("Route selection and filtering", () => {
     expect(setRouteMock).toHaveBeenCalled();
 
     // Wait for the list to render
-    const firstDepartureRow = await findByTestId("journey-list-row-05:28:00");
-    const lastDepartureRow = await findByTestId("journey-list-row-22:26:00");
+    const firstDepartureRow = await findByTestId("journey-list-row-05:28:00", {
+      exact: false,
+    });
+    const lastDepartureRow = await findByTestId("journey-list-row-22:26:00", {
+      exact: false,
+    });
 
     // The following assertions are based on the mock response
     expect(firstDepartureRow).toBeInTheDocument();
@@ -186,7 +190,7 @@ describe("Route selection and filtering", () => {
     expect(firstDepartureRow).toHaveTextContent("H0"); // The special dayType
 
     expect(lastDepartureRow).toBeInTheDocument();
-    expect(lastDepartureRow).toHaveTextContent("Ei tietoja"); // Finnish is set as the language in the state.
+    expect(lastDepartureRow).toHaveTextContent("Lähtötieto puuttuu"); // Finnish is set as the language in the state.
     expect(lastDepartureRow).toHaveTextContent("22:26");
     expect(lastDepartureRow).toHaveTextContent("H0");
   });

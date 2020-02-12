@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from "react";
+import React, {useEffect, useCallback, useMemo} from "react";
 import {observer, Observer} from "mobx-react-lite";
 import styled from "styled-components";
 import Input from "../Input";
@@ -11,10 +11,75 @@ import VirtualizedSidepanelList from "./VirtualizedSidepanelList";
 import StopDepartureItem from "./StopDepartureItem";
 import {getDepartureByTime} from "../../helpers/getDepartureByTime";
 import getJourneyId from "../../helpers/getJourneyId";
-import DeparturesQuery from "../../queries/DeparturesQuery";
 import {createCompositeJourney} from "../../stores/journeyActions";
 import {inject} from "../../helpers/inject";
 import {intval} from "../../helpers/isWithinRange";
+import gql from "graphql-tag";
+import {CancellationFieldsFragment} from "../../queries/CancellationFieldsFragment";
+import {useQueryData} from "../../hooks/useQueryData";
+import {filterDepartures} from "../../helpers/filterDepartures";
+
+export const departuresQuery = gql`
+  query departures($stopId: String, $terminalId: String, $date: Date!) {
+    departures(stopId: $stopId, terminalId: $terminalId, date: $date) {
+      id
+      stopId
+      routeId
+      direction
+      dayType
+      departureId
+      departureDate
+      departureTime
+      equipmentColor
+      equipmentType
+      extraDeparture
+      index
+      isNextDay
+      isTimingStop
+      operatorId
+      terminalTime
+      recoveryTime
+      isCancelled
+      cancellations {
+        ...CancellationFieldsFragment
+      }
+      journey {
+        id
+        journeyType
+        type
+        routeId
+        direction
+        originStopId
+        departureDate
+        departureTime
+        uniqueVehicleId
+        _numInstance
+      }
+      originDepartureTime {
+        departureDate
+        departureDateTime
+        departureTime
+        id
+        isNextDay
+      }
+      observedDepartureTime {
+        id
+        departureDate
+        departureTime
+        departureDateTime
+        departureTimeDifference
+        loc
+      }
+      plannedDepartureTime {
+        id
+        departureDate
+        departureTime
+        departureDateTime
+      }
+    }
+  }
+  ${CancellationFieldsFragment}
+`;
 
 const TimetableFilters = styled.div`
   display: flex;
@@ -47,12 +112,8 @@ const TimeRangeFilterContainer = styled.div`
 const ApplyButton = styled(Button).attrs({small: true, primary: true})`
   margin-left: 0.5rem;
   margin-bottom: 1px;
-  width: 85px;
+  width: 70px;
 `;
-
-function intOrUndefined(val) {
-  return !val ? undefined : typeof val === "string" ? parseInt(val, 10) : val;
-}
 
 const renderTimetableRow = ({
   departure,
@@ -79,7 +140,13 @@ const renderTimetableRow = ({
 const decorate = flow(observer, inject("Filters", "Journey", "Time"));
 
 const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
-  const {date, selectedJourney, stop: stopId, timetableFilters} = state;
+  const {
+    date,
+    selectedJourney,
+    stop: stopId,
+    terminal: terminalId,
+    timetableFilters,
+  } = state;
 
   const filterValues = Object.values(timetableFilters || {});
 
@@ -151,102 +218,103 @@ const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
     setHourFilter("maxHour", get(e, "target.value", ""));
   }, []);
 
-  const {minHour = "", maxHour = "", route = ""} = timetableFilters || {};
+  const {minHour = {current: ""}, maxHour = {current: ""}, route = {current: ""}} =
+    timetableFilters || {};
+
+  const {data: departuresData, loading: departuresLoading} = useQueryData(
+    departuresQuery,
+    {
+      skip: (!stopId && !terminalId) || !date,
+      variables: {
+        stopId: !terminalId ? stopId : undefined,
+        terminalId: !stopId ? terminalId : undefined,
+        date,
+      },
+    },
+    "stop departures"
+  );
+
+  const departures = !departuresData || departuresData.length === 0 ? [] : departuresData;
+  const selectedJourneyId = getJourneyId(selectedJourney);
+
+  const focusedDeparture = selectedJourneyId
+    ? departures.find(
+        (departure) => selectedJourneyId === getJourneyId(departure.journey || departure)
+      )
+    : getDepartureByTime(departures, state.time);
+
+  const focusedIndex = focusedDeparture
+    ? departures.findIndex((departure) => departure === focusedDeparture)
+    : -1;
+
+  const filteredDepartures = useMemo(() => {
+    return filterDepartures(departures, {
+      routeId: route.current,
+      minHour: minHour.current,
+      maxHour: maxHour.current,
+    });
+  }, [departures, minHour.current, maxHour.current, route.current]);
 
   return (
-    <DeparturesQuery
-      stopId={stopId}
+    <VirtualizedSidepanelList
+      testId="stop-departures-list"
       date={date}
-      routeId={route.current || undefined}
-      minHour={intOrUndefined(minHour.current)}
-      maxHour={intOrUndefined(maxHour.current)}>
-      {({departures = [], loading}) => (
+      scrollToIndex={focusedIndex !== -1 ? focusedIndex : undefined}
+      list={filteredDepartures}
+      renderRow={(rowProps) =>
+        renderTimetableRow({
+          departure: filteredDepartures[rowProps.index],
+          departureProps: {
+            selectedJourney,
+            onClick: selectAsJourney,
+            date,
+          },
+          ...rowProps,
+        })
+      }
+      rowHeight={32}
+      loading={departuresLoading}
+      header={
         <Observer>
-          {() => {
-            const selectedJourneyId = getJourneyId(selectedJourney);
-
-            const focusedDeparture = selectedJourneyId
-              ? departures.find(
-                  (departure) =>
-                    selectedJourneyId === getJourneyId(departure.journey || departure)
-                )
-              : getDepartureByTime(departures, state.time);
-
-            const focusedIndex = focusedDeparture
-              ? departures.findIndex((departure) => departure === focusedDeparture)
-              : -1;
-
-            return (
-              <VirtualizedSidepanelList
-                testId="stop-departures-list"
-                date={date}
-                scrollToIndex={focusedIndex !== -1 ? focusedIndex : undefined}
-                list={departures}
-                renderRow={(rowProps) =>
-                  renderTimetableRow({
-                    departure: departures[rowProps.index],
-                    departureProps: {
-                      selectedJourney,
-                      onClick: selectAsJourney,
-                      date,
-                    },
-                    ...rowProps,
-                  })
-                }
-                rowHeight={32}
-                loading={loading}
-                header={
-                  <Observer>
-                    {() => (
-                      <TimetableFilters data-testid="timetable-filters">
-                        <RouteFilterContainer>
-                          <Input
-                            value={route.pending}
-                            animatedLabel={false}
-                            onChange={setRouteFilter}
-                            label={text("domain.route")}
-                          />
-                        </RouteFilterContainer>
-                        <TimeRangeFilterContainer>
-                          <Input
-                            type="number"
-                            value={minHour.pending}
-                            animatedLabel={false}
-                            label={`${text("general.timerange.min")} ${text(
-                              "general.hour"
-                            )}`}
-                            onChange={setMinHourFilter}
-                          />
-                          <Input
-                            type="number"
-                            value={maxHour.pending}
-                            animatedLabel={false}
-                            label={`${text("general.timerange.max")} ${text(
-                              "general.hour"
-                            )}`}
-                            onChange={setMaxHourFilter}
-                          />
-                        </TimeRangeFilterContainer>
-                        <ApplyButton
-                          onClick={
-                            filterButtonClears
-                              ? Filters.clearTimetableFilters
-                              : Filters.applyTimetableFilters
-                          }>
-                          {filterButtonClears
-                            ? text("general.clear")
-                            : text("general.apply")}
-                        </ApplyButton>
-                      </TimetableFilters>
-                    )}
-                  </Observer>
-                }
-              />
-            );
-          }}
+          {() => (
+            <TimetableFilters data-testid="timetable-filters">
+              <RouteFilterContainer>
+                <Input
+                  value={route.pending}
+                  animatedLabel={false}
+                  onChange={setRouteFilter}
+                  label={text("domain.route")}
+                />
+              </RouteFilterContainer>
+              <TimeRangeFilterContainer>
+                <Input
+                  type="number"
+                  value={minHour.pending}
+                  animatedLabel={false}
+                  label={`${text("general.timerange.min")} ${text("general.hour")}`}
+                  onChange={setMinHourFilter}
+                />
+                <Input
+                  type="number"
+                  value={maxHour.pending}
+                  animatedLabel={false}
+                  label={`${text("general.timerange.max")} ${text("general.hour")}`}
+                  onChange={setMaxHourFilter}
+                />
+              </TimeRangeFilterContainer>
+              <ApplyButton
+                onClick={
+                  filterButtonClears
+                    ? Filters.clearTimetableFilters
+                    : Filters.applyTimetableFilters
+                }>
+                {filterButtonClears ? text("general.clear") : text("general.apply")}
+              </ApplyButton>
+            </TimetableFilters>
+          )}
         </Observer>
-      )}
-    </DeparturesQuery>
+      }
+    />
   );
 });
 
