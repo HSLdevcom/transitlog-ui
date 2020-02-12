@@ -24,17 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache
-          key: dev-cypress-cache
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
         with:
           time: '30s'
       - name: Cypress tests
-        uses: cypress-io/github-action@v1.16.1
+        uses: cypress-io/github-action@v1
         env:
           CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
