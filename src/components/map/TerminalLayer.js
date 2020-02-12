@@ -107,7 +107,7 @@ const SelectedTerminalPopup = decoratePopup(({terminal, UI, open}) => {
 });
 
 const TerminalLayer = decorate(({Filters, state}) => {
-  const {date, mapOverlays, terminal, selectedJourney, objectCenteringAllowed} = state;
+  const {date, mapOverlays, terminal, selectedJourney} = state;
 
   const {data: terminalsData} = useQueryData(
     terminalsQuery,
@@ -182,7 +182,6 @@ const TerminalLayer = decorate(({Filters, state}) => {
     !!terminal,
     !!selectedTerminal,
     !selectedTerminalLoading,
-    objectCenteringAllowed,
   ]);
 
   const terminalsVisible = mapOverlays.includes("Terminals");

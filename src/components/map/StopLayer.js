@@ -129,7 +129,6 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
     mapOverlays,
     mapZoom,
     selectedJourney,
-    objectCenteringAllowed,
   } = state;
 
   const {data: selectedStop, loading: selectedStopLoading} = useQueryData(
@@ -150,12 +149,7 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
     "all stops query"
   );
 
-  useCenterOnPopup([
-    !!selectedStop,
-    !selectedStopLoading,
-    !selectedJourney,
-    !!objectCenteringAllowed,
-  ]);
+  useCenterOnPopup([!!selectedStop, !selectedStopLoading, !selectedJourney]);
 
   const stops = stopsData || [];
   const stopsHidden = !mapOverlays.includes("Stops");

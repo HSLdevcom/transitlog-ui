@@ -1,16 +1,18 @@
-import {useEffect} from "react";
+import {useEffect, useContext} from "react";
 import get from "lodash/get";
 import {useLeaflet} from "react-leaflet";
+import {StoreContext} from "../stores/StoreContext";
 
 // Give activationConditions as an array of booleans. When all items in the
 // activationConditions array are true, the map will attempt to center on
 // the currently open popup. It is a good idea to have the loading state of
 // the popup content as one of the conditions.
 export const useCenterOnPopup = (activationConditions) => {
+  const {state} = useContext(StoreContext);
   const leaflet = useLeaflet();
 
   useEffect(() => {
-    if (activationConditions.some((cond) => !cond)) {
+    if (!state.objectCenteringAllowed || activationConditions.some((cond) => !cond)) {
       return;
     }
 
@@ -21,7 +23,11 @@ export const useCenterOnPopup = (activationConditions) => {
         get(leaflet, "layerContainer._popup", get(leaflet, "map._popup"))
       );
 
-      if (!popup || activationConditions.some((cond) => !cond)) {
+      if (
+        !state.objectCenteringAllowed ||
+        !popup ||
+        activationConditions.some((cond) => !cond)
+      ) {
         return;
       }
 

@@ -3,6 +3,7 @@ import {Popup} from "react-leaflet";
 import {createGlobalStyle} from "styled-components";
 import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
 
 const PopupStyle = createGlobalStyle`
   .leaflet-popup-content {
@@ -30,9 +31,10 @@ const PopupStyle = createGlobalStyle`
   }
 `;
 
-const decorate = flow(observer);
+const decorate = flow(observer, inject("state"));
 
-const MapPopup = decorate(({className, children, open = false}) => {
+const MapPopup = decorate(({className, children, open = false, state}) => {
+  const {objectCenteringAllowed} = state;
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ const MapPopup = decorate(({className, children, open = false}) => {
         className={className}
         autoClose={true}
         closeOnClick={true}
-        autoPan={true}
+        autoPan={objectCenteringAllowed}
         keepInView={false}
         offset={[0, -10]}
         minWidth={350}
