@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from "react";
+import React, {useEffect, useCallback, useMemo} from "react";
 import {observer, Observer} from "mobx-react-lite";
 import styled from "styled-components";
 import Input from "../Input";
@@ -17,22 +17,11 @@ import {intval} from "../../helpers/isWithinRange";
 import gql from "graphql-tag";
 import {CancellationFieldsFragment} from "../../queries/CancellationFieldsFragment";
 import {useQueryData} from "../../hooks/useQueryData";
+import {filterDepartures} from "../../helpers/filterDepartures";
 
 export const departuresQuery = gql`
-  query departures(
-    $stopId: String
-    $terminalId: String
-    $date: Date!
-    $routeId: String
-    $minHour: Int
-    $maxHour: Int
-  ) {
-    departures(
-      stopId: $stopId
-      terminalId: $terminalId
-      date: $date
-      filter: {routeId: $routeId, maxHour: $maxHour, minHour: $minHour}
-    ) {
+  query departures($stopId: String, $terminalId: String, $date: Date!) {
+    departures(stopId: $stopId, terminalId: $terminalId, date: $date) {
       id
       stopId
       routeId
@@ -123,12 +112,8 @@ const TimeRangeFilterContainer = styled.div`
 const ApplyButton = styled(Button).attrs({small: true, primary: true})`
   margin-left: 0.5rem;
   margin-bottom: 1px;
-  width: 85px;
+  width: 70px;
 `;
-
-function intOrUndefined(val) {
-  return !val ? undefined : typeof val === "string" ? parseInt(val, 10) : val;
-}
 
 const renderTimetableRow = ({
   departure,
@@ -244,16 +229,12 @@ const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
         stopId: !terminalId ? stopId : undefined,
         terminalId: !stopId ? terminalId : undefined,
         date,
-        routeId: route.current || undefined,
-        minHour: intOrUndefined(minHour.current),
-        maxHour: intOrUndefined(maxHour.current),
       },
     },
     "stop departures"
   );
 
   const departures = !departuresData || departuresData.length === 0 ? [] : departuresData;
-
   const selectedJourneyId = getJourneyId(selectedJourney);
 
   const focusedDeparture = selectedJourneyId
@@ -266,15 +247,23 @@ const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
     ? departures.findIndex((departure) => departure === focusedDeparture)
     : -1;
 
+  const filteredDepartures = useMemo(() => {
+    return filterDepartures(departures, {
+      routeId: route.current,
+      minHour: minHour.current,
+      maxHour: maxHour.current,
+    });
+  }, [departures, minHour.current, maxHour.current, route.current]);
+
   return (
     <VirtualizedSidepanelList
       testId="stop-departures-list"
       date={date}
       scrollToIndex={focusedIndex !== -1 ? focusedIndex : undefined}
-      list={departures}
+      list={filteredDepartures}
       renderRow={(rowProps) =>
         renderTimetableRow({
-          departure: departures[rowProps.index],
+          departure: filteredDepartures[rowProps.index],
           departureProps: {
             selectedJourney,
             onClick: selectAsJourney,
