@@ -1,4 +1,4 @@
-name: CI
+name: Deploy and test
 
 on:
   push:
@@ -13,10 +13,11 @@ jobs:
     if: endsWith(github.ref, '/master')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout UI
+      uses: actions/checkout@v2
       with:
         ref: master
-    - name: Build DEV and publish Docker image
+    - name: Build UI and publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: hsldevcom/transitlog-ui
@@ -24,6 +25,21 @@ jobs:
         password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
         buildargs: BUILD_ENV=dev
         tags: dev
+    - name: Checkout server
+      uses: actions/checkout@v2
+      with:
+        repository: HSLdevcom/transitlog-server
+        ref: master
+        path: server
+    - name: Build Server and publish Docker image
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: hsldevcom/transitlog-server
+        username: ddunderfelt
+        password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+        tags: dev
+        workdir: server
+        context: server
     - name: Deploy with Gitlab CI
       run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
   test-dev:
@@ -75,6 +91,21 @@ jobs:
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           buildargs: BUILD_ENV=stage
           tags: stage
+      - name: Checkout server
+        uses: actions/checkout@v2
+        with:
+          repository: HSLdevcom/transitlog-server
+          ref: staging
+          path: server
+      - name: Build Server and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-server
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          tags: stage
+          workdir: server
+          context: server
       - name: Deploy with Gitlab CI
         run: curl -X POST -F token=${{ secrets.GITLAB_STAGE_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/232/trigger/pipeline
   test-stage:
@@ -126,6 +157,21 @@ jobs:
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           buildargs: BUILD_ENV=production
           tags: production
+      - name: Checkout server
+        uses: actions/checkout@v2
+        with:
+          repository: HSLdevcom/transitlog-server
+          ref: production
+          path: server
+      - name: Build Server and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-server
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          tags: production
+          workdir: server
+          context: server
       - name: Deploy with Gitlab CI
         run: curl -X POST -F token=${{ secrets.GITLAB_PROD_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/233/trigger/pipeline
   test-production:
