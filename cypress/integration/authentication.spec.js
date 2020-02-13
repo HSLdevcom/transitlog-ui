@@ -1,4 +1,8 @@
 describe("Authentication smoke tests", () => {
+  beforeEach(() => {
+    cy.visitAndSpy("/");
+  });
+
   afterEach(() => {
     cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
       expect(errorLog).to.have.callCount(0)
@@ -15,9 +19,6 @@ describe("Authentication smoke tests", () => {
     cy.hslLogin();
 
     cy.getTestElement("authenticated-user").should("exist");
-
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("vehicle-search").should("exist");
     cy.getCookie("transitlog-session").should("exist");
   });
@@ -29,8 +30,6 @@ describe("Authentication smoke tests", () => {
     cy.getTestElement("logout-button")
       .should("exist")
       .click();
-
-    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("authenticated-user").should("not.exist");
     cy.getTestElement("vehicle-search").should("not.exist");

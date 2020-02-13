@@ -106,6 +106,7 @@ const TimeSlider = decorate(({className, Time, state, journeys}) => {
           />
         </Tooltip>
         <CurrentValue
+          data-testid="current-time"
           style={{
             transform: `translateX(${valuePosition}px)`,
           }}>

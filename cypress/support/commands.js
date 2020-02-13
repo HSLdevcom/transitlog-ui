@@ -69,7 +69,7 @@ Cypress.Commands.add("hslLogin", () => {
 
     expect(response.status).to.eq(200);
     expect(access_token).to.be.ok;
-    cy.visitAndSpy(`/?code=${access_token}&is_test=true`);
+    cy.visit(`/?code=${access_token}&is_test=true`);
   });
 });
 
@@ -105,7 +105,7 @@ Cypress.Commands.add("waitUntilLoadingFinishes", (loadingElementSelector) => {
   const testId = loadingElementSelector || "loading";
 
   cy.waitUntil(() => cy.getTestElement(testId).should("exist"), {
-    timeout: 60000,
+    timeout: 120000,
   });
 
   return cy.waitUntil(
