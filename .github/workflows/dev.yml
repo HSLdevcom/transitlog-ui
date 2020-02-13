@@ -1,0 +1,68 @@
+name: Deploy and test dev
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout UI
+      uses: actions/checkout@v2
+      with:
+        ref: master
+    - name: Build UI and publish Docker image
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: hsldevcom/transitlog-ui
+        username: ddunderfelt
+        password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+        buildargs: BUILD_ENV=dev
+        tags: dev
+    - name: Checkout server
+      uses: actions/checkout@v2
+      with:
+        repository: HSLdevcom/transitlog-server
+        ref: master
+    - name: Build Server and publish Docker image
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: hsldevcom/transitlog-server
+        username: ddunderfelt
+        password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+        tags: dev
+    - name: Deploy with Gitlab CI
+      run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
+  test:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: master
+    - name: Sleep for 60 seconds
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '60s'
+    - name: Cypress tests
+      uses: cypress-io/github-action@v1
+      env:
+        CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
+        CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
+        CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
+        CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
+        CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
+    - name: Upload screenshot artifacts
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: cypress/screenshots
+    - name: Upload video artifacts
+      uses: actions/upload-artifact@v1
+      if: always()
+      with:
+        name: cypress-videos
+        path: cypress/videos
