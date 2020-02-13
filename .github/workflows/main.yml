@@ -1,14 +1,19 @@
 name: CI
 
-on: [push, release]
+on:
+  push:
+    branches: 
+      - master
+      - staging
+      - production
 
 jobs:
-  dev:
-    if: github.ref == 'refs/heads/master'
+  deploy-dev:
+    if: endsWith(github.ref, 'master')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build and publish Docker image
+    - name: Build DEV and publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: hsldevcom/transitlog-ui
@@ -19,15 +24,15 @@ jobs:
     - name: Deploy with Gitlab CI
       run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
   test-dev:
-    needs: dev
-    if: github.ref == 'refs/heads/master'
+    needs: deploy-dev
+    if: endsWith(github.ref, 'master')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Sleep for 30 seconds
+      - name: Sleep for 60 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '30s'
+          time: '60s'
       - name: Cypress tests
         uses: cypress-io/github-action@v1
         env:
