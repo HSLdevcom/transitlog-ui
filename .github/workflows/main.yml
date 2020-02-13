@@ -2,17 +2,20 @@ name: CI
 
 on:
   push:
-    branches: 
-      - master
-      - staging
-      - production
+    branches:
+    - master
+    - staging
+    - production
 
 jobs:
+  # Dev jobs
   deploy-dev:
-    if: endsWith(github.ref, 'master')
+    if: endsWith(github.ref, '/master')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: master
     - name: Build DEV and publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
@@ -25,10 +28,12 @@ jobs:
       run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
   test-dev:
     needs: deploy-dev
-    if: endsWith(github.ref, 'master')
+    if: endsWith(github.ref, '/master')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: master
       - name: Sleep for 60 seconds
         uses: jakejarvis/wait-action@master
         with:
@@ -37,6 +42,57 @@ jobs:
         uses: cypress-io/github-action@v1
         env:
           CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
+          CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
+          CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
+          CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
+          CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
+      - name: Upload screenshot artifacts
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - name: Upload video artifacts
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+
+  # Staging jobs
+  deploy-stage:
+    if: endsWith(github.ref, '/staging')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: staging
+      - name: Build DEV and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-ui
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          buildargs: BUILD_ENV=stage
+          tags: stage
+      - name: Deploy with Gitlab CI
+        run: curl -X POST -F token=${{ secrets.GITLAB_STAGE_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/232/trigger/pipeline
+  test-stage:
+    needs: deploy-stage
+    if: endsWith(github.ref, '/staging')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: staging
+      - name: Sleep for 60 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '60s'
+      - name: Cypress tests
+        uses: cypress-io/github-action@v1
+        env:
+          CYPRESS_BASE_URL: https://stage.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
           CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
           CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
