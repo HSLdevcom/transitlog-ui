@@ -13,8 +13,6 @@ describe("Stop smoke tests", () => {
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
 
-    cy.waitUntilLoadingFinishes();
-
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
 
     cy.getTestElement("stop-departures-list").should("exist");
@@ -28,13 +26,9 @@ describe("Stop smoke tests", () => {
     cy.getTestElement("stop-input").type("1173434");
     cy.getTestElement("stop-option-1173434").click();
 
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("departure-option")
       .first()
       .click();
-
-    cy.waitUntilLoadingFinishes();
 
     cy.assertJourneySelected();
   });

@@ -31,7 +31,6 @@ describe("Route smoke tests", () => {
 
   it("Selects a journey of the route", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
-    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
@@ -42,8 +41,6 @@ describe("Route smoke tests", () => {
       .find(`[data-testid="journey-departure-time"]`)
       .text()
       .then((departureTime) => {
-        cy.waitUntilLoadingFinishes();
-
         const urlDepartureTime = departureTime.replace(":", "") + "00";
         cy.assertJourneySelected("1018", urlDepartureTime);
       });
@@ -53,15 +50,11 @@ describe("Route smoke tests", () => {
     // Go to the previous week
     cy.visitAndSpy(`/?date=${startOfWeek}`);
 
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
-
-    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("weekly-departure-time").should("have.length.least", 2);
 
@@ -69,7 +62,6 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("1018");
   });
 
@@ -77,15 +69,11 @@ describe("Route smoke tests", () => {
     // Go to the previous week
     cy.visitAndSpy(`/?date=${startOfWeek}`);
 
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
     cy.getTestElement("sidebar-tab-journeys_by_week").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
-
-    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("weekly-departure-time")
       .should("have.length.least", 2)
@@ -115,25 +103,18 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    cy.waitUntilLoadingFinishes();
     cy.assertJourneySelected("1018");
   });
 
   it("Can display the journey graph", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-
-    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("observed-journey")
       .first()
       .click();
-
-    cy.waitUntilLoadingFinishes();
 
     cy.assertJourneySelected("1018");
 
