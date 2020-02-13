@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: staging
-    - name: Build DEV and publish Docker image
+    - name: Build UI and publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
         name: hsldevcom/transitlog-ui
