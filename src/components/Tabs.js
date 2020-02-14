@@ -102,7 +102,7 @@ const Tabs = decorate(
     className,
   }) => {
     const [currentSelectedTab, setSelectedTab] = useState(getUrlValue(urlValue));
-    const prevChildren = useRef();
+    const prevTabs = useRef([]);
 
     const selectTab = useCallback(
       (nextSelectedTab) => {
@@ -113,43 +113,8 @@ const Tabs = decorate(
       [currentSelectedTab, onTabChange]
     );
 
-    // Function to auto-select any newly added tab
-    const selectAddedTab = useCallback(() => {
-      let prevChildrenArray = [];
-
-      if (prevChildren.current) {
-        prevChildrenArray = compact(Children.toArray(prevChildren.current)).map(
-          ({props: {name}}) => name
-        );
-      }
-
-      prevChildren.current = children;
-
-      const childrenArray = compact(Children.toArray(children)).map(
-        ({props: {name}}) => name
-      );
-
-      const newChildren = difference(childrenArray, prevChildrenArray);
-
-      const nextTab =
-        newChildren.length === 1 && newChildren.includes(suggestedTab)
-          ? suggestedTab
-          : selectedTab;
-
-      if (nextTab && nextTab !== selectedTab) {
-        selectTab(nextTab);
-        return true;
-      }
-
-      return false;
-    }, [currentSelectedTab, prevChildren.current, children]);
-
     // Either select a newly added tab or the tab that the props say should be selected.
     useEffect(() => {
-      if (selectAddedTab()) {
-        return;
-      }
-
       if (selectedTab && selectedTab !== currentSelectedTab) {
         selectTab(selectedTab);
       }
@@ -173,12 +138,47 @@ const Tabs = decorate(
       return compact(childrenTabs);
     }, [validChildren]);
 
+    // Function to auto-select any newly added tab
+    const selectAddedTab = useCallback(() => {
+      let prevTabsArray = [];
+
+      if (prevTabs.current) {
+        prevTabsArray = prevTabs.current.map(({name}) => name);
+      }
+
+      prevTabs.current = tabs;
+
+      const tabsArray = tabs.map(({name}) => name);
+      const newTabs = difference(tabsArray, prevTabsArray);
+
+      if (newTabs.length === 0) {
+        return false;
+      }
+
+      let nextTab = newTabs[0];
+
+      if (newTabs.includes(suggestedTab)) {
+        nextTab = suggestedTab;
+      }
+
+      if (nextTab && nextTab !== currentSelectedTab) {
+        selectTab(nextTab);
+        return true;
+      }
+
+      return false;
+    }, [currentSelectedTab, prevTabs.current, tabs]);
+
     // Various auto-select routines based on what tabs are available
     useEffect(() => {
       // Clear selection if we didn't get any tabs
       if (tabs.length === 0) {
         setSelectedTab("");
       } else {
+        if (selectAddedTab()) {
+          return;
+        }
+
         const firstTab = tabs[0];
         const {name} = firstTab;
 
