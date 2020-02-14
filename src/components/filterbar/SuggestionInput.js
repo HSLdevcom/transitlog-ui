@@ -82,8 +82,8 @@ const SuggestionInput = decorate(
     value,
     testId,
     onSelect,
-    getInputValue = defaultGetInputValue(),
     getValue = defaultGetInputValue(),
+    getInputValue = getValue,
     suggestions = [],
     onSuggestionsClearRequested = () => [],
     onSuggestionsFetchRequested = () => {},
@@ -155,6 +155,9 @@ const SuggestionInput = decorate(
             getSectionSuggestions={getSectionSuggestions}
             renderSuggestion={renderSuggestion}
             inputProps={inputProps}
+            suggestions={suggestions}
+            onSuggestionsClearRequested={onSuggestionsClearRequested}
+            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
             {...autosuggestProps}
           />
         </AutosuggestWrapper>

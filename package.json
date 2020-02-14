@@ -92,6 +92,7 @@
     "jest-styled-components": "^6.3.4",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
+    "react-app-polyfill": "^1.0.6",
     "react-app-rewired": "^2.1.5",
     "react-test-renderer": "^16.12.0"
   },
@@ -162,6 +163,9 @@
       "<rootDir>/src/**/__tests__/**/*.(spec|test).{js,jsx,ts,tsx}",
       "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}"
     ],
-    "testEnvironment": "jest-environment-jsdom-thirteen"
+    "testEnvironment": "jest-environment-jsdom-thirteen",
+    "modulePathIgnorePatterns": [
+      "utils"
+    ]
   }
 }

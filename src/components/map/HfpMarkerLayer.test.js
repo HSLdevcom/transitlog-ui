@@ -25,7 +25,7 @@ describe("HfpMarkerLayer", () => {
       <Map center={[lat, lng]} zoom={13}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Pane name="hfp-markers" style={{zIndex: 430}} />
-        <HfpMarkerLayer ref={markerRef} journey={journey} currentEvent={event} />
+        <HfpMarkerLayer markerRef={markerRef} journey={journey} currentEvent={event} />
       </Map>
     );
 
