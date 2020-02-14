@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
     - name: Checkout UI
       uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
       run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
   test:
     needs: deploy
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
       with:
