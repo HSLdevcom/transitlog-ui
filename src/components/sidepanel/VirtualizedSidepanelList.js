@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {observer} from "mobx-react";
+import React from "react";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {LoadingDisplay} from "../Loading";
 import {List, AutoSizer} from "react-virtualized";
@@ -12,7 +12,6 @@ const ListWrapper = styled.div`
 
 const ListHeader = styled.header`
   display: flex;
-  align-items: center;
   justify-content: space-between;
   width: 100%;
   background: transparent;
@@ -28,20 +27,17 @@ const ListHeader = styled.header`
   color: var(--grey);
 `;
 
-@observer
-class VirtualizedSidepanelList extends Component {
-  render() {
-    const {
-      header,
-      date,
-      list = [],
-      renderRow,
-      loading = false,
-      rowHeight,
-      scrollToIndex,
-      testId = "virtual-list",
-    } = this.props;
-
+const VirtualizedSidepanelList = observer(
+  ({
+    header,
+    date,
+    list = [],
+    renderRow,
+    loading = false,
+    rowHeight,
+    scrollToIndex,
+    testId = "virtual-list",
+  }) => {
     return (
       <ListWrapper data-testid={testId} hasHeader={!!header}>
         {header && <ListHeader>{header}</ListHeader>}
@@ -66,6 +62,6 @@ class VirtualizedSidepanelList extends Component {
       </ListWrapper>
     );
   }
-}
+);
 
 export default VirtualizedSidepanelList;

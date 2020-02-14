@@ -165,7 +165,7 @@
     ],
     "testEnvironment": "jest-environment-jsdom-thirteen",
     "modulePathIgnorePatterns": [
-      "utils"
+      "util"
     ]
   }
 }

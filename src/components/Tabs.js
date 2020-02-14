@@ -1,5 +1,5 @@
 import React, {Children, useState, useCallback, useEffect, useRef, useMemo} from "react";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import styled, {keyframes} from "styled-components";
 import compact from "lodash/compact";
 import difference from "lodash/difference";
