@@ -43,17 +43,4 @@ describe("Stop smoke tests", () => {
       .invoke("val")
       .should("equal", "1010115");
   });
-
-  it("Finds a terminal and can select it", () => {
-    cy.getTestElement("stop-input").type("1000002");
-    cy.getTestElement("terminal-option-1000002").click();
-
-    cy.url().should((url) => expect(url).to.include(`terminal=1000002`));
-
-    cy.getTestElement("stop-departures-list").should("exist");
-    cy.getTestElement("timetable-filters").should("exist");
-    cy.getTestElement("departure-item").should("exist");
-    cy.getTestElement("terminal-popup-1000002").should("exist");
-    cy.getTestElement("terminal-marker-1000002").should("exist");
-  });
 });

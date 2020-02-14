@@ -1,6 +1,5 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import "jest-styled-components";
 import HfpMarkerLayer from "./HfpMarkerLayer";
 import {Map, TileLayer, Pane} from "react-leaflet";
 import {render, cleanup} from "@testing-library/react";
@@ -31,7 +30,7 @@ describe("HfpMarkerLayer", () => {
     );
 
     // Nice path
-    expect(markerRef.current.markerRef.current.leafletElement._latlng).toEqual({
+    expect(markerRef.current.leafletElement._latlng).toEqual({
       lat,
       lng,
     });

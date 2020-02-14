@@ -1,6 +1,5 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import "jest-styled-components";
 import {
   render,
   cleanup,
@@ -69,7 +68,7 @@ const stopRequestMocks = [
             lat: 60.169002,
             lng: 24.93166,
             modes: ["BUS"],
-            stopIds: [
+            stops: [
               "1040271",
               "1040272",
               "1040273",
@@ -88,7 +87,7 @@ const stopRequestMocks = [
             lat: 60.171802,
             lng: 24.93948,
             modes: ["BUS"],
-            stopIds: [
+            stops: [
               "1020228",
               "1020245",
               "1020239",

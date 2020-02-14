@@ -1,6 +1,5 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import "jest-styled-components";
 import {
   render,
   cleanup,
@@ -14,7 +13,7 @@ import {MockedProvider} from "@apollo/react-testing";
 import mockJourneysResponse from "../route_journeys_response";
 import mockRouteOptionsResponse from "../route_options_response";
 import {MobxProviders} from "../util/MobxProviders";
-import {observable, action, toJS} from "mobx";
+import {observable, action} from "mobx";
 import SidePanel from "../../components/sidepanel/SidePanel";
 import {text} from "../../helpers/text";
 import {routeOptionsQuery} from "../../queries/RouteOptionsQuery";
