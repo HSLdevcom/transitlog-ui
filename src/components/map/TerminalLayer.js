@@ -141,7 +141,9 @@ const TerminalLayer = decorate(({Filters, state}) => {
       const color = getModeColor(mode);
 
       return divIcon({
-        html: `<div class="terminal-icon" style="${
+        html: `<div data-testid="terminal-marker-${
+          currentTerminal.id
+        }" class="terminal-icon" style="${
           isSelected ? selectedTerminalStyle(color) : ""
         }">${getTransportIconHtml(mode, size)}</div>`,
         iconSize: [size, size],

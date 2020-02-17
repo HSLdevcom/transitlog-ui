@@ -69,7 +69,7 @@ const stopRequestMocks = [
             lat: 60.169002,
             lng: 24.93166,
             modes: ["BUS"],
-            stops: [
+            stopIds: [
               "1040271",
               "1040272",
               "1040273",
@@ -88,7 +88,7 @@ const stopRequestMocks = [
             lat: 60.171802,
             lng: 24.93948,
             modes: ["BUS"],
-            stops: [
+            stopIds: [
               "1020228",
               "1020245",
               "1020239",
