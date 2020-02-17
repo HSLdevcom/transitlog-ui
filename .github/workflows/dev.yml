@@ -41,7 +41,6 @@ jobs:
       with:
         status: ${{ job.status }}
         text: Reittiloki DEV deployment status
-        fields: repo,message,workflow
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -76,13 +75,12 @@ jobs:
       with:
         name: cypress-videos
         path: cypress/videos
-    - name: Notify of deployment
+    - name: Notify of tests
       uses: 8398a7/action-slack@v2
       if: always()
       with:
         status: ${{ job.status }}
         text: Reittiloki DEV E2E test status
-        fields: repo,message,workflow
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
