@@ -34,6 +34,20 @@ function checkGPS(positions, setState) {
   }
 }
 
+function checkLocHealth(events, incrementHealth, addMessage) {
+  let odoCount = 0;
+
+  for (const evt of events) {
+    if (typeof evt.loc !== "undefined" && evt.loc === "ODO") {
+      odoCount++;
+    }
+  }
+
+  const score = (odoCount / events.length) * 100;
+
+  incrementHealth(score);
+}
+
 function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessage) {
   const {stopId = ""} = visitedStops[0] || {};
 
