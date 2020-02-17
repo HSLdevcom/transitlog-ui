@@ -94,10 +94,12 @@ const HfpTooltip = decorate(
             <RealTime2 fill="var(--blue)" width="1rem" height="1rem" />
             {moment.tz(usingEvent.recordedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
           </TooltipDataRow>
-          <TooltipDataRow>
-            <Envelope fill="var(--blue)" width="1rem" height="1rem" />
-            {moment.tz(usingEvent.receivedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
-          </TooltipDataRow>
+          {usingEvent.receivedAt && (
+            <TooltipDataRow>
+              <Envelope fill="var(--blue)" width="1rem" height="1rem" />
+              {moment.tz(usingEvent.receivedAt, TIMEZONE).format("YYYY-MM-DD, HH:mm:ss")}
+            </TooltipDataRow>
+          )}
           {user && (
             <TooltipDataRow>
               <Bus fill="var(--blue)" width="1rem" height="1rem" />
