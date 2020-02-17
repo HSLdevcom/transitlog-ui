@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import gql from "graphql-tag";
 import {Query} from "@apollo/react-components";
 import get from "lodash/get";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import {CancellationFieldsFragment} from "./CancellationFieldsFragment";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";

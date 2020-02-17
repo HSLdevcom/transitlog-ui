@@ -1,8 +1,8 @@
 import React from "react";
 import flow from "lodash/flow";
 import get from "lodash/get";
-import {observer, inject} from "mobx-react";
-import {app} from "mobx-app";
+import {observer} from "mobx-react-lite";
+import {inject} from "../helpers/inject";
 import styled from "styled-components";
 import {Button} from "./Forms";
 
@@ -39,7 +39,7 @@ const DismissButton = styled(Button).attrs({small: true, primary: false})`
   }
 `;
 
-const decorate = flow(observer, inject(app("UI")));
+const decorate = flow(observer, inject("UI"));
 
 export default decorate(function ErrorMessages({state, UI}) {
   const {errors} = state;

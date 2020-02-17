@@ -1,4 +1,4 @@
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import {languageState} from "../stores/UIStore";
 import get from "lodash/get";
 

@@ -1,12 +1,13 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {Tooltip} from "react-leaflet";
 import {latLng} from "leaflet";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import {P} from "../Typography";
 import {ColoredBackgroundSlot, PlainSlot, PlainSlotMono, TagButton} from "../TagButton";
 import styled from "styled-components";
 import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
 import get from "lodash/get";
+import flow from "lodash/flow";
 import {
   getNormalTime,
   timeToSeconds,
@@ -45,35 +46,37 @@ const DepartureTimeGroup = styled.div`
   min-width: 300px;
 `;
 
-@inject("Time", "UI", "Filters")
-@observer
-class RouteStop extends React.Component {
-  onClickTime = (time) => (e) => {
-    e.preventDefault();
-    this.props.Time.setTime(time);
-  };
+const decorate = flow(observer, inject("Time", "UI", "Filters"));
 
-  onShowStreetView = () => {
-    const {UI, stop} = this.props;
-    UI.setMapillaryViewerLocation(latLng({lat: stop.lat, lng: stop.lng}));
-  };
+const RouteStop = decorate(
+  ({
+    stop,
+    stopId,
+    departure,
+    arrival,
+    date,
+    firstStop,
+    firstTerminal,
+    lastTerminal,
+    selectedJourney,
+    journey,
+    showRadius,
+    state,
+    Filters,
+    Time,
+    UI,
+  }) => {
+    const onClickTime = useCallback(
+      (time) => (e) => {
+        e.preventDefault();
+        Time.setTime(time);
+      },
+      []
+    );
 
-  render() {
-    const {
-      stop,
-      stopId,
-      departure,
-      arrival,
-      date,
-      firstStop,
-      firstTerminal,
-      lastTerminal,
-      selectedJourney,
-      journey,
-      showRadius,
-      state,
-      Filters,
-    } = this.props;
+    const onShowStreetView = useCallback(() => {
+      UI.setMapillaryViewerLocation(latLng({lat: stop.lat, lng: stop.lng}));
+    }, [stop]);
 
     const isTerminal = firstTerminal || lastTerminal;
 
@@ -171,7 +174,7 @@ class RouteStop extends React.Component {
     }
 
     const observedDepartureTime = (
-      <TagButton onClick={this.onClickTime(stopDepartureTime)}>
+      <TagButton onClick={onClickTime(stopDepartureTime)}>
         <PlainSlot>{getNormalTime(plannedDepartureTime)}</PlainSlot>
         {!isPlanned && (
           <>
@@ -199,7 +202,7 @@ class RouteStop extends React.Component {
         <CalculateTerminalTime date={date} departure={journey.departure} event={arrival}>
           {({offsetTime, wasLate, diffHours, diffMinutes, diffSeconds, sign}) => (
             <>
-              <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
+              <StopArrivalTime onClick={onClickTime(stopArrivalTime)}>
                 <PlainSlot
                   style={{
                     fontStyle: "italic",
@@ -235,7 +238,7 @@ class RouteStop extends React.Component {
           departure={journey.departure}
           event={arrival}>
           {({offsetTime, wasLate, diffHours, diffMinutes, diffSeconds, sign}) => (
-            <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
+            <StopArrivalTime onClick={onClickTime(stopArrivalTime)}>
               <PlainSlot>{offsetTime.format("HH:mm:ss")}</PlainSlot>
               <ColoredBackgroundSlot
                 color="white"
@@ -254,7 +257,7 @@ class RouteStop extends React.Component {
       );
     } else if (arrival) {
       observedArrivalTime = (
-        <StopArrivalTime onClick={this.onClickTime(stopArrivalTime)}>
+        <StopArrivalTime onClick={onClickTime(stopArrivalTime)}>
           <PlainSlot>{getNormalTime(plannedArrivalTime)}</PlainSlot>
           <ColoredBackgroundSlot
             color="var(--dark-grey)"
@@ -333,7 +336,7 @@ class RouteStop extends React.Component {
           </StopContentWrapper>
         </StopPopupContentSection>
         <StopStreetViewWrapper>
-          <Button onClick={this.onShowStreetView}>
+          <Button onClick={onShowStreetView}>
             <Text>map.stops.show_in_streetview</Text>
           </Button>
         </StopStreetViewWrapper>
@@ -391,6 +394,6 @@ class RouteStop extends React.Component {
       </StopMarker>
     );
   }
-}
+);
 
 export default RouteStop;
