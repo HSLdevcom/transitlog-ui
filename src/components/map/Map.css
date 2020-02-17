@@ -1,0 +1,37 @@
+.timing-stop.early {
+  background: var(--pink);
+  border-radius: 50%;
+}
+
+.timing-stop.late {
+  background: var(--yellow);
+  border-radius: 50%;
+}
+
+.timing-stop.on-time {
+  background: var(--lighter-green);
+  border-radius: 50%;
+}
+
+.timing-stop.doors-not-opened {
+  border: 3px dashed var(--blue);
+  padding: 1px;
+}
+
+.leaflet-div-icon {
+  border: 0 !important;
+  background: transparent !important;
+  width: 25px;
+  height: 25px;
+  font-size: 0;
+  text-indent: -9999px;
+}
+
+.tooltip-unpadded {
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.leaflet-container {
+  font-family: inherit !important;
+}

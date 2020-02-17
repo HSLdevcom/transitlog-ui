@@ -1,0 +1,128 @@
+{
+  "data": {
+    "routeDepartures": [
+      {
+        "id": "route/1018_2_05_28_1304103_H0_N_2019-05-27_2019-02-11_2019-06-16",
+        "index": 1,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "dayType": "H0",
+        "departureId": 1,
+        "departureDate": "2019-05-27",
+        "departureTime": "05:28:00",
+        "equipmentColor": "",
+        "equipmentType": "17",
+        "extraDeparture": "N",
+        "operatorId": "0012",
+        "terminalTime": 2,
+        "recoveryTime": 5,
+        "routeId": "1018",
+        "direction": 2,
+        "stopId": "1304103",
+        "isCancelled": false,
+        "alerts": [],
+        "cancellations": [],
+        "journey": {
+          "id": "departure_journey_2019-05-27_05:28:00_1018_2_0012/1906",
+          "journeyType": "journey",
+          "departureDate": "2019-05-27",
+          "departureTime": "05:28:00",
+          "direction": 2,
+          "routeId": "1018",
+          "originStopId": "1304103",
+          "uniqueVehicleId": "0012/1906",
+          "mode": "BUS",
+          "_numInstance": 0,
+          "alerts": [],
+          "loc": "GPS",
+          "__typename": "DepartureJourney"
+        },
+        "plannedArrivalTime": {
+          "id": "pat_1018_2_05_28_1304103_H0_N__2019-02-11_2019-06-16_05:28:00_2019-05-27",
+          "arrivalDate": "2019-05-27",
+          "arrivalDateTime": "2019-05-27T05:28:00.000+03:00",
+          "arrivalTime": "05:28:00",
+          "isNextDay": false,
+          "__typename": "PlannedArrival"
+        },
+        "observedArrivalTime": null,
+        "plannedDepartureTime": {
+          "id": "pdt_1018_2_05_28_1304103_H0_N__2019-02-11_2019-06-16_05:28:00_2019-05-27",
+          "departureDate": "2019-05-27",
+          "departureDateTime": "2019-05-27T05:28:00.000+03:00",
+          "departureTime": "05:28:00",
+          "isNextDay": false,
+          "__typename": "PlannedDeparture"
+        },
+        "observedDepartureTime": {
+          "id": "odt_2019-05-27_05:28:00_1018_2_0012/1906_2019-05-27T02:28:26+00:00_route/1018_2_05_28_1304103_H0_N_2019-05-27_2019-02-11_2019-06-16",
+          "departureDate": "2019-05-27",
+          "departureDateTime": "2019-05-27T05:28:26.000+03:00",
+          "departureTime": "05:28:26",
+          "departureTimeDifference": 26,
+          "loc": "GPS",
+          "__typename": "ObservedDeparture"
+        },
+        "__typename": "Departure"
+      },
+      {
+        "id": "route/1018_2_22_26_1304103_H0_N_2019-05-27_2019-02-11_2019-06-16",
+        "index": 1,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "dayType": "H0",
+        "departureId": 95,
+        "departureDate": "2019-05-27",
+        "departureTime": "22:26:00",
+        "equipmentColor": "",
+        "equipmentType": "17",
+        "extraDeparture": "N",
+        "operatorId": "0012",
+        "terminalTime": 2,
+        "recoveryTime": 5,
+        "routeId": "1018",
+        "direction": 2,
+        "stopId": "1304103",
+        "isCancelled": false,
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-27T06:00:00.000+03:00",
+            "endDateTime": "2019-05-27T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "journey": null,
+        "plannedArrivalTime": {
+          "id": "pat_1018_2_22_26_1304103_H0_N__2019-02-11_2019-06-16_22:26:00_2019-05-27",
+          "arrivalDate": "2019-05-27",
+          "arrivalDateTime": "2019-05-27T22:26:00.000+03:00",
+          "arrivalTime": "22:26:00",
+          "isNextDay": false,
+          "__typename": "PlannedArrival"
+        },
+        "observedArrivalTime": null,
+        "plannedDepartureTime": {
+          "id": "pdt_1018_2_22_26_1304103_H0_N__2019-02-11_2019-06-16_22:26:00_2019-05-27",
+          "departureDate": "2019-05-27",
+          "departureDateTime": "2019-05-27T22:26:00.000+03:00",
+          "departureTime": "22:26:00",
+          "isNextDay": false,
+          "__typename": "PlannedDeparture"
+        },
+        "observedDepartureTime": null,
+        "__typename": "Departure"
+      }
+    ]
+  }
+}

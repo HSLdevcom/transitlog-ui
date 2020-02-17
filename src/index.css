@@ -1,13 +1,78 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://cloud.typography.com/6364294/7572592/css/fonts.css");
+
+:root {
+  --dark-blue: rgb(0, 98, 161);
+  --blue: #007ac9;
+  --bus-blue: #0079c9;
+  --green: #00985f;
+  --purple: #8c4799;
+  --orange: #ff6319;
+  --light-orange: #ffedf0;
+  --teal: #00b2a9;
+  --light-blue: #00b9e4;
+  --lighter-blue: #bee4f8;
+  --pink: #f092cd;
+  --light-pink: #f4deea;
+  --light-green: #64be1e;
+  --lighter-green: #d0e6bd;
+  --red: #dc0451;
+  --yellow: #fed100;
+  --dark-yellow: #d9a900;
+  --dark-grey: #333333;
+  --grey: #616365;
+  --light-grey: #999a9a;
+  --lighter-grey: #dddddc;
+  --lightest-grey: #eef1f3;
+  --alt-grey: #ccccdf;
+
+  --font-family: "Gotham Rounded SSm A", "Gotham Rounded SSm B", sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+* {
+  box-sizing: border-box;
+  -moz-scrollbar-width: thin;
+  scrollbar-width: thin;
+}
+
+html {
+  height: 100%;
+  font-size: 14px;
+  font-family: var(--font-family);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--dark-grey);
+}
+
+#root {
+  height: 100vh;
+}
+
+/* Hide number input spin box */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+/* Static and predictable width for all scrollbars. Can be used to negate their width. */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--light-grey);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--lightest-grey);
+  border-left: 1px solid var(--lighter-grey);
+  border-top: 1px solid var(--lighter-grey);
 }

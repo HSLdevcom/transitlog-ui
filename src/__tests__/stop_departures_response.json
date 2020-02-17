@@ -1,0 +1,256 @@
+{
+  "data": {
+    "departures": [
+      {
+        "id": "/1016_2_05_38_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "stopId": "1420104",
+        "routeId": "1016",
+        "direction": 2,
+        "dayType": "Ti",
+        "departureId": 1,
+        "departureDate": "2019-05-28",
+        "departureTime": "05:38:00",
+        "equipmentColor": "",
+        "equipmentType": "3",
+        "extraDeparture": "N",
+        "index": 10,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "operatorId": "0017",
+        "terminalTime": 0,
+        "recoveryTime": 4,
+        "isCancelled": false,
+        "cancellations": [],
+        "alerts": [],
+        "journey": {
+          "id": "departure_journey_2019-05-28_05:30:00_1016_2_0017/26",
+          "type": "DEP",
+          "journeyType": "journey",
+          "routeId": "1016",
+          "lineId": null,
+          "direction": 2,
+          "originStopId": "1420120",
+          "departureDate": "2019-05-28",
+          "departureTime": "05:30:00",
+          "uniqueVehicleId": "0017/26",
+          "_numInstance": 0,
+          "__typename": "DepartureJourney"
+        },
+        "observedDepartureTime": {
+          "id": "odt_2019-05-28_05:30:00_1016_2_0017/26_2019-05-28T02:39:05+00:00_/1016_2_05_38_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+          "departureDate": "2019-05-28",
+          "departureTime": "05:39:05",
+          "departureDateTime": "2019-05-28T05:39:05.000+03:00",
+          "departureTimeDifference": 65,
+          "loc": "GPS",
+          "__typename": "ObservedDeparture"
+        },
+        "plannedDepartureTime": {
+          "id": "pdt_1016_2_05_38_1420104_Ti_N__2019-05-01_2019-06-16_05:38:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "05:38:00",
+          "departureDateTime": "2019-05-28T05:38:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "__typename": "Departure"
+      },
+      {
+        "id": "/1016_2_06_09_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "stopId": "1420104",
+        "routeId": "1016",
+        "direction": 2,
+        "dayType": "Ti",
+        "departureId": 2,
+        "departureDate": "2019-05-28",
+        "departureTime": "06:09:00",
+        "equipmentColor": "",
+        "equipmentType": "3",
+        "extraDeparture": "N",
+        "index": 10,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "operatorId": "0017",
+        "terminalTime": 0,
+        "recoveryTime": 4,
+        "isCancelled": false,
+        "cancellations": [],
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "journey": {
+          "id": "departure_journey_2019-05-28_06:00:00_1016_2_0017/25",
+          "type": "DEP",
+          "journeyType": "journey",
+          "routeId": "1016",
+          "lineId": null,
+          "direction": 2,
+          "originStopId": "1420120",
+          "departureDate": "2019-05-28",
+          "departureTime": "06:00:00",
+          "uniqueVehicleId": "0017/25",
+          "_numInstance": 0,
+          "__typename": "DepartureJourney"
+        },
+        "observedDepartureTime": {
+          "id": "odt_2019-05-28_06:00:00_1016_2_0017/25_2019-05-28T03:08:49+00:00_/1016_2_06_09_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+          "departureDate": "2019-05-28",
+          "departureTime": "06:08:49",
+          "departureDateTime": "2019-05-28T06:08:49.000+03:00",
+          "departureTimeDifference": -11,
+          "loc": "GPS",
+          "__typename": "ObservedDeparture"
+        },
+        "plannedDepartureTime": {
+          "id": "pdt_1016_2_06_09_1420104_Ti_N__2019-05-01_2019-06-16_06:09:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "06:09:00",
+          "departureDateTime": "2019-05-28T06:09:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "__typename": "Departure"
+      },
+      {
+        "id": "/1016_2_22_48_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "stopId": "1420104",
+        "routeId": "1016",
+        "direction": 2,
+        "dayType": "Ti",
+        "departureId": 50,
+        "departureDate": "2019-05-28",
+        "departureTime": "22:48:00",
+        "equipmentColor": "",
+        "equipmentType": "3",
+        "extraDeparture": "N",
+        "index": 10,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "operatorId": "0017",
+        "terminalTime": 0,
+        "recoveryTime": 4,
+        "isCancelled": false,
+        "cancellations": [],
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "journey": null,
+        "observedDepartureTime": null,
+        "plannedDepartureTime": {
+          "id": "pdt_1016_2_22_48_1420104_Ti_N__2019-05-01_2019-06-16_22:48:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "22:48:00",
+          "departureDateTime": "2019-05-28T22:48:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "__typename": "Departure"
+      },
+      {
+        "id": "/1016_2_23_18_1420104_Ti_N_2019-05-28_2019-05-01_2019-06-16",
+        "originDepartureTime": {
+          "isNextDay": false,
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "stopId": "1420104",
+        "routeId": "1016",
+        "direction": 2,
+        "dayType": "Ti",
+        "departureId": 51,
+        "departureDate": "2019-05-28",
+        "departureTime": "23:18:00",
+        "equipmentColor": "",
+        "equipmentType": "3",
+        "extraDeparture": "N",
+        "index": 10,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "operatorId": "0017",
+        "terminalTime": 0,
+        "recoveryTime": 4,
+        "isCancelled": false,
+        "cancellations": [],
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "journey": null,
+        "observedDepartureTime": null,
+        "plannedDepartureTime": {
+          "id": "pdt_1016_2_23_18_1420104_Ti_N__2019-05-01_2019-06-16_23:18:00_2019-05-28",
+          "departureDate": "2019-05-28",
+          "departureTime": "23:18:00",
+          "departureDateTime": "2019-05-28T23:18:00.000+03:00",
+          "__typename": "PlannedDeparture"
+        },
+        "__typename": "Departure"
+      }
+    ]
+  }
+}

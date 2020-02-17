@@ -1,0 +1,177 @@
+{
+  "data": {
+    "journey": {
+      "id": "2019-05-27_07:20:00_1018_2_0012/1110",
+      "lineId": "1018",
+      "routeId": "1018",
+      "originStopId": "1304103",
+      "direction": 2,
+      "departureDate": "2019-05-27",
+      "departureTime": "07:20:00",
+      "uniqueVehicleId": "0012/1110",
+      "operatorId": "12",
+      "vehicleId": "1110",
+      "name": "Eira-Kamppi-Munkkivuori",
+      "mode": "BUS",
+      "headsign": "Eira",
+      "isCancelled": false,
+      "cancellations": [],
+      "alerts": [
+        {
+          "id": 1,
+          "affectedId": "",
+          "level": "SEVERE",
+          "distribution": "ALL_ROUTES",
+          "category": "VEHICLE_DEFICIT",
+          "impact": "CANCELLED",
+          "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+          "startDateTime": "2019-05-27T06:00:00.000+03:00",
+          "endDateTime": "2019-05-27T23:59:00.000+03:00",
+          "title": "No oil",
+          "description": "The world ran out of oil so no buses are running today sorry.",
+          "url": "https://hsl.fi",
+          "__typename": "Alert"
+        }
+      ],
+      "equipment": null,
+      "vehiclePositions": [
+        {
+          "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558930079",
+          "delay": null,
+          "doorStatus": false,
+          "heading": 81,
+          "lat": 60.205439,
+          "lng": 24.876498,
+          "nextStopId": "1304103",
+          "recordedAt": "2019-05-27T07:07:59.000+03:00",
+          "recordedAtUnix": 1558930079,
+          "recordedTime": "07:07:59",
+          "velocity": 3.38,
+          "__typename": "JourneyEvent"
+        },
+        {
+          "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558933344",
+          "delay": 142,
+          "doorStatus": true,
+          "heading": 176,
+          "lat": 60.155288,
+          "lng": 24.94237,
+          "nextStopId": "1060129",
+          "recordedAt": "2019-05-27T08:02:24.000+03:00",
+          "recordedAtUnix": 1558933344,
+          "recordedTime": "08:02:24",
+          "velocity": 0.66,
+          "__typename": "JourneyEvent"
+        }
+      ],
+      "departure": {
+        "id": "journey/1018_2_07_20_1304103_Ma_N_2019-05-27_2019-02-11_2019-06-16",
+        "stopId": "1304103",
+        "dayType": "Ma",
+        "departureId": 11,
+        "departureDate": "2019-05-27",
+        "departureTime": "07:20:00",
+        "equipmentColor": "",
+        "equipmentIsRequired": false,
+        "equipmentType": "17",
+        "extraDeparture": "N",
+        "index": 1,
+        "isNextDay": false,
+        "isTimingStop": false,
+        "operatorId": "0012",
+        "terminalTime": 2,
+        "recoveryTime": 6,
+        "isCancelled": false,
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-27T06:00:00.000+03:00",
+            "endDateTime": "2019-05-27T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "stop": {
+          "id": "1018_2_1_2019-02-11_2050-12-31",
+          "isTimingStop": false,
+          "lat": 60.20547,
+          "lng": 24.87796,
+          "lineId": "1018",
+          "modes": ["BUS"],
+          "destination": "Eira",
+          "distanceFromPrevious": 453,
+          "distanceFromStart": 0,
+          "duration": 0,
+          "name": "Munkkivuoren ostosk.",
+          "originStopId": "1304103",
+          "radius": 15,
+          "routeId": "1018",
+          "shortId": "H 1485",
+          "stopId": "1304103",
+          "stopIndex": 1,
+          "alerts": [],
+          "__typename": "RouteSegment"
+        },
+        "plannedArrivalTime": {
+          "id": "pat_1018_2_07_20_1304103_Ma_N__2019-02-11_2019-06-16_07:20:00_2019-05-27",
+          "arrivalDate": "2019-05-27",
+          "arrivalDateTime": "2019-05-27T07:20:00.000+03:00",
+          "arrivalTime": "07:20:00",
+          "isNextDay": false,
+          "__typename": "PlannedArrival"
+        },
+        "observedArrivalTime": {
+          "id": "oat_2019-05-27_07:20:00_1018_2_0012/1110_Mon May 27 2019 07:08:42 GMT+0300 (Eastern European Summer Time)_journey/1018_2_07_20_1304103_Ma_N_2019-05-27_2019-02-11_2019-06-16",
+          "arrivalDate": "2019-05-27",
+          "arrivalDateTime": "2019-05-27T07:08:42.000+03:00",
+          "arrivalTime": "07:08:42",
+          "arrivalTimeDifference": -678,
+          "doorDidOpen": true,
+          "arrivalEvent": {
+            "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558930122",
+            "nextStopId": "1304103",
+            "recordedAt": "2019-05-27T07:08:42.000+03:00",
+            "recordedAtUnix": 1558930122,
+            "recordedTime": "07:08:42",
+            "__typename": "JourneyEvent"
+          },
+          "__typename": "ObservedArrival"
+        },
+        "observedDepartureTime": {
+          "id": "odt_2019-05-27_07:20:00_1018_2_0012/1110_2019-05-27T04:20:08+00:00_journey/1018_2_07_20_1304103_Ma_N_2019-05-27_2019-02-11_2019-06-16",
+          "departureDate": "2019-05-27",
+          "departureTime": "07:20:08",
+          "departureDateTime": "2019-05-27T07:20:08.000+03:00",
+          "departureTimeDifference": 8,
+          "departureEvent": {
+            "id": "journey_event_2019-05-27_07:20:00_1018_2_0012/1110_1558930808",
+            "nextStopId": "1304103",
+            "recordedAt": "2019-05-27T07:20:08.000+03:00",
+            "recordedAtUnix": 1558930808,
+            "recordedTime": "07:20:08",
+            "__typename": "JourneyEvent"
+          },
+          "__typename": "ObservedDeparture"
+        },
+        "plannedDepartureTime": {
+          "id": "pdt_1018_2_07_20_1304103_Ma_N__2019-02-11_2019-06-16_07:20:00_2019-05-27",
+          "departureDate": "2019-05-27",
+          "departureTime": "07:20:00",
+          "departureDateTime": "2019-05-27T07:20:00.000+03:00",
+          "isNextDay": false,
+          "__typename": "PlannedDeparture"
+        },
+        "__typename": "Departure"
+      },
+      "__typename": "Journey"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "Transitlog server": {
+        "url": "http://localhost:4000/graphql",
+        "method": "POST",
+        "introspect": true,
+        "headers": { "user-agent": "JS GraphQL" }
+      },
+      "Transitlog server dev": {
+        "url": "https://dev.reittiloki.hsl.fi/server/graphql",
+        "method": "POST",
+        "introspect": true,
+        "headers": { "user-agent": "JS GraphQL" }
+      }
+    }
+  }
+}

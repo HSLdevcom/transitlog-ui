@@ -1,0 +1,366 @@
+{
+  "data": {
+    "routes": [
+      {
+        "id": "1001_1_2019-03-04_2019-06-30",
+        "routeId": "1001",
+        "direction": 1,
+        "destination": "Käpylä",
+        "destinationStopId": "1250431",
+        "mode": "TRAM",
+        "name": "Eira - Töölö - Käpylä",
+        "origin": "Eira",
+        "originStopId": "1050417",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1001_2_2019-03-04_2019-06-30",
+        "routeId": "1001",
+        "direction": 2,
+        "destination": "Eira",
+        "destinationStopId": "1050417",
+        "mode": "TRAM",
+        "name": "Eira - Töölö - Käpylä",
+        "origin": "Käpylä",
+        "originStopId": "1250431",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1018_1_2019-03-04_2050-12-31",
+        "routeId": "1018",
+        "direction": 1,
+        "destination": "Munkkivuori",
+        "destinationStopId": "1402132",
+        "mode": "BUS",
+        "name": "Eira - Munkkivuori",
+        "origin": "Eira",
+        "originStopId": "1020117",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1080_2_2019-02-25_2019-06-16",
+        "routeId": "1080",
+        "direction": 2,
+        "destination": "Herttoniemi(M)",
+        "destinationStopId": "1431111",
+        "mode": "BUS",
+        "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
+        "origin": "Itäkeskus(M)",
+        "originStopId": "1453128",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1080_1_2019-02-25_2019-06-16",
+        "routeId": "1080",
+        "direction": 1,
+        "destination": "Itäkeskus(M)",
+        "destinationStopId": "1453114",
+        "mode": "BUS",
+        "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
+        "origin": "Herttoniemi(M)",
+        "originStopId": "1431189",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1018_2_2019-03-04_2050-12-31",
+        "routeId": "1018",
+        "direction": 2,
+        "destination": "Eira",
+        "destinationStopId": "1020201",
+        "mode": "BUS",
+        "name": "Eira - Munkkivuori",
+        "origin": "Munkkivuori",
+        "originStopId": "1304130",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1077_1_2019-03-04_2050-12-31",
+        "routeId": "1077",
+        "direction": 1,
+        "destination": "Jakomäki",
+        "destinationStopId": "1414149",
+        "mode": "BUS",
+        "name": "Rautatientori-Tattarisuo-Jakomäki",
+        "origin": "Rautatientori, l. 6",
+        "originStopId": "1020118",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1081_2_2019-02-25_2019-06-16",
+        "routeId": "1081",
+        "direction": 2,
+        "destination": "Kulosaari",
+        "destinationStopId": "1420123",
+        "mode": "BUS",
+        "name": "Kulosaari-Herttoniemi(M)-Länsi-Herttoniemi",
+        "origin": "Länsi-Herttoniemi",
+        "originStopId": "1431138",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1081_1_2019-02-25_2019-06-16",
+        "routeId": "1081",
+        "direction": 1,
+        "destination": "Länsi-Herttoniemi",
+        "destinationStopId": "1431137",
+        "mode": "BUS",
+        "name": "Kulosaari-Herttoniemi(M)-Länsi-Herttoniemi",
+        "origin": "Kulosaari",
+        "originStopId": "1420123",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1077_2_2019-03-04_2050-12-31",
+        "routeId": "1077",
+        "direction": 2,
+        "destination": "Rautatientori",
+        "destinationStopId": "1020201",
+        "mode": "BUS",
+        "name": "Rautatientori-Tattarisuo-Jakomäki",
+        "origin": "Jakomäki",
+        "originStopId": "1414149",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1082_2_2019-02-25_2019-06-16",
+        "routeId": "1082",
+        "direction": 2,
+        "destination": "Herttoniemi(M)",
+        "destinationStopId": "1431111",
+        "mode": "BUS",
+        "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
+        "origin": "Itäkeskus(M)",
+        "originStopId": "1453128",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      },
+      {
+        "id": "1082_1_2019-02-25_2019-06-16",
+        "routeId": "1082",
+        "direction": 1,
+        "destination": "Itäkeskus(M)",
+        "destinationStopId": "1453112",
+        "mode": "BUS",
+        "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
+        "origin": "Herttoniemi(M)",
+        "originStopId": "1431189",
+        "alerts": [
+          {
+            "id": 1,
+            "affectedId": "",
+            "level": "SEVERE",
+            "distribution": "ALL_ROUTES",
+            "category": "VEHICLE_DEFICIT",
+            "impact": "CANCELLED",
+            "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+            "startDateTime": "2019-05-28T06:00:00.000+03:00",
+            "endDateTime": "2019-05-28T23:59:00.000+03:00",
+            "title": "No oil",
+            "description": "The world ran out of oil so no buses are running today sorry.",
+            "url": "https://hsl.fi",
+            "__typename": "Alert"
+          }
+        ],
+        "cancellations": [],
+        "__typename": "Route"
+      }
+    ]
+  }
+}

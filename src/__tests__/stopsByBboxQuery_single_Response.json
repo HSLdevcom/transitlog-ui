@@ -1,0 +1,39 @@
+{
+  "data": {
+    "stopsByBbox": [
+      {
+        "id": "1420104",
+        "stopId": "1420104",
+        "shortId": "H 4014",
+        "lat": 60.18584,
+        "lng": 25.00085,
+        "name": "Marsalkantie",
+        "radius": 30,
+        "modes": ["BUS"],
+        "__typename": "Stop"
+      },
+      {
+        "id": "1420105",
+        "stopId": "1420105",
+        "shortId": "H 4017",
+        "lat": 60.18404,
+        "lng": 25.00604,
+        "name": "Kalliokaivonmäki",
+        "radius": 40,
+        "modes": ["BUS"],
+        "__typename": "Stop"
+      },
+      {
+        "id": "1420106",
+        "stopId": "1420106",
+        "shortId": "H 4016",
+        "lat": 60.18426,
+        "lng": 25.00509,
+        "name": "Kalliokaivonmäki",
+        "radius": 40,
+        "modes": ["BUS"],
+        "__typename": "Stop"
+      }
+    ]
+  }
+}

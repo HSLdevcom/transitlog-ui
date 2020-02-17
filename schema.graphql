@@ -1,0 +1,664 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+  query: Query
+}
+
+"Any object that describes something with a position implements this interface."
+interface Position {
+  lat: Float
+  lng: Float
+}
+
+union JourneyEventType = JourneyCancellationEvent | JourneyEvent | JourneyStopEvent | PlannedStopEvent
+
+type Alert {
+  affectedId: String!
+  bulletinId: String!
+  category: AlertCategory!
+  description: String!
+  distribution: AlertDistribution!
+  endDateTime: DateTime!
+  id: String!
+  impact: AlertImpact!
+  lastModifiedDateTime: DateTime!
+  level: AlertLevel!
+  startDateTime: DateTime!
+  title: String!
+  url: String
+}
+
+type Cancellation {
+  cancellationEffect: CancellationEffect!
+  cancellationType: CancellationType!
+  category: AlertCategory!
+  departureDate: Date!
+  description: String!
+  direction: Direction!
+  id: Int!
+  isCancelled: Boolean!
+  journeyStartTime: Time!
+  lastModifiedDateTime: DateTime!
+  routeId: String!
+  subCategory: CancellationSubcategory!
+  title: String!
+}
+
+type Departure {
+  alerts: [Alert!]!
+  cancellations: [Cancellation!]!
+  dayType: String!
+  departureDate: Date!
+  departureEvent: JourneyStopEvent
+  departureId: Int!
+  departureTime: Time!
+  direction: Direction!
+  equipmentColor: String
+  equipmentIsRequired: Boolean
+  equipmentType: String
+  extraDeparture: String!
+  id: ID!
+  index: Int
+  isCancelled: Boolean!
+  isNextDay: Boolean!
+  isOrigin: Boolean
+  isTimingStop: Boolean!
+  journey: DepartureJourney
+  mode: String!
+  observedArrivalTime: ObservedArrival
+  observedDepartureTime: ObservedDeparture
+  operatingUnit: String
+  operatorId: String
+  originDepartureTime: PlannedDeparture
+  plannedArrivalTime: PlannedArrival!
+  plannedDepartureTime: PlannedDeparture!
+  recoveryTime: Int
+  routeId: String!
+  stop: Stop!
+  stopId: String!
+  terminalTime: Int
+}
+
+type DepartureJourney {
+  _numInstance: Int
+  alerts: [Alert!]!
+  cancellations: [Cancellation!]!
+  departureDate: Date!
+  departureTime: Time!
+  direction: Direction
+  id: ID!
+  isCancelled: Boolean!
+  journeyType: String!
+  mode: String
+  originStopId: String
+  routeId: String
+  type: String!
+  uniqueVehicleId: VehicleId
+}
+
+type DriverEvent {
+  eventType: String!
+  id: ID!
+  journeyType: String!
+  lat: Float
+  lng: Float
+  loc: String
+  mode: String
+  operatorId: String
+  receivedAt: DateTime
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  uniqueVehicleId: VehicleId
+  vehicleId: String
+}
+
+type Equipment {
+  _matchScore: Float
+  age: Int
+  emissionClass: String
+  emissionDesc: String
+  exteriorColor: String
+  id: ID!
+  inService: Boolean
+  operatorId: String!
+  operatorName: String
+  registryNr: String
+  type: String
+  vehicleId: String!
+}
+
+type ExceptionDay {
+  dayType: String!
+  description: String
+  effectiveDayTypes: [String!]!
+  endTime: Time
+  exceptionDate: Date!
+  exclusive: Boolean!
+  id: ID!
+  modeScope: String!
+  scope: String!
+  scopedDayType: String!
+  startTime: Time
+}
+
+type Journey {
+  alerts: [Alert!]!
+  cancellations: [Cancellation!]!
+  departure: Departure
+  departureDate: Date!
+  departureTime: Time
+  direction: Direction
+  equipment: Equipment
+  events: [JourneyEventType!]!
+  headsign: String
+  id: ID!
+  isCancelled: Boolean!
+  journeyDurationMinutes: Int
+  journeyLength: Int
+  journeyType: String!
+  mode: String
+  name: String
+  operatorId: String
+  originStopId: String
+  routeDepartures: [Departure!]
+  routeId: String
+  uniqueVehicleId: VehicleId
+  vehicleId: String
+  vehiclePositions: [VehiclePosition!]!
+}
+
+type JourneyCancellationEvent {
+  _sort: Int
+  cancellationEffect: CancellationEffect!
+  cancellationType: CancellationType!
+  category: AlertCategory!
+  description: String!
+  id: ID!
+  isCancelled: Boolean!
+  plannedDate: Date
+  plannedTime: Time
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  subCategory: CancellationSubcategory!
+  title: String!
+  type: String!
+}
+
+type JourneyEvent {
+  _isVirtual: Boolean
+  _sort: Int
+  id: ID!
+  lat: Float
+  lng: Float
+  loc: String
+  receivedAt: DateTime!
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  stopId: String
+  type: String!
+}
+
+type JourneyStopEvent {
+  _isVirtual: Boolean
+  _sort: Int
+  departureId: Int
+  doorsOpened: Boolean
+  id: ID!
+  index: Int!
+  isNextDay: Boolean
+  isOrigin: Boolean
+  isTimingStop: Boolean!
+  lat: Float
+  lng: Float
+  loc: String
+  nextStopId: String!
+  plannedDate: Date
+  plannedDateTime: DateTime
+  plannedTime: Time
+  plannedTimeDifference: Int
+  plannedUnix: Int
+  receivedAt: DateTime!
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  stop: Stop
+  stopId: String
+  stopped: Boolean
+  type: String!
+  unplannedStop: Boolean!
+}
+
+type ObservedArrival {
+  arrivalDate: Date!
+  arrivalDateTime: DateTime!
+  arrivalTime: Time!
+  arrivalTimeDifference: Int!
+  id: ID!
+  loc: String
+}
+
+type ObservedDeparture {
+  departureDate: Date!
+  departureDateTime: DateTime!
+  departureTime: Time!
+  departureTimeDifference: Int!
+  id: ID!
+  loc: String
+}
+
+type PlannedArrival {
+  arrivalDate: Date!
+  arrivalDateTime: DateTime!
+  arrivalTime: Time!
+  id: ID!
+  isNextDay: Boolean
+}
+
+type PlannedDeparture {
+  departureDate: Date!
+  departureDateTime: DateTime!
+  departureTime: Time!
+  id: ID!
+  isNextDay: Boolean
+}
+
+type PlannedStopEvent {
+  _sort: Int
+  departureId: Int
+  id: ID!
+  index: Int!
+  isNextDay: Boolean
+  isOrigin: Boolean
+  isTimingStop: Boolean!
+  plannedDate: Date
+  plannedDateTime: DateTime
+  plannedTime: Time
+  plannedUnix: Int
+  stop: Stop
+  stopId: String
+  type: String!
+}
+
+type Query {
+  alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
+  cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
+  departures(date: Date!, filter: DepartureFilterInput, stopId: String, terminalId: String): [Departure]!
+  driverEvents(date: Date!, uniqueVehicleId: VehicleId!): [DriverEvent]!
+  equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
+  exceptionDays(year: String!): [ExceptionDay]!
+  journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey
+  journeys(departureDate: Date!, direction: Direction!, routeId: String!): [Journey]!
+  journeysByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!, unsignedEvents: Boolean): [Journey]!
+  route(date: Date!, direction: Direction!, routeId: String!): Route
+  routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
+  routeGeometry(date: Date!, direction: Direction!, routeId: String!): RouteGeometry
+  routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
+  routes(date: Date, filter: RouteFilterInput): [Route]!
+  stop(date: Date!, stopId: String!): Stop
+  stops(date: Date, filter: StopFilterInput): [Stop]!
+  terminal(date: Date, terminalId: String): Terminal
+  terminals(date: Date): [Terminal]!
+  uiMessage: UIMessage!
+  unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
+  vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
+  weeklyDepartures(date: Date!, direction: Direction!, lastStopArrival: Boolean, routeId: String!, stopId: String!): [Departure]!
+}
+
+type Route {
+  _matchScore: Float
+  alerts: [Alert!]!
+  cancellations: [Cancellation!]!
+  destination: String
+  destinationStopId: String
+  direction: Direction!
+  id: ID!
+  mode: String
+  name: String
+  origin: String
+  originStopId: String!
+  routeDurationMinutes: Int
+  routeId: String!
+  routeLength: Int
+}
+
+type RouteGeometry {
+  coordinates: [RouteGeometryPoint!]!
+  id: ID!
+  mode: String
+}
+
+type RouteGeometryPoint implements Position {
+  lat: Float!
+  lng: Float!
+}
+
+type RouteSegment implements Position {
+  alerts: [Alert!]!
+  cancellations: [Cancellation!]!
+  destination: String!
+  direction: Direction!
+  distanceFromPrevious: Int
+  distanceFromStart: Int
+  duration: Int
+  id: ID!
+  isTimingStop: Boolean!
+  lat: Float!
+  lng: Float!
+  modes: [String!]
+  name: String
+  originStopId: String
+  radius: Float
+  routeId: String!
+  shortId: String!
+  stopId: String!
+  stopIndex: Int!
+}
+
+type Stop implements Position {
+  _matchScore: Float
+  alerts: [Alert!]!
+  id: ID!
+  isTimingStop: Boolean!
+  lat: Float!
+  lng: Float!
+  modes: [String]!
+  name: String
+  radius: Float
+  routes: [StopRoute!]!
+  shortId: String!
+  stopId: String!
+  stopIndex: Int
+}
+
+type StopRoute {
+  destination: String
+  direction: Direction!
+  id: ID!
+  isTimingStop: Boolean!
+  mode: String
+  name: String
+  origin: String
+  originStopId: String
+  routeId: String!
+}
+
+type Terminal implements Position {
+  id: ID!
+  lat: Float!
+  lng: Float!
+  modes: [String!]
+  name: String!
+  stopIds: [String!]
+  stops: [Stop!]
+}
+
+type UIMessage {
+  date: String
+  message: String
+}
+
+type VehicleJourney {
+  alerts: [Alert!]!
+  cancellations: [Cancellation!]!
+  departureDate: Date!
+  departureTime: Time!
+  direction: Direction
+  headsign: String
+  id: ID!
+  isCancelled: Boolean!
+  journeyType: String!
+  loc: String
+  mode: String
+  operatorId: String
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  routeId: String
+  timeDifference: Int!
+  uniqueVehicleId: VehicleId
+  vehicleId: String
+}
+
+type VehiclePosition implements Position {
+  _sort: Int
+  delay: Int
+  doorStatus: Boolean
+  heading: Int
+  id: ID!
+  journeyType: String!
+  lat: Float
+  lng: Float
+  loc: String
+  mode: String
+  nextStopId: String
+  operatorId: String
+  receivedAt: DateTime!
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  stop: String
+  uniqueVehicleId: VehicleId
+  vehicleId: String
+  velocity: Float
+}
+
+enum AlertCategory {
+  ACCIDENT
+  ASSAULT
+  DISTURBANCE
+  EARLIER_DISRUPTION
+  HIDDEN
+  ITS_SYSTEM_ERROR
+  MEDICAL_INCIDENT
+  MISPARKED_VEHICLE
+  NO_DRIVER
+  NO_TRAFFIC_DISRUPTION
+  OTHER
+  OTHER_DRIVER_ERROR
+  POWER_FAILURE
+  PUBLIC_EVENT
+  ROAD_CLOSED
+  ROAD_MAINTENANCE
+  ROAD_TRENCH
+  SEIZURE
+  STAFF_DEFICIT
+  STATE_VISIT
+  STRIKE
+  SWITCH_FAILURE
+  TECHNICAL_FAILURE
+  TEST
+  TOO_MANY_PASSENGERS
+  TRACK_BLOCKED
+  TRACK_MAINTENANCE
+  TRAFFIC_ACCIDENT
+  TRAFFIC_JAM
+  VEHICLE_BREAKDOWN
+  VEHICLE_DEFICIT
+  VEHICLE_OFF_THE_ROAD
+  WEATHER
+  WEATHER_CONDITIONS
+}
+
+enum AlertDistribution {
+  ALL_ROUTES
+  ALL_STOPS
+  NETWORK
+  ROUTE
+  STOP
+}
+
+enum AlertImpact {
+  BICYCLE_STATION_OUT_OF_ORDER
+  BICYCLE_SYSTEM_OUT_OF_ORDER
+  CANCELLED
+  DELAYED
+  DEVIATING_SCHEDULE
+  DISRUPTION_ROUTE
+  IRREGULAR_DEPARTURES
+  IRREGULAR_DEPARTURES_MAX_15
+  IRREGULAR_DEPARTURES_MAX_30
+  NO_TRAFFIC_IMPACT
+  OTHER
+  POSSIBLE_DEVIATIONS
+  POSSIBLY_DELAYED
+  REDUCED_BICYCLE_PARK_CAPACITY
+  REDUCED_TRANSPORT
+  RETURNING_TO_NORMAL
+  UNKNOWN
+  VENDING_MACHINE_OUT_OF_ORDER
+}
+
+enum AlertLevel {
+  INFO
+  SEVERE
+  WARNING
+}
+
+enum CacheControlScope {
+  PRIVATE
+  PUBLIC
+}
+
+enum CancellationEffect {
+  CANCEL_ENTIRE_DEPARTURE
+  CANCEL_STOPS_FROM_END
+  CANCEL_STOPS_FROM_MIDDLE
+  CANCEL_STOPS_FROM_START
+}
+
+enum CancellationSubcategory {
+  ASSAULT_ON_DRIVER
+  ASSAULT_ON_PASSENGER
+  ASSAULT_ON_VEHICLE
+  BREAK_MALFUNCTION
+  CONGESTION_CAUSED_BY_ACCIDENT
+  CONGESTION_CAUSED_BY_WEATHER
+  CONGESTION_REASON_UKNOWN
+  DEVICE_ERROR
+  DOOR_MALFUNCTION
+  DRIVER_ERROR
+  DRIVER_LATE
+  DRIVER_SEIZURE
+  ELECTRIC_MALFUNCTION
+  ENGINE_MALFUNCTION
+  FALSE_ALARM
+  FAULT_UNKNOWN
+  FLUID_LEAKAGE
+  HIDDEN
+  INSUFFICIENT_CAPASITY
+  INSUFFICIENT_INSTRUCTIONS_BY_AUTHORITY
+  INSUFFICIENT_INSTRUCTIONS_BY_OPERATOR
+  ITS_SYSTEM_NOT_INSTALLED
+  MISSPARKED_VEHICLE
+  ND_OPERATOR_PLANNING_ERROR
+  NO_VEHICLE_AVAILABLE
+  OPERATOR_DEVICE_ERROR
+  OPERATOR_PERSONNEL_ON_STRIKE
+  OPPOSITE_FAULT
+  OTHER_ASSAULT
+  OTHER_ITS_ERROR
+  OTHER_MALFUNCTION
+  OTHER_OPERATOR_REASON
+  OTHER_SEIZURE
+  OTHER_STRIKE
+  OUT_OF_FUEL
+  OWN_FAULT
+  PASSED_OUT_PASSENGER
+  PASSENGER_INJURED
+  PASSENGER_SEIZURE
+  ROAD_BLOCKED
+  SLIPPERY_TRACK
+  STAFF_SHORTAGE
+  STUCK_CAUSED_BY_SLIPPERY
+  UNDRIVEABLE_CONDITIONS
+  UNKNOWN_CAUSE
+  USER_ERROR
+  VEHICLE_OFF_THE_ROAD_BY_DRIVER_ERROR
+  VEHICLE_OFF_THE_ROAD_BY_OTHER_REASON
+  WRONG_INFORMATION_IN_DEVICE
+}
+
+enum CancellationType {
+  BLOCK_FIRST_DEPARTURE_LATE
+  CANCEL_DEPARTURE
+  DEPARTURED_AFTER_NEXT_JOURNEY
+  DETOUR
+  EARLY_DEPARTURE
+  EARLY_DEPARTURE_FROM_TIMING_POINT
+  LATE_DEPARTURE
+  SKIPPED_STOP_CALLS
+  TIS_ERROR
+}
+
+input AlertSearchInput {
+  all: Boolean
+  allRoutes: Boolean
+  allStops: Boolean
+  network: Boolean
+  route: String
+  stop: String
+}
+
+input AreaEventsFilterInput {
+  direction: Direction
+  routeId: String
+}
+
+input CancellationSearchInput {
+  all: Boolean
+  departureTime: String
+  direction: Int
+  latestOnly: Boolean
+  routeId: String
+}
+
+input DepartureFilterInput {
+  direction: Direction
+  maxHour: Int
+  minHour: Int
+  routeId: String
+}
+
+input EquipmentFilterInput {
+  operatorId: String
+  search: String
+  vehicleId: String
+}
+
+input RouteFilterInput {
+  direction: Direction
+  routeId: String
+  search: String
+}
+
+input StopFilterInput {
+  search: String
+}
+
+
+"A Date string in YYYY-MM-DD format. The timezone is assumed to be Europe/Helsinki."
+scalar Date
+
+"The direction of a route. An integer of either 1 or 2."
+scalar Direction
+
+"A DateTime string in ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ). Timezone will be converted to Europe/Helsinki."
+scalar DateTime
+
+"Time is seconds from 00:00:00 in format HH:mm:ss. The hours value can be more than 23. The timezone is assumed to be Europe/Helsinki"
+scalar Time
+
+"A string that uniquely identifies a vehicle. The format is [operator ID]/[vehicle ID]. The operator ID is padded to have a length of 4 characters."
+scalar VehicleId
+
+"A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. The precise bbox is not rounded."
+scalar PreciseBBox
+
+"A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. Toe coordinates will be rounded, use PreciseBBox if this is not desired."
+scalar BBox
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload

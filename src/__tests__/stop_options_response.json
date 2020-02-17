@@ -1,0 +1,45 @@
+{
+  "data": {
+    "stops": [
+      {
+        "id": "1420104",
+        "stopId": "1420104",
+        "shortId": "H 4014",
+        "lat": 60.18584,
+        "lng": 25.00085,
+        "name": "Marsalkantie",
+        "radius": 30,
+        "modes": ["BUS"],
+        "routes": [],
+        "alerts": [],
+        "__typename": "Stop"
+      },
+      {
+        "id": "1020228",
+        "stopId": "1020228",
+        "shortId": "H 2020",
+        "lat": 60.14501,
+        "lng": 25.10204,
+        "name": "Elielinaukio",
+        "radius": 40,
+        "modes": ["BUS"],
+        "routes": [],
+        "alerts": [],
+        "__typename": "Stop"
+      },
+      {
+        "id": "1291162",
+        "stopId": "1291162",
+        "shortId": "H 1728",
+        "lat": 60.29473,
+        "lng": 25.40288,
+        "name": "Matkamiehentie",
+        "radius": 40,
+        "modes": ["BUS"],
+        "routes": [],
+        "alerts": [],
+        "__typename": "Stop"
+      }
+    ]
+  }
+}

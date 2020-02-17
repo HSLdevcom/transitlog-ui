@@ -1,0 +1,73 @@
+{
+  "data": {
+    "stop": {
+      "id": "1420104",
+      "stopId": "1420104",
+      "shortId": "H 4014",
+      "lat": 60.18584,
+      "lng": 25.00085,
+      "name": "Marsalkantie",
+      "radius": 30,
+      "modes": ["BUS"],
+      "alerts": [
+        {
+          "id": 1,
+          "affectedId": "",
+          "level": "SEVERE",
+          "distribution": "ALL_ROUTES",
+          "category": "VEHICLE_DEFICIT",
+          "impact": "CANCELLED",
+          "lastModifiedDateTime": "2019-05-09T12:34:01.000+03:00",
+          "startDateTime": "2019-05-28T06:00:00.000+03:00",
+          "endDateTime": "2019-05-28T23:59:00.000+03:00",
+          "title": "No oil",
+          "description": "The world ran out of oil so no buses are running today sorry.",
+          "url": "https://hsl.fi",
+          "__typename": "Alert"
+        }
+      ],
+      "routes": [
+        {
+          "id": "stop_route_1016_2_2017-09-01_2050-12-31",
+          "name": "route",
+          "origin": "origin",
+          "destination": "destination",
+          "mode": "BUS",
+          "direction": 2,
+          "isTimingStop": false,
+          "originStopId": "1420120",
+          "routeId": "1016",
+          "lineId": "1016",
+          "__typename": "StopRoute"
+        },
+        {
+          "id": "stop_route_1086N_2_2019-02-01_2019-06-16",
+          "name": "route",
+          "origin": "origin",
+          "destination": "destination",
+          "mode": "BUS",
+          "direction": 2,
+          "isTimingStop": false,
+          "originStopId": "1510107",
+          "routeId": "1086N",
+          "lineId": "1086N",
+          "__typename": "StopRoute"
+        },
+        {
+          "id": "stop_route_1016X_2_2018-08-13_2019-06-16",
+          "name": "route",
+          "origin": "origin",
+          "destination": "destination",
+          "mode": "BUS",
+          "direction": 2,
+          "isTimingStop": false,
+          "originStopId": "1420120",
+          "routeId": "1016X",
+          "lineId": "1016X",
+          "__typename": "StopRoute"
+        }
+      ],
+      "__typename": "Stop"
+    }
+  }
+}

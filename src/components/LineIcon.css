@@ -1,0 +1,32 @@
+.BUS:before {
+  background-image: url("../icon-bus.svg");
+  color: #007ac9;
+}
+
+.TRAM:before {
+  background-image: url("../icon-tram.svg");
+  color: #00985f;
+}
+
+/* TRAIN returned from the HFP api, RAIL from JORE. */
+.RAIL:before,
+.TRAIN:before {
+  background-image: url("../icon-rail.svg");
+  color: #8c4799;
+}
+
+.TRUNK:before {
+  background-image: url("../icon-trunk.svg");
+  color: #ff6319;
+}
+
+.FERRY:before {
+  background-image: url("../icon-ferry.svg");
+  color: var(--light-blue);
+}
+
+.SUBWAY:before,
+.METRO:before {
+  background-image: url("../icon-subway.svg");
+  color: var(--orange);
+}
