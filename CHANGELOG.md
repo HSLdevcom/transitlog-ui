@@ -1,5 +1,18 @@
 # Transitlog UI changelog
 
+## Version 1.8.0, deployed 2020-02-13 @ 08:00
+
+- Building, deployment and testing automatically with Github Actions.
+- E2E test improvements for speed and reliability.
+- Show terminals on map (with popups and routes) and in stop search.
+- Fetch and show terminal timetables.
+- Add stops (along with terminals) to map layer selection, show stops in all zoom levels.
+- Improve stop view filtering for wide zoom levels.
+- Improve stop and terminal popup functionality.
+- Refactors for improved and smoother operation.
+- Update integration and unit tests.
+- Upgrade to Cypress 4.
+
 ## Version 1.7.1, deployed 2020-02-04 @ 14:00
 
 - Code improvements for route event and unsigned event display on map.
