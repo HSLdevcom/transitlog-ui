@@ -1,37 +1,35 @@
-import React, {Component} from "react";
-import {observer, inject} from "mobx-react";
+import React, {useCallback} from "react";
+import {observer} from "mobx-react-lite";
 import "./Map.css";
 import VehicleMarker from "./VehicleMarker";
 import DivIcon from "./DivIcon";
 import HfpTooltip from "./HfpTooltip";
-import {observable, action} from "mobx";
-import {app} from "mobx-app";
 import get from "lodash/get";
+import flow from "lodash/flow";
 import getJourneyId from "../../helpers/getJourneyId";
+import {useToggle} from "../../hooks/useToggle";
+import {inject} from "../../helpers/inject";
 
-@inject(app("Journey"))
-@observer
-class HfpMarkerLayer extends Component {
-  markerRef = React.createRef();
+const decorate = flow(observer, inject("Journey"));
 
-  @observable
-  tooltipOpen = false;
+const HfpMarkerLayer = decorate(
+  ({
+    journey,
+    Journey,
+    currentEvent: event,
+    isSelectedJourney = false,
+    state: {selectedJourney},
+    markerRef = null,
+  }) => {
+    const [tooltipOpen, toggleTooltip] = useToggle(false);
 
-  toggleTooltip = action((setTo = !this.tooltipOpen) => {
-    this.tooltipOpen = setTo;
-  });
+    const onMarkerClick = useCallback(() => {
+      toggleTooltip();
 
-  onMarkerClick = () => {
-    this.toggleTooltip();
-    const {Journey, state, journey} = this.props;
-
-    if (journey && getJourneyId(state.selectedJourney) !== journey.id) {
-      Journey.setSelectedJourney(journey);
-    }
-  };
-
-  render() {
-    const {journey, currentEvent: event, isSelectedJourney = false} = this.props;
+      if (journey && getJourneyId(selectedJourney) !== journey.id) {
+        Journey.setSelectedJourney(journey);
+      }
+    }, [journey, selectedJourney]);
 
     if (!journey || !event || !(event.lat && event.lng)) {
       return null;
@@ -39,8 +37,8 @@ class HfpMarkerLayer extends Component {
 
     return (
       <DivIcon
-        ref={this.markerRef} // Needs ref for testing
-        onClick={this.onMarkerClick}
+        ref={markerRef}
+        onClick={onMarkerClick}
         position={[event.lat, event.lng]}
         iconSize={isSelectedJourney ? [30, 30] : [20, 20]}
         icon={
@@ -53,15 +51,15 @@ class HfpMarkerLayer extends Component {
         }
         pane={isSelectedJourney ? "hfp-markers-primary" : "hfp-markers"}>
         <HfpTooltip
-          key={`permanent=${this.tooltipOpen}`}
+          key={`permanent=${tooltipOpen}`}
           journey={journey}
           event={event}
-          permanent={this.tooltipOpen}
+          permanent={tooltipOpen}
           sticky={false}
         />
       </DivIcon>
     );
   }
-}
+);
 
 export default HfpMarkerLayer;

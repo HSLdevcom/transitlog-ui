@@ -1,5 +1,6 @@
 import moment from "moment-timezone";
 import {TIMEZONE} from "./constants";
+import "jest-styled-components";
 
 // Set the default timezone for the app
 moment.tz.setDefault(TIMEZONE);

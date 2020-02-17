@@ -1,8 +1,9 @@
-import React, {Component, Children} from "react";
-import {observer} from "mobx-react";
+import React, {Children, useState, useCallback, useEffect, useRef, useMemo} from "react";
+import {observer} from "mobx-react-lite";
 import styled, {keyframes} from "styled-components";
 import compact from "lodash/compact";
 import difference from "lodash/difference";
+import flow from "lodash/flow";
 import {setUrlValue, getUrlValue} from "../stores/UrlManager";
 import Tooltip from "./Tooltip";
 
@@ -89,124 +90,128 @@ const TabLabel = styled.span`
   white-space: nowrap;
 `;
 
-let selectedTab = "";
+const decorate = flow(observer);
 
-@observer
-class Tabs extends Component {
-  static defaultProps = {
-    urlValue: "tab",
-  };
+const Tabs = decorate(
+  ({
+    selectedTab,
+    urlValue = "tab",
+    onTabChange = () => {},
+    children,
+    suggestedTab,
+    className,
+  }) => {
+    const [currentSelectedTab, setSelectedTab] = useState(getUrlValue(urlValue));
+    const prevTabs = useRef([]);
 
-  state = {
-    selectedTab: getUrlValue(this.props.urlValue),
-  };
+    const selectTab = useCallback(
+      (nextSelectedTab) => {
+        setSelectedTab(nextSelectedTab);
+        setUrlValue(urlValue, nextSelectedTab);
+        onTabChange(nextSelectedTab);
+      },
+      [currentSelectedTab, onTabChange]
+    );
 
-  selectTab = (selectedTab) => {
-    const {onTabChange = () => {}, urlValue} = this.props;
-
-    let setStateValue =
-      typeof selectedTab === "function" ? selectedTab : {selectedTab: selectedTab};
-
-    this.setState(setStateValue, () => {
-      const currentTab = this.state.selectedTab;
-      setUrlValue(urlValue, currentTab);
-      onTabChange(currentTab);
-    });
-  };
-
-  onTabClick = (selectTabName) => () => {
-    this.selectTab(selectTabName);
-  };
-
-  componentDidUpdate({children: prevChildren}, {selectedTab: prevSelectedTab}) {
-    const {selectedTab} = this.props;
-
-    this.selectAddedTab(prevChildren);
-
-    if (selectedTab && selectedTab !== prevSelectedTab) {
-      this.selectTab(selectedTab);
-    }
-  }
-
-  selectAddedTab = (prevChildren) => {
-    const {children, suggestedTab} = this.props;
-
-    this.selectTab(({selectedTab}) => {
-      const prevChildrenArray = compact(Children.toArray(prevChildren)).map(
-        ({props: {name}}) => name
-      );
-
-      const childrenArray = compact(Children.toArray(children)).map(
-        ({props: {name}}) => name
-      );
-
-      const newChildren = difference(childrenArray, prevChildrenArray);
-      const nextTab =
-        newChildren.length === 1 && newChildren.includes(suggestedTab)
-          ? suggestedTab
-          : selectedTab;
-
-      if (!nextTab || nextTab === selectedTab) {
-        return null;
+    // Either select a newly added tab or the tab that the props say should be selected.
+    useEffect(() => {
+      if (selectedTab && selectedTab !== currentSelectedTab) {
+        selectTab(selectedTab);
       }
-
-      return {
-        selectedTab: nextTab,
-      };
-    });
-  };
-
-  render() {
-    const {children, className} = this.props;
-    selectedTab = this.state.selectedTab || selectedTab; // Ensure that "transient" values stay between renders
-
-    // The tab content to render
-    let selectedTabContent = null;
+    }, [selectedTab, currentSelectedTab]);
 
     // The children usually contain an empty string as the first element.
     // Compact() removes all such falsy values from the array.
-    const validChildren = compact(Children.toArray(children));
+    const validChildren = useMemo(() => compact(Children.toArray(children)), [children]);
 
-    // An array of child tab data with labels etc. is extracted from props.children.
-    let tabs = validChildren.map((tabContent, idx, allChildren) => {
-      if (!tabContent || !React.isValidElement(tabContent)) {
-        return null;
+    // An array of child tab data with labels etc is extracted from props.children.
+    let tabs = useMemo(() => {
+      const childrenTabs = validChildren.map((tabContent) => {
+        if (!tabContent || !React.isValidElement(tabContent)) {
+          return null;
+        }
+
+        const {name, label, loading, helpText = ""} = tabContent.props;
+        return {name, label, content: tabContent, helpText, loading};
+      });
+
+      return compact(childrenTabs);
+    }, [validChildren]);
+
+    // Function to auto-select any newly added tab
+    const selectAddedTab = useCallback(() => {
+      let prevTabsArray = [];
+
+      if (prevTabs.current) {
+        prevTabsArray = prevTabs.current.map(({name}) => name);
       }
 
-      const {name, label, loading, helpText = ""} = tabContent.props;
+      prevTabs.current = tabs;
 
-      // If there is only one tab, select it right off. Or, if there
-      // is no tab selected, autoselect the first tab.
-      if (
-        (allChildren.length === 1 && selectedTab !== name) ||
-        (!selectedTab && idx === 0)
-      ) {
-        selectedTab = name;
+      const tabsArray = tabs.map(({name}) => name);
+      const newTabs = difference(tabsArray, prevTabsArray);
+
+      if (newTabs.length === 0) {
+        return false;
       }
 
+      let nextTab = newTabs[0];
+
+      if (newTabs.includes(suggestedTab)) {
+        nextTab = suggestedTab;
+      }
+
+      if (nextTab && nextTab !== currentSelectedTab) {
+        selectTab(nextTab);
+        return true;
+      }
+
+      return false;
+    }, [currentSelectedTab, prevTabs.current, tabs]);
+
+    // Various auto-select routines based on what tabs are available
+    useEffect(() => {
+      // Clear selection if we didn't get any tabs
+      if (tabs.length === 0) {
+        setSelectedTab("");
+      } else {
+        if (selectAddedTab()) {
+          return;
+        }
+
+        const firstTab = tabs[0];
+        const {name} = firstTab;
+
+        // Make sure that the selected tab actually exists
+        const selectedTabExists =
+          tabs.length !== 0 && tabs.some((tab) => tab.name === currentSelectedTab);
+
+        if (
+          // Auto-select the first tab
+          // If that's all we have, or...
+          (tabs.length === 1 && currentSelectedTab !== name) ||
+          // ...if there isn't a tab selected, or...
+          !currentSelectedTab ||
+          // ...if the currently selected tab doesn't exist.
+          !selectedTabExists
+        ) {
+          selectTab(name);
+        }
+      }
+    }, [tabs, currentSelectedTab, selectTab]);
+
+    // The tab content to render
+    const selectedTabContent = useMemo(() => {
+      const selectedTabItem = tabs.find((tab) => tab.name === currentSelectedTab);
       // Set the current tab content to the selected tab
-      if (name === selectedTab) {
-        selectedTabContent = tabContent;
+      if (selectedTabItem) {
+        return selectedTabItem.content;
       }
 
-      return {name, label, content: tabContent, helpText, loading};
-    });
+      return null;
+    }, [tabs, currentSelectedTab]);
 
-    if (tabs.length === 0) {
-      selectedTab = "";
-    }
-
-    // The selected tab might not be available, so pick the first tab in that case.
-    if (tabs.length !== 0 && tabs.findIndex((tab) => tab.name === selectedTab) === -1) {
-      const {name, content} = tabs[0];
-      selectedTab = name;
-      selectedTabContent = content;
-    }
-
-    // Falsy tabs removed
-    tabs = compact(tabs);
-
-    // Fit the tab label into the ever-shrinking tab
+    // Fit the tab label into the ever-shrinking tab element
     const tabLabelFontSizeMultiplier =
       tabs.length <= 2 ? 1.75 : tabs.length < 4 ? 1.5 : tabs.length < 5 ? 1.2 : 1;
 
@@ -218,18 +223,20 @@ class Tabs extends Component {
               <TabButton
                 data-testid={`sidebar-tab sidebar-tab-${tabOption.name}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
-                selected={selectedTab === tabOption.name}
-                onClick={this.onTabClick(tabOption.name)}>
+                selected={currentSelectedTab === tabOption.name}
+                onClick={() => selectTab(tabOption.name)}>
                 {tabOption.loading && <LoadingIndicator data-testid="loading" />}
                 <TabLabel>{tabOption.label}</TabLabel>
               </TabButton>
             </Tooltip>
           ))}
         </TabButtonsWrapper>
-        <TabContentWrapper>{selectedTabContent}</TabContentWrapper>
+        {selectedTabContent && (
+          <TabContentWrapper>{selectedTabContent}</TabContentWrapper>
+        )}
       </TabsWrapper>
     );
   }
-}
+);
 
 export default Tabs;

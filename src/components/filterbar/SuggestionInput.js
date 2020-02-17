@@ -1,12 +1,12 @@
-import React, {Component} from "react";
+import React, {useCallback, useState, useEffect} from "react";
 import Autosuggest from "react-autosuggest";
 import autosuggestStyles from "./SuggestionInput.css";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {InputStyles} from "../Forms";
-import {observable, action} from "mobx";
 import Tooltip from "../Tooltip";
 import get from "lodash/get";
+import flow from "lodash/flow";
 
 const AutosuggestWrapper = styled.div`
   width: 100%;
@@ -67,79 +67,77 @@ function defaultGetInputValue(item) {
   return get(item, "id", "");
 }
 
-@observer
-class SuggestionInput extends Component {
-  static defaultProps = {
-    onSuggestionsClearRequested: () => [],
-    onSuggestionsFetchRequested: () => {},
-    suggestions: [],
-  };
+const decorate = flow(observer);
 
-  @observable
-  inputValue = this.getStringValue(this.props.value);
+const SuggestionInput = decorate(
+  ({
+    className,
+    placeholder,
+    renderSuggestion,
+    minimumInput = 3,
+    multiSection,
+    renderSectionTitle,
+    getSectionSuggestions,
+    helpText = "",
+    value,
+    testId,
+    onSelect,
+    getValue = defaultGetInputValue(),
+    getInputValue = getValue,
+    suggestions = [],
+    onSuggestionsClearRequested = () => [],
+    onSuggestionsFetchRequested = () => {},
+    ...autosuggestProps
+  }) => {
+    const [inputValue, setInputValue] = useState(getInputValue(value));
 
-  setValue = action((value) => {
-    this.inputValue = this.getStringValue(value);
-  });
+    const setValue = useCallback(
+      (value) => {
+        setInputValue(getInputValue(value));
+      },
+      [getInputValue]
+    );
 
-  getStringValue = (val) => {
-    const {getInputValue = defaultGetInputValue} = this.props;
-    return getInputValue(val);
-  };
+    const onChange = useCallback(
+      (event, {newValue}) => {
+        if (!newValue) {
+          onSelect("");
+        }
 
-  getValue = (val) => {
-    const {getValue = defaultGetInputValue} = this.props;
-    return getValue(val);
-  };
+        setValue(newValue);
+      },
+      [onSelect, setValue]
+    );
 
-  onChange = (event, {newValue}) => {
-    if (!newValue) {
-      this.props.onSelect("");
-    }
+    const onSuggestionSelected = useCallback(
+      (event, {suggestion}) => {
+        const nextValue = getValue(suggestion);
+        onSelect(nextValue);
+        setValue(suggestion);
+      },
+      [getValue, onSelect, setValue]
+    );
 
-    this.setValue(newValue);
-  };
+    const shouldRenderSuggestions = useCallback(
+      (limit) => (value = "") => {
+        return typeof value.trim === "function"
+          ? (value || "").trim().length >= limit
+          : true;
+      },
+      []
+    );
 
-  onSuggestionSelected = (event, {suggestion}) => {
-    const nextValue = this.getValue(suggestion);
-    this.props.onSelect(nextValue);
-    this.setValue(suggestion);
-  };
-
-  shouldRenderSuggestions = (limit) => (value = "") => {
-    return typeof value.trim === "function" ? (value || "").trim().length >= limit : true;
-  };
-
-  componentDidUpdate({value: prevValue}) {
-    const {value} = this.props;
-
-    if (value !== prevValue) {
-      this.setValue(value);
-    }
-  }
-
-  render() {
-    const {
-      className,
-      placeholder,
-      renderSuggestion,
-      minimumInput = 3,
-      multiSection,
-      renderSectionTitle,
-      getSectionSuggestions,
-      helpText = "",
-      value,
-      testId,
-      ...autosuggestProps
-    } = this.props;
+    useEffect(() => {
+      setValue(value);
+    }, [value]);
 
     const inputProps = {
       placeholder,
-      value: this.inputValue,
-      onChange: this.onChange,
+      value: inputValue,
+      onChange,
       "data-testid": testId,
       onFocus: () => {
-        this.setValue(value);
+        setValue(value);
       },
     };
 
@@ -148,21 +146,24 @@ class SuggestionInput extends Component {
         <AutosuggestWrapper className={className}>
           <Autosuggest
             focusInputOnSuggestionClick={false}
-            shouldRenderSuggestions={this.shouldRenderSuggestions(minimumInput)}
-            onSuggestionSelected={this.onSuggestionSelected}
-            getSuggestionValue={this.getStringValue}
+            shouldRenderSuggestions={shouldRenderSuggestions(minimumInput)}
+            onSuggestionSelected={onSuggestionSelected}
+            getSuggestionValue={getInputValue}
             highlightFirstSuggestion={true}
             multiSection={multiSection}
             renderSectionTitle={renderSectionTitle}
             getSectionSuggestions={getSectionSuggestions}
             renderSuggestion={renderSuggestion}
             inputProps={inputProps}
+            suggestions={suggestions}
+            onSuggestionsClearRequested={onSuggestionsClearRequested}
+            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
             {...autosuggestProps}
           />
         </AutosuggestWrapper>
       </Tooltip>
     );
   }
-}
+);
 
 export default SuggestionInput;

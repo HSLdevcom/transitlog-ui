@@ -1,9 +1,9 @@
-import React, {Component} from "react";
-import {observer, inject} from "mobx-react";
+import React, {useRef, useState, useEffect, useCallback} from "react";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
-import {action, observable, reaction} from "mobx";
-import {app} from "mobx-app";
 import {LoadingDisplay} from "../Loading";
+import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
 
 const ListWrapper = styled.div`
   height: 100%;
@@ -57,99 +57,84 @@ const ScrollContainer = styled.div`
   height: auto;
 `;
 
-@inject(app("state"))
-@observer
-class SidepanelList extends Component {
-  scrollElementRef = React.createRef();
-  scrollPositionRef = React.createRef();
+const decorate = flow(observer, inject("state"));
 
-  disposeScrollOffsetReaction = () => {};
+const SidepanelList = decorate(
+  ({
+    state: {live},
+    focusKey,
+    header,
+    floatingListHeader,
+    children = () => {},
+    loading = false,
+    testIdPrefix = "sidepanel",
+  }) => {
+    const [scrollOffset, setScrollOffset] = useState(0);
+    const scrollElementRef = useRef(null);
+    const scrollPositionRef = useRef(null);
+    const listHeight = useRef(0);
+    const updateScrollOffsetTimer = useRef(0);
 
-  @observable
-  scrollOffset = 0;
-  listHeight = 0;
-  updateScrollOffsetTimer = 0;
-
-  // Scrolls the list so that the focused element is in the middle.
-  scrollTo = (offset) => {
-    if (offset && this.scrollElementRef.current) {
-      this.scrollElementRef.current.scrollTop = offset - this.listHeight / 2;
-    }
-  };
-
-  componentDidMount() {
-    // Set the height of the list on mount
-    if (this.scrollElementRef.current) {
-      this.listHeight = this.scrollElementRef.current.getBoundingClientRect().height;
-    }
-
-    this.disposeScrollOffsetReaction = reaction(
-      () => this.scrollOffset,
+    // Scrolls the list so that the focused element is in the middle.
+    const scrollTo = useCallback(
       (offset) => {
-        this.scrollTo(offset);
+        if (offset && scrollElementRef.current) {
+          scrollElementRef.current.scrollTop = offset - listHeight / 2;
+        }
       },
-      {fireImmediately: true}
+      [scrollElementRef.current]
     );
-  }
 
-  componentWillUnmount() {
-    this.disposeScrollOffsetReaction();
-  }
+    useEffect(() => {
+      // Set the height of the list on mount
+      if (scrollElementRef.current) {
+        listHeight.current = scrollElementRef.current.getBoundingClientRect().height;
+      }
+    }, []);
 
-  async componentDidUpdate({focusKey: prevFocusKey}) {
-    let {focusKey, loading} = this.props;
+    useEffect(() => {
+      scrollTo(scrollOffset);
+    }, [scrollOffset]);
 
-    if (!loading) {
-      if (this.updateScrollOffsetTimer) {
-        clearTimeout(this.updateScrollOffsetTimer);
+    const prevFocusKey = useRef("");
+
+    useEffect(() => {
+      if (!loading) {
+        // Update the scroll offset 100 ms after any update.
+        // There must be a timer here otherwise the list may not be rendered
+        // before the scroll offset is read.
+        updateScrollOffsetTimer.current = setTimeout(() => {
+          updateScrollOffset(focusKey !== prevFocusKey.current);
+          prevFocusKey.current = focusKey;
+        }, 300);
+      }
+    }, [focusKey, loading]);
+
+    // Get the scroll offset in pixels.
+    // This method only gets a new position if the scrollOffset has not previously been set.
+    // This behaviour can be overridden by setting the reset arg to true.
+    const getScrollOffset = useCallback(() => {
+      if (scrollPositionRef.current) {
+        let offset = scrollPositionRef.current.offsetTop;
+
+        if (offset) {
+          return offset;
+        }
       }
 
-      // Update the scroll offset 100 ms after any update.
-      // There must be a timer here otherwise the list may not be rendered
-      // before the scroll offset is read.
-      this.updateScrollOffsetTimer = setTimeout(
-        () => this.updateScrollOffset(focusKey !== prevFocusKey),
-        300
-      );
-    }
-  }
+      return scrollOffset;
+    }, [scrollPositionRef.current]);
 
-  updateScrollOffset = (reset = false) => {
-    const offset = this.getScrollOffset(reset);
+    const updateScrollOffset = useCallback(
+      (reset = false) => {
+        const offset = reset ? getScrollOffset(reset) : scrollOffset;
 
-    if (offset && (!this.scrollOffset || offset !== this.scrollOffset)) {
-      this.setScrollOffset(offset);
-    }
-  };
-
-  // Get the scroll offset in pixels.
-  // This method only gets a new position if the scrollOffset has not previously been set.
-  // This behaviour can be overridden by setting the reset arg to true.
-  getScrollOffset = (reset = false) => {
-    if (this.scrollPositionRef.current && (!this.scrollOffset || reset)) {
-      let offset = this.scrollPositionRef.current.offsetTop;
-
-      if (offset) {
-        return offset;
-      }
-    }
-
-    return this.scrollOffset;
-  };
-
-  setScrollOffset = action((offset) => {
-    this.scrollOffset = offset;
-  });
-
-  render() {
-    const {
-      state: {live},
-      header,
-      floatingListHeader,
-      children = () => {},
-      loading = false,
-      testIdPrefix = "sidepanel",
-    } = this.props;
+        if (offset && (!scrollOffset || offset !== scrollOffset)) {
+          setScrollOffset(offset);
+        }
+      },
+      [scrollOffset]
+    );
 
     return (
       <ListWrapper hasHeader={!!header} data-testid={`${testIdPrefix}-list`}>
@@ -158,9 +143,9 @@ class SidepanelList extends Component {
           {floatingListHeader && (
             <FloatingListHeader>{floatingListHeader}</FloatingListHeader>
           )}
-          <ListRows ref={this.scrollElementRef}>
+          <ListRows ref={scrollElementRef}>
             <ScrollContainer>
-              {children(this.scrollPositionRef, this.updateScrollOffset)}
+              {children(scrollPositionRef, updateScrollOffset)}
             </ScrollContainer>
           </ListRows>
           {!live && <LoadingDisplay loading={loading} />}
@@ -168,6 +153,6 @@ class SidepanelList extends Component {
       </ListWrapper>
     );
   }
-}
+);
 
 export default SidepanelList;
