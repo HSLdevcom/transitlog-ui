@@ -41,19 +41,15 @@ const IconStyle = createGlobalStyle`
 `;
 
 const JourneyEventsLayer = decorate(({journey = null, state}) => {
-  const nonStopEvents = useMemo(() => {
+  const events = useMemo(() => {
     if (!journey || !journey.events || journey.events.length === 0) {
       return [];
     }
 
-    return journey.events.filter(
-      (evt) => evt.__typename !== "JourneyStopEvent" && !!evt.lat && !!evt.lng
-    );
+    return journey.events;
   }, [journey]);
 
-  const visibleEvents = nonStopEvents.filter(
-    (evt) => !!state.journeyEventFilters[evt.type]
-  );
+  const visibleEvents = events.filter((evt) => !!state.journeyEventFilters[evt.type]);
 
   const eventGroups = visibleEvents.reduce((proximityGroups, event) => {
     const point = latLng([event.lat, event.lng]);
