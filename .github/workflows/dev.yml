@@ -54,7 +54,7 @@ jobs:
     - name: Sleep for 60 seconds
       uses: jakejarvis/wait-action@master
       with:
-        time: '60s'
+        time: '120s'
     - name: Cypress tests
       uses: cypress-io/github-action@v1
       env:
