@@ -99,7 +99,15 @@ const decorate = flow(observer);
  */
 
 const Tabs = decorate(
-  ({selectedTab, urlValue = "tab", onTabChange, children, suggestedTab, className}) => {
+  ({
+    testIdPrefix = "sidebar",
+    selectedTab,
+    urlValue = "tab",
+    onTabChange,
+    children,
+    suggestedTab,
+    className,
+  }) => {
     const isControlled = typeof onTabChange === "function";
 
     const [internalSelectedTab, setInternalSelectedTab] = useState(
@@ -174,7 +182,10 @@ const Tabs = decorate(
 
       // By default, auto-select the first newly added tab if
       // the tabs don't already contain the suggested tab.
-      let nextTab = !isControlled ? newTabs[0] : currentSelectedTab;
+      let nextTab =
+        !isControlled || !tabNames.includes(currentSelectedTab)
+          ? newTabs[0]
+          : currentSelectedTab;
 
       // If the new tabs contain the suggested tab, select that.
       if (newTabs.includes(suggestedTab)) {
@@ -239,7 +250,7 @@ const Tabs = decorate(
           {tabs.map((tabOption, index) => (
             <Tooltip helpText={tabOption.helpText} key={`tab_${tabOption.name}_${index}`}>
               <TabButton
-                data-testid={`sidebar-tab sidebar-tab-${tabOption.name}`}
+                data-testid={`${testIdPrefix}-tab ${testIdPrefix}-tab-${tabOption.name}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
                 selected={currentSelectedTab === tabOption.name}
                 onClick={() => selectTab(tabOption.name)}>

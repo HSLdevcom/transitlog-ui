@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {Heading} from "../Typography";
@@ -214,6 +214,8 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
   const totalHealthColor = healthColor(journeyHealth.total);
   const dataDelayHelpText = useTooltip("Data delay");
 
+  console.log(journeyHealth);
+
   return (
     <JourneyHealthContainer>
       <TotalHealthDisplay>
@@ -229,7 +231,7 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
             <TotalHealthIndicator
               color={totalHealthColor}
               value={Math.floor(journeyHealth.total)}>
-              <HealthAlertIcon />
+              {!journeyHealth.isOK && <HealthAlertIcon />}
             </TotalHealthIndicator>
             <div>
               <Heading style={{marginBottom: 0}} color="var(--grey)" level={2}>

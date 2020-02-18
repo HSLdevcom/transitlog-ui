@@ -95,18 +95,11 @@ const JourneyPanel = decorate(
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} departure={originDeparture} />
             <Tabs
+              testIdPrefix="journey"
               urlValue="details-tab"
               onTabChange={setCurrentTab}
               suggestedTab="journey-events"
               selectedTab={currentTab}>
-              {routeStops.length !== 0 && (
-                <RouteStops
-                  name="route-stops"
-                  label={text("journey.stops")}
-                  routeStops={routeStops}
-                  color={journeyColor}
-                />
-              )}
               {journeyEvents.length !== 0 && (
                 <JourneyEvents
                   cancellations={cancellations}
@@ -116,6 +109,14 @@ const JourneyPanel = decorate(
                   events={journeyEvents}
                   originDeparture={journey.departure}
                   date={journey.departureDate}
+                  color={journeyColor}
+                />
+              )}
+              {routeStops.length !== 0 && (
+                <RouteStops
+                  name="route-stops"
+                  label={text("journey.stops")}
+                  routeStops={routeStops}
                   color={journeyColor}
                 />
               )}
