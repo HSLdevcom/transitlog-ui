@@ -54,13 +54,6 @@ const JourneyEvents = decorate(
       Journey.setJourneyEventFilter(eventFilterTypes, true);
     }, []);
 
-    const onFilterChange = useCallback(
-      (nextState) => {
-        Journey.setJourneyEventFilter(nextState);
-      },
-      [Journey, state.journeyEventFilters]
-    );
-
     const onClickTime = useCallback(
       (time) => {
         Time.setTime(time);
@@ -131,7 +124,10 @@ const JourneyEvents = decorate(
 
     return (
       <EventsListWrapper>
-        <EventFilters onChange={onFilterChange} filterState={state.journeyEventFilters} />
+        <EventFilters
+          onChange={Journey.setJourneyEventFilter}
+          filterState={state.journeyEventFilters}
+        />
         <EventsList>
           {uniqBy(visibleEvents, "id").map((event, index, arr) => {
             let Component = JourneyEvent;

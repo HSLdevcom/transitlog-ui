@@ -1,7 +1,7 @@
 import {action} from "mobx";
 import {getJourneyObject} from "../helpers/getJourneyObject";
 import filterActions from "./filterActions";
-import {setPathName} from "./UrlManager";
+import {setPathName, setUrlValue} from "./UrlManager";
 import get from "lodash/get";
 import merge from "lodash/merge";
 import timeActions from "./timeActions";
@@ -113,6 +113,21 @@ export default (state) => {
           (val) => val === false
         );
       }
+    }
+
+    const selectedEvents = Object.entries(state.journeyEventFilters).reduce(
+      (enabledEvents, [key, enabled]) => {
+        if (enabled) {
+          enabledEvents.push(key);
+        }
+
+        return enabledEvents;
+      },
+      []
+    );
+
+    if (selectedEvents.length !== 0) {
+      setUrlValue("journeyEventFilters", selectedEvents.join(","));
     }
   });
 
