@@ -187,7 +187,7 @@ const RouteStop = decorate(
               {doubleDigit(get(departureDiffTime, "seconds", 0))}
             </ColoredBackgroundSlot>
             {departure && departure.loc && (
-              <LocBadge red={departure.loc !== "GPS"}>{departure.loc}</LocBadge>
+              <LocBadge red={departure.loc === "ODO"}>{departure.loc}</LocBadge>
             )}
             <PlainSlotMono>{getNormalTime(stopDepartureTime)}</PlainSlotMono>
           </>
@@ -219,7 +219,7 @@ const RouteStop = decorate(
                   {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
                 </ColoredBackgroundSlot>
                 {arrival && arrival.loc && (
-                  <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+                  <LocBadge red={arrival.loc === "ODO"}>{arrival.loc}</LocBadge>
                 )}
                 <PlainSlotMono>{getNormalTime(stopArrivalTime)}</PlainSlotMono>
               </StopArrivalTime>
@@ -248,7 +248,7 @@ const RouteStop = decorate(
                 {doubleDigit(diffMinutes)}:{doubleDigit(diffSeconds)}
               </ColoredBackgroundSlot>
               {arrival && arrival.loc && (
-                <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+                <LocBadge red={arrival.loc === "ODO"}>{arrival.loc}</LocBadge>
               )}
               <PlainSlotMono>{getNormalTime(stopArrivalTime)}</PlainSlotMono>
             </StopArrivalTime>
@@ -268,7 +268,7 @@ const RouteStop = decorate(
             {doubleDigit(get(arrivalDiffTime, "seconds", 0))}
           </ColoredBackgroundSlot>
           {arrival && arrival.loc && (
-            <LocBadge red={arrival.loc !== "GPS"}>{arrival.loc}</LocBadge>
+            <LocBadge red={arrival.loc === "ODO"}>{arrival.loc}</LocBadge>
           )}
           <PlainSlotMono>{getNormalTime(stopArrivalTime)}</PlainSlotMono>
         </StopArrivalTime>
