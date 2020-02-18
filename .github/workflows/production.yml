@@ -53,7 +53,7 @@ jobs:
     - name: Sleep for 60 seconds
       uses: jakejarvis/wait-action@master
       with:
-        time: '60s' # Wait until all servers are restarted
+        time: '120s' # Wait until all servers are restarted
     - name: Cypress tests
       uses: cypress-io/github-action@v1
       with:

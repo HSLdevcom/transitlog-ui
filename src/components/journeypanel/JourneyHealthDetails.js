@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {Heading} from "../Typography";
-import {HealthChecklistValues} from "../../hooks/useJourneyHealth";
+import {HealthChecklistValues, defaultThresholds} from "../../hooks/useJourneyHealth";
 import Alert from "../../icons/Alert";
 import ToggleView from "../ToggleView";
 import ArrowDown from "../../icons/ArrowDown";
@@ -35,6 +35,8 @@ const LineHeading = styled.span`
   font-size: 0.9rem;
   margin-right: 0.5rem;
   flex: 1 1 auto;
+  align-items: flex-start;
+  display: flex;
 `;
 
 const ObservedValue = styled.span`
@@ -77,8 +79,9 @@ const TotalHealthIndicator = styled.div`
   );
   position: relative;
   margin-right: 1rem;
+  flex: none;
 
-  &:after {
+  &:before {
     content: "";
     width: 2.25rem;
     height: 2.25rem;
@@ -91,13 +94,16 @@ const TotalHealthIndicator = styled.div`
   }
 `;
 
-const HealthAlert = styled(Alert).attrs({
-  width: "2.1rem",
-  height: "2.1rem",
+const HealthAlertIcon = styled(Alert).attrs({
+  width: "1.2rem",
+  height: "1.2rem",
   fill: "var(--red)",
 })`
-  margin-right: 1rem;
-  flex-shrink: 0;
+  flex: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -0.65rem 0 0 -0.6rem;
 `;
 
 const Accordion = styled(ToggleView)`
@@ -141,6 +147,24 @@ const HealthMessage = styled.div`
     flex-shrink: 0;
   }
 `;
+
+const HealthAlert = styled(Alert).attrs({
+  width: "1.5rem",
+  height: "1.5rem",
+  fill: "var(--red)",
+})`
+  flex-shrink: 0;
+`;
+
+const healthColor = (value, thresholds = defaultThresholds) => {
+  return value === -1
+    ? "var(--light-grey)"
+    : value >= thresholds.ok
+    ? "var(--light-green)"
+    : value >= thresholds.warning
+    ? "var(--yellow)"
+    : "var(--red)";
+};
 
 const HealthItem = observer((props) => {
   const {messages, name, status, health, color} = props;
@@ -187,16 +211,6 @@ const HealthItem = observer((props) => {
 });
 
 const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
-  const healthColor = useCallback((value) =>
-    value === -1
-      ? "var(--light-grey)"
-      : value >= 97
-      ? "var(--light-green)"
-      : value >= 75
-      ? "var(--yellow)"
-      : "var(--red)"
-  );
-
   const totalHealthColor = healthColor(journeyHealth.total);
   const dataDelayHelpText = useTooltip("Data delay");
 
@@ -214,8 +228,9 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
           <>
             <TotalHealthIndicator
               color={totalHealthColor}
-              value={Math.floor(journeyHealth.total)}
-            />
+              value={Math.floor(journeyHealth.total)}>
+              <HealthAlertIcon />
+            </TotalHealthIndicator>
             <div>
               <Heading style={{marginBottom: 0}} color="var(--grey)" level={2}>
                 {journeyHealth.total}%
@@ -223,6 +238,11 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
               {!journeyHealth.isDone && (
                 <LineHeading>
                   <Text>journey.health.not_complete</Text>
+                </LineHeading>
+              )}
+              {!journeyHealth.isOK && (
+                <LineHeading>
+                  <Text>journey.health.not_ok</Text>
                 </LineHeading>
               )}
             </div>
@@ -248,19 +268,21 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
             />
           );
         })}
-        {Object.entries(journeyHealth.health).map(([name, {health, messages}]) => {
-          const currentHealthColor = healthColor(health);
+        {Object.entries(journeyHealth.health).map(
+          ([name, {health, messages, thresholds}]) => {
+            const currentHealthColor = healthColor(health, thresholds);
 
-          return (
-            <HealthItem
-              key={name}
-              name={name}
-              health={health}
-              messages={messages}
-              color={currentHealthColor}
-            />
-          );
-        })}
+            return (
+              <HealthItem
+                key={name}
+                name={name}
+                health={health}
+                messages={messages}
+                color={currentHealthColor}
+              />
+            );
+          }
+        )}
         <HealthRow {...dataDelayHelpText}>
           <LineHeading>
             <Text>journey.health.average_delay</Text>
