@@ -3,6 +3,7 @@
 .git
 .travis.yml
 node_modules
+/build
 LICENSE
 graphql.config.json
 travis-build.sh
