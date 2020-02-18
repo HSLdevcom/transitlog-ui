@@ -202,7 +202,7 @@ const RouteDepartureItem = decorate(
             {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
           </DelaySlot>
         </Tooltip>
-        {loc && <LocBadge red={loc !== "GPS"}>{loc}</LocBadge>}
+        {loc && <LocBadge red={loc === "ODO"}>{loc}</LocBadge>}
         <Tooltip helpText="Journey list observed">
           <TimeSlot>{observedTimeString}</TimeSlot>
         </Tooltip>
