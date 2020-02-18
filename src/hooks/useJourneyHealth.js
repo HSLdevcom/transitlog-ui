@@ -49,9 +49,7 @@ function checkLocHealth(events, incrementHealth, addMessage) {
   incrementHealth(score);
 
   if (percentage < 100) {
-    addMessage(
-      `Stop events calculated with odometer: ${odoCount} (${percentage}% of stop events)`
-    );
+    addMessage(`Events calculated with odometer: ${odoCount} (${percentage}%)`);
   }
 }
 
@@ -334,6 +332,8 @@ export const useJourneyHealth = (journey) => {
       {stopEvents: [], events: []}
     );
 
+    const allEvents = [...vehiclePositions, ...journeyEvents];
+
     let visitedStops = plannedDepartures;
     let maxPlannedStops = visitedStops.length - 1;
 
@@ -386,7 +386,7 @@ export const useJourneyHealth = (journey) => {
       // Max is how many VP events we have. We only check that the events are
       // < 5 seconds apart, not that the whole journey is covered.
       positions: {health: 0, max: vehiclePositions.length, messages: []},
-      locType: {health: 0, max: stopEvents.length, messages: []},
+      locType: {health: 0, max: allEvents.length, messages: []},
       firstStopDeparture: {health: 0, max: 100, messages: []},
       lastStopArrival: {health: -1, max: 100, messages: []},
     };
@@ -524,9 +524,9 @@ export const useJourneyHealth = (journey) => {
     // Check that the vehicle GPS is working.
     checkGPS(vehiclePositions, onChecklistChange("GPS"), onAddMessage("GPS", checklist));
 
-    // Check that the odometer isn't used too much to calculate stop events.
+    // Check that the odometer isn't used too much to calculate events.
     checkLocHealth(
-      stopEvents,
+      allEvents,
       onIncrementHealth("locType"),
       onAddMessage("locType", healthScores)
     );
