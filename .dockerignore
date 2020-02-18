@@ -9,6 +9,7 @@ graphql.config.json
 travis-build.sh
 *.log
 .env.*.local
+.env.cypress
 tag-version.sh
 deploy-local.sh
 docker-deploy-all.sh
