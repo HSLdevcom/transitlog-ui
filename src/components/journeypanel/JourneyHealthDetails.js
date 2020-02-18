@@ -214,8 +214,6 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
   const totalHealthColor = healthColor(journeyHealth.total);
   const dataDelayHelpText = useTooltip("Data delay");
 
-  console.log(journeyHealth);
-
   return (
     <JourneyHealthContainer>
       <TotalHealthDisplay>
