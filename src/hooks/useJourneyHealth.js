@@ -337,8 +337,6 @@ export const useJourneyHealth = (journey) => {
       {stopEvents: [], events: []}
     );
 
-    const allEvents = [...vehiclePositions, ...journeyEvents];
-
     let visitedStops = plannedDepartures;
     let maxPlannedStops = visitedStops.length - 1;
 
@@ -393,7 +391,7 @@ export const useJourneyHealth = (journey) => {
       positions: {health: 0, max: vehiclePositions.length, messages: []},
       locType: {
         health: 0,
-        max: allEvents.length,
+        max: stopEvents.length,
         messages: [],
         thresholds: {ok: 97, warning: 97},
       },
@@ -536,7 +534,7 @@ export const useJourneyHealth = (journey) => {
 
     // Check that the odometer isn't used too much to calculate events.
     checkLocHealth(
-      allEvents,
+      stopEvents,
       onIncrementHealth("locType"),
       onAddMessage("locType", healthScores)
     );
