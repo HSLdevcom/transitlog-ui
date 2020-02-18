@@ -185,12 +185,11 @@ const Tabs = decorate(
         let nextTab = currentSelectedTab;
 
         if (newTabs.length !== 0) {
-          // By default, auto-select the first newly added tab if
-          // the tabs don't already contain the suggested tab.
+          // By default, auto-select the first newly added tab
           nextTab = newTabs[0];
 
           // If the new tabs contain the suggested tab, select that.
-          if (newTabs.includes(suggestedTab)) {
+          if (tabNames.includes(suggestedTab)) {
             nextTab = suggestedTab;
           }
         }
@@ -205,16 +204,27 @@ const Tabs = decorate(
       }
     }, [tabs, currentSelectedTab, selectTab, isControlled]);
 
+    // Sometimes, the selected tab might not actually exist. I such cases,
+    // just show the first tab that exists. These conditions should not
+    // last long, probably only when loading content.
+    const visibleTab = useMemo(() => {
+      if (tabs.length !== 0 && !tabs.map((t) => t.name).includes(currentSelectedTab)) {
+        return tabs[0].name;
+      }
+
+      return currentSelectedTab;
+    }, [currentSelectedTab, tabs]);
+
     // The tab content to render
     const selectedTabContent = useMemo(() => {
-      const selectedTabItem = tabs.find((tab) => tab.name === currentSelectedTab);
+      const selectedTabItem = tabs.find((tab) => tab.name === visibleTab);
       // Set the current tab content to the selected tab
       if (selectedTabItem) {
         return selectedTabItem.content;
       }
 
       return null;
-    }, [tabs, currentSelectedTab]);
+    }, [tabs, visibleTab]);
 
     // Fit the tab label into the ever-shrinking tab element
     const tabLabelFontSizeMultiplier =
@@ -228,7 +238,7 @@ const Tabs = decorate(
               <TabButton
                 data-testid={`${testIdPrefix}-tab ${testIdPrefix}-tab-${tabOption.testId}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
-                selected={currentSelectedTab === tabOption.name}
+                selected={visibleTab === tabOption.name}
                 onClick={() => selectTab(tabOption.name)}>
                 {tabOption.loading && <LoadingIndicator data-testid="loading" />}
                 <TabLabel>{tabOption.label}</TabLabel>
