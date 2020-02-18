@@ -96,7 +96,7 @@ const JourneyPanel = decorate(
             <JourneyInfo date={date} journey={journey} departure={originDeparture} />
             <Tabs
               urlValue="details-tab"
-              onTabChange={(tab) => setCurrentTab(tab)}
+              onTabChange={setCurrentTab}
               suggestedTab="journey-events"
               selectedTab={currentTab}>
               {routeStops.length !== 0 && (

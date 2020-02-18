@@ -92,33 +92,50 @@ const TabLabel = styled.span`
 
 const decorate = flow(observer);
 
+/**
+ * This component can be driven either by props (selectedTab and onTabChange) or
+ * dynamically with internal state and "suggested" tabs. Use either. In dynamic
+ * mode, newly added tabs will be selected automatically.
+ */
+
 const Tabs = decorate(
-  ({
-    selectedTab,
-    urlValue = "tab",
-    onTabChange = () => {},
-    children,
-    suggestedTab,
-    className,
-  }) => {
-    const [currentSelectedTab, setSelectedTab] = useState(getUrlValue(urlValue));
+  ({selectedTab, urlValue = "tab", onTabChange, children, suggestedTab, className}) => {
+    const isControlled = typeof onTabChange === "function";
+
+    const [internalSelectedTab, setInternalSelectedTab] = useState(
+      getUrlValue(urlValue, selectedTab || suggestedTab || "")
+    );
+
+    const currentSelectedTab = useMemo(() => {
+      if (selectedTab && !isControlled) {
+        console.warn(
+          `Selected tab passed to Tabs (${urlValue}) without change handler. Using internal tab state.`
+        );
+      }
+
+      return (isControlled ? selectedTab : internalSelectedTab) || internalSelectedTab;
+    }, [internalSelectedTab, selectedTab, isControlled]);
+
     const prevTabs = useRef([]);
 
     const selectTab = useCallback(
       (nextSelectedTab) => {
-        setSelectedTab(nextSelectedTab);
+        setInternalSelectedTab(nextSelectedTab);
         setUrlValue(urlValue, nextSelectedTab);
-        onTabChange(nextSelectedTab);
+
+        if (isControlled) {
+          onTabChange(nextSelectedTab);
+        }
       },
       [currentSelectedTab, onTabChange]
     );
 
-    // Either select a newly added tab or the tab that the props say should be selected.
+    // Select the that that is selected by props
     useEffect(() => {
-      if (selectedTab && selectedTab !== currentSelectedTab) {
+      if (isControlled && selectedTab && selectedTab !== currentSelectedTab) {
         selectTab(selectedTab);
       }
-    }, [selectedTab, currentSelectedTab]);
+    }, [selectedTab, currentSelectedTab, isControlled]);
 
     // The children usually contain an empty string as the first element.
     // Compact() removes all such falsy values from the array.
@@ -138,25 +155,28 @@ const Tabs = decorate(
       return compact(childrenTabs);
     }, [validChildren]);
 
-    // Function to auto-select any newly added tab
+    // Function to auto-select any newly added tab or the suggested tab
     const selectAddedTab = useCallback(() => {
-      let prevTabsArray = [];
+      let prevTabNames = [];
 
       if (prevTabs.current) {
-        prevTabsArray = prevTabs.current.map(({name}) => name);
+        prevTabNames = prevTabs.current.map(({name}) => name);
       }
 
       prevTabs.current = tabs;
 
-      const tabsArray = tabs.map(({name}) => name);
-      const newTabs = difference(tabsArray, prevTabsArray);
+      const tabNames = tabs.map(({name}) => name);
+      const newTabs = difference(tabNames, prevTabNames);
 
       if (newTabs.length === 0) {
         return false;
       }
 
-      let nextTab = newTabs[0];
+      // By default, auto-select the first newly added tab if
+      // the tabs don't already contain the suggested tab.
+      let nextTab = !isControlled ? newTabs[0] : currentSelectedTab;
 
+      // If the new tabs contain the suggested tab, select that.
       if (newTabs.includes(suggestedTab)) {
         nextTab = suggestedTab;
       }
@@ -167,14 +187,12 @@ const Tabs = decorate(
       }
 
       return false;
-    }, [currentSelectedTab, prevTabs.current, tabs]);
+    }, [currentSelectedTab, prevTabs.current, tabs, isControlled]);
 
     // Various auto-select routines based on what tabs are available
     useEffect(() => {
       // Clear selection if we didn't get any tabs
-      if (tabs.length === 0) {
-        setSelectedTab("");
-      } else {
+      if (tabs.length !== 0) {
         if (selectAddedTab()) {
           return;
         }
@@ -198,7 +216,7 @@ const Tabs = decorate(
           selectTab(name);
         }
       }
-    }, [tabs, currentSelectedTab, selectTab]);
+    }, [tabs, currentSelectedTab, selectTab, isControlled]);
 
     // The tab content to render
     const selectedTabContent = useMemo(() => {
