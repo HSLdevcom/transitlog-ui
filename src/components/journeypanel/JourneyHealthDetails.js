@@ -2,7 +2,7 @@ import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import {Heading} from "../Typography";
-import {HealthChecklistValues} from "../../hooks/useJourneyHealth";
+import {HealthChecklistValues, defaultThresholds} from "../../hooks/useJourneyHealth";
 import Alert from "../../icons/Alert";
 import ToggleView from "../ToggleView";
 import ArrowDown from "../../icons/ArrowDown";
@@ -35,6 +35,8 @@ const LineHeading = styled.span`
   font-size: 0.9rem;
   margin-right: 0.5rem;
   flex: 1 1 auto;
+  align-items: center;
+  display: flex;
 `;
 
 const ObservedValue = styled.span`
@@ -91,12 +93,12 @@ const TotalHealthIndicator = styled.div`
   }
 `;
 
-const HealthAlert = styled(Alert).attrs({
-  width: "2.1rem",
-  height: "2.1rem",
+const HealthAlertIcon = styled(Alert).attrs({
+  width: "1rem",
+  height: "1rem",
   fill: "var(--red)",
 })`
-  margin-right: 1rem;
+  margin-right: 0.5rem;
   flex-shrink: 0;
 `;
 
@@ -141,6 +143,24 @@ const HealthMessage = styled.div`
     flex-shrink: 0;
   }
 `;
+
+const HealthAlert = styled(Alert).attrs({
+  width: "1.5rem",
+  height: "1.5rem",
+  fill: "var(--red)",
+})`
+  flex-shrink: 0;
+`;
+
+const healthColor = (value, thresholds = defaultThresholds) => {
+  return value === -1
+    ? "var(--light-grey)"
+    : value >= thresholds.ok
+    ? "var(--light-green)"
+    : value >= thresholds.warning
+    ? "var(--yellow)"
+    : "var(--red)";
+};
 
 const HealthItem = observer((props) => {
   const {messages, name, status, health, color} = props;
@@ -187,16 +207,6 @@ const HealthItem = observer((props) => {
 });
 
 const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
-  const healthColor = useCallback((value) =>
-    value === -1
-      ? "var(--light-grey)"
-      : value >= 97
-      ? "var(--light-green)"
-      : value >= 75
-      ? "var(--yellow)"
-      : "var(--red)"
-  );
-
   const totalHealthColor = healthColor(journeyHealth.total);
   const dataDelayHelpText = useTooltip("Data delay");
 
@@ -225,6 +235,11 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
                   <Text>journey.health.not_complete</Text>
                 </LineHeading>
               )}
+              {!journeyHealth.isOK && (
+                <LineHeading>
+                  <HealthAlertIcon /> <Text>journey.health.not_ok</Text>
+                </LineHeading>
+              )}
             </div>
           </>
         )}
@@ -248,19 +263,21 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
             />
           );
         })}
-        {Object.entries(journeyHealth.health).map(([name, {health, messages}]) => {
-          const currentHealthColor = healthColor(health);
+        {Object.entries(journeyHealth.health).map(
+          ([name, {health, messages, thresholds}]) => {
+            const currentHealthColor = healthColor(health, thresholds);
 
-          return (
-            <HealthItem
-              key={name}
-              name={name}
-              health={health}
-              messages={messages}
-              color={currentHealthColor}
-            />
-          );
-        })}
+            return (
+              <HealthItem
+                key={name}
+                name={name}
+                health={health}
+                messages={messages}
+                color={currentHealthColor}
+              />
+            );
+          }
+        )}
         <HealthRow {...dataDelayHelpText}>
           <LineHeading>
             <Text>journey.health.average_delay</Text>
