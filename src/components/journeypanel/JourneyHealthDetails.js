@@ -35,7 +35,7 @@ const LineHeading = styled.span`
   font-size: 0.9rem;
   margin-right: 0.5rem;
   flex: 1 1 auto;
-  align-items: center;
+  align-items: flex-start;
   display: flex;
 `;
 
@@ -79,8 +79,9 @@ const TotalHealthIndicator = styled.div`
   );
   position: relative;
   margin-right: 1rem;
+  flex: none;
 
-  &:after {
+  &:before {
     content: "";
     width: 2.25rem;
     height: 2.25rem;
@@ -94,12 +95,15 @@ const TotalHealthIndicator = styled.div`
 `;
 
 const HealthAlertIcon = styled(Alert).attrs({
-  width: "1rem",
-  height: "1rem",
+  width: "1.2rem",
+  height: "1.2rem",
   fill: "var(--red)",
 })`
-  margin-right: 0.5rem;
-  flex-shrink: 0;
+  flex: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -0.65rem 0 0 -0.6rem;
 `;
 
 const Accordion = styled(ToggleView)`
@@ -224,8 +228,9 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
           <>
             <TotalHealthIndicator
               color={totalHealthColor}
-              value={Math.floor(journeyHealth.total)}
-            />
+              value={Math.floor(journeyHealth.total)}>
+              <HealthAlertIcon />
+            </TotalHealthIndicator>
             <div>
               <Heading style={{marginBottom: 0}} color="var(--grey)" level={2}>
                 {journeyHealth.total}%
@@ -237,7 +242,7 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
               )}
               {!journeyHealth.isOK && (
                 <LineHeading>
-                  <HealthAlertIcon /> <Text>journey.health.not_ok</Text>
+                  <Text>journey.health.not_ok</Text>
                 </LineHeading>
               )}
             </div>

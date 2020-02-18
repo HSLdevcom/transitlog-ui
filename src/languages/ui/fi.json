@@ -124,7 +124,7 @@
   "journey.health.GPS": "GPS",
   "journey.health.stops": "Pysäkit",
   "journey.health.positions": "Paikkatieto",
-  "journey.health.locType": "GPS käytetty",
+  "journey.health.locType": "Tapahtumien GPS käyttö",
   "journey.health.firstStopDeparture": "Lähtö ensimmäiseltä pysäkiltä ",
   "journey.health.lastStopArrival": "Saapuminen viimeiselle pysäkille",
   "journey.health.timingStopDepartures": "Lähtö ajantasauspysäkeiltä",
