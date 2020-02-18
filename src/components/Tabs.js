@@ -156,75 +156,51 @@ const Tabs = decorate(
           return null;
         }
 
-        const {name, label, loading, helpText = ""} = tabContent.props;
-        return {name, label, content: tabContent, helpText, loading};
+        const {name, label, loading, helpText = "", testId = name} = tabContent.props;
+        return {name, label, content: tabContent, helpText, loading, testId};
       });
 
       return compact(childrenTabs);
     }, [validChildren]);
 
-    // Function to auto-select any newly added tab or the suggested tab
-    const selectAddedTab = useCallback(() => {
-      let prevTabNames = [];
-
-      if (prevTabs.current) {
-        prevTabNames = prevTabs.current.map(({name}) => name);
-      }
-
-      prevTabs.current = tabs;
-
-      const tabNames = tabs.map(({name}) => name);
-      const newTabs = difference(tabNames, prevTabNames);
-
-      if (newTabs.length === 0) {
-        return false;
-      }
-
-      // By default, auto-select the first newly added tab if
-      // the tabs don't already contain the suggested tab.
-      let nextTab =
-        !isControlled || !tabNames.includes(currentSelectedTab)
-          ? newTabs[0]
-          : currentSelectedTab;
-
-      // If the new tabs contain the suggested tab, select that.
-      if (newTabs.includes(suggestedTab)) {
-        nextTab = suggestedTab;
-      }
-
-      if (nextTab && nextTab !== currentSelectedTab) {
-        selectTab(nextTab);
-        return true;
-      }
-
-      return false;
-    }, [currentSelectedTab, prevTabs.current, tabs, isControlled]);
-
     // Various auto-select routines based on what tabs are available
     useEffect(() => {
-      // Clear selection if we didn't get any tabs
       if (tabs.length !== 0) {
-        if (selectAddedTab()) {
+        const tabNames = tabs.map(({name}) => name);
+
+        if (tabNames.length === 1) {
+          selectTab(tabNames[0]);
           return;
         }
 
-        const firstTab = tabs[0];
-        const {name} = firstTab;
+        let prevTabNames = [];
 
-        // Make sure that the selected tab actually exists
-        const selectedTabExists =
-          tabs.length !== 0 && tabs.some((tab) => tab.name === currentSelectedTab);
+        if (prevTabs.current) {
+          prevTabNames = prevTabs.current.map(({name}) => name);
+        }
 
-        if (
-          // Auto-select the first tab
-          // If that's all we have, or...
-          (tabs.length === 1 && currentSelectedTab !== name) ||
-          // ...if there isn't a tab selected, or...
-          !currentSelectedTab ||
-          // ...if the currently selected tab doesn't exist.
-          !selectedTabExists
-        ) {
-          selectTab(name);
+        prevTabs.current = tabs;
+        const newTabs = difference(tabNames, prevTabNames);
+
+        let nextTab = currentSelectedTab;
+
+        if (newTabs.length !== 0) {
+          // By default, auto-select the first newly added tab if
+          // the tabs don't already contain the suggested tab.
+          nextTab = newTabs[0];
+
+          // If the new tabs contain the suggested tab, select that.
+          if (newTabs.includes(suggestedTab)) {
+            nextTab = suggestedTab;
+          }
+        }
+
+        if (!tabNames.includes(nextTab)) {
+          nextTab = tabNames[0];
+        }
+
+        if (nextTab && nextTab !== currentSelectedTab) {
+          selectTab(nextTab);
         }
       }
     }, [tabs, currentSelectedTab, selectTab, isControlled]);
@@ -250,7 +226,7 @@ const Tabs = decorate(
           {tabs.map((tabOption, index) => (
             <Tooltip helpText={tabOption.helpText} key={`tab_${tabOption.name}_${index}`}>
               <TabButton
-                data-testid={`${testIdPrefix}-tab ${testIdPrefix}-tab-${tabOption.name}`}
+                data-testid={`${testIdPrefix}-tab ${testIdPrefix}-tab-${tabOption.testId}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
                 selected={currentSelectedTab === tabOption.name}
                 onClick={() => selectTab(tabOption.name)}>

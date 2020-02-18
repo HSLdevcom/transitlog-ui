@@ -154,6 +154,8 @@ const SidePanel = decorate((props) => {
 
   const detailsCanOpen = getJourneyId(selectedJourney) || route;
 
+  const routeId = createRouteId(route, true);
+
   return (
     <SidePanelContainer data-testid="sidepanel" visible={sidePanelVisible}>
       <MainSidePanel>
@@ -175,9 +177,10 @@ const SidePanel = decorate((props) => {
             {hasRoute && (
               <RouteDepartures
                 helpText="Journeys tab"
-                key={`route_journeys_${createRouteId(route, true)}_${date}`}
+                key={`route_journeys_${routeId}_${date}`}
                 route={route}
-                name="journeys"
+                name={`journeys-${routeId}`}
+                testId="journeys"
                 label={text("sidepanel.tabs.journeys")}
               />
             )}
@@ -195,14 +198,16 @@ const SidePanel = decorate((props) => {
             {user && vehicle && (
               <VehicleJourneys
                 helpText="Vehicle journeys tab"
-                name="vehicle-journeys"
+                name={`vehicle-journeys-${vehicle}`}
+                testId="vehicle-journeys"
                 label={text("sidepanel.tabs.vehicle_journeys")}
               />
             )}
             {(stateStop || stateTerminal) && (
               <StopDepartures
                 helpText="Timetable tab"
-                name="timetables"
+                name={`timetables-${stateStop || stateTerminal}`}
+                testId="timetables"
                 label={text("sidepanel.tabs.timetables")}
               />
             )}
