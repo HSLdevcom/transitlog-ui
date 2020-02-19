@@ -52,6 +52,10 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
   const visibleEvents = events.filter((evt) => !!state.journeyEventFilters[evt.type]);
 
   const eventGroups = visibleEvents.reduce((proximityGroups, event) => {
+    if (!event.lat || !event.lng) {
+      return proximityGroups;
+    }
+
     const point = latLng([event.lat, event.lng]);
     let currentArea = point.toBounds(5);
 
