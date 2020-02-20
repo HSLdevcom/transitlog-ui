@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useCallback} from "react";
+import React, {useMemo, useState, useCallback, useEffect} from "react";
 import styled from "styled-components";
 import JourneyDetailsHeader from "./JourneyDetailsHeader";
 import {observer} from "mobx-react-lite";
@@ -61,15 +61,16 @@ const JourneyPanel = decorate(
       getUrlValue("details-tab", "journey-events")
     );
 
-    const onTabChange = useCallback(
-      (nextTab) => {
-        if (!loading) {
-          setCurrentTab(nextTab);
-          setUrlValue("details-tab", nextTab);
-        }
-      },
-      [loading]
-    );
+    const onTabChange = useCallback((nextTab) => {
+      setCurrentTab(nextTab);
+      setUrlValue("details-tab", nextTab);
+    }, []);
+
+    useEffect(() => {
+      if (selectedJourney && !loading) {
+        onTabChange("journey-events");
+      }
+    }, [selectedJourney, loading]);
 
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
