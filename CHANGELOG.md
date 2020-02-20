@@ -1,5 +1,17 @@
 # Transitlog UI changelog
 
+## Version 1.8.1, deployed 2020-02-20 @ 06:00
+
+- Dependency update, including new and un-ejected Create React App.
+- Refactors to improve maintainability.
+- Mapillary viewer improvements.
+- Add missing received_at field to route journeys.
+- Slack notifications for Github action status.
+- Include LOC value in journey data health.
+- Improve E2E tests.
+- Show all journey events on map, including those already shown as stops.
+- Include journey event filters in the URL.
+
 ## Version 1.8.0, deployed 2020-02-13 @ 08:00
 
 - Building, deployment and testing automatically with Github Actions.
