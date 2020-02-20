@@ -15,14 +15,15 @@ import {allStopsQuery} from "../map/StopLayer";
 import {terminalsQuery} from "../map/TerminalLayer";
 import orderBy from "lodash/orderBy";
 import getTransportType from "../../helpers/getTransportType";
+import {SidePanelTabs} from "../../constants";
 
 const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
 `;
 
-const decorate = flow(observer, inject("Filters"));
+const decorate = flow(observer, inject("Filters", "UI"));
 
-const StopSettings = decorate(({Filters, state}) => {
+const StopSettings = decorate(({Filters, UI, state}) => {
   const {stop, terminal, date} = state;
 
   const {data: stopsData, loading} = useQueryData(
@@ -40,13 +41,20 @@ const StopSettings = decorate(({Filters, state}) => {
   const stops = stopsData || [];
   const terminals = terminalsData || [];
 
-  const onSelectOption = useCallback((item) => {
-    if (isStop(item)) {
-      Filters.setStop(item);
-    } else {
-      Filters.setTerminal(item);
-    }
-  }, []);
+  const onSelectOption = useCallback(
+    (item) => {
+      if (isStop(item)) {
+        Filters.setStop(item);
+      } else {
+        Filters.setTerminal(item);
+      }
+
+      if (item) {
+        UI.setSidePanelTab(SidePanelTabs.Timetables);
+      }
+    },
+    [Filters, UI]
+  );
 
   if (loading && stops.length === 0) {
     return <LoadingSpinner inline={true} />;

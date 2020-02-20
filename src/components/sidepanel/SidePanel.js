@@ -21,6 +21,7 @@ import getWeek from "date-fns/getISOWeek";
 import getJourneyId from "../../helpers/getJourneyId";
 import Alerts from "./Alerts";
 import {legacyParse} from "@date-fns/upgrade/v2";
+import {SidePanelTabs} from "../../constants";
 
 const SidePanelContainer = styled.div`
   background: var(--lightest-grey);
@@ -113,7 +114,7 @@ const decorate = flow(observer, inject("UI"));
 
 const SidePanel = decorate((props) => {
   const {
-    UI: {toggleSidePanel, toggleJourneyDetails, toggleJourneyGraph},
+    UI: {toggleSidePanel, toggleJourneyDetails, toggleJourneyGraph, setSidePanelTab},
     areaEvents = [],
     journey = null,
     journeyLoading = false,
@@ -133,25 +134,14 @@ const SidePanel = decorate((props) => {
       showInstructions = false,
       selectedBounds,
       user,
+      sidePanelTab,
     },
   } = props;
 
   const areaSearchActive = !!selectedBounds;
-
   const hasRoute = (stateRoute && stateRoute.routeId) || (route && route.routeId);
-  // Figure out which tab is suggested. It will not be outright selected, but
-  // if it appears and nothing else is selected then it will be.
-  let suggestedTab = "";
 
-  const routeId = createRouteId(route, true);
-
-  // The tabs will be auto-selected in this order, from top to bottom.
-  if (areaSearchActive) suggestedTab = "area-journeys";
-  if (user && vehicle) suggestedTab = `vehicle-journeys-${vehicle}`;
-  if (hasRoute) suggestedTab = `journeys-${routeId}`;
-  if (selectedJourney) suggestedTab = `journeys-${routeId}`;
-  if (stateStop || stateTerminal)
-    suggestedTab = `timetables-${stateStop || stateTerminal}`;
+  const routeId = createRouteId(route);
 
   const allTabsHidden =
     !hasRoute && !areaSearchActive && !vehicle && !stateStop && !stateTerminal;
@@ -166,13 +156,16 @@ const SidePanel = decorate((props) => {
         ) : allTabsHidden ? (
           <Alerts language={language} />
         ) : (
-          <Tabs urlValue="tab" suggestedTab={suggestedTab}>
+          <Tabs
+            testIdPrefix="sidebar"
+            selectedTab={sidePanelTab}
+            onTabChange={setSidePanelTab}>
             {areaSearchActive && (
               <AreaJourneyList
                 helpText="Area search tab"
                 loading={areaJourneysLoading}
                 journeys={Array.isArray(areaEvents) ? areaEvents : []}
-                name="area-journeys"
+                name={SidePanelTabs.AreaJourneys}
                 label={text("sidepanel.tabs.area_events")}
               />
             )}
@@ -181,39 +174,38 @@ const SidePanel = decorate((props) => {
                 helpText="Journeys tab"
                 key={`route_journeys_${routeId}_${date}`}
                 route={route}
-                name={`journeys-${routeId}`}
-                testId="journeys"
+                name={SidePanelTabs.Journeys}
                 label={text("sidepanel.tabs.journeys")}
               />
             )}
             {hasRoute && (
               <JourneysByWeek
                 helpText="Weekly journeys tab"
-                key={`route_journeys_week_${createRouteId(route, true)}_${getWeek(
-                  legacyParse(date)
-                )}`}
+                key={`route_journeys_week_${routeId}_${getWeek(legacyParse(date))}`}
                 route={route}
-                name="journeys_by_week"
+                name={SidePanelTabs.WeekJourneys}
                 label={text("sidepanel.tabs.week_journeys")}
               />
             )}
             {user && vehicle && (
               <VehicleJourneys
                 helpText="Vehicle journeys tab"
-                name={`vehicle-journeys-${vehicle}`}
-                testId="vehicle-journeys"
+                name={SidePanelTabs.VehicleJourneys}
                 label={text("sidepanel.tabs.vehicle_journeys")}
               />
             )}
             {(stateStop || stateTerminal) && (
               <StopDepartures
                 helpText="Timetable tab"
-                name={`timetables-${stateStop || stateTerminal}`}
-                testId="timetables"
+                name={SidePanelTabs.Timetables}
                 label={text("sidepanel.tabs.timetables")}
               />
             )}
-            <Alerts helpText="All alerts" name="alerts" label={text("domain.alerts")} />
+            <Alerts
+              helpText="All alerts"
+              name={SidePanelTabs.Alerts}
+              label={text("domain.alerts")}
+            />
           </Tabs>
         )}
       </MainSidePanel>

@@ -4,6 +4,7 @@ import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 import RouteStop from "./RouteStop";
 import {inject} from "../../helpers/inject";
+import {SidePanelTabs} from "../../constants";
 
 const StopsListWrapper = styled.div`
   padding: 0.5rem 0;
@@ -22,6 +23,7 @@ const RouteStops = decorate(({routeStops, color, Filters, UI}) => {
     (stopId) => {
       if (stopId) {
         Filters.setStop(stopId);
+        UI.setSidePanelTab(SidePanelTabs.Timetables);
       }
     },
     [Filters]

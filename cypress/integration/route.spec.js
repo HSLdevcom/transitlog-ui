@@ -50,7 +50,7 @@ describe("Route smoke tests", () => {
 
     cy.waitUntilLoadingFinishes();
 
-    cy.getTestElement("sidebar-tab-journeys_by_week").click();
+    cy.getTestElement("sidebar-tab-week-journeys").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
     cy.getTestElement("weekly-departure-time").should("have.length.least", 2);
@@ -71,7 +71,7 @@ describe("Route smoke tests", () => {
 
     cy.waitUntilLoadingFinishes();
 
-    cy.getTestElement("sidebar-tab-journeys_by_week").click();
+    cy.getTestElement("sidebar-tab-week-journeys").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
     cy.getTestElement("weekly-departure-time")

@@ -110,15 +110,23 @@ describe("Stop search and filtering", () => {
   let state = {};
   let setStopMock = jest.fn();
   let setTerminalMock = jest.fn();
+  let setTabMock = jest.fn();
 
   const createState = () => {
     state = observable({
+      sidePanelTab: "alerts",
       language: "fi",
       live: false,
       date,
       stop: "",
       route: {},
     });
+
+    setTabMock = jest.fn(
+      action((tab) => {
+        state.sidePanelTab = tab;
+      })
+    );
 
     setStopMock = jest.fn(
       action((stop) => {
@@ -137,10 +145,12 @@ describe("Stop search and filtering", () => {
     <MobxProviders
       state={state}
       actions={{
-        UI: {},
+        UI: {
+          setSidePanelTab: setTabMock,
+        },
         Filters: {
-          setStop: (stop) => setStopMock(stop),
-          setTerminal: (terminal) => setTerminalMock(terminal),
+          setStop: setStopMock,
+          setTerminal: setTerminalMock,
         },
       }}>
       <MockedProvider addTypename={true} mocks={stopRequestMocks}>

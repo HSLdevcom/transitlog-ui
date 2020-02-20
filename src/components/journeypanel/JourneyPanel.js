@@ -18,6 +18,7 @@ import {useJourneyHealth} from "../../hooks/useJourneyHealth";
 import JourneyHealthDetails from "./JourneyHealthDetails";
 import RouteStops from "./RouteStops";
 import {useDataDelay} from "../../hooks/useDataDelay";
+import {getUrlValue, setUrlValue} from "../../stores/UrlManager";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -56,12 +57,15 @@ const JourneyPanel = decorate(
     route = null,
     loading = false,
   }) => {
-    const [currentTab, setCurrentTab] = useState("journey-events");
+    const [currentTab, setCurrentTab] = useState(
+      getUrlValue("details-tab", "journey-events")
+    );
 
     const onTabChange = useCallback(
       (nextTab) => {
         if (!loading) {
           setCurrentTab(nextTab);
+          setUrlValue("details-tab", nextTab);
         }
       },
       [loading]
@@ -105,9 +109,7 @@ const JourneyPanel = decorate(
             <JourneyInfo date={date} journey={journey} departure={originDeparture} />
             <Tabs
               testIdPrefix="journey"
-              urlValue="details-tab"
               onTabChange={onTabChange}
-              suggestedTab="journey-events"
               selectedTab={currentTab}>
               {journeyEvents.length !== 0 && (
                 <JourneyEvents

@@ -48,6 +48,7 @@ export default (state) => {
   extendObservable(
     state,
     {
+      sidePanelTab: getUrlValue("tab", ""),
       sidePanelVisible: getUrlValue("sidePanelVisible", true),
       journeyDetailsOpen: getUrlValue("journeysDetailsOpen", true),
       journeyGraphOpen: getUrlValue("journeyGraphOpen", false),

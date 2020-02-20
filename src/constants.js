@@ -7,3 +7,13 @@ export const TIME_SLIDER_MIN = 0; // 00:00:00
 export const TIME_SLIDER_DEFAULT_MIN = 16200; // 04:30
 export const STOP_EVENTS = ["DEP", "PDE", "PAS", "ARR", "ARS", "DUE", "WAIT"];
 export const ENV_NAME = process.env.REACT_APP_ENV_NAME || "";
+
+// Faux-enum for validating sidepanel tab changes
+export const SidePanelTabs = {
+  AreaJourneys: "area-journeys",
+  Journeys: "journeys",
+  WeekJourneys: "week-journeys",
+  VehicleJourneys: "vehicle-journeys",
+  Timetables: "timetables",
+  Alerts: "alerts",
+};
