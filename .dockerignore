@@ -1,6 +1,7 @@
 .idea
 .dockerignore
 .git
+.github
 .travis.yml
 node_modules
 /build
