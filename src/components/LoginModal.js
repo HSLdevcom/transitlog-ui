@@ -1,6 +1,5 @@
-import React from "react";
-import {observer, inject} from "mobx-react";
-import {app} from "mobx-app";
+import React, {useState, useCallback} from "react";
+import {observer} from "mobx-react-lite";
 import styled from "styled-components";
 import HSLLogoNoText from "../icons/HSLLogoNoText";
 import Login from "../icons/Login";
@@ -10,6 +9,8 @@ import {redirectToLogin} from "../stores/UrlManager";
 import {withApollo} from "@apollo/react-hoc";
 import {LoadingDisplay} from "./Loading";
 import {text, Text} from "../helpers/text";
+import flow from "lodash/flow";
+import {inject} from "../helpers/inject";
 
 const Root = styled.div`
   position: fixed;
@@ -77,42 +78,48 @@ const Title = styled.h2`
 
 const allowDevLogin = process.env.REACT_APP_ALLOW_DEV_LOGIN === "true";
 
-@inject(app("UI", "Update"))
-@withApollo
-@observer
-class LoginModal extends React.Component {
-  state = {
-    loading: false,
-  };
+const decorate = flow(observer, withApollo, inject("UI"));
 
-  onModalClick = (e) => {
+const LoginModal = decorate(({UI, client, state}) => {
+  const [loading, setLoading] = useState(false);
+
+  const toggleLoginLoading = useCallback(
+    (setTo = !loading) => {
+      setLoading(setTo);
+    },
+    [loading]
+  );
+
+  const onModalClick = useCallback((e) => {
     e.stopPropagation();
     if (e.currentTarget.className.includes("Root")) {
-      this.props.UI.toggleLoginModal();
+      UI.toggleLoginModal();
     }
-  };
+  });
 
-  onLogoutClick = () => {
-    this.toggleLoginLoading(true);
+  const onLogoutClick = useCallback(() => {
+    toggleLoginLoading(true);
 
     logout().then(async (response) => {
       if (response.status === 200) {
-        this.props.UI.setUser(null);
-        await this.props.client.resetStore();
+        UI.setUser(null);
+        await client.resetStore();
       }
 
-      this.toggleLoginLoading(false);
-      this.props.UI.toggleLoginModal();
+      toggleLoginLoading(false);
+      UI.toggleLoginModal();
     });
-  };
+  }, []);
 
-  openAuthForm = (type) => () => {
-    redirectToLogin(type === "register");
-  };
+  const openAuthForm = useCallback(
+    (type) => () => {
+      redirectToLogin(type === "register");
+    },
+    []
+  );
 
-  onDevLogin = async () => {
-    const {UI, client} = this.props;
-    this.toggleLoginLoading(true);
+  const onDevLogin = useCallback(async () => {
+    toggleLoginLoading(true);
 
     const response = await authorize("dev");
 
@@ -121,79 +128,69 @@ class LoginModal extends React.Component {
       await client.resetStore();
     }
 
-    this.toggleLoginLoading(false);
+    toggleLoginLoading(false);
     UI.toggleLoginModal();
-  };
+  }, []);
 
-  toggleLoginLoading = (setTo = !this.state.loading) => {
-    this.setState({
-      loading: setTo,
-    });
-  };
+  const {user} = state;
 
-  render() {
-    const {loading} = this.state;
-    const {state} = this.props;
-    const {user} = state;
-
-    return (
-      <Root onClick={(e) => this.onModalClick(e)}>
-        <Wrapper onClick={(e) => this.onModalClick(e)}>
-          <Header>
-            <HSLLogoNoText fill={"white"} height={"80px"} />
-            <Title>HSL {text("filterpanel.heading")}</Title>
-          </Header>
-          {loading ? (
-            <LoadingIndicator loading={true} />
-          ) : (
-            <>
-              {user ? (
-                <LoginButton data-testid="logout-button" onClick={this.onLogoutClick}>
-                  <Login height={"1em"} fill={"#3e3e3e"} />
-                  <LoginText>
-                    <Text>auth.logout</Text>
-                  </LoginText>
-                </LoginButton>
-              ) : (
-                <>
+  return (
+    <Root onClick={onModalClick}>
+      <Wrapper onClick={onModalClick}>
+        <Header>
+          <HSLLogoNoText fill={"white"} height={"80px"} />
+          <Title>HSL {text("filterpanel.heading")}</Title>
+        </Header>
+        {loading ? (
+          <LoadingIndicator loading={true} />
+        ) : (
+          <>
+            {user ? (
+              <LoginButton data-testid="logout-button" onClick={onLogoutClick}>
+                <Login height={"1em"} fill={"#3e3e3e"} />
+                <LoginText>
+                  <Text>auth.logout</Text>
+                </LoginText>
+              </LoginButton>
+            ) : (
+              <>
+                <p>
+                  <LoginButton
+                    onClick={openAuthForm("login")}
+                    {...applyTooltip("Sign in with HSL-ID")}>
+                    <Login height={"1em"} fill={"#3e3e3e"} />
+                    <LoginText>
+                      <Text>auth.login</Text>
+                    </LoginText>
+                  </LoginButton>
+                </p>
+                {allowDevLogin && (
                   <p>
                     <LoginButton
-                      onClick={this.openAuthForm("login")}
-                      {...applyTooltip("Sign in with HSL-ID")}>
+                      onClick={onDevLogin}
+                      {...applyTooltip("Developer sign in")}>
                       <Login height={"1em"} fill={"#3e3e3e"} />
-                      <LoginText>
-                        <Text>auth.login</Text>
-                      </LoginText>
+                      <LoginText>Dev login</LoginText>
                     </LoginButton>
                   </p>
-                  {allowDevLogin && (
-                    <p>
-                      <LoginButton
-                        onClick={this.onDevLogin}
-                        {...applyTooltip("Developer sign in")}>
-                        <Login height={"1em"} fill={"#3e3e3e"} />
-                        <LoginText>Dev login</LoginText>
-                      </LoginButton>
-                    </p>
-                  )}
-                  <p>
-                    <LoginButton
-                      onClick={this.openAuthForm("register")}
-                      {...applyTooltip("Create user")}>
-                      <Login height={"1em"} fill={"#3e3e3e"} />
-                      <LoginText>
-                        <Text>auth.create_account</Text>
-                      </LoginText>
-                    </LoginButton>
-                  </p>
-                </>
-              )}
-            </>
-          )}
-        </Wrapper>
-      </Root>
-    );
-  }
-}
+                )}
+                <p>
+                  <LoginButton
+                    onClick={openAuthForm("register")}
+                    {...applyTooltip("Create user")}>
+                    <Login height={"1em"} fill={"#3e3e3e"} />
+                    <LoginText>
+                      <Text>auth.create_account</Text>
+                    </LoginText>
+                  </LoginButton>
+                </p>
+              </>
+            )}
+          </>
+        )}
+      </Wrapper>
+    </Root>
+  );
+});
 
 export default LoginModal;

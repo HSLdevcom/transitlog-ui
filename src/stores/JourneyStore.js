@@ -15,7 +15,12 @@ import {intval} from "../helpers/isWithinRange";
 export default (state) => {
   extendObservable(state, {
     selectedJourney: null,
-    journeyEventFilters: {},
+    journeyEventFilters: getUrlValue("journeyEventFilters", "")
+      .split(",")
+      .reduce((enabledEvents, key) => {
+        enabledEvents[key] = true;
+        return enabledEvents;
+      }, {}),
   });
 
   const filterActions = FilterActions(state);

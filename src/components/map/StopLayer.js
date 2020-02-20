@@ -4,7 +4,6 @@ import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
 import CompoundStopMarker from "./CompoundStopMarker";
 import flow from "lodash/flow";
-import orderBy from "lodash/orderBy";
 import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import gql from "graphql-tag";
@@ -152,7 +151,7 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
   useCenterOnPopup([!!selectedStop, !selectedStopLoading, !selectedJourney]);
 
   const stops = stopsData || [];
-  const stopsHidden = !mapOverlays.includes("Stops");
+  const stopsHidden = mapZoom < 14 || !mapOverlays.includes("Stops");
 
   useEffect(() => {
     if (!!route.routeId) {
@@ -170,23 +169,13 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
   }, [route.routeId]);
 
   const stopsInArea = useMemo(() => {
-    if (selectedJourney) {
+    if (selectedJourney || mapZoom < 14 || !mapBounds) {
       return [];
     }
 
-    if (mapZoom >= 14 && mapBounds) {
-      return stops.filter(
-        ({stopId, lat, lng}) => stopId === stop || mapBounds.contains([lat, lng])
-      );
-    } else if (mapView) {
-      // mapView can be either a LatLng or a LatLngBounds. Quack.
-      const mapViewCenter =
-        typeof mapView.getCenter === "function" ? mapView.getCenter() : mapView;
-
-      return orderBy(stops, ({stopId, lat, lng}) =>
-        stopId === stop ? 0 : mapViewCenter.distanceTo([lat, lng])
-      ).slice(0, 600);
-    }
+    return stops.filter(
+      ({stopId, lat, lng}) => stopId === stop || mapBounds.contains([lat, lng])
+    );
   }, [stop, stops, mapView, mapBounds, mapZoom, selectedJourney]);
 
   if (selectedJourney || (stopsHidden && !selectedStop)) {

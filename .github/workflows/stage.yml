@@ -6,7 +6,7 @@ on:
     - staging
 
 jobs:
-  deploy:
+  deploy-stage:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -34,17 +34,26 @@ jobs:
         tags: stage
     - name: Deploy with Gitlab CI
       run: curl -X POST -F token=${{ secrets.GITLAB_STAGE_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/232/trigger/pipeline
-  test:
-    needs: deploy
+    - name: Notify of deployment
+      uses: 8398a7/action-slack@v2
+      if: always()
+      with:
+        status: ${{ job.status }}
+        text: Reittiloki STAGE deployment status
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  test-stage:
+    needs: deploy-stage
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
         ref: staging
-    - name: Sleep for 60 seconds
+    - name: Sleep for 2 minutes
       uses: jakejarvis/wait-action@master
       with:
-        time: '60s'
+        time: '120s'
     - name: Cypress tests
       uses: cypress-io/github-action@v1
       env:
@@ -65,3 +74,12 @@ jobs:
       with:
         name: cypress-videos
         path: cypress/videos
+    - name: Notify of tests
+      uses: 8398a7/action-slack@v2
+      if: always()
+      with:
+        status: ${{ job.status }}
+        text: Reittiloki STAGE E2E test status
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

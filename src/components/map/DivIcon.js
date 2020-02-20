@@ -3,11 +3,9 @@ import React from "react";
 import {createPortal} from "react-dom";
 import {DivIcon as LeafletDivIcon, Marker as LeafletMarker} from "leaflet";
 import PropTypes from "prop-types";
-import {withLeaflet, MapLayer, LeafletProvider} from "react-leaflet";
-import {observer} from "mobx-react";
+import {MapLayer, LeafletProvider, withLeaflet} from "react-leaflet";
+import {Observer} from "mobx-react-lite";
 
-@withLeaflet
-@observer
 class DivIcon extends MapLayer {
   static propTypes = {
     opacity: PropTypes.number,
@@ -77,12 +75,16 @@ class DivIcon extends MapLayer {
     }
 
     return (
-      <>
-        {portalContainer && createPortal(icon, portalContainer)}
-        {context}
-      </>
+      <Observer>
+        {() => (
+          <>
+            {portalContainer && createPortal(icon, portalContainer)}
+            {context}
+          </>
+        )}
+      </Observer>
     );
   }
 }
 
-export default DivIcon;
+export default withLeaflet(DivIcon);

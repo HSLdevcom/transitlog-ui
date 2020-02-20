@@ -3,11 +3,13 @@
 .git
 .travis.yml
 node_modules
+/build
 LICENSE
 graphql.config.json
 travis-build.sh
 *.log
 .env.*.local
+.env.cypress
 tag-version.sh
 deploy-local.sh
 docker-deploy-all.sh

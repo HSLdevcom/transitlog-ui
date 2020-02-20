@@ -1,5 +1,5 @@
 {
-  "short_name": "Transitlog",
+  "short_name": "Reittiloki",
   "name": "Liikenteenvalvontatyökalu",
   "icons": [
     {
@@ -10,6 +10,6 @@
   ],
   "start_url": "./index.html",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#007ac9",
   "background_color": "#ffffff"
 }

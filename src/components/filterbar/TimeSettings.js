@@ -1,12 +1,12 @@
-import React, {Component} from "react";
-import {app} from "mobx-app";
-import {inject, observer} from "mobx-react";
+import React, {useState, useCallback, useEffect, useRef, useMemo} from "react";
+import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
+import {observer} from "mobx-react-lite";
 import {timeToSeconds, getValidTimeWithinRange} from "../../helpers/time";
 import {InputBase, ControlGroup} from "../Forms";
 import PlusMinusInput from "../PlusMinusInput";
 import styled from "styled-components";
 import doubleDigit from "../../helpers/doubleDigit";
-import {observable, action, computed} from "mobx";
 import {setResetListener} from "../../stores/FilterStore";
 
 const TimeControlGroup = styled(ControlGroup)`
@@ -20,82 +20,64 @@ const TimeInput = styled(InputBase)`
   height: calc(2rem + 2px);
 `;
 
-@inject(app("Time"))
-@observer
-class TimeSettings extends Component {
-  resetListener = () => {};
+const decorate = flow(observer, inject("Time"));
 
-  @observable
-  timeInput = "0";
+const TimeSettings = decorate(({journeys, state, Time}) => {
+  const {time, live, timeIncrement} = state;
 
-  // It is necessary to have a separate "dirty" state. If we would consider the input
-  // dirty when the timeInput string is empty, the input value would just switch back
-  // to the state value which is disorienting if you're clearing the field and
-  // trying to write a new value.
-  @observable
-  isDirty = false;
+  const [timeInput, setTimeInput] = useState("0");
+  const [isDirty, setDirty] = useState(false);
 
-  @computed
-  get displayTime() {
-    const {
-      state: {time},
-    } = this.props;
+  const displayTime = useMemo(() => {
+    return isDirty ? timeInput : time;
+  }, [isDirty, timeInput, time]);
 
-    // Display either the state value or the local value in the input.
-    return this.isDirty ? this.timeInput : time;
-  }
+  const onSetTime = useCallback(
+    (timeVal) => {
+      const timeInRange = getValidTimeWithinRange(timeVal, journeys);
+      Time.toggleLive(false);
+      Time.setTime(timeInRange);
+    },
+    [journeys, Time]
+  );
 
-  componentDidMount() {
-    // Reset the local input state when the app is reset
-    this.resetListener = setResetListener(() => {
-      this.setTimeValue("", false);
-    });
-  }
+  const onTimeButtonClick = useCallback(
+    (modifier) => () => {
+      const currentTime = timeToSeconds(time);
+      const nextTime = currentTime + modifier;
 
-  componentWillUnmount() {
-    this.resetListener();
-  }
+      if (nextTime >= 0) {
+        onSetTime(nextTime);
+      }
+    },
+    [time]
+  );
 
-  onTimeButtonClick = (modifier) => () => {
-    const {
-      state: {time},
-    } = this.props;
+  const setTimeValue = useCallback((value, dirtyVal = true) => {
+    setTimeInput(value || "");
+    setDirty(dirtyVal);
+  }, []);
 
-    const currentTime = timeToSeconds(time);
-    const nextTime = currentTime + modifier;
-
-    if (nextTime >= 0) {
-      this.onSetTime(nextTime);
-    }
-  };
-
-  setTimeValue = action((value, dirtyVal = true) => {
-    this.timeInput = value || "";
-    this.isDirty = dirtyVal;
-  });
-
-  onKeyDown = (e) => {
+  const onKeyDown = useCallback((e) => {
     // Blur the input if enter (13) or esc (27) is pressed.
     if (e.keyCode === 27 || e.keyCode === 13) {
       e.target.blur();
     }
-  };
+  }, []);
 
-  onFocus = () => {
-    const {Time, state} = this.props;
-
-    if (state.live) {
+  const onFocus = useCallback(() => {
+    if (live) {
       Time.toggleLive(false);
     }
-  };
+  }, [live]);
 
-  onBlur = () => {
-    if (!this.isDirty) {
+  const onBlur = useCallback(() => {
+    if (!isDirty) {
       return false;
     }
 
     // Get the current input value and remove non-number characters.
-    const timeValue = this.timeInput.replace(/([^0-9])+/g, "");
+    const timeValue = timeInput.replace(/([^0-9])+/g, "");
 
     let hours = 0;
     let minutes = 0;
@@ -140,45 +122,38 @@ class TimeSettings extends Component {
     )}:${doubleDigit(padStart(seconds))}`;
 
     // Assign it to the state for stuff to happen
-    this.onSetTime(nextTimeVal);
+    onSetTime(nextTimeVal);
     // Clear the local state and set it as not dirty to show the state value in the input.
-    this.setTimeValue("", false);
-  };
+    setTimeValue("", false);
+  });
 
-  onSetTime = (timeVal) => {
-    const {journeys = [], Time} = this.props;
-    const timeInRange = getValidTimeWithinRange(timeVal, journeys);
+  useEffect(() => {
+    return setResetListener(() => {
+      setTimeValue("", false);
+    });
+  }, []);
 
-    Time.toggleLive(false);
-    Time.setTime(timeInRange);
-  };
-
-  render() {
-    const {state} = this.props;
-    const {timeIncrement} = state;
-
-    return (
-      <TimeControlGroup>
-        <PlusMinusInput
-          testIdPrefix="time-setting"
-          minusHelp="One time step backward"
-          plusHelp="One time step forward"
-          onIncrease={this.onTimeButtonClick(timeIncrement)}
-          onDecrease={this.onTimeButtonClick(-timeIncrement)}>
-          <TimeInput
-            data-testid="time-input"
-            type="text"
-            helpText="Select time"
-            value={this.displayTime}
-            onBlur={this.onBlur}
-            onFocus={this.onFocus}
-            onKeyDown={this.onKeyDown}
-            onChange={(e) => this.setTimeValue(e.target.value, true)}
-          />
-        </PlusMinusInput>
-      </TimeControlGroup>
-    );
-  }
-}
+  return (
+    <TimeControlGroup>
+      <PlusMinusInput
+        testIdPrefix="time-setting"
+        minusHelp="One time step backward"
+        plusHelp="One time step forward"
+        onIncrease={onTimeButtonClick(timeIncrement)}
+        onDecrease={onTimeButtonClick(-timeIncrement)}>
+        <TimeInput
+          data-testid="time-input"
+          type="text"
+          helpText="Select time"
+          value={displayTime}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onKeyDown={onKeyDown}
+          onChange={(e) => setTimeValue(e.target.value, true)}
+        />
+      </PlusMinusInput>
+    </TimeControlGroup>
+  );
+});
 
 export default TimeSettings;

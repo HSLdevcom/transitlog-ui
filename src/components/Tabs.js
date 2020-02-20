@@ -1,8 +1,9 @@
-import React, {Component, Children} from "react";
-import {observer} from "mobx-react";
+import React, {Children, useState, useCallback, useEffect, useRef, useMemo} from "react";
+import {observer} from "mobx-react-lite";
 import styled, {keyframes} from "styled-components";
 import compact from "lodash/compact";
 import difference from "lodash/difference";
+import flow from "lodash/flow";
 import {setUrlValue, getUrlValue} from "../stores/UrlManager";
 import Tooltip from "./Tooltip";
 
@@ -89,124 +90,143 @@ const TabLabel = styled.span`
   white-space: nowrap;
 `;
 
-let selectedTab = "";
+const decorate = flow(observer);
 
-@observer
-class Tabs extends Component {
-  static defaultProps = {
-    urlValue: "tab",
-  };
+/**
+ * This component can be driven either by props (selectedTab and onTabChange) or
+ * dynamically with internal state and "suggested" tabs. Use either. In dynamic
+ * mode, newly added tabs will be selected automatically.
+ */
 
-  state = {
-    selectedTab: getUrlValue(this.props.urlValue),
-  };
+const Tabs = decorate(
+  ({
+    testIdPrefix = "sidebar",
+    selectedTab,
+    urlValue = "tab",
+    onTabChange,
+    children,
+    suggestedTab,
+    className,
+  }) => {
+    const isControlled = typeof onTabChange === "function";
 
-  selectTab = (selectedTab) => {
-    const {onTabChange = () => {}, urlValue} = this.props;
+    const [internalSelectedTab, setInternalSelectedTab] = useState(
+      getUrlValue(urlValue, selectedTab || suggestedTab || "")
+    );
 
-    let setStateValue =
-      typeof selectedTab === "function" ? selectedTab : {selectedTab: selectedTab};
-
-    this.setState(setStateValue, () => {
-      const currentTab = this.state.selectedTab;
-      setUrlValue(urlValue, currentTab);
-      onTabChange(currentTab);
-    });
-  };
-
-  onTabClick = (selectTabName) => () => {
-    this.selectTab(selectTabName);
-  };
-
-  componentDidUpdate({children: prevChildren}, {selectedTab: prevSelectedTab}) {
-    const {selectedTab} = this.props;
-
-    this.selectAddedTab(prevChildren);
-
-    if (selectedTab && selectedTab !== prevSelectedTab) {
-      this.selectTab(selectedTab);
-    }
-  }
-
-  selectAddedTab = (prevChildren) => {
-    const {children, suggestedTab} = this.props;
-
-    this.selectTab(({selectedTab}) => {
-      const prevChildrenArray = compact(Children.toArray(prevChildren)).map(
-        ({props: {name}}) => name
-      );
-
-      const childrenArray = compact(Children.toArray(children)).map(
-        ({props: {name}}) => name
-      );
-
-      const newChildren = difference(childrenArray, prevChildrenArray);
-      const nextTab =
-        newChildren.length === 1 && newChildren.includes(suggestedTab)
-          ? suggestedTab
-          : selectedTab;
-
-      if (!nextTab || nextTab === selectedTab) {
-        return null;
+    const currentSelectedTab = useMemo(() => {
+      if (selectedTab && !isControlled) {
+        console.warn(
+          `Selected tab passed to Tabs (${urlValue}) without change handler. Using internal tab state.`
+        );
       }
 
-      return {
-        selectedTab: nextTab,
-      };
-    });
-  };
+      return (isControlled ? selectedTab : internalSelectedTab) || internalSelectedTab;
+    }, [internalSelectedTab, selectedTab, isControlled]);
 
-  render() {
-    const {children, className} = this.props;
-    selectedTab = this.state.selectedTab || selectedTab; // Ensure that "transient" values stay between renders
+    const prevTabs = useRef([]);
 
-    // The tab content to render
-    let selectedTabContent = null;
+    const selectTab = useCallback(
+      (nextSelectedTab) => {
+        setInternalSelectedTab(nextSelectedTab);
+        setUrlValue(urlValue, nextSelectedTab);
+
+        if (isControlled) {
+          onTabChange(nextSelectedTab);
+        }
+      },
+      [currentSelectedTab, onTabChange]
+    );
+
+    // Select the that that is selected by props
+    useEffect(() => {
+      if (isControlled && selectedTab && selectedTab !== currentSelectedTab) {
+        selectTab(selectedTab);
+      }
+    }, [selectedTab, currentSelectedTab, isControlled]);
 
     // The children usually contain an empty string as the first element.
     // Compact() removes all such falsy values from the array.
-    const validChildren = compact(Children.toArray(children));
+    const validChildren = useMemo(() => compact(Children.toArray(children)), [children]);
 
-    // An array of child tab data with labels etc. is extracted from props.children.
-    let tabs = validChildren.map((tabContent, idx, allChildren) => {
-      if (!tabContent || !React.isValidElement(tabContent)) {
-        return null;
+    // An array of child tab data with labels etc is extracted from props.children.
+    let tabs = useMemo(() => {
+      const childrenTabs = validChildren.map((tabContent) => {
+        if (!tabContent || !React.isValidElement(tabContent)) {
+          return null;
+        }
+
+        const {name, label, loading, helpText = "", testId = name} = tabContent.props;
+        return {name, label, content: tabContent, helpText, loading, testId};
+      });
+
+      return compact(childrenTabs);
+    }, [validChildren]);
+
+    // Various auto-select routines based on what tabs are available
+    useEffect(() => {
+      if (tabs.length !== 0) {
+        const tabNames = tabs.map(({name}) => name);
+
+        if (tabNames.length === 1) {
+          selectTab(tabNames[0]);
+          return;
+        }
+
+        let prevTabNames = [];
+
+        if (prevTabs.current) {
+          prevTabNames = prevTabs.current.map(({name}) => name);
+        }
+
+        prevTabs.current = tabs;
+        const newTabs = difference(tabNames, prevTabNames);
+
+        let nextTab = currentSelectedTab;
+
+        if (newTabs.length !== 0) {
+          // By default, auto-select the first newly added tab
+          nextTab = newTabs[0];
+
+          // If the new tabs contain the suggested tab, select that.
+          if (tabNames.includes(suggestedTab)) {
+            nextTab = suggestedTab;
+          }
+        }
+
+        if (!tabNames.includes(nextTab)) {
+          nextTab = tabNames[0];
+        }
+
+        if (nextTab && nextTab !== currentSelectedTab) {
+          selectTab(nextTab);
+        }
+      }
+    }, [tabs, currentSelectedTab, selectTab, isControlled]);
+
+    // Sometimes, the selected tab might not actually exist. I such cases,
+    // just show the first tab that exists. These conditions should not
+    // last long, probably only when loading content.
+    const visibleTab = useMemo(() => {
+      if (tabs.length !== 0 && !tabs.map((t) => t.name).includes(currentSelectedTab)) {
+        return tabs[0].name;
       }
 
-      const {name, label, loading, helpText = ""} = tabContent.props;
+      return currentSelectedTab;
+    }, [currentSelectedTab, tabs]);
 
-      // If there is only one tab, select it right off. Or, if there
-      // is no tab selected, autoselect the first tab.
-      if (
-        (allChildren.length === 1 && selectedTab !== name) ||
-        (!selectedTab && idx === 0)
-      ) {
-        selectedTab = name;
-      }
-
+    // The tab content to render
+    const selectedTabContent = useMemo(() => {
+      const selectedTabItem = tabs.find((tab) => tab.name === visibleTab);
       // Set the current tab content to the selected tab
-      if (name === selectedTab) {
-        selectedTabContent = tabContent;
+      if (selectedTabItem) {
+        return selectedTabItem.content;
       }
 
-      return {name, label, content: tabContent, helpText, loading};
-    });
+      return null;
+    }, [tabs, visibleTab]);
 
-    if (tabs.length === 0) {
-      selectedTab = "";
-    }
-
-    // The selected tab might not be available, so pick the first tab in that case.
-    if (tabs.length !== 0 && tabs.findIndex((tab) => tab.name === selectedTab) === -1) {
-      const {name, content} = tabs[0];
-      selectedTab = name;
-      selectedTabContent = content;
-    }
-
-    // Falsy tabs removed
-    tabs = compact(tabs);
-
-    // Fit the tab label into the ever-shrinking tab
+    // Fit the tab label into the ever-shrinking tab element
     const tabLabelFontSizeMultiplier =
       tabs.length <= 2 ? 1.75 : tabs.length < 4 ? 1.5 : tabs.length < 5 ? 1.2 : 1;
 
@@ -216,20 +236,22 @@ class Tabs extends Component {
           {tabs.map((tabOption, index) => (
             <Tooltip helpText={tabOption.helpText} key={`tab_${tabOption.name}_${index}`}>
               <TabButton
-                data-testid={`sidebar-tab sidebar-tab-${tabOption.name}`}
+                data-testid={`${testIdPrefix}-tab ${testIdPrefix}-tab-${tabOption.testId}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
-                selected={selectedTab === tabOption.name}
-                onClick={this.onTabClick(tabOption.name)}>
+                selected={visibleTab === tabOption.name}
+                onClick={() => selectTab(tabOption.name)}>
                 {tabOption.loading && <LoadingIndicator data-testid="loading" />}
                 <TabLabel>{tabOption.label}</TabLabel>
               </TabButton>
             </Tooltip>
           ))}
         </TabButtonsWrapper>
-        <TabContentWrapper>{selectedTabContent}</TabContentWrapper>
+        {selectedTabContent && (
+          <TabContentWrapper>{selectedTabContent}</TabContentWrapper>
+        )}
       </TabsWrapper>
     );
   }
-}
+);
 
 export default Tabs;
