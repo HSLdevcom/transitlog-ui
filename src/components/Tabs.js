@@ -99,51 +99,8 @@ const decorate = flow(observer);
  */
 
 const Tabs = decorate(
-  ({
-    testIdPrefix = "sidebar",
-    selectedTab,
-    urlValue = "tab",
-    onTabChange,
-    children,
-    suggestedTab,
-    className,
-  }) => {
-    const isControlled = typeof onTabChange === "function";
-
-    const [internalSelectedTab, setInternalSelectedTab] = useState(
-      getUrlValue(urlValue, selectedTab || suggestedTab || "")
-    );
-
-    const currentSelectedTab = useMemo(() => {
-      if (selectedTab && !isControlled) {
-        console.warn(
-          `Selected tab passed to Tabs (${urlValue}) without change handler. Using internal tab state.`
-        );
-      }
-
-      return (isControlled ? selectedTab : internalSelectedTab) || internalSelectedTab;
-    }, [internalSelectedTab, selectedTab, isControlled]);
-
+  ({testIdPrefix = "sidebar", selectedTab, onTabChange, children, className}) => {
     const prevTabs = useRef([]);
-
-    const selectTab = useCallback(
-      (nextSelectedTab) => {
-        setInternalSelectedTab(nextSelectedTab);
-        setUrlValue(urlValue, nextSelectedTab);
-
-        if (isControlled) {
-          onTabChange(nextSelectedTab);
-        }
-      },
-      [currentSelectedTab, onTabChange]
-    );
-
-    // Select the that that is selected by props
-    useEffect(() => {
-      if (isControlled && selectedTab && selectedTab !== currentSelectedTab) {
-        selectTab(selectedTab);
-      }
-    }, [selectedTab, currentSelectedTab, isControlled]);
 
     // The children usually contain an empty string as the first element.
     // Compact() removes all such falsy values from the array.
@@ -169,7 +126,7 @@ const Tabs = decorate(
         const tabNames = tabs.map(({name}) => name);
 
         if (tabNames.length === 1) {
-          selectTab(tabNames[0]);
+          onTabChange(tabNames[0]);
           return;
         }
 
@@ -180,17 +137,17 @@ const Tabs = decorate(
         }
 
         prevTabs.current = tabs;
-        const newTabs = difference(tabNames, prevTabNames);
+        const newTabNames = difference(tabNames, prevTabNames);
 
-        let nextTab = currentSelectedTab;
+        let nextTab = selectedTab;
 
-        if (newTabs.length !== 0) {
+        if (newTabNames.length !== 0 && !prevTabNames.includes(selectedTab)) {
           // By default, auto-select the first newly added tab
-          nextTab = newTabs[0];
+          nextTab = newTabNames[0];
 
           // If the new tabs contain the suggested tab, select that.
-          if (tabNames.includes(suggestedTab)) {
-            nextTab = suggestedTab;
+          if (newTabNames.includes(selectedTab)) {
+            nextTab = selectedTab;
           }
         }
 
@@ -198,22 +155,22 @@ const Tabs = decorate(
           nextTab = tabNames[0];
         }
 
-        if (nextTab && nextTab !== currentSelectedTab) {
-          selectTab(nextTab);
+        if (nextTab && nextTab !== selectedTab) {
+          onTabChange(nextTab);
         }
       }
-    }, [tabs, currentSelectedTab, selectTab, isControlled]);
+    }, [tabs, selectedTab, onTabChange]);
 
     // Sometimes, the selected tab might not actually exist. I such cases,
     // just show the first tab that exists. These conditions should not
     // last long, probably only when loading content.
     const visibleTab = useMemo(() => {
-      if (tabs.length !== 0 && !tabs.map((t) => t.name).includes(currentSelectedTab)) {
+      if (tabs.length !== 0 && !tabs.map((t) => t.name).includes(selectedTab)) {
         return tabs[0].name;
       }
 
-      return currentSelectedTab;
-    }, [currentSelectedTab, tabs]);
+      return selectedTab;
+    }, [selectedTab, tabs]);
 
     // The tab content to render
     const selectedTabContent = useMemo(() => {
@@ -239,7 +196,7 @@ const Tabs = decorate(
                 data-testid={`${testIdPrefix}-tab ${testIdPrefix}-tab-${tabOption.testId}`}
                 fontSizeMultiplier={tabLabelFontSizeMultiplier}
                 selected={visibleTab === tabOption.name}
-                onClick={() => selectTab(tabOption.name)}>
+                onClick={() => onTabChange(tabOption.name)}>
                 {tabOption.loading && <LoadingIndicator data-testid="loading" />}
                 <TabLabel>{tabOption.label}</TabLabel>
               </TabButton>

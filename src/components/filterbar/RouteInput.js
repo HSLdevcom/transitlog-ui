@@ -9,8 +9,9 @@ import getTransportType from "../../helpers/getTransportType";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import sortBy from "lodash/sortBy";
 import {text} from "../../helpers/text";
+import {SidePanelTabs} from "../../constants";
 
-const decorate = flow(observer, inject("Filters"));
+const decorate = flow(observer, inject("Filters", "UI"));
 
 const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
   const route = getFullRoute(routes, suggestion);
@@ -160,7 +161,7 @@ export const getFullRoute = (routes, selectedRoute) => {
   return routes.find((r) => createRouteId(r) === routeId) || null;
 };
 
-const RouteInput = decorate(({state: {route, date}, Filters, routes}) => {
+const RouteInput = decorate(({state: {route, date}, Filters, UI, routes}) => {
   const [options, setOptions] = useState([]);
 
   const getValue = useCallback(
@@ -181,6 +182,7 @@ const RouteInput = decorate(({state: {route, date}, Filters, routes}) => {
 
       if (selectedRoute) {
         Filters.setRoute(selectedRoute);
+        UI.setSidePanelTab(SidePanelTabs.Journeys);
       }
     },
     [Filters, routes]

@@ -10,6 +10,7 @@ import {latLng, LatLng, LatLngBounds} from "leaflet";
 import {intval} from "../helpers/isWithinRange";
 import {validBounds} from "../helpers/validBounds";
 import uniq from "lodash/uniq";
+import {SidePanelTabs} from "../constants";
 
 export default (state) => {
   const setMapZoom = action((value) => {
@@ -66,6 +67,16 @@ export default (state) => {
 
   const toggleShareModal = action((setTo = !state.shareModalOpen) => {
     state.shareModalOpen = setTo;
+  });
+
+  const setSidePanelTab = action((nextTab) => {
+    // Validate that this is actually a tab
+    if (Object.values(SidePanelTabs).includes(nextTab)) {
+      state.sidePanelTab = nextTab;
+      setUrlValue("tab", nextTab);
+    } else {
+      console.warn(`Non-existent tab ${nextTab} selected! You need to fix this.`);
+    }
   });
 
   const toggleSidePanel = action((setTo = !state.sidePanelVisible) => {
@@ -222,6 +233,7 @@ export default (state) => {
 
   return {
     toggleSidePanel,
+    setSidePanelTab,
     toggleJourneyDetails,
     toggleJourneyGraph,
     toggleLoginModal,

@@ -11,6 +11,7 @@ import {inject} from "../../helpers/inject";
 import {SelectedOptionDisplay, SuggestionText} from "./SuggestionInput";
 import styled from "styled-components";
 import Loading from "../Loading";
+import {SidePanelTabs} from "../../constants";
 
 const LoadingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 1rem;
@@ -23,10 +24,19 @@ const UnsignedEventsLoading = styled(Loading).attrs({inline: true, size: 20})`
   right: -10px;
 `;
 
-const decorate = flow(observer, inject("Filters"));
+const decorate = flow(observer, inject("Filters", "UI"));
 
-const VehicleSettings = decorate(({Filters, state}) => {
-  const onSelectVehicle = useCallback((value) => Filters.setVehicle(value), [Filters]);
+const VehicleSettings = decorate(({Filters, UI, state}) => {
+  const onSelectVehicle = useCallback(
+    (value) => {
+      Filters.setVehicle(value);
+
+      if (value) {
+        UI.setSidePanelTab(SidePanelTabs.Journeys);
+      }
+    },
+    [Filters, UI]
+  );
 
   const {vehicle = "", date, selectedJourney, unsignedEventsLoading} = state;
   const isDisabled = !!selectedJourney;

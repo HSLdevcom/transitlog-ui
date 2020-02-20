@@ -1,4 +1,4 @@
-import React, {useMemo, useState, useCallback} from "react";
+import React, {useMemo, useState, useCallback, useEffect} from "react";
 import styled from "styled-components";
 import JourneyDetailsHeader from "./JourneyDetailsHeader";
 import {observer} from "mobx-react-lite";
@@ -18,6 +18,7 @@ import {useJourneyHealth} from "../../hooks/useJourneyHealth";
 import JourneyHealthDetails from "./JourneyHealthDetails";
 import RouteStops from "./RouteStops";
 import {useDataDelay} from "../../hooks/useDataDelay";
+import {getUrlValue, setUrlValue} from "../../stores/UrlManager";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -56,16 +57,20 @@ const JourneyPanel = decorate(
     route = null,
     loading = false,
   }) => {
-    const [currentTab, setCurrentTab] = useState("journey-events");
-
-    const onTabChange = useCallback(
-      (nextTab) => {
-        if (!loading) {
-          setCurrentTab(nextTab);
-        }
-      },
-      [loading]
+    const [currentTab, setCurrentTab] = useState(
+      getUrlValue("details-tab", "journey-events")
     );
+
+    const onTabChange = useCallback((nextTab) => {
+      setCurrentTab(nextTab);
+      setUrlValue("details-tab", nextTab);
+    }, []);
+
+    useEffect(() => {
+      if (selectedJourney && !loading) {
+        onTabChange("journey-events");
+      }
+    }, [selectedJourney, loading]);
 
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
@@ -105,9 +110,7 @@ const JourneyPanel = decorate(
             <JourneyInfo date={date} journey={journey} departure={originDeparture} />
             <Tabs
               testIdPrefix="journey"
-              urlValue="details-tab"
               onTabChange={onTabChange}
-              suggestedTab="journey-events"
               selectedTab={currentTab}>
               {journeyEvents.length !== 0 && (
                 <JourneyEvents

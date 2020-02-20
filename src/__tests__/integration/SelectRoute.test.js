@@ -49,15 +49,23 @@ const routeDepartureMocks = [
 describe("Route selection and filtering", () => {
   let state = {};
   let setRouteMock = jest.fn();
+  let setTabMock = jest.fn();
 
   const createState = () => {
     state = observable({
+      sidePanelTab: "alerts",
       language: "fi",
       live: false,
       date,
       sidePanelVisible: true,
       route: {routeId: "", direction: "", originStopId: ""},
     });
+
+    setTabMock = jest.fn(
+      action((tab) => {
+        state.sidePanelTab = tab;
+      })
+    );
 
     setRouteMock = jest.fn(
       action((route) => {
@@ -70,7 +78,14 @@ describe("Route selection and filtering", () => {
   };
 
   const RenderContext = ({children}) => (
-    <MobxProviders state={state} actions={{UI: {}, Filters: {setRoute: setRouteMock}}}>
+    <MobxProviders
+      state={state}
+      actions={{
+        UI: {
+          setSidePanelTab: setTabMock,
+        },
+        Filters: {setRoute: setRouteMock},
+      }}>
       <MockedProvider addTypename={true} mocks={routeDepartureMocks}>
         {children}
       </MockedProvider>
