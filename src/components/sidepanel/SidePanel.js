@@ -143,18 +143,20 @@ const SidePanel = decorate((props) => {
   // if it appears and nothing else is selected then it will be.
   let suggestedTab = "";
 
+  const routeId = createRouteId(route, true);
+
+  // The tabs will be auto-selected in this order, from top to bottom.
   if (areaSearchActive) suggestedTab = "area-journeys";
-  if (hasRoute) suggestedTab = "journeys";
-  if (user && vehicle) suggestedTab = "vehicle-journeys";
-  if (selectedJourney) suggestedTab = "journeys";
-  if (stateStop || stateTerminal) suggestedTab = "timetables";
+  if (user && vehicle) suggestedTab = `vehicle-journeys-${vehicle}`;
+  if (hasRoute) suggestedTab = `journeys-${routeId}`;
+  if (selectedJourney) suggestedTab = `journeys-${routeId}`;
+  if (stateStop || stateTerminal)
+    suggestedTab = `timetables-${stateStop || stateTerminal}`;
 
   const allTabsHidden =
     !hasRoute && !areaSearchActive && !vehicle && !stateStop && !stateTerminal;
 
   const detailsCanOpen = getJourneyId(selectedJourney) || route;
-
-  const routeId = createRouteId(route, true);
 
   return (
     <SidePanelContainer data-testid="sidepanel" visible={sidePanelVisible}>
