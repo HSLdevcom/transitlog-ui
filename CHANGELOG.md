@@ -1,6 +1,6 @@
 # Transitlog UI changelog
 
-## Version 1.8.1, deployed 2020-02-20 @ 06:00
+## Version 1.8.1, deployed 2020-02-20 @ 09:00
 
 - Dependency update, including new and un-ejected Create React App.
 - Refactors to improve maintainability.
