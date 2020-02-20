@@ -69,21 +69,10 @@ const SidepanelList = decorate(
     loading = false,
     testIdPrefix = "sidepanel",
   }) => {
-    const [scrollOffset, setScrollOffset] = useState(0);
     const scrollElementRef = useRef(null);
     const scrollPositionRef = useRef(null);
     const listHeight = useRef(0);
     const updateScrollOffsetTimer = useRef(0);
-
-    // Scrolls the list so that the focused element is in the middle.
-    const scrollTo = useCallback(
-      (offset) => {
-        if (offset && scrollElementRef.current) {
-          scrollElementRef.current.scrollTop = offset - listHeight / 2;
-        }
-      },
-      [scrollElementRef.current]
-    );
 
     useEffect(() => {
       // Set the height of the list on mount
@@ -92,9 +81,16 @@ const SidepanelList = decorate(
       }
     }, []);
 
-    useEffect(() => {
-      scrollTo(scrollOffset);
-    }, [scrollOffset]);
+    const updateScrollOffset = useCallback(() => {
+      if (scrollElementRef.current && scrollPositionRef.current) {
+        const nextOffset = scrollPositionRef.current.offsetTop;
+        const currentOffset = scrollElementRef.current.scrollTop;
+
+        if (nextOffset && nextOffset !== currentOffset) {
+          scrollElementRef.current.scrollTop = nextOffset - listHeight.current / 2;
+        }
+      }
+    }, [listHeight.current, scrollElementRef.current, scrollPositionRef.current]);
 
     const prevFocusKey = useRef("");
 
@@ -108,33 +104,12 @@ const SidepanelList = decorate(
           prevFocusKey.current = focusKey;
         }, 300);
       }
+
+      return () => {
+        clearTimeout(updateScrollOffsetTimer.current);
+        updateScrollOffsetTimer.current = 0;
+      };
     }, [focusKey, loading]);
-
-    // Get the scroll offset in pixels.
-    // This method only gets a new position if the scrollOffset has not previously been set.
-    // This behaviour can be overridden by setting the reset arg to true.
-    const getScrollOffset = useCallback(() => {
-      if (scrollPositionRef.current) {
-        let offset = scrollPositionRef.current.offsetTop;
-
-        if (offset) {
-          return offset;
-        }
-      }
-
-      return scrollOffset;
-    }, [scrollPositionRef.current]);
-
-    const updateScrollOffset = useCallback(
-      (reset = false) => {
-        const offset = reset ? getScrollOffset(reset) : scrollOffset;
-
-        if (offset && (!scrollOffset || offset !== scrollOffset)) {
-          setScrollOffset(offset);
-        }
-      },
-      [scrollOffset]
-    );
 
     return (
       <ListWrapper hasHeader={!!header} data-testid={`${testIdPrefix}-list`}>
