@@ -92,17 +92,14 @@ const SidepanelList = decorate(
       }
     }, [listHeight.current, scrollElementRef.current, scrollPositionRef.current]);
 
-    const prevFocusKey = useRef("");
-
     useEffect(() => {
       if (!loading) {
         // Update the scroll offset 100 ms after any update.
         // There must be a timer here otherwise the list may not be rendered
         // before the scroll offset is read.
         updateScrollOffsetTimer.current = setTimeout(() => {
-          updateScrollOffset(focusKey !== prevFocusKey.current);
-          prevFocusKey.current = focusKey;
-        }, 300);
+          updateScrollOffset();
+        }, 100);
       }
 
       return () => {
