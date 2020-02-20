@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useRef, useEffect, useCallback} from "react";
 import Cross from "../../icons/Cross";
 import * as Mapillary from "mapillary-js";
 import "mapillary-js/dist/mapillary.min.css";
 import styled from "styled-components";
+import {observer} from "mobx-react-lite";
 
 const ViewerWrapper = styled.div`
   position: relative;
@@ -32,74 +33,97 @@ const CloseButton = styled.button`
   }
 `;
 
-class MapillaryViewer extends React.Component {
-  mly = null;
+const MapillaryViewer = observer(
+  ({location, elementId, onNavigation, className, onCloseViewer}) => {
+    const mly = useRef(null);
+    const resizeListener = useRef(null);
+    const prevLocation = useRef(null);
 
-  componentDidMount() {
-    const {location} = this.props;
-
-    this.initMapillary();
-    this.showLocation(location);
-  }
-
-  componentDidUpdate(prevProps) {
-    const {location} = this.props;
-    const prevLocation = prevProps.location;
-
-    if (!location.equals(prevLocation)) {
-      this.showLocation(location);
-    }
-  }
-
-  showLocation(location) {
-    if (!this.mly) {
-      this.initMapillary();
-    }
-
-    if (this.mly.isNavigable) {
-      this.mly.moveCloseTo(location.lat, location.lng);
-    }
-  }
-
-  initMapillary() {
-    const {elementId} = this.props;
-
-    this.mly = new Mapillary.Viewer(
-      elementId,
-      "V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw",
-      null,
-      {
-        render: {
-          cover: false,
-        },
-      }
+    const createResizeListener = useCallback(
+      (currentMly) => () => {
+        if (currentMly) {
+          console.log("resize mly");
+          currentMly.resize();
+        }
+      },
+      []
     );
 
-    this.mly.setFilter(["==", "organizationKey", "mstFdbqROWkgC2sNNU2tZ1"]);
-    this.mly.on(Mapillary.Viewer.nodechanged, this.onNavigation);
+    const createViewerNavigator = useCallback(
+      (currentMly) => (evt) => {
+        if (currentMly) {
+          currentMly.setCenter([0.5, 0.675]);
+        }
 
-    window.addEventListener("resize", this.onResize);
-  }
+        onNavigation(evt);
+      },
+      []
+    );
 
-  onNavigation = (evt) => {
-    const {onNavigation} = this.props;
-    this.mly.setCenter([0.5, 0.675]);
-    onNavigation(evt);
-  };
+    const initMapillary = useCallback(() => {
+      let currentMly = mly.current;
 
-  onResize = () => {
-    if (this.mly) {
-      this.mly.resize();
-    }
-  };
+      if (currentMly) {
+        return;
+      }
 
-  componentWillUnmount() {
-    this.mly = null;
-    window.removeEventListener("resize", this.onResize);
-  }
+      currentMly = new Mapillary.Viewer(
+        elementId,
+        "V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw",
+        null,
+        {
+          render: {
+            cover: false,
+          },
+        }
+      );
 
-  render() {
-    const {className, elementId, onCloseViewer} = this.props;
+      const currentResizeListener = createResizeListener(currentMly);
+
+      if (resizeListener.current) {
+        window.removeEventListener("resize", resizeListener.current);
+      }
+
+      window.addEventListener("resize", currentResizeListener);
+      resizeListener.current = currentResizeListener;
+
+      currentMly.setFilter(["==", "organizationKey", "mstFdbqROWkgC2sNNU2tZ1"]);
+      currentMly.on(Mapillary.Viewer.nodechanged, createViewerNavigator(currentMly));
+
+      mly.current = currentMly;
+    }, [mly.current, resizeListener.current]);
+
+    const showLocation = useCallback(
+      (location) => {
+        if (mly.current && mly.current.isNavigable) {
+          mly.current
+            .moveCloseTo(location.lat, location.lng)
+            .then((node) => console.log(node.key))
+            .catch((err) => console.error(err));
+        }
+      },
+      [mly.current, mly.current && mly.current.isNavigable]
+    );
+
+    // Clean up separately from other effects
+    useEffect(() => {
+      if (!mly.current) {
+        initMapillary();
+      }
+
+      return () => {
+        mly.current = null;
+        window.removeEventListener("resize", resizeListener.current);
+      };
+    }, []);
+
+    useEffect(() => {
+      if (location && (!prevLocation.current || !location.equals(prevLocation.current))) {
+        showLocation(location);
+        prevLocation.current = location;
+      }
+    }, [location, prevLocation.current, showLocation]);
+
     return (
       <ViewerWrapper className={className}>
         <MapillaryElement id={elementId} />
@@ -109,6 +133,6 @@ class MapillaryViewer extends React.Component {
       </ViewerWrapper>
     );
   }
-}
+);
 
 export default MapillaryViewer;

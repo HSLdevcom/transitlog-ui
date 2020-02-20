@@ -1,6 +1,5 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import "jest-styled-components";
 import {
   render,
   cleanup,
@@ -69,7 +68,7 @@ const stopRequestMocks = [
             lat: 60.169002,
             lng: 24.93166,
             modes: ["BUS"],
-            stops: [
+            stopIds: [
               "1040271",
               "1040272",
               "1040273",
@@ -88,7 +87,7 @@ const stopRequestMocks = [
             lat: 60.171802,
             lng: 24.93948,
             modes: ["BUS"],
-            stops: [
+            stopIds: [
               "1020228",
               "1020245",
               "1020239",
@@ -111,15 +110,23 @@ describe("Stop search and filtering", () => {
   let state = {};
   let setStopMock = jest.fn();
   let setTerminalMock = jest.fn();
+  let setTabMock = jest.fn();
 
   const createState = () => {
     state = observable({
+      sidePanelTab: "alerts",
       language: "fi",
       live: false,
       date,
       stop: "",
       route: {},
     });
+
+    setTabMock = jest.fn(
+      action((tab) => {
+        state.sidePanelTab = tab;
+      })
+    );
 
     setStopMock = jest.fn(
       action((stop) => {
@@ -138,10 +145,12 @@ describe("Stop search and filtering", () => {
     <MobxProviders
       state={state}
       actions={{
-        UI: {},
+        UI: {
+          setSidePanelTab: setTabMock,
+        },
         Filters: {
-          setStop: (stop) => setStopMock(stop),
-          setTerminal: (terminal) => setTerminalMock(terminal),
+          setStop: setStopMock,
+          setTerminal: setTerminalMock,
         },
       }}>
       <MockedProvider addTypename={true} mocks={stopRequestMocks}>

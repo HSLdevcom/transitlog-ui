@@ -31,6 +31,7 @@ const routeJourneysQuery = gql`
         lng
         loc
         stop
+        receivedAt
         recordedAt
         recordedAtUnix
         recordedTime

@@ -2,7 +2,7 @@ import React from "react";
 import gql from "graphql-tag";
 import {Query} from "@apollo/react-components";
 import get from "lodash/get";
-import {observer} from "mobx-react";
+import {observer} from "mobx-react-lite";
 import orderBy from "lodash/orderBy";
 import {RouteFieldsFragment} from "./RouteFieldsFragment";
 

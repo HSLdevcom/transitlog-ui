@@ -16,6 +16,11 @@ export const HealthChecklistValues = {
   PENDING: "pending",
 };
 
+export const defaultThresholds = {
+  ok: 97,
+  warning: 75,
+};
+
 function checkDoorEventsHealth(events, setState) {
   if (events.some((evt) => ["DOO", "DOC"].includes(evt.type) || !!evt.doorsOpened)) {
     setState(HealthChecklistValues.PASSED);
@@ -31,6 +36,25 @@ function checkGPS(positions, setState) {
     setState(HealthChecklistValues.PASSED);
   } else if (positions.length !== 0) {
     setState(HealthChecklistValues.FAILED);
+  }
+}
+
+function checkLocHealth(events, incrementHealth, addMessage) {
+  let odoCount = 0;
+
+  for (const evt of events) {
+    if (typeof evt.loc !== "undefined" && evt.loc === "ODO") {
+      odoCount++;
+    }
+  }
+
+  const score = events.length - odoCount;
+  const percentage = round((odoCount / events.length) * 100);
+
+  incrementHealth(score);
+
+  if (percentage < 100) {
+    addMessage(`Events calculated with odometer: ${odoCount} (${percentage}%)`);
   }
 }
 
@@ -365,6 +389,12 @@ export const useJourneyHealth = (journey) => {
       // Max is how many VP events we have. We only check that the events are
       // < 5 seconds apart, not that the whole journey is covered.
       positions: {health: 0, max: vehiclePositions.length, messages: []},
+      locType: {
+        health: 0,
+        max: journeyEvents.length,
+        messages: [],
+        thresholds: {ok: 97, warning: 97},
+      },
       firstStopDeparture: {health: 0, max: 100, messages: []},
       lastStopArrival: {health: -1, max: 100, messages: []},
     };
@@ -502,29 +532,47 @@ export const useJourneyHealth = (journey) => {
     // Check that the vehicle GPS is working.
     checkGPS(vehiclePositions, onChecklistChange("GPS"), onAddMessage("GPS", checklist));
 
+    // Check that the odometer isn't used too much to calculate events.
+    checkLocHealth(
+      journeyEvents,
+      onIncrementHealth("locType"),
+      onAddMessage("locType", healthScores)
+    );
+
     // Calculate the percentage scores
     const calculatedScores = Object.entries(healthScores).reduce(
-      (categories, [name, {health, max, messages}]) => {
+      (
+        categories,
+        [name, {health, max, messages = [], thresholds = defaultThresholds}]
+      ) => {
         if (health === -1) {
-          categories[name] = {health: health, messages: messages};
+          categories[name] = {health: health, messages, thresholds};
           return categories;
         }
 
         const healthScore = health === 0 ? 0 : round((health / Math.max(1, max)) * 100);
-        categories[name] = {health: healthScore, messages: messages};
+        categories[name] = {health: healthScore, messages, thresholds};
         return categories;
       },
       {}
     );
 
+    // Get the non-pending percentage score values for total health calculation.
+    const scoreValues = Object.values(calculatedScores).filter(
+      ({health}) => health !== -1
+    ); // Skip pending states.
+
+    // Get the non-pending binary check values for total health calculation.
+    const checklistValues = Object.values(checklist).filter(
+      ({status}) => status !== HealthChecklistValues.PENDING
+    ); // Skip pending states.
+
     // Get all criteria as number scores. Binary checks are worth 100 if true or 0 if false.
     const allCriteria = [
-      ...Object.values(calculatedScores)
-        .filter(({health}) => health !== -1) // Skip pending states.
-        .map(({health}) => health),
-      ...Object.values(checklist)
-        .filter(({status}) => status !== HealthChecklistValues.PENDING) // Skip pending states.
-        .map(({status}) => (status === HealthChecklistValues.PASSED ? 100 : 0)),
+      ...scoreValues.map(({health}) => health),
+      ...checklistValues.map(({status}) =>
+        status === HealthChecklistValues.PASSED ? 100 : 0
+      ),
     ];
 
     // Calculate the total health of the journey data.
@@ -535,10 +583,19 @@ export const useJourneyHealth = (journey) => {
             Math.max(1, allCriteria.length)
         );
 
+    const allChecksPassed =
+      // Ensure total health is not 0 and...
+      totalHealth > 0 &&
+      // Any binary checks have not failed and...
+      checklistValues.every(({status}) => status !== HealthChecklistValues.FAILED) &&
+      // All percentage score values are above at least the warning level.
+      scoreValues.every(({health, thresholds}) => health >= thresholds.warning);
+
     return {
       checklist,
       health: calculatedScores,
       total: totalHealth,
+      isOK: allChecksPassed,
       isDone: journeyIsConcluded,
     };
   }, [journey, state.language]);

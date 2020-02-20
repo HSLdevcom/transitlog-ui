@@ -47,7 +47,7 @@ Cypress.Commands.add("hslLogin", () => {
   const HSL_TESTING_HSLID_PASSWORD = Cypress.env("HSL_TESTING_HSLID_PASSWORD");
 
   const authHeader = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`;
-  
+
   const options = {
     method: "POST",
     url: AUTH_URI,
@@ -85,6 +85,11 @@ Cypress.Commands.add("assertRouteSelected", (routeId) => {
 
 Cypress.Commands.add("assertJourneySelected", (routeId, departureTime) => {
   cy.assertRouteSelected(routeId);
+
+  cy.getTestElement("journey-tab-journey-events")
+    .should("exist")
+    .click();
+
   cy.getTestElement("journey-stop-event").should("exist");
   cy.getTestElement("selected-journey-date")
     .should("exist")

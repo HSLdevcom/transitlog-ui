@@ -1,6 +1,7 @@
-import React, {Component} from "react";
-import {observer, inject} from "mobx-react";
-import {app} from "mobx-app";
+import React, {useCallback} from "react";
+import {observer} from "mobx-react-lite";
+import {inject} from "../../helpers/inject";
+import flow from "lodash/flow";
 import {Button} from "../Forms";
 import styled from "styled-components";
 import {LANGUAGES} from "../../stores/UIStore";
@@ -27,48 +28,42 @@ const LanguageButton = styled(Button)`
   }
 `;
 
-@inject(app("UI"))
-@observer
-class LanguageSelect extends Component {
-  onSelectLanguage = (which) => (e) => {
-    e.preventDefault();
+const decorate = flow(observer, inject("UI"));
 
-    const {UI} = this.props;
-    UI.setLanguage(which);
-  };
+const LanguageSelect = decorate(({className, UI, state: {language}}) => {
+  const onSelectLanguage = useCallback(
+    (which) => (e) => {
+      e.preventDefault();
+      UI.setLanguage(which);
+    },
+    [UI]
+  );
 
-  render() {
-    const {
-      className,
-      state: {language},
-    } = this.props;
-
-    return (
-      <LanguageButtonsWrapper className={className}>
-        <LanguageButton
-          data-testid="select-lang-fi"
-          helpText="Language select finnish"
-          active={language === LANGUAGES.FINNISH}
-          onClick={this.onSelectLanguage(LANGUAGES.FINNISH)}>
-          Fi
-        </LanguageButton>
-        <LanguageButton
-          data-testid="select-lang-se"
-          helpText="Language select swedish"
-          active={language === LANGUAGES.SWEDISH}
-          onClick={this.onSelectLanguage(LANGUAGES.SWEDISH)}>
-          Se
-        </LanguageButton>
-        <LanguageButton
-          data-testid="select-lang-en"
-          helpText="Language select english"
-          active={language === LANGUAGES.ENGLISH}
-          onClick={this.onSelectLanguage(LANGUAGES.ENGLISH)}>
-          En
-        </LanguageButton>
-      </LanguageButtonsWrapper>
-    );
-  }
-}
+  return (
+    <LanguageButtonsWrapper className={className}>
+      <LanguageButton
+        data-testid="select-lang-fi"
+        helpText="Language select finnish"
+        active={language === LANGUAGES.FINNISH}
+        onClick={onSelectLanguage(LANGUAGES.FINNISH)}>
+        Fi
+      </LanguageButton>
+      <LanguageButton
+        data-testid="select-lang-se"
+        helpText="Language select swedish"
+        active={language === LANGUAGES.SWEDISH}
+        onClick={onSelectLanguage(LANGUAGES.SWEDISH)}>
+        Se
+      </LanguageButton>
+      <LanguageButton
+        data-testid="select-lang-en"
+        helpText="Language select english"
+        active={language === LANGUAGES.ENGLISH}
+        onClick={onSelectLanguage(LANGUAGES.ENGLISH)}>
+        En
+      </LanguageButton>
+    </LanguageButtonsWrapper>
+  );
+});
 
 export default LanguageSelect;

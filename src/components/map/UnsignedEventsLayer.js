@@ -22,6 +22,7 @@ export const unsignedEventsQuery = gql`
       recordedAt
       recordedAtUnix
       recordedTime
+      receivedAt
       uniqueVehicleId
       vehicleId
       velocity

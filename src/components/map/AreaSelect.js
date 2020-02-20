@@ -1,12 +1,12 @@
-import React, {Component} from "react";
+import React, {useRef, useState, useCallback, useEffect} from "react";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {FeatureGroup, Rectangle} from "react-leaflet";
 import {EditControl} from "react-leaflet-draw";
-import {inject, observer} from "mobx-react";
-import {app} from "mobx-app";
-import {observable, action} from "mobx";
+import {observer} from "mobx-react-lite";
 import {setResetListener} from "../../stores/FilterStore";
 import CancelControl from "./CancelControl";
+import flow from "lodash/flow";
+import {inject} from "../../helpers/inject";
 
 // Leaflet path style
 const rectangleStyle = {
@@ -18,86 +18,85 @@ const rectangleStyle = {
   fillOpacity: 0.1,
 };
 
-@inject(app("UI"))
-@observer
-class AreaSelect extends Component {
-  featureLayer = React.createRef();
+const decorate = flow(observer, inject("UI"));
 
-  @observable
-  hasAreas = false;
+const AreaSelect = decorate(({UI, state, enabled}) => {
+  const {selectedBounds} = state;
+  const featureLayer = useRef(null);
 
-  onCreated = (e) => {
-    const {UI} = this.props;
-    const {layer} = e;
+  const [hasAreas, setHasAreas] = useState();
 
-    const layerBounds = layer.getBounds();
-    UI.setSelectedBounds(layerBounds);
-    this.checkAreas();
-  };
+  const checkAreas = useCallback(() => {
+    setHasAreas(
+      featureLayer.current && featureLayer.current.leafletElement.getLayers().length !== 0
+    );
+  }, [featureLayer.current]);
 
-  clearAreas = () => {
-    const {UI} = this.props;
-
+  const clearAreas = useCallback(() => {
     // Remove all current layers if we're about to draw a new one or have resetted the UI.
-    if (this.featureLayer.current) {
-      this.featureLayer.current.leafletElement.clearLayers();
+    if (featureLayer.current) {
+      featureLayer.current.leafletElement.clearLayers();
     }
 
     UI.setSelectedBounds(null);
-    this.checkAreas();
-  };
+    checkAreas();
+  }, [checkAreas]);
 
-  checkAreas = action(() => {
-    this.hasAreas =
-      this.featureLayer.current &&
-      this.featureLayer.current.leafletElement.getLayers().length !== 0;
-  });
+  const onCreated = useCallback(
+    (e) => {
+      const {layer} = e;
 
-  componentDidMount() {
-    setResetListener(this.clearAreas);
+      const layerBounds = layer.getBounds();
+      UI.setSelectedBounds(layerBounds);
+      checkAreas();
+    },
+    [checkAreas]
+  );
 
-    setTimeout(() => {
-      this.checkAreas();
+  useEffect(() => {
+    const resetListener = setResetListener(clearAreas);
+
+    const timeout = setTimeout(() => {
+      checkAreas();
     }, 1);
-  }
 
-  render() {
-    const {enabled = true, state} = this.props;
+    return () => {
+      clearTimeout(timeout);
+      resetListener();
+    };
+  }, []);
 
-    return (
-      <FeatureGroup ref={this.featureLayer}>
-        <EditControl
-          position="bottomright"
-          onCreated={this.onCreated}
-          onDrawStart={this.clearAreas} // Clear rectangles when the user is about to draw a new one
-          edit={{
-            // Disable edit and remove buttons
-            edit: false,
-            remove: false,
-          }}
-          draw={{
-            rectangle: enabled
-              ? {
-                  shapeOptions: rectangleStyle,
-                }
-              : false,
-            polyline: false,
-            polygon: false,
-            circle: false,
-            marker: false,
-            circlemarker: false,
-          }}
-        />
-        {this.hasAreas && (
-          <CancelControl position="bottomright" onCancel={this.clearAreas} />
-        )}
-        {state.selectedBounds && (
-          // If there were bounds set in the URL, draw them on the map
-          <Rectangle bounds={state.selectedBounds} {...rectangleStyle} />
-        )}
-      </FeatureGroup>
-    );
-  }
-}
+  return (
+    <FeatureGroup ref={featureLayer}>
+      <EditControl
+        position="bottomright"
+        onCreated={onCreated}
+        onDrawStart={clearAreas} // Clear rectangles when the user is about to draw a new one
+        edit={{
+          // Disable edit and remove buttons
+          edit: false,
+          remove: false,
+        }}
+        draw={{
+          rectangle: enabled
+            ? {
+                shapeOptions: rectangleStyle,
+              }
+            : false,
+          polyline: false,
+          polygon: false,
+          circle: false,
+          marker: false,
+          circlemarker: false,
+        }}
+      />
+      {hasAreas && <CancelControl position="bottomright" onCancel={clearAreas} />}
+      {selectedBounds && (
+        // If there were bounds set in the URL, draw them on the map
+        <Rectangle bounds={selectedBounds} {...rectangleStyle} />
+      )}
+    </FeatureGroup>
+  );
+});
 
 export default AreaSelect;

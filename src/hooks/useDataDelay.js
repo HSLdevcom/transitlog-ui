@@ -20,11 +20,6 @@ export const useDataDelay = (journey) => {
       const recordedAt = parseISO(event.recordedAt);
 
       const delay = differenceInMilliseconds(receivedAt, recordedAt);
-
-      if (delay < 0) {
-        console.log(delay);
-      }
-
       delays.push(delay);
     }
 

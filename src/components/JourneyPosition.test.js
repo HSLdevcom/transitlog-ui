@@ -1,6 +1,5 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import "jest-styled-components";
 import {cleanup} from "@testing-library/react";
 import JourneyPosition from "./JourneyPosition";
 import {renderComponent} from "../__tests__/util/renderComponent";

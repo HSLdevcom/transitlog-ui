@@ -4,11 +4,6 @@ describe("Route smoke tests", () => {
     .subtract(1, "day")
     .format("YYYY-MM-DD");
 
-  const startOfWeek = Cypress.moment()
-    .subtract(1, "day")
-    .startOf("isoWeek")
-    .format("YYYY-MM-DD");
-
   afterEach(() => {
     cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
       expect(errorLog).to.have.callCount(0)
@@ -48,12 +43,14 @@ describe("Route smoke tests", () => {
 
   it("Can select a weekly departure", () => {
     // Go to the previous week
-    cy.visitAndSpy(`/?date=${startOfWeek}`);
+    cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
-    cy.getTestElement("sidebar-tab-journeys_by_week").click();
+    cy.waitUntilLoadingFinishes();
+
+    cy.getTestElement("sidebar-tab-week-journeys").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
     cy.getTestElement("weekly-departure-time").should("have.length.least", 2);
@@ -67,12 +64,14 @@ describe("Route smoke tests", () => {
 
   it("Can select a weekly departure in last stop arrival mode", () => {
     // Go to the previous week
-    cy.visitAndSpy(`/?date=${startOfWeek}`);
+    cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
-    cy.getTestElement("sidebar-tab-journeys_by_week").click();
+    cy.waitUntilLoadingFinishes();
+
+    cy.getTestElement("sidebar-tab-week-journeys").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
     cy.getTestElement("weekly-departure-time")

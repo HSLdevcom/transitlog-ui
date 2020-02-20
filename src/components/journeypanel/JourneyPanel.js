@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo, useState, useCallback, useEffect} from "react";
 import styled from "styled-components";
 import JourneyDetailsHeader from "./JourneyDetailsHeader";
 import {observer} from "mobx-react-lite";
@@ -18,6 +18,7 @@ import {useJourneyHealth} from "../../hooks/useJourneyHealth";
 import JourneyHealthDetails from "./JourneyHealthDetails";
 import RouteStops from "./RouteStops";
 import {useDataDelay} from "../../hooks/useDataDelay";
+import {getUrlValue, setUrlValue} from "../../stores/UrlManager";
 
 const JourneyPanelWrapper = styled.div`
   height: 100%;
@@ -56,7 +57,20 @@ const JourneyPanel = decorate(
     route = null,
     loading = false,
   }) => {
-    const [currentTab, setCurrentTab] = useState("journey-events");
+    const [currentTab, setCurrentTab] = useState(
+      getUrlValue("details-tab", "journey-events")
+    );
+
+    const onTabChange = useCallback((nextTab) => {
+      setCurrentTab(nextTab);
+      setUrlValue("details-tab", nextTab);
+    }, []);
+
+    useEffect(() => {
+      if (selectedJourney && !loading) {
+        onTabChange("journey-events");
+      }
+    }, [selectedJourney, loading]);
 
     const journeyMode = get(route, "mode", "BUS");
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
@@ -89,24 +103,15 @@ const JourneyPanel = decorate(
           journey={journey}
           route={route}
           showVehicleId={!!user}
-          selectTab={setCurrentTab}
+          selectTab={onTabChange}
         />
         <ScrollContainer>
           <JourneyPanelContent>
             <JourneyInfo date={date} journey={journey} departure={originDeparture} />
             <Tabs
-              urlValue="details-tab"
-              onTabChange={(tab) => setCurrentTab(tab)}
-              suggestedTab="journey-events"
+              testIdPrefix="journey"
+              onTabChange={onTabChange}
               selectedTab={currentTab}>
-              {routeStops.length !== 0 && (
-                <RouteStops
-                  name="route-stops"
-                  label={text("journey.stops")}
-                  routeStops={routeStops}
-                  color={journeyColor}
-                />
-              )}
               {journeyEvents.length !== 0 && (
                 <JourneyEvents
                   cancellations={cancellations}
@@ -116,6 +121,14 @@ const JourneyPanel = decorate(
                   events={journeyEvents}
                   originDeparture={journey.departure}
                   date={journey.departureDate}
+                  color={journeyColor}
+                />
+              )}
+              {routeStops.length !== 0 && (
+                <RouteStops
+                  name="route-stops"
+                  label={text("journey.stops")}
+                  routeStops={routeStops}
                   color={journeyColor}
                 />
               )}

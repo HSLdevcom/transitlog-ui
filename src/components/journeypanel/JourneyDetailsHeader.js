@@ -1,6 +1,6 @@
 import {Heading} from "../Typography";
 import {TransportIcon} from "../transportModes";
-import React from "react";
+import React, {useMemo} from "react";
 import styled from "styled-components";
 import Calendar from "../../icons/Calendar";
 import JourneyPlanner from "../../icons/JourneyPlanner";
@@ -172,7 +172,7 @@ export default observer(
             )}
             {journeyHealth && (
               <HealthDisplay>
-                {journeyHealth.total > 0 && journeyHealth.checklist.length !== 0 ? (
+                {journeyHealth.isOK ? (
                   <HealthIndicator
                     onClick={() => selectTab("journey-health")}
                     title="Journey health"
