@@ -57,7 +57,7 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
     }
 
     const point = latLng([event.lat, event.lng]);
-    let currentArea = point.toBounds(1);
+    let currentArea = point.toBounds(3);
 
     const initialGroup = {
       id: "empty_group",
