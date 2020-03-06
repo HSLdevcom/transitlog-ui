@@ -1,5 +1,11 @@
 # Transitlog UI changelog
 
+## Version 1.8.2, deployed 2020-03-06 @ 08:00
+
+- Smaller event grouping area for events on the map.
+- Update metadata in HTML.
+- Use health check in Docker Swarm.
+
 ## Version 1.8.1, deployed 2020-02-20 @ 14:00
 
 - Dependency update, including new and un-ejected Create React App.
