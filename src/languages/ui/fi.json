@@ -100,7 +100,7 @@
   "journey.event.PDE": "Lähtö",
   "journey.event.PAS": "Ajo pysäkin ohi pysähtymättä",
   "journey.event.WAIT": "Odottaa pysäkillä",
-  "journey.event.TLR": "Liikennevaloetuus&shy;tapahtuma",
+  "journey.event.TLR": "Liikennevaloetuus&shy;pyyntö",
   "journey.event.TLA": "Liikennevalokojeen vastaus",
   "journey.event.DA": "Kuljettaja kirjautunut sisään",
   "journey.event.DOUT": "Kuljettaja kirjautunut ulos",
