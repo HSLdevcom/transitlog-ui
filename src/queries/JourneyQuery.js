@@ -154,6 +154,25 @@ export const journeyQuery = gql`
             stopId
           }
         }
+        ... on JourneyTlpEvent {
+          id
+          type
+          requestId
+          requestType
+          priorityLevel
+          reason
+          attemptSeq
+          decision
+          junctionId
+          signalGroupId
+          lineConfigId
+          pointConfigId
+          frequency
+          protocol
+          lat
+          lng
+          loc
+        }
         ... on JourneyEvent {
           id
           receivedAt
