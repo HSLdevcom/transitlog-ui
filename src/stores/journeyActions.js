@@ -84,29 +84,32 @@ export default (state) => {
   });
 
   const setJourneyEventFilter = action((events, init = false) => {
+    const validEvents = events.filter((evt) => !!evt);
     if (Object.keys(state.journeyEventFilters).length === 0 && init) {
       // Init the filter state with events from the component if the filterState is empty.
-      state.journeyEventFilters = events;
+      state.journeyEventFilters = validEvents;
     } else if (init) {
       // If a new init comes in when we have filter state, add any possible new filter items
       // to the state by merging. Merge the current state last to retain the current state.
-      state.journeyEventFilters = merge({}, events, state.journeyEventFilters);
+      state.journeyEventFilters = merge({}, validEvents, state.journeyEventFilters);
     } else if (!init) {
-      if (typeof events.ALL !== "undefined") {
+      if (typeof validEvents.ALL !== "undefined") {
         // Set all filters to the value of events.ALL if present
         Object.keys(state.journeyEventFilters).map((key) => {
           // Set the default configuration if deselecting ALL. For others, set the value of ALL.
           const setValue =
-            !events.ALL &&
+            !validEvents.ALL &&
             ["DEPARTURE", "PLANNED", "TIMING_STOP_ARS", "TERMINAL_ARS"].includes(key)
               ? true
-              : events.ALL;
+              : validEvents.ALL;
 
           state.journeyEventFilters[key] = setValue;
         });
       } else {
         // Set the new filter state from the 'events' argument.
-        Object.keys(events).map((key) => (state.journeyEventFilters[key] = events[key]));
+        Object.keys(validEvents).map(
+          (key) => (state.journeyEventFilters[key] = validEvents[key])
+        );
 
         // If some filters are turned off, also set the all switch to off. Either set it to on.
         state.journeyEventFilters.ALL = !Object.values(state.journeyEventFilters).some(
