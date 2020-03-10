@@ -432,7 +432,7 @@ const TlpDetailsWrapper = styled.div`
   line-height: 1.7;
 `;
 const StyledTlpPropertyBox = styled.div`
-  padding: 0 14px 0 0px;
+  padding: 0 12px 0 0px;
 `;
 const TlpPropertyValue = styled.span`
   color: ${(props) => (props.color ? props.color : "var(--blue)")};
@@ -480,12 +480,14 @@ export const JourneyTlpEvent = decorate(
             <TlpDetailsWrapper>
               <TlpPropertyBox label={"Sid"} value={event.junctionId} />
               <TlpPropertyBox label={"Request id"} value={event.requestId} />
-              <StyledTlpPropertyBox>
-                Decision:{" "}
-                <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
-                  {event.decision ? event.decision : ""}
-                </TlpPropertyValue>
-              </StyledTlpPropertyBox>
+              {event.decision && (
+                <StyledTlpPropertyBox>
+                  Decision:{" "}
+                  <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
+                    {event.decision}
+                  </TlpPropertyValue>
+                </StyledTlpPropertyBox>
+              )}
               <TlpPropertyBox label={"Attempt"} value={event.attemptSeq} />
               <TlpPropertyBox
                 label={"Type"}

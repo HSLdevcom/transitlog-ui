@@ -156,6 +156,10 @@ export const journeyQuery = gql`
         }
         ... on JourneyTlpEvent {
           id
+          receivedAt
+          recordedAt
+          recordedAtUnix
+          recordedTime
           type
           requestId
           requestType
