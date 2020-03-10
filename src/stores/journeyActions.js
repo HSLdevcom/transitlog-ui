@@ -84,7 +84,14 @@ export default (state) => {
   });
 
   const setJourneyEventFilter = action((events, init = false) => {
-    const validEvents = events.filter((evt) => !!evt);
+    const validEvents = Object.entries(events || {}).reduce((validated, [key, val]) => {
+      if (key) {
+        validated[key] = val;
+      }
+
+      return validated;
+    }, {});
+
     if (Object.keys(state.journeyEventFilters).length === 0 && init) {
       // Init the filter state with events from the component if the filterState is empty.
       state.journeyEventFilters = validEvents;
