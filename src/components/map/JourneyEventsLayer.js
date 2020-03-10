@@ -3,6 +3,7 @@ import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import JourneyMapEvent from "./JourneyMapEvent";
+import JourneyMapEventTlp from "./JourneyMapEventTlp";
 import {createGlobalStyle} from "styled-components";
 import {latLng} from "leaflet";
 
@@ -49,7 +50,14 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
     return journey.events;
   }, [journey]);
 
-  const visibleEvents = events.filter((evt) => !!state.journeyEventFilters[evt.type]);
+  const visibleEvents = events.filter(
+    (evt) =>
+      !!state.journeyEventFilters[evt.type] && evt.type !== "TLR" && evt.type !== "TLA"
+  );
+
+  const visibleTlpEvents = events.filter(
+    (evt) => evt.type === "TLR" && !!state.journeyEventFilters[evt.type]
+  );
 
   const eventGroups = visibleEvents.reduce((proximityGroups, event) => {
     if (!event.lat || !event.lng) {
@@ -94,6 +102,13 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
           key={`event_group_${eventGroup.id}`}
           eventGroup={eventGroup}
           rightText={i % 2 === 0}
+        />
+      ))}
+      {visibleTlpEvents.map((event, i) => (
+        <JourneyMapEventTlp
+          key={`tlp_event_${event.requestId}_${event.type}_${i}`}
+          journey={journey}
+          event={event}
         />
       ))}
     </>

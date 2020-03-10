@@ -501,6 +501,10 @@ export const JourneyTlpEvent = decorate(
                 label={"Reason"}
                 value={event.reason && event.reason.toLowerCase()}
               />
+              <TlpPropertyBox
+                label={"Signal group number"}
+                value={event.signalGroupNbr}
+              />
             </TlpDetailsWrapper>
           </StopContent>
         </StopWrapper>

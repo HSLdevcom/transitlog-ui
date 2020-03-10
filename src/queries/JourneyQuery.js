@@ -169,6 +169,7 @@ export const journeyQuery = gql`
           decision
           junctionId
           signalGroupId
+          signalGroupNbr
           lineConfigId
           pointConfigId
           frequency
