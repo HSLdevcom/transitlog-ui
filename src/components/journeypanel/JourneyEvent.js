@@ -497,6 +497,10 @@ export const JourneyTlpEvent = decorate(
                 label={"Priority"}
                 value={event.priorityLevel && event.priorityLevel.toLowerCase()}
               />
+              <TlpPropertyBox
+                label={"Reason"}
+                value={event.reason && event.reason.toLowerCase()}
+              />
             </TlpDetailsWrapper>
           </StopContent>
         </StopWrapper>
