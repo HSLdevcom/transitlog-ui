@@ -4,7 +4,6 @@ import flow from "lodash/flow";
 import get from "lodash/get";
 import AreaJourneys from "../AreaJourneys";
 import SelectedJourneyEvents from "../SelectedJourneyEvents";
-import MergedJourneys from "../MergedJourneys";
 import {inject} from "../../helpers/inject";
 
 const decorate = flow(observer, inject("state"));
@@ -33,21 +32,14 @@ const MapEvents = decorate(({children, state}) => {
             {({
               journey: selectedJourney = null,
               loading: selectedJourneyLoading = false,
-            }) => (
-              <MergedJourneys
-                areaJourneys={areaJourneys}
-                selectedJourney={selectedJourney}>
-                {({currentJourneys = []}) =>
-                  children({
-                    selectedJourney,
-                    areaJourneys,
-                    currentJourneys,
-                    areaJourneysLoading,
-                    selectedJourneyLoading: selectedJourneyLoading,
-                  })
-                }
-              </MergedJourneys>
-            )}
+            }) =>
+              children({
+                selectedJourney,
+                areaJourneys,
+                areaJourneysLoading,
+                selectedJourneyLoading: selectedJourneyLoading,
+              })
+            }
           </SelectedJourneyEvents>
         );
       }}
