@@ -284,6 +284,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         <Pane name="terminal-markers" style={{zIndex: 477}} />
         <Pane name="stopped-markers" style={{zIndex: 479}} />
         <Pane name="hfp-events" style={{zIndex: 480}} />
+        <Pane name="tla-events" style={{zIndex: 481}} />
+        <Pane name="tlr-events" style={{zIndex: 482}} />
         <Pane name="hfp-events-2" style={{zIndex: 485}} />
         <Pane name="hfp-markers" style={{zIndex: 500}} />
         <Pane name="hfp-markers-primary" style={{zIndex: 550}} />

@@ -31,7 +31,12 @@ const HfpMarkerLayer = decorate(
       }
     }, [journey, selectedJourney]);
 
-    if (!journey || !event || !(event.lat && event.lng)) {
+    if (
+      !journey ||
+      !event ||
+      !(event.lat && event.lng) ||
+      (event.type && (event.type === "TLR" || event.type === "TLA"))
+    ) {
       return null;
     }
 

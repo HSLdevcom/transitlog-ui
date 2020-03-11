@@ -14,9 +14,16 @@ const JourneyMapEvent = decorate(({eventGroup, rightText = true}) => {
   const isStopEvent = eventGroup.events.some(({type}) => STOP_EVENTS.includes(type));
   const orderedEvents = orderBy(eventGroup.events, "recordedAtUnix");
 
-  const eventTypesContent = `<span class="${
-    rightText ? "right" : "left"
-  }">${orderedEvents.map(({type}) => type).join("<br />")}</span>`;
+  const eventTypesContent = `<span class="${rightText ? "right" : "left"}">${orderedEvents
+    .map((evt) =>
+      // Show Sid (junctionId) for TLP events
+      evt.type === "TLR" && evt.junctionId && evt.attemptSeq
+        ? `TLR ${evt.attemptSeq} Sid: ${evt.junctionId}`
+        : evt.type === "TLA" && evt.junctionId
+        ? `TLA Sid: ${evt.junctionId}`
+        : evt.type
+    )
+    .join("<br />")}</span>`;
 
   const color = isStopEvent ? "var(--light-blue)" : "var(--dark-blue)";
 

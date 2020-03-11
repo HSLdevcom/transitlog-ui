@@ -18,6 +18,10 @@ export default (state) => {
     journeyEventFilters: getUrlValue("journeyEventFilters", "")
       .split(",")
       .reduce((enabledEvents, key) => {
+        if (!key) {
+          return enabledEvents;
+        }
+
         enabledEvents[key] = true;
         return enabledEvents;
       }, {}),

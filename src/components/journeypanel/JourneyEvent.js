@@ -421,3 +421,92 @@ export const JourneyCancellationEventItem = decorate(({event, isFirst, isLast}) 
     </CancellationWrapper>
   );
 });
+
+const TlpDetailsWrapper = styled.div`
+  padding: 4px;
+  font-size: 0.765rem;
+  color: var(--grey);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  line-height: 1.7;
+`;
+const StyledTlpPropertyBox = styled.div`
+  padding: 0 12px 0 0px;
+`;
+const TlpPropertyValue = styled.span`
+  color: ${(props) => (props.color ? props.color : "var(--blue)")};
+`;
+
+const TlpPropertyBox = ({label, value}) => {
+  if (!value) return null;
+  return (
+    <StyledTlpPropertyBox>
+      {label}: <TlpPropertyValue>{value}</TlpPropertyValue>
+    </StyledTlpPropertyBox>
+  );
+};
+const getTlpDecisionColor = (decision) =>
+  decision === "ACK" ? "var(--green)" : decision === "NAK" ? "var(--red)" : "var(--blue)";
+
+export const JourneyTlpEvent = decorate(
+  ({event, color, date, isFirst, isLast, onSelectTime}) => {
+    const timestamp = moment.tz(event.recordedAt, TIMEZONE);
+
+    const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
+      timestamp,
+    ]);
+
+    return (
+      <StopWrapper>
+        <StopElementsWrapper
+          color={color}
+          terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
+          <StopMarker color={color} />
+        </StopElementsWrapper>
+        <StopContent>
+          <StopTime onClick={selectTime}>
+            <PlainSlot {...applyTooltip(event.type)}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: text(`journey.event.${event.type}`),
+                }}
+              />
+            </PlainSlot>
+            <AlignedLocBadge red={event.loc === "ODO"}>{event.loc}</AlignedLocBadge>
+            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+          </StopTime>
+          <TlpDetailsWrapper>
+            <TlpPropertyBox label={text("tlp.junctionid")} value={event.junctionId} />
+            <TlpPropertyBox label={text("tlp.requestid")} value={event.requestId} />
+            {event.decision && (
+              <StyledTlpPropertyBox>
+                {text("tlp.decision")}:{" "}
+                <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
+                  {event.decision}
+                </TlpPropertyValue>
+              </StyledTlpPropertyBox>
+            )}
+            <TlpPropertyBox label={text("tlp.attempt")} value={event.attemptSeq} />
+            <TlpPropertyBox
+              label={text("tlp.type")}
+              value={event.requestType && event.requestType.toLowerCase()}
+            />
+            <TlpPropertyBox
+              label={text("tlp.priority")}
+              value={event.priorityLevel && event.priorityLevel.toLowerCase()}
+            />
+            <TlpPropertyBox
+              label={text("tlp.reason")}
+              value={event.reason && event.reason.toLowerCase()}
+            />
+            <TlpPropertyBox
+              label={text("tlp.signalgroupnbr")}
+              value={event.signalGroupNbr}
+            />
+          </TlpDetailsWrapper>
+        </StopContent>
+      </StopWrapper>
+    );
+  }
+);
