@@ -11,17 +11,28 @@ const decorate = flow(observer);
 const JourneyMapEventTlp = decorate(({event, journey}) => {
   const [tooltipOpen] = useToggle(false);
 
-  const color = event.type === "TLR" ? "var(--orange)" : "var(--black)";
+  const color =
+    event.type === "TLA"
+      ? "var(--dark-blue)"
+      : event.decision && event.decision === "ACK"
+      ? "var(--green)"
+      : "black";
 
   const icon = divIcon({
-    html: `<div class="event-icon" style="background-color: ${color}"></div>`,
-    iconSize: [8, 8],
+    html: `<div class="event-icon" style="
+      width: 100%;
+      height: 100%; 
+      background-color: ${color}; 
+      border: 0.12rem solid white;">
+    </div>`,
+    iconSize: [10, 10],
   });
 
-  const center = {lat: event.lat, lng: event.lng};
-
   return (
-    <Marker icon={icon} position={center} pane="hfp-events">
+    <Marker
+      icon={icon}
+      position={{lat: event.lat, lng: event.lng}}
+      pane={event.type === "TLR" ? "tlr-events" : "tla-events"}>
       <TlpTooltip
         key={`permanent=${tooltipOpen}`}
         journey={journey}

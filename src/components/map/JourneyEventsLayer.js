@@ -5,6 +5,7 @@ import {inject} from "../../helpers/inject";
 import JourneyMapEvent from "./JourneyMapEvent";
 import JourneyMapEventTlp from "./JourneyMapEventTlp";
 import {createGlobalStyle} from "styled-components";
+import uniqBy from "lodash/uniqBy";
 import {latLng} from "leaflet";
 
 const decorate = flow(observer, inject("state"));
@@ -31,7 +32,7 @@ const IconStyle = createGlobalStyle`
       top: 0;
       left: 11px;
       color: var(--grey);
-      
+      width: max-content;
       &.left {
         left: auto;
         text-align: right;
@@ -50,16 +51,14 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
     return journey.events;
   }, [journey]);
 
-  const visibleEvents = events.filter(
-    (evt) =>
-      !!state.journeyEventFilters[evt.type] && evt.type !== "TLR" && evt.type !== "TLA"
-  );
+  const visibleEvents = events.filter((evt) => !!state.journeyEventFilters[evt.type]);
 
   const visibleTlpEvents = events.filter(
-    (evt) => evt.type === "TLR" && !!state.journeyEventFilters[evt.type]
+    (evt) =>
+      (evt.type === "TLR" || evt.type === "TLA") && !!state.journeyEventFilters[evt.type]
   );
 
-  const eventGroups = visibleEvents.reduce((proximityGroups, event) => {
+  const eventGroups = uniqBy(visibleEvents, "id").reduce((proximityGroups, event) => {
     if (!event.lat || !event.lng) {
       return proximityGroups;
     }
