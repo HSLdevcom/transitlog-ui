@@ -478,31 +478,31 @@ export const JourneyTlpEvent = decorate(
               <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
             </StopTime>
             <TlpDetailsWrapper>
-              <TlpPropertyBox label={"Sid"} value={event.junctionId} />
-              <TlpPropertyBox label={"Request id"} value={event.requestId} />
+              <TlpPropertyBox label={text("tlp.junctionid")} value={event.junctionId} />
+              <TlpPropertyBox label={text("tlp.requestid")} value={event.requestId} />
               {event.decision && (
                 <StyledTlpPropertyBox>
-                  Decision:{" "}
+                  {text("tlp.decision")}:{" "}
                   <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
                     {event.decision}
                   </TlpPropertyValue>
                 </StyledTlpPropertyBox>
               )}
-              <TlpPropertyBox label={"Attempt"} value={event.attemptSeq} />
+              <TlpPropertyBox label={text("tlp.attempt")} value={event.attemptSeq} />
               <TlpPropertyBox
-                label={"Type"}
+                label={text("tlp.type")}
                 value={event.requestType && event.requestType.toLowerCase()}
               />
               <TlpPropertyBox
-                label={"Priority"}
+                label={text("tlp.priority")}
                 value={event.priorityLevel && event.priorityLevel.toLowerCase()}
               />
               <TlpPropertyBox
-                label={"Reason"}
+                label={text("tlp.reason")}
                 value={event.reason && event.reason.toLowerCase()}
               />
               <TlpPropertyBox
-                label={"Signal group number"}
+                label={text("tlp.signalgroupnbr")}
                 value={event.signalGroupNbr}
               />
             </TlpDetailsWrapper>

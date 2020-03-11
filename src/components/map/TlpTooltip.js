@@ -18,10 +18,11 @@ import ArrowRight from "../../icons/ArrowRight";
 import {text} from "../../helpers/text";
 import LocationMarker from "../../icons/LocationMarker";
 
-const TooltipWrapper = styled.div``;
+const TooltipWrapper = styled.div`
+  min-width: max-content;
+`;
 
 const TooltipDataRow = styled.div`
-  width: 210px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -79,13 +80,7 @@ const TlpTooltip = decorate(
         direction={direction}>
         <TooltipWrapper data-testid="hfp-tooltip-content">
           <TooltipDataRow>
-            <strong>
-              {event.type === "TLR" ? (
-                <>Liikennevaloetuusilmaisu</>
-              ) : (
-                <>Liikennevalokojeen vastaus</>
-              )}
-            </strong>
+            <strong>{text(`journey.event.${event.type}`)}</strong>
           </TooltipDataRow>
           <TooltipDataRow data-testid="hfp-event-time">
             <RealTime2 fill="var(--blue)" width="1rem" height="1rem" />
@@ -99,23 +94,25 @@ const TlpTooltip = decorate(
           )}
           {event.junctionId && (
             <TooltipDataRow>
-              Junction id: <TlpPropertyValue>{event.junctionId}</TlpPropertyValue>
+              {text("tlp.junctionid")}:{" "}
+              <TlpPropertyValue>{event.junctionId}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {event.signalGroupNbr && (
             <TooltipDataRow>
-              Signal group number:{" "}
+              {text("tlp.signalgroupnbr")}:{" "}
               <TlpPropertyValue>{event.signalGroupNbr}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {event.requestId && (
             <TooltipDataRow>
-              Request id: <TlpPropertyValue>{event.requestId}</TlpPropertyValue>
+              {text("tlp.requestid")}:{" "}
+              <TlpPropertyValue>{event.requestId}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {event.decision && (
             <TooltipDataRow>
-              Decision:{" "}
+              {text("tlp.decision")}:{" "}
               <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
                 {event.decision}
               </TlpPropertyValue>
@@ -123,24 +120,26 @@ const TlpTooltip = decorate(
           )}
           {event.attemptSeq && (
             <TooltipDataRow>
-              Attempt: <TlpPropertyValue>{event.attemptSeq}</TlpPropertyValue>
+              {text("tlp.attempt")}:{" "}
+              <TlpPropertyValue>{event.attemptSeq}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {event.requestType && (
             <TooltipDataRow>
-              Request type:{" "}
+              {text("tlp.type")}:{" "}
               <TlpPropertyValue>{event.requestType.toLowerCase()}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {event.priorityLevel && (
             <TooltipDataRow>
-              Priority:{" "}
+              {text("tlp.priority")}:{" "}
               <TlpPropertyValue>{event.priorityLevel.toLowerCase()}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {event.reason && (
             <TooltipDataRow>
-              Reason: <TlpPropertyValue>{event.reason.toLowerCase()}</TlpPropertyValue>
+              {text("tlp.reason")}:{" "}
+              <TlpPropertyValue>{event.reason.toLowerCase()}</TlpPropertyValue>
             </TooltipDataRow>
           )}
           {!!usingEvent.delay && (
