@@ -160,8 +160,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             !leafletMap.getBounds().equals(currentView)
           ) {
             // If mapView is a bounds which does NOT equal the current map view,
-            // set the map view to the bounds and forbid the state to change for
-            // 3 seconds. There may be a better way to do this but this works for now.
+            // set the map view to the bounds.
             leafletMap.fitBounds(currentView);
           } else if (
             currentView instanceof LatLng &&
