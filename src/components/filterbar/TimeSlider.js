@@ -82,7 +82,7 @@ const TimeSlider = decorate(({className, Time, state, journeys}) => {
   const valuePosition = useMemo(() => {
     let point = (currentValue - rangeMin) / (rangeMax - rangeMin);
     let position = Math.max(point, 0);
-    let offset = point * 79; // 79 is the width of the real slider thumb, defined in TimeSlider.js
+    let offset = point * 79; // 79 is the width of the real slider thumb
 
     if (position > 1) {
       position = width - offset;

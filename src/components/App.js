@@ -96,16 +96,17 @@ function App({route, state, UI}) {
         {({
           selectedJourney,
           areaJourneys,
+          currentJourneys,
           areaJourneysLoading,
           selectedJourneyLoading,
         }) => (
           <AppGrid>
             <ServerMessage />
-            <FilterBar journeys={[selectedJourney]} />
+            <FilterBar journeys={currentJourneys} />
             <SidepanelAndMapWrapper>
               <StopsByRouteQuery date={date} route={route} skip={!route}>
                 {({stops: routeStops}) => (
-                  <JourneyPosition date={date} journeys={[selectedJourney]}>
+                  <JourneyPosition date={date} journeys={currentJourneys}>
                     {(currentJourneyPositions) => (
                       <>
                         <CenterOnPosition journeyPositions={currentJourneyPositions} />
