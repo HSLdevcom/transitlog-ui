@@ -8,6 +8,9 @@ import {
 } from "../constants";
 import flatten from "lodash/flatten";
 import {getTimeRangeFromEvents} from "./getTimeRangeFromEvents";
+import orderBy from "lodash/orderBy";
+import get from "lodash/get";
+import last from "lodash/last";
 
 export function timeToTimeObject(timeStr = "") {
   const num = (val) => parseInt(val, 10);
@@ -95,15 +98,20 @@ export const getValidTimeWithinRange = (time, journeys = [], returnRange = false
     const eventsRange = flatten(
       journeys.map(({vehiclePositions = []}) => [
         vehiclePositions[0],
-        vehiclePositions[vehiclePositions.length - 1],
+        last(vehiclePositions),
       ])
     );
 
-    const eventsTimeRange = getTimeRangeFromEvents(eventsRange);
+    const sortedPositions = orderBy(eventsRange, "recordedAtUnix", "asc");
 
-    if (eventsTimeRange) {
-      timeRange = eventsTimeRange;
-    }
+    // Min and max moments for the position range
+    const firstTime = timeToSeconds(get(sortedPositions, "[0].recordedTime"));
+    const maxTime = timeToSeconds(get(last(sortedPositions), "recordedTime"));
+
+    timeRange = {
+      min: isNaN(firstTime) ? undefined : firstTime,
+      max: isNaN(maxTime) ? undefined : maxTime,
+    };
   }
 
   const {min = TIME_SLIDER_MIN, max = TIME_SLIDER_MAX} = timeRange;

@@ -16,11 +16,11 @@ export function getTimeRangeFromEvents(events) {
   const sortedPositions = orderBy(events, "recordedAtUnix", "asc");
 
   // Min and max moments for the position range
-  const minTime = timeToSeconds(get(sortedPositions, "[0].recordedTime"));
+  const firstTime = timeToSeconds(get(sortedPositions, "[0].recordedTime"));
   const maxTime = timeToSeconds(get(last(sortedPositions), "recordedTime"));
 
   return {
-    min: isNaN(minTime) ? undefined : minTime,
+    min: isNaN(firstTime) ? undefined : firstTime,
     max: isNaN(maxTime) ? undefined : maxTime,
   };
 }
