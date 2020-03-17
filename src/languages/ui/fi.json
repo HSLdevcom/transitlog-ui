@@ -167,14 +167,14 @@
   "roadcondition.damp-salted": "Tod.näk. kostea ja suolainen",
   "roadcondition.ice-slush": "Sohjo",
 
-  "tlp.requestid":"Pyynnön id",
+  "tlp.requestid":"Pyynnön ID",
   "tlp.junctionid":"Risteystunnus",
   "tlp.decision":"Päätös",
   "tlp.attempt":"Yritys",
   "tlp.type":"Tyyppi",
   "tlp.priority":"Prioriteetti",
   "tlp.reason":"Syy",
-  "tlp.signalgroupnbr":"Liikennevalon id",
+  "tlp.signalgroupnbr":"Ilmaisun ID (output)",
 
   "auth.login": "Kirjaudu (HSL ID)",
   "auth.logout": "Kirjaudu ulos",
