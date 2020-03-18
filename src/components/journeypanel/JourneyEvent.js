@@ -90,6 +90,8 @@ const AlignedPlainSlotMono = styled(PlainSlotMono)`
 
 const StopTime = styled(TagButton)``;
 
+const zeroOrNonNull = (property) => property || property === 0;
+
 const decorate = flow(observer, inject("state"));
 
 export const JourneyEvent = decorate(
@@ -431,21 +433,13 @@ const TlpDetailsWrapper = styled.div`
   flex-wrap: wrap;
   line-height: 1.7;
 `;
-const StyledTlpPropertyBox = styled.div`
+const TlpPropertyBox = styled.div`
   padding: 0 12px 0 0px;
 `;
 const TlpPropertyValue = styled.span`
   color: ${(props) => (props.color ? props.color : "var(--blue)")};
 `;
 
-const TlpPropertyBox = ({label, value}) => {
-  if (!value) return null;
-  return (
-    <StyledTlpPropertyBox>
-      {label}: <TlpPropertyValue>{value}</TlpPropertyValue>
-    </StyledTlpPropertyBox>
-  );
-};
 const getTlpDecisionColor = (decision) =>
   decision === "ACK" ? "var(--green)" : decision === "NAK" ? "var(--red)" : "var(--blue)";
 
@@ -477,33 +471,56 @@ export const JourneyTlpEvent = decorate(
             <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
           <TlpDetailsWrapper>
-            <TlpPropertyBox label={text("tlp.junctionid")} value={event.junctionId} />
-            <TlpPropertyBox label={text("tlp.requestid")} value={event.requestId} />
+            {zeroOrNonNull(event.junctionId) && (
+              <TlpPropertyBox>
+                {text("tlp.junctionid")}:{" "}
+                <TlpPropertyValue>{event.junctionId}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {zeroOrNonNull(event.requestId) && (
+              <TlpPropertyBox>
+                {text("tlp.requestid")}:{" "}
+                <TlpPropertyValue>{event.requestId}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
             {event.decision && (
-              <StyledTlpPropertyBox>
+              <TlpPropertyBox>
                 {text("tlp.decision")}:{" "}
                 <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
                   {event.decision}
                 </TlpPropertyValue>
-              </StyledTlpPropertyBox>
+              </TlpPropertyBox>
             )}
-            <TlpPropertyBox label={text("tlp.attempt")} value={event.attemptSeq} />
-            <TlpPropertyBox
-              label={text("tlp.type")}
-              value={event.requestType && event.requestType.toLowerCase()}
-            />
-            <TlpPropertyBox
-              label={text("tlp.priority")}
-              value={event.priorityLevel && event.priorityLevel.toLowerCase()}
-            />
-            <TlpPropertyBox
-              label={text("tlp.reason")}
-              value={event.reason && event.reason.toLowerCase()}
-            />
-            <TlpPropertyBox
-              label={text("tlp.signalgroupnbr")}
-              value={event.signalGroupNbr}
-            />
+            {zeroOrNonNull(event.attemptSeq) && (
+              <TlpPropertyBox>
+                {text("tlp.attempt")}:{" "}
+                <TlpPropertyValue>{event.attemptSeq}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.requestType && (
+              <TlpPropertyBox>
+                {text("tlp.type")}:{" "}
+                <TlpPropertyValue>{event.requestType.toLowerCase()}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.priorityLevel && (
+              <TlpPropertyBox>
+                {text("tlp.priority")}:{" "}
+                <TlpPropertyValue>{event.priorityLevel.toLowerCase()}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.reason && (
+              <TlpPropertyBox>
+                {text("tlp.reason")}:{" "}
+                <TlpPropertyValue>{event.reason.toLowerCase()}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {zeroOrNonNull(event.signalGroupNbr) && (
+              <TlpPropertyBox>
+                {text("tlp.signalgroupnbr")}:{" "}
+                <TlpPropertyValue>{event.signalGroupNbr}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
           </TlpDetailsWrapper>
         </StopContent>
       </StopWrapper>

@@ -47,6 +47,8 @@ const TlpPropertyValue = styled.span`
 const getTlpDecisionColor = (decision) =>
   decision === "ACK" ? "var(--green)" : decision === "NAK" ? "var(--red)" : "var(--blue)";
 
+const zeroOrNonNull = (property) => property || property === 0;
+
 const decorate = flow(observer, inject("state"));
 
 const TlpTooltip = decorate(
@@ -92,19 +94,19 @@ const TlpTooltip = decorate(
               {journey.uniqueVehicleId}
             </TooltipDataRow>
           )}
-          {event.junctionId && (
+          {zeroOrNonNull(event.junctionId) && (
             <TooltipDataRow>
               {text("tlp.junctionid")}:{" "}
               <TlpPropertyValue>{event.junctionId}</TlpPropertyValue>
             </TooltipDataRow>
           )}
-          {event.signalGroupNbr && (
+          {zeroOrNonNull(event.signalGroupNbr) && (
             <TooltipDataRow>
               {text("tlp.signalgroupnbr")}:{" "}
               <TlpPropertyValue>{event.signalGroupNbr}</TlpPropertyValue>
             </TooltipDataRow>
           )}
-          {event.requestId && (
+          {zeroOrNonNull(event.requestId) && (
             <TooltipDataRow>
               {text("tlp.requestid")}:{" "}
               <TlpPropertyValue>{event.requestId}</TlpPropertyValue>
@@ -118,7 +120,7 @@ const TlpTooltip = decorate(
               </TlpPropertyValue>
             </TooltipDataRow>
           )}
-          {event.attemptSeq && (
+          {zeroOrNonNull(event.attemptSeq) && (
             <TooltipDataRow>
               {text("tlp.attempt")}:{" "}
               <TlpPropertyValue>{event.attemptSeq}</TlpPropertyValue>
