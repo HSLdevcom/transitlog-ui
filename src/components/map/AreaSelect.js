@@ -1,4 +1,4 @@
-import React, {useRef, useState, useCallback, useEffect} from "react";
+import React, {useRef, useCallback, useEffect} from "react";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {FeatureGroup, Rectangle} from "react-leaflet";
 import {EditControl} from "react-leaflet-draw";
@@ -24,14 +24,6 @@ const AreaSelect = decorate(({UI, state, enabled}) => {
   const {selectedBounds} = state;
   const featureLayer = useRef(null);
 
-  const [hasAreas, setHasAreas] = useState();
-
-  const checkAreas = useCallback(() => {
-    setHasAreas(
-      featureLayer.current && featureLayer.current.leafletElement.getLayers().length !== 0
-    );
-  }, [featureLayer.current]);
-
   const clearAreas = useCallback(() => {
     // Remove all current layers if we're about to draw a new one or have resetted the UI.
     if (featureLayer.current) {
@@ -39,29 +31,19 @@ const AreaSelect = decorate(({UI, state, enabled}) => {
     }
 
     UI.setSelectedBounds(null);
-    checkAreas();
-  }, [checkAreas]);
+  }, [featureLayer.current]);
 
-  const onCreated = useCallback(
-    (e) => {
-      const {layer} = e;
+  const onCreated = useCallback((e) => {
+    const {layer} = e;
 
-      const layerBounds = layer.getBounds();
-      UI.setSelectedBounds(layerBounds);
-      checkAreas();
-    },
-    [checkAreas]
-  );
+    const layerBounds = layer.getBounds();
+    UI.setSelectedBounds(layerBounds);
+  }, []);
 
   useEffect(() => {
     const resetListener = setResetListener(clearAreas);
 
-    const timeout = setTimeout(() => {
-      checkAreas();
-    }, 1);
-
     return () => {
-      clearTimeout(timeout);
       resetListener();
     };
   }, []);
@@ -90,10 +72,11 @@ const AreaSelect = decorate(({UI, state, enabled}) => {
           circlemarker: false,
         }}
       />
-      {hasAreas && <CancelControl position="bottomright" onCancel={clearAreas} />}
       {selectedBounds && (
-        // If there were bounds set in the URL, draw them on the map
-        <Rectangle bounds={selectedBounds} {...rectangleStyle} />
+        <>
+          <CancelControl position="bottomright" onCancel={clearAreas} />
+          <Rectangle bounds={selectedBounds} {...rectangleStyle} />
+        </>
       )}
     </FeatureGroup>
   );

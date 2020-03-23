@@ -9,6 +9,7 @@ import {inject} from "../../helpers/inject";
 import {
   JourneyStopEvent,
   JourneyCancellationEventItem,
+  JourneyTlpEvent,
   JourneyEvent,
 } from "./JourneyEvent";
 import EventFilters from "./EventFilters";
@@ -139,6 +140,9 @@ const JourneyEvents = decorate(
                 break;
               case "JourneyCancellationEvent":
                 Component = JourneyCancellationEventItem;
+                break;
+              case "JourneyTlpEvent":
+                Component = JourneyTlpEvent;
                 break;
               default:
                 Component = JourneyEvent;

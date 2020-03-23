@@ -1,5 +1,10 @@
 # Transitlog UI changelog
 
+## Version 1.8.3, deployed 2020-03-23 @ 10:00
+
+- Show TLP event details in JourneyEvents list and in tooltips on the map.
+- Fix a map centering issue.
+
 ## Version 1.8.2, deployed 2020-03-06 @ 08:00
 
 - Smaller event grouping area for events on the map.

@@ -90,6 +90,8 @@ const AlignedPlainSlotMono = styled(PlainSlotMono)`
 
 const StopTime = styled(TagButton)``;
 
+const zeroOrNonNull = (property) => property || property === 0;
+
 const decorate = flow(observer, inject("state"));
 
 export const JourneyEvent = decorate(
@@ -421,3 +423,107 @@ export const JourneyCancellationEventItem = decorate(({event, isFirst, isLast}) 
     </CancellationWrapper>
   );
 });
+
+const TlpDetailsWrapper = styled.div`
+  padding: 4px;
+  font-size: 0.765rem;
+  color: var(--grey);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  line-height: 1.7;
+`;
+const TlpPropertyBox = styled.div`
+  padding: 0 12px 0 0px;
+`;
+const TlpPropertyValue = styled.span`
+  color: ${(props) => (props.color ? props.color : "var(--blue)")};
+`;
+
+const getTlpDecisionColor = (decision) =>
+  decision === "ACK" ? "var(--green)" : decision === "NAK" ? "var(--red)" : "var(--blue)";
+
+export const JourneyTlpEvent = decorate(
+  ({event, color, date, isFirst, isLast, onSelectTime}) => {
+    const timestamp = moment.tz(event.recordedAt, TIMEZONE);
+
+    const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
+      timestamp,
+    ]);
+
+    return (
+      <StopWrapper>
+        <StopElementsWrapper
+          color={color}
+          terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
+          <StopMarker color={color} />
+        </StopElementsWrapper>
+        <StopContent>
+          <StopTime onClick={selectTime}>
+            <PlainSlot {...applyTooltip(event.type)}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: text(`journey.event.${event.type}`),
+                }}
+              />
+            </PlainSlot>
+            <AlignedLocBadge red={event.loc === "ODO"}>{event.loc}</AlignedLocBadge>
+            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+          </StopTime>
+          <TlpDetailsWrapper>
+            {zeroOrNonNull(event.junctionId) && (
+              <TlpPropertyBox>
+                {text("tlp.junctionid")}:{" "}
+                <TlpPropertyValue>{event.junctionId}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {zeroOrNonNull(event.requestId) && (
+              <TlpPropertyBox>
+                {text("tlp.requestid")}:{" "}
+                <TlpPropertyValue>{event.requestId}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.decision && (
+              <TlpPropertyBox>
+                {text("tlp.decision")}:{" "}
+                <TlpPropertyValue color={getTlpDecisionColor(event.decision)}>
+                  {event.decision}
+                </TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {zeroOrNonNull(event.attemptSeq) && (
+              <TlpPropertyBox>
+                {text("tlp.attempt")}:{" "}
+                <TlpPropertyValue>{event.attemptSeq}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.requestType && (
+              <TlpPropertyBox>
+                {text("tlp.type")}:{" "}
+                <TlpPropertyValue>{event.requestType.toLowerCase()}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.priorityLevel && (
+              <TlpPropertyBox>
+                {text("tlp.priority")}:{" "}
+                <TlpPropertyValue>{event.priorityLevel.toLowerCase()}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.reason && (
+              <TlpPropertyBox>
+                {text("tlp.reason")}:{" "}
+                <TlpPropertyValue>{event.reason.toLowerCase()}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {zeroOrNonNull(event.signalGroupNbr) && (
+              <TlpPropertyBox>
+                {text("tlp.signalgroupnbr")}:{" "}
+                <TlpPropertyValue>{event.signalGroupNbr}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+          </TlpDetailsWrapper>
+        </StopContent>
+      </StopWrapper>
+    );
+  }
+);
