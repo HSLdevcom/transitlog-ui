@@ -7,6 +7,7 @@ import JourneyPosition from "./JourneyPosition";
 import MapContent from "./map/MapContent";
 import ErrorMessages from "./ErrorMessages";
 import SharingModal from "./SharingModal";
+import FeedbackModal from "./FeedbackModal";
 import getJourneyId from "../helpers/getJourneyId";
 import {inject} from "../helpers/inject";
 import flow from "lodash/flow";
@@ -161,6 +162,7 @@ function App({route, state, UI}) {
       </MapEvents>
       <ErrorMessages />
       <SharingModal onClose={() => UI.toggleShareModal(false)} />
+      <FeedbackModal onClose={() => UI.toggleFeedbackModal(false)} />
     </AppFrame>
   );
 }

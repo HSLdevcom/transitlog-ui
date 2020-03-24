@@ -4,6 +4,7 @@ import {Text, text} from "../../helpers/text";
 import styled from "styled-components";
 import {Heading} from "../Typography";
 import LanguageSelect from "./LanguageSelect";
+import {ToggleFeedbackButton} from "../FeedbackModal";
 import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
@@ -114,6 +115,7 @@ function HeaderComponent({state, UI, className}) {
       <LangSelectContainer>
         <LanguageSelect />
       </LangSelectContainer>
+      <ToggleFeedbackButton handleClick={() => UI.toggleFeedbackModal(true)} />
       <LoginContainer>
         {user && <Username data-testid="authenticated-user">{user}</Username>}
         <IconButton
