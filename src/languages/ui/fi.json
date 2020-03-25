@@ -221,6 +221,7 @@
   "general.hide": "Piilota",
   "general.email": "Sähköposti",
   "general.send": "Lähetä",
+  "general.sending": "Lähettää",
 
   "feedback.give": "Anna palutetta",
   "feedback.placeholder": "Palaute",

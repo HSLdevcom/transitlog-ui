@@ -29,10 +29,25 @@ export default (state) => {
     state.feedbackImageFiles = keepFiles;
   });
 
+  const startSending = action(() => {
+    state.feedbackSending = true;
+  });
+
+  const sentFeedback = action((response) => {
+    state.feedbackError = response.status === 200 ? "" : "Error in sending feedback";
+    if (response.status === 200) {
+      state.feedbackContent = "";
+      state.feedbackEmail = "";
+    }
+    state.feedbackSending = false;
+  });
+
   return {
     setContent,
     setEmail,
     addImageFiles,
     removeImageFile,
+    startSending,
+    sentFeedback,
   };
 };
