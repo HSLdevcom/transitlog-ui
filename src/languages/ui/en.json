@@ -223,7 +223,7 @@
 
   "feedback.give": "Give feedback",
   "feedback.placeholder": "Feedback",
-  "feedback.include.url": "Include current settings of the application in the feedback",
+  "feedback.includes.url": "The current settings of the application are sent along with the feedback.",
 
   "message.emptyview.network": "The data in this view is unavailable due to a network issue. Make sure you are online and try again.",
   "message.emptyview.authentication": "You need to be logged in to get access to the data in this view, or this account is not authorized.",

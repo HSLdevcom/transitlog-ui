@@ -9,13 +9,8 @@ export default (state) => {
     state.feedbackEmail = email;
   });
 
-  const setFeedbackIncludesUrl = action((includesUrl) => {
-    state.feedbackIncludesUrl = includesUrl;
-  });
-
   return {
     setFeedbackContent,
     setFeedbackEmail,
-    setFeedbackIncludesUrl,
   };
 };
