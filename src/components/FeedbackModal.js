@@ -28,7 +28,7 @@ export const ToggleFeedbackButton = ({handleClick}) => {
 
 const StyledFeedbackModal = StyledModal.styled`
   width: 40vw;
-  margin-left: 40%;
+  margin-left: 20%;
   min-width: 20rem;
   display: flex;
   align-items: center;
@@ -92,62 +92,13 @@ const FeedbackEmailInput = styled.input`
   }
 `;
 
-// Style custom checkbox for selecting whether the state of the application (url) should be included in the feedback
-
-const CheckBoxRow = styled.div`
+const InfoRow = styled.div`
   display: flex;
   margin: 0 0 17px 0;
+  font-size: 0.75rem;
   align-items: center;
   width: 100%;
 `;
-const HiddenCheckbox = styled.input.attrs({type: "checkbox"})`
-  // Hide checkbox visually but remain accessible to screen readers.
-  // Source: https://polished.js.org/docs/#hidevisually
-  border: 0;
-  clip: rect(0 0 0 0);
-  clippath: inset(50%);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-`;
-const Icon = styled.svg`
-  fill: none;
-  stroke: black;
-  stroke-width: 3px;
-`;
-const StyledCheckbox = styled.div`
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  border: 2px solid var(--blue);
-  cursor: pointer;
-  ${Icon} {
-    visibility: ${(props) => (props.checked ? "visible" : "hidden")};
-  }
-`;
-const CheckboxContainer = styled.div`
-  display: inline-block;
-  vertical-align: middle;
-`;
-const CheckboxLabel = styled.div`
-  margin: 0 0 0 7px;
-`;
-const Checkbox = ({checked, onChange}) => (
-  <CheckboxContainer>
-    <HiddenCheckbox checked={checked} onChange={onChange} />
-    <StyledCheckbox checked={checked}>
-      {" "}
-      <Icon viewBox="0 0 24 24">
-        <polyline points="20 6 9 17 4 12" />
-      </Icon>
-    </StyledCheckbox>
-  </CheckboxContainer>
-);
 
 const ButtonRow = styled.div`
   width: 100%;
@@ -179,7 +130,7 @@ const decorate = flow(observer, inject("State", "Feedback", "UI"));
 
 const FeedbackModal = decorate((props) => {
   const {state, onClose, Feedback} = props;
-  const {feedbackModalOpen, feedbackContent, feedbackEmail, feedbackIncludesUrl} = state;
+  const {feedbackModalOpen, feedbackContent, feedbackEmail} = state;
 
   const [shareUrl, setShareUrl] = useState("");
 
@@ -191,25 +142,16 @@ const FeedbackModal = decorate((props) => {
     Feedback.setFeedbackEmail(event.target.value);
   };
 
-  const handleIncludesUrlChange = (event) => {
-    Feedback.setFeedbackIncludesUrl(event.target.checked);
-  };
-
-  const onSend = useCallback(
-    (feedbackContent, feedbackEmail, feedbackIncludesUrl, url) => {
-      console.log(
-        "sending feedback:",
-        feedbackContent,
-        "from email:",
-        feedbackEmail,
-        "includes url:",
-        feedbackIncludesUrl,
-        "at:",
-        url
-      );
-    },
-    []
-  );
+  const onSend = useCallback((feedbackContent, feedbackEmail, url) => {
+    console.log(
+      "sending feedback:",
+      feedbackContent,
+      "from email:",
+      feedbackEmail,
+      "at:",
+      url
+    );
+  }, []);
 
   const createShareUrl = useCallback(() => {
     const prodOrigin = process.env.REACT_APP_PRODUCTION_URL;
@@ -232,10 +174,7 @@ const FeedbackModal = decorate((props) => {
   }, [feedbackModalOpen]);
 
   return (
-    <StyledFeedbackModal
-      isOpen={feedbackModalOpen}
-      onBackgroundClick={onClose}
-      onEscapeKeydown={onClose}>
+    <StyledFeedbackModal isOpen={feedbackModalOpen} onEscapeKeydown={onClose}>
       <ModalContent>
         <FeedbackTextArea
           placeholder={text("feedback.placeholder")}
@@ -250,23 +189,11 @@ const FeedbackModal = decorate((props) => {
           value={feedbackEmail}
           onChange={handleEmailChange}
         />
-        <CheckBoxRow>
-          <div>
-            <label>
-              <Checkbox
-                checked={feedbackIncludesUrl}
-                onChange={handleIncludesUrlChange}
-              />
-            </label>
-          </div>
-          <CheckboxLabel>{text("feedback.include.url")}</CheckboxLabel>
-        </CheckBoxRow>
+        <InfoRow>{text("feedback.includes.url")}</InfoRow>
         <ButtonRow>
           <SendButton
             primary
-            onClick={() =>
-              onSend(feedbackContent, feedbackEmail, feedbackIncludesUrl, shareUrl)
-            }>
+            onClick={() => onSend(feedbackContent, feedbackEmail, shareUrl)}>
             {text("general.send")}
           </SendButton>
           <HideButton onClick={onClose}>{text("general.hide")}</HideButton>

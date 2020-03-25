@@ -7,12 +7,10 @@ export default (state) => {
     {
       feedbackContent: "",
       feedbackEmail: "",
-      feedbackIncludesUrl: true,
     },
     {
       feedbackContent: observable.ref,
       feedbackEmail: observable.ref,
-      feedbackIncludesUrl: observable.ref,
     }
   );
 
