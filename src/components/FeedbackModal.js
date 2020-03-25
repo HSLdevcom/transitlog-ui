@@ -92,10 +92,97 @@ const FeedbackEmailInput = styled.input`
   }
 `;
 
+const StyledInputImageList = styled.div`
+  margin: 10px 0 20px 0;
+`;
+const StyledInputImage = styled.div`
+  font-size: 0.8rem;
+  display: flex;
+  width: max-content;
+  justify-content: space-between;
+  border-radius: 20px;
+  color: white;
+  padding: 4px 9px;
+  margin: 5px 0px;
+  background-color: var(--blue);
+`;
+const RemoveImageIconWrapper = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+`;
+const RemoveImageIcon = styled.svg`
+  width: 10px;
+  height: 10px;
+  margin: 0 1px -1px 10px;
+  fill: none;
+  stroke: white;
+  stroke-width: 6px;
+`;
+
+const InputImageRow = ({imageFile, removeImage}) => {
+  return (
+    <StyledInputImage>
+      <div>{imageFile}</div>
+      <RemoveImageIconWrapper onClick={removeImage}>
+        <RemoveImageIcon viewBox="0 0 30 30">
+          <polyline points="0 0 30 30" />
+          <polyline points="0 30 30 0" />
+        </RemoveImageIcon>
+      </RemoveImageIconWrapper>
+    </StyledInputImage>
+  );
+};
+
+const AddImagesRow = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 20px 0;
+`;
+const HiddenFileInput = styled.input.attrs({type: "file"})`
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+`;
+const StyledImageInputButton = styled.label`
+  font-family: var(--font-family);
+  font-size: ${({small = false}) => (small ? "0.75rem" : "1rem")};
+  font-weight: 500;
+  appearance: none;
+  outline: none;
+  border-radius: 2.5rem;
+  border: 1px solid ${({transparent = false}) => (!transparent ? "var(--blue)" : "white")};
+  background: ${({primary = false, transparent = false}) =>
+    primary ? "var(--blue)" : transparent ? "transparent" : "white"};
+  letter-spacing: -0.6px;
+  padding: 0 ${({small = false}) => (small ? "1.25rem" : "1.65em")};
+  color: ${({primary = false, transparent = false}) =>
+    primary || transparent ? "white" : "var(--blue)"};
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  flex: 0 0 auto;
+  height: ${({small = false}) => (small ? "1.75rem" : "2.5rem")};
+  cursor: pointer;
+  transform: scale(1) translateZ(0);
+  transition: background-color 0.2s ease-out, transform 0.1s ease-out;
+
+  &:hover {
+    background: ${({primary = false, transparent}) =>
+      primary || transparent ? "var(--dark-blue)" : "#eeeeee"};
+    transform: scale(1.025);
+  }
+`;
+
 const InfoRow = styled.div`
   display: flex;
   margin: 0 0 17px 0;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   align-items: center;
   width: 100%;
 `;
@@ -130,16 +217,21 @@ const decorate = flow(observer, inject("State", "Feedback", "UI"));
 
 const FeedbackModal = decorate((props) => {
   const {state, onClose, Feedback} = props;
-  const {feedbackModalOpen, feedbackContent, feedbackEmail} = state;
+  const {feedbackModalOpen, feedbackContent, feedbackEmail, feedbackImageFiles} = state;
 
   const [shareUrl, setShareUrl] = useState("");
 
   const handleContentChange = (event) => {
-    Feedback.setFeedbackContent(event.target.value);
+    Feedback.setContent(event.target.value);
   };
 
   const handleEmailChange = (event) => {
-    Feedback.setFeedbackEmail(event.target.value);
+    Feedback.setEmail(event.target.value);
+  };
+
+  const handleImageInputChange = (event) => {
+    Feedback.addImageFiles(event.target.files);
+    document.getElementById("feedbackFiles").value = "";
   };
 
   const onSend = useCallback((feedbackContent, feedbackEmail, url) => {
@@ -176,6 +268,7 @@ const FeedbackModal = decorate((props) => {
   return (
     <StyledFeedbackModal isOpen={feedbackModalOpen} onEscapeKeydown={onClose}>
       <ModalContent>
+        <InfoRow>{text("feedback.includes.url")}</InfoRow>
         <FeedbackTextArea
           placeholder={text("feedback.placeholder")}
           value={feedbackContent}
@@ -189,7 +282,32 @@ const FeedbackModal = decorate((props) => {
           value={feedbackEmail}
           onChange={handleEmailChange}
         />
-        <InfoRow>{text("feedback.includes.url")}</InfoRow>
+        {feedbackImageFiles.length > 0 && (
+          <div>
+            <div>Images to upload:</div>
+            <StyledInputImageList>
+              {feedbackImageFiles.map((imageFile) => (
+                <InputImageRow
+                  key={imageFile.name}
+                  imageFile={imageFile.name}
+                  removeImage={() => Feedback.removeImageFile(imageFile.name)}
+                />
+              ))}
+            </StyledInputImageList>
+          </div>
+        )}
+        <AddImagesRow>
+          <StyledImageInputButton>
+            {text("feedback.upload.image")}
+            <HiddenFileInput
+              multiple
+              type="file"
+              id="feedbackFiles"
+              name="feedbackFiles"
+              onChange={handleImageInputChange}
+            />
+          </StyledImageInputButton>
+        </AddImagesRow>
         <ButtonRow>
           <SendButton
             primary
