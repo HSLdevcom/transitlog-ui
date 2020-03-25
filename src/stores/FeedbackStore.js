@@ -7,10 +7,16 @@ export default (state) => {
     {
       feedbackContent: "",
       feedbackEmail: "",
+      feedbackImageFiles: [],
+      feedbackSending: false,
+      feedbackError: null,
     },
     {
       feedbackContent: observable.ref,
       feedbackEmail: observable.ref,
+      feedbackImageFiles: observable.ref,
+      feedbackSending: observable.ref,
+      feedbackError: observable.ref,
     }
   );
 
