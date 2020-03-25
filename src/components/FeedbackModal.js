@@ -1,11 +1,12 @@
 import React, {useState, useCallback, useEffect} from "react";
 import StyledModal from "styled-react-modal";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import {Button} from "./Forms";
 import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
 import {text} from "../helpers/text";
+import Loading from "./Loading";
 
 const StyledToggleFeedbackButton = styled.div`
   color: white;
@@ -102,7 +103,7 @@ const StyledInputImage = styled.div`
   justify-content: space-between;
   border-radius: 20px;
   color: white;
-  padding: 4px 9px;
+  padding: 5px 9px;
   margin: 5px 0px;
   background-color: var(--blue);
 `;
@@ -194,6 +195,11 @@ const ButtonRow = styled.div`
   justify-content: space-between;
 `;
 
+const SendButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const SendButton = styled(Button)`
   background: var(--blue);
   border: 0;
@@ -202,6 +208,19 @@ const SendButton = styled(Button)`
     margin-right: 0.5rem;
     margin-left: -0.5rem;
   }
+  ${(props) =>
+    props.disabled == true &&
+    css`
+      background: var(--light-grey);
+      &:hover {
+        cursor: unset;
+        background: var(--light-grey);
+        transform: unset;
+      }
+    `}
+`;
+const SendingSpinner = styled(Loading)`
+  margin: 0.5rem 0.5rem 0.5rem 2rem;
 `;
 
 const HideButton = styled(Button)``;
@@ -217,7 +236,13 @@ const decorate = flow(observer, inject("State", "Feedback", "UI"));
 
 const FeedbackModal = decorate((props) => {
   const {state, onClose, Feedback} = props;
-  const {feedbackModalOpen, feedbackContent, feedbackEmail, feedbackImageFiles} = state;
+  const {
+    feedbackModalOpen,
+    feedbackSending,
+    feedbackContent,
+    feedbackEmail,
+    feedbackImageFiles,
+  } = state;
 
   const [shareUrl, setShareUrl] = useState("");
 
@@ -234,16 +259,34 @@ const FeedbackModal = decorate((props) => {
     document.getElementById("feedbackFiles").value = "";
   };
 
-  const onSend = useCallback((feedbackContent, feedbackEmail, url) => {
-    console.log(
-      "sending feedback:",
-      feedbackContent,
-      "from email:",
-      feedbackEmail,
-      "at:",
-      url
-    );
-  }, []);
+  const onSend = async (feedbackContent, feedbackEmail, feedbackImages, url) => {
+    const slackWebhook = process.env.REACT_APP_SLACK_FEEDBACK_URL;
+    // console.log("slackWebhook", slackWebhook);
+
+    Feedback.startSending();
+
+    const feedbackText =
+      "*" + feedbackEmail.trim() + "*\n\n" + feedbackContent.trim() + "\n\n" + url;
+    const data = {
+      type: "mrkdwn",
+      text: feedbackText,
+    };
+
+    console.log("sending feedback", JSON.stringify(data));
+
+    // await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const response = await fetch(slackWebhook, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    // const response = {status: 200};
+
+    console.log("response", response);
+
+    Feedback.sentFeedback(response);
+  };
 
   const createShareUrl = useCallback(() => {
     const prodOrigin = process.env.REACT_APP_PRODUCTION_URL;
@@ -276,11 +319,13 @@ const FeedbackModal = decorate((props) => {
           data-testid="feedback-display"
           resizeable={true}
           rows={5}
+          disabled={feedbackSending}
         />
         <FeedbackEmailInput
           placeholder={text("general.email")}
           value={feedbackEmail}
           onChange={handleEmailChange}
+          disabled={feedbackSending}
         />
         {feedbackImageFiles.length > 0 && (
           <div>
@@ -309,11 +354,17 @@ const FeedbackModal = decorate((props) => {
           </StyledImageInputButton>
         </AddImagesRow>
         <ButtonRow>
-          <SendButton
-            primary
-            onClick={() => onSend(feedbackContent, feedbackEmail, shareUrl)}>
-            {text("general.send")}
-          </SendButton>
+          <SendButtonWrapper>
+            <SendButton
+              disabled={feedbackContent === "" || feedbackSending}
+              primary
+              onClick={() =>
+                onSend(feedbackContent, feedbackEmail, feedbackImageFiles, shareUrl)
+              }>
+              {feedbackSending ? text("general.sending") : text("general.send")}
+            </SendButton>
+            {feedbackSending && <SendingSpinner inline={true} />}
+          </SendButtonWrapper>
           <HideButton onClick={onClose}>{text("general.hide")}</HideButton>
         </ButtonRow>
       </ModalContent>
