@@ -118,3 +118,53 @@ export const ClearButton = styled(Button).attrs({
     background: var(--red);
   }
 `;
+
+// Custom checkbox
+const CheckboxContainer = styled.div`
+  display: inline-block;
+  vertical-align: middle;
+`;
+const HiddenCheckbox = styled.input.attrs({type: "checkbox"})`
+  // Hide checkbox visually but remain accessible to screen readers.
+  // Source: https://polished.js.org/docs/#hidevisually
+  border: 0;
+  clip: rect(0 0 0 0);
+  clippath: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+`;
+const Icon = styled.svg`
+  fill: none;
+  stroke: black;
+  stroke-width: 3px;
+`;
+const StyledCheckbox = styled.div`
+  display: inline-block;
+  width: ${(props) => (props.size ? props.size : "16")}px;
+  height: ${(props) => (props.size ? props.size : "16")}px;
+  border-radius: 3px;
+  border: 2px solid var(--blue);
+  cursor: pointer;
+  ${Icon} {
+    visibility: ${(props) => (props.checked ? "visible" : "hidden")};
+  }
+`;
+export const Checkbox = ({checked, onChange, size}) => (
+  <div>
+    <label>
+      <CheckboxContainer>
+        <HiddenCheckbox checked={checked} onChange={onChange} />
+        <StyledCheckbox checked={checked} size={size}>
+          <Icon viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+          </Icon>
+        </StyledCheckbox>
+      </CheckboxContainer>
+    </label>
+  </div>
+);
