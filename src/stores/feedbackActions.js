@@ -10,23 +10,30 @@ export default (state) => {
   });
 
   const addImageFiles = action((files) => {
-    const fileNames = state.feedbackImageFiles.map((file) => file.name);
-    let uniqueFiles = [...state.feedbackImageFiles];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (!fileNames.includes(file.name)) {
-        uniqueFiles.push(file);
+      if (!state.feedbackImageFiles.has(file.name)) {
+        state.feedbackImageFiles.append(file.name, file);
+        state.feedbackImageFileNames = state.feedbackImageFileNames.concat(file.name);
         console.log("read file form input", file);
       } else {
         console.log("file was already selected:", file.name);
       }
     }
-    state.feedbackImageFiles = uniqueFiles;
+
+    console.log("list adde files:");
+    for (let file of state.feedbackImageFiles.values()) {
+      console.log("formData has file:", file);
+    }
   });
 
   const removeImageFile = action((fileName) => {
-    const keepFiles = state.feedbackImageFiles.filter((file) => file.name !== fileName);
-    state.feedbackImageFiles = keepFiles;
+    if (state.feedbackImageFiles.has(fileName)) {
+      state.feedbackImageFiles.delete(fileName);
+      state.feedbackImageFileNames = state.feedbackImageFileNames.filter(
+        (fn) => fn !== fileName
+      );
+    }
   });
 
   const startSending = action(() => {

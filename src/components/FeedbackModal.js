@@ -1,4 +1,6 @@
 import React, {useState, useCallback, useEffect} from "react";
+import gql from "graphql-tag";
+import {useMutation, useApolloClient} from "@apollo/react-hooks";
 import StyledModal from "styled-react-modal";
 import styled, {css} from "styled-components";
 import {Button} from "./Forms";
@@ -121,16 +123,18 @@ const RemoveImageIcon = styled.svg`
   stroke-width: 6px;
 `;
 
-const InputImageRow = ({imageFile, removeImage}) => {
+const InputImageRow = ({imageName, removeImage, sending}) => {
   return (
     <StyledInputImage>
-      <div>{imageFile}</div>
-      <RemoveImageIconWrapper onClick={removeImage}>
-        <RemoveImageIcon viewBox="0 0 30 30">
-          <polyline points="0 0 30 30" />
-          <polyline points="0 30 30 0" />
-        </RemoveImageIcon>
-      </RemoveImageIconWrapper>
+      <div>{imageName}</div>
+      {!sending && (
+        <RemoveImageIconWrapper onClick={removeImage}>
+          <RemoveImageIcon viewBox="0 0 30 30">
+            <polyline points="0 0 30 30" />
+            <polyline points="0 30 30 0" />
+          </RemoveImageIcon>
+        </RemoveImageIconWrapper>
+      )}
     </StyledInputImage>
   );
 };
@@ -242,9 +246,33 @@ const FeedbackModal = decorate((props) => {
     feedbackContent,
     feedbackEmail,
     feedbackImageFiles,
+    feedbackImageFileNames,
   } = state;
 
+  const SEND_FEEDBACK_MUTATION = gql`
+    mutation sendFeedback($text: String!, $email: String!, $url: String!) {
+      sendFeedback(text: $text, email: $email, url: $url) {
+        text
+        email
+        msgTs
+      }
+    }
+  `;
+
+  const UPLOAD_IMAGE_MUTATION = gql`
+    mutation uploadFeedbackImage($file: Upload!, $msgTs: String) {
+      uploadFeedbackImage(file: $file, msgTs: $msgTs) {
+        filename
+        mimetype
+        encoding
+      }
+    }
+  `;
+
   const [shareUrl, setShareUrl] = useState("");
+  const [uploadImageMutation] = useMutation(UPLOAD_IMAGE_MUTATION);
+  const [sendFeedbackMutation] = useMutation(SEND_FEEDBACK_MUTATION);
+  const apolloClient = useApolloClient();
 
   const handleContentChange = (event) => {
     Feedback.setContent(event.target.value);
@@ -259,33 +287,29 @@ const FeedbackModal = decorate((props) => {
     document.getElementById("feedbackFiles").value = "";
   };
 
-  const onSend = async (feedbackContent, feedbackEmail, feedbackImages, url) => {
-    const slackWebhook = process.env.REACT_APP_SLACK_FEEDBACK_URL;
-    // console.log("slackWebhook", slackWebhook);
-
+  const onSend = async () => {
     Feedback.startSending();
 
-    const feedbackText =
-      "*" + feedbackEmail.trim() + "*\n\n" + feedbackContent.trim() + "\n\n" + url;
-    const data = {
-      type: "mrkdwn",
-      text: feedbackText,
-    };
-
-    console.log("sending feedback", JSON.stringify(data));
-
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const response = await fetch(slackWebhook, {
-      method: "POST",
-      body: JSON.stringify(data),
+    // send feedback
+    const feedbackRes = await sendFeedbackMutation({
+      variables: {text: feedbackContent, email: feedbackEmail, url: shareUrl},
     });
 
-    // const response = {status: 200};
+    console.log("feedbackRes", feedbackRes);
+    const msgTs = feedbackRes.data.sendFeedback.msgTs;
 
-    console.log("response", response);
+    // send images of the feedback
+    const files = feedbackImageFileNames.map((fileName) =>
+      feedbackImageFiles.get(fileName)
+    );
+    const uploadRes = await Promise.all(
+      files.map((file) => uploadImageMutation({variables: {file, msgTs}}))
+    );
 
-    Feedback.sentFeedback(response);
+    console.log("uploadRes", uploadRes);
+    apolloClient.resetStore();
+
+    Feedback.sentFeedback(feedbackRes);
   };
 
   const createShareUrl = useCallback(() => {
@@ -327,40 +351,41 @@ const FeedbackModal = decorate((props) => {
           onChange={handleEmailChange}
           disabled={feedbackSending}
         />
-        {feedbackImageFiles.length > 0 && (
+        {feedbackImageFileNames.length > 0 && (
           <div>
             <div>Images to upload:</div>
             <StyledInputImageList>
-              {feedbackImageFiles.map((imageFile) => (
+              {feedbackImageFileNames.map((imageName) => (
                 <InputImageRow
-                  key={imageFile.name}
-                  imageFile={imageFile.name}
-                  removeImage={() => Feedback.removeImageFile(imageFile.name)}
+                  key={imageName}
+                  imageName={imageName}
+                  sending={feedbackSending}
+                  removeImage={() => Feedback.removeImageFile(imageName)}
                 />
               ))}
             </StyledInputImageList>
           </div>
         )}
-        <AddImagesRow>
-          <StyledImageInputButton>
-            {text("feedback.upload.image")}
-            <HiddenFileInput
-              multiple
-              type="file"
-              id="feedbackFiles"
-              name="feedbackFiles"
-              onChange={handleImageInputChange}
-            />
-          </StyledImageInputButton>
-        </AddImagesRow>
+        {!feedbackSending && (
+          <AddImagesRow>
+            <StyledImageInputButton>
+              {text("feedback.upload.image")}
+              <HiddenFileInput
+                multiple
+                type="file"
+                id="feedbackFiles"
+                name="feedbackFiles"
+                onChange={handleImageInputChange}
+              />
+            </StyledImageInputButton>
+          </AddImagesRow>
+        )}
         <ButtonRow>
           <SendButtonWrapper>
             <SendButton
               disabled={feedbackContent === "" || feedbackSending}
               primary
-              onClick={() =>
-                onSend(feedbackContent, feedbackEmail, feedbackImageFiles, shareUrl)
-              }>
+              onClick={() => onSend()}>
               {feedbackSending ? text("general.sending") : text("general.send")}
             </SendButton>
             {feedbackSending && <SendingSpinner inline={true} />}
