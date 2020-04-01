@@ -4,6 +4,7 @@ import {HttpLink} from "apollo-link-http";
 import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
+import {createUploadLink} from "apollo-upload-client";
 import fragmentTypes from "./fragmentTypes";
 import uniqBy from "lodash/uniqBy";
 
@@ -77,8 +78,13 @@ export const getClient = (UIStore) => {
     credentials: "include",
   });
 
+  const uploadLink = createUploadLink({
+    uri: serverUrl,
+    credentials: "include",
+  });
+
   createdClient = new ApolloClient({
-    link: ApolloLink.from([errorLink, contextLink, httpLink]),
+    link: ApolloLink.from([errorLink, contextLink, uploadLink]),
     cache: cache,
   });
 

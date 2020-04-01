@@ -7,7 +7,8 @@ export default (state) => {
     {
       feedbackContent: "",
       feedbackEmail: "",
-      feedbackImageFiles: [],
+      feedbackImageFiles: new FormData(),
+      feedbackImageFileNames: [],
       feedbackSending: false,
       feedbackError: null,
     },
@@ -15,6 +16,7 @@ export default (state) => {
       feedbackContent: observable.ref,
       feedbackEmail: observable.ref,
       feedbackImageFiles: observable.ref,
+      feedbackImageFileNames: observable.ref,
       feedbackSending: observable.ref,
       feedbackError: observable.ref,
     }
