@@ -1,4 +1,5 @@
 import {action} from "mobx";
+import {initialFeedback} from "./FeedbackStore";
 
 export default (state) => {
   const setContent = action((content) => {
@@ -16,14 +17,7 @@ export default (state) => {
         state.feedbackImageFiles.append(file.name, file);
         state.feedbackImageFileNames = state.feedbackImageFileNames.concat(file.name);
         console.log("read file form input", file);
-      } else {
-        console.log("file was already selected:", file.name);
       }
-    }
-
-    console.log("list adde files:");
-    for (let file of state.feedbackImageFiles.values()) {
-      console.log("formData has file:", file);
     }
   });
 
@@ -36,17 +30,34 @@ export default (state) => {
     }
   });
 
-  const startSending = action(() => {
-    state.feedbackSending = true;
+  const setSendingState = action((sending) => {
+    state.feedbackSending = sending;
   });
 
-  const sentFeedback = action((response) => {
-    state.feedbackError = response.status === 200 ? "" : "Error in sending feedback";
-    if (response.status === 200) {
-      state.feedbackContent = "";
-      state.feedbackEmail = "";
-    }
-    state.feedbackSending = false;
+  const showFeedbackError = action(() => {
+    state.showFeedbackError = true;
+  });
+
+  const showFeedbackImageError = action(() => {
+    state.showFeedbackImageError = true;
+  });
+
+  const showFeedbackSuccessMsg = action(() => {
+    state.showFeedbackSuccessMsg = false;
+    state.showFeedbackImageError = false;
+    state.showFeedbackSuccessMsg = true;
+  });
+
+  const resetErrorAndSuccessMsg = action(() => {
+    state.showFeedbackSuccessMsg = false;
+    state.showFeedbackImageError = false;
+    state.showFeedbackError = false;
+  });
+
+  const resetFeedback = action(() => {
+    Object.entries(initialFeedback).forEach(([key, value]) => {
+      state[key] = value;
+    });
   });
 
   return {
@@ -54,7 +65,11 @@ export default (state) => {
     setEmail,
     addImageFiles,
     removeImageFile,
-    startSending,
-    sentFeedback,
+    setSendingState,
+    showFeedbackError,
+    showFeedbackImageError,
+    showFeedbackSuccessMsg,
+    resetErrorAndSuccessMsg,
+    resetFeedback,
   };
 };

@@ -51,6 +51,25 @@ const ModalContent = styled.div`
   position: relative;
 `;
 
+const SuccessContent = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-evenly;
+`;
+
+const SuccessMsg = styled.div`
+  font-size: 1rem;
+`;
+
+const InfoRow = styled.div`
+  display: flex;
+  margin: 0 0 17px 0;
+  font-size: 0.8rem;
+  align-items: center;
+  width: 100%;
+`;
+
 const FeedbackTextArea = styled.textarea`
   background: white;
   font-family: inherit;
@@ -154,42 +173,30 @@ const HiddenFileInput = styled.input.attrs({type: "file"})`
 `;
 const StyledImageInputButton = styled.label`
   font-family: var(--font-family);
-  font-size: ${({small = false}) => (small ? "0.75rem" : "1rem")};
+  font-size: 1rem;
   font-weight: 500;
   appearance: none;
   outline: none;
   border-radius: 2.5rem;
-  border: 1px solid ${({transparent = false}) => (!transparent ? "var(--blue)" : "white")};
-  background: ${({primary = false, transparent = false}) =>
-    primary ? "var(--blue)" : transparent ? "transparent" : "white"};
+  border: 1px solid var(--blue);
+  background: white;
   letter-spacing: -0.6px;
-  padding: 0 ${({small = false}) => (small ? "1.25rem" : "1.65em")};
-  color: ${({primary = false, transparent = false}) =>
-    primary || transparent ? "white" : "var(--blue)"};
+  padding: 0 1.65em;
+  color: var(--blue);
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
   width: auto;
   flex: 0 0 auto;
-  height: ${({small = false}) => (small ? "1.75rem" : "2.5rem")};
+  height: 2.5rem;
   cursor: pointer;
   transform: scale(1) translateZ(0);
   transition: background-color 0.2s ease-out, transform 0.1s ease-out;
-
   &:hover {
-    background: ${({primary = false, transparent}) =>
-      primary || transparent ? "var(--dark-blue)" : "#eeeeee"};
+    background: #eeeeee;
     transform: scale(1.025);
   }
-`;
-
-const InfoRow = styled.div`
-  display: flex;
-  margin: 0 0 17px 0;
-  font-size: 0.8rem;
-  align-items: center;
-  width: 100%;
 `;
 
 const ButtonRow = styled.div`
@@ -227,6 +234,15 @@ const SendingSpinner = styled(Loading)`
   margin: 0.5rem 0.5rem 0.5rem 2rem;
 `;
 
+const ErrorMsg = styled.div`
+  color: white;
+  background: red;
+  border-radius: 15px;
+  padding: 0.5rem 1rem;
+  margin: 1.5rem 0 0 0;
+  background: #ff000080;
+`;
+
 const HideButton = styled(Button)``;
 
 const excludeAuthenticationParams = (urlToShare) => {
@@ -247,6 +263,9 @@ const FeedbackModal = decorate((props) => {
     feedbackEmail,
     feedbackImageFiles,
     feedbackImageFileNames,
+    showFeedbackSuccessMsg,
+    showFeedbackError,
+    showFeedbackImageError,
   } = state;
 
   const SEND_FEEDBACK_MUTATION = gql`
@@ -288,28 +307,48 @@ const FeedbackModal = decorate((props) => {
   };
 
   const onSend = async () => {
-    Feedback.startSending();
-
-    // send feedback
-    const feedbackRes = await sendFeedbackMutation({
-      variables: {text: feedbackContent, email: feedbackEmail, url: shareUrl},
-    });
-
-    console.log("feedbackRes", feedbackRes);
-    const msgTs = feedbackRes.data.sendFeedback.msgTs;
-
-    // send images of the feedback
-    const files = feedbackImageFileNames.map((fileName) =>
-      feedbackImageFiles.get(fileName)
-    );
-    const uploadRes = await Promise.all(
-      files.map((file) => uploadImageMutation({variables: {file, msgTs}}))
-    );
-
-    console.log("uploadRes", uploadRes);
+    Feedback.setSendingState(true);
+    let success = true;
+    let msgTs;
+    // send text content of the feedback
+    try {
+      const feedbackRes = await sendFeedbackMutation({
+        variables: {text: feedbackContent, email: feedbackEmail, url: shareUrl},
+      });
+      console.log("feedback response", feedbackRes);
+      msgTs = feedbackRes.data.sendFeedback.msgTs;
+    } catch (e) {
+      console.log(e);
+      success = false;
+      Feedback.showFeedbackError();
+    }
+    if (success && msgTs) {
+      // send images of the feedback
+      try {
+        const files = feedbackImageFileNames.map((fileName) =>
+          feedbackImageFiles.get(fileName)
+        );
+        const uploadRes = await Promise.all(
+          files.map((file) => uploadImageMutation({variables: {file, msgTs}}))
+        );
+        console.log("image upload response", uploadRes);
+      } catch (e) {
+        console.log(e);
+        success = false;
+        Feedback.showFeedbackImageError();
+      }
+    }
     apolloClient.resetStore();
+    Feedback.setSendingState(false);
+    if (success) {
+      Feedback.resetFeedback();
+      Feedback.showFeedbackSuccessMsg();
+    }
+  };
 
-    Feedback.sentFeedback(feedbackRes);
+  const closeModal = () => {
+    onClose();
+    Feedback.resetErrorAndSuccessMsg();
   };
 
   const createShareUrl = useCallback(() => {
@@ -332,8 +371,18 @@ const FeedbackModal = decorate((props) => {
     }
   }, [feedbackModalOpen]);
 
+  if (showFeedbackSuccessMsg)
+    return (
+      <StyledFeedbackModal isOpen={feedbackModalOpen} onEscapeKeydown={closeModal}>
+        <SuccessContent>
+          <SuccessMsg>{text("feedback.success.msg")}</SuccessMsg>
+          <HideButton onClick={closeModal}>{text("general.hide")}</HideButton>
+        </SuccessContent>
+      </StyledFeedbackModal>
+    );
+
   return (
-    <StyledFeedbackModal isOpen={feedbackModalOpen} onEscapeKeydown={onClose}>
+    <StyledFeedbackModal isOpen={feedbackModalOpen} onEscapeKeydown={closeModal}>
       <ModalContent>
         <InfoRow>{text("feedback.includes.url")}</InfoRow>
         <FeedbackTextArea
@@ -390,8 +439,15 @@ const FeedbackModal = decorate((props) => {
             </SendButton>
             {feedbackSending && <SendingSpinner inline={true} />}
           </SendButtonWrapper>
-          <HideButton onClick={onClose}>{text("general.hide")}</HideButton>
+          <HideButton onClick={closeModal}>{text("general.hide")}</HideButton>
         </ButtonRow>
+        {(showFeedbackError || showFeedbackImageError) && (
+          <ErrorMsg>
+            {showFeedbackError
+              ? text("feedback.error.general")
+              : text("feedback.error.images")}
+          </ErrorMsg>
+        )}
       </ModalContent>
     </StyledFeedbackModal>
   );

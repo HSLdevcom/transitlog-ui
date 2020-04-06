@@ -226,6 +226,9 @@
   "feedback.placeholder": "Feedback",
   "feedback.upload.image": "Upload image",
   "feedback.includes.url": "The current settings of the application will be sent along with the feedback.",
+  "feedback.error.general": "Error in sending feedback, please try again later.",
+  "feedback.error.images": "Error in sending the images, please try again later.",
+  "feedback.success.msg": "Thank you for the feedback!",
 
   "message.emptyview.network": "The data in this view is unavailable due to a network issue. Make sure you are online and try again.",
   "message.emptyview.authentication": "You need to be logged in to get access to the data in this view, or this account is not authorized.",
