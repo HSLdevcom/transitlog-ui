@@ -23,7 +23,6 @@ export const withRoute = (Component) =>
           (!state.route.originStopId ||
             fetchedRoute.originStopId !== state.route.originStopId)
         ) {
-          console.log("writing route to state");
           props.Filters.setRoute(fetchedRoute);
         }
       },
