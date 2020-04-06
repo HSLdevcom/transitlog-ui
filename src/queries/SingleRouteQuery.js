@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React from "react";
 import gql from "graphql-tag";
 import {Query} from "@apollo/react-components";
 import get from "lodash/get";
@@ -19,14 +19,11 @@ const updateListenerName = "single stop query";
 
 const SingleRouteQuery = observer(
   ({children, routeId, direction, date, skip, onCompleted}) => {
-    const variables = useMemo(
-      () => ({
-        routeId,
-        direction,
-        date,
-      }),
-      [routeId, direction, date]
-    );
+    const variables = {
+      routeId,
+      direction,
+      date,
+    };
 
     const shouldSkip = skip || !routeId || !date;
 

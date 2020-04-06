@@ -20,8 +20,10 @@ export const withRoute = (Component) =>
       ({route: fetchedRoute}) => {
         if (
           createRouteId(fetchedRoute) === createRouteId(state.route) &&
-          !state.route.originStopId
+          (!state.route.originStopId ||
+            fetchedRoute.originStopId !== state.route.originStopId)
         ) {
+          console.log("writing route to state");
           props.Filters.setRoute(fetchedRoute);
         }
       },
