@@ -376,7 +376,7 @@ const FeedbackModal = decorate((props) => {
       <StyledFeedbackModal isOpen={feedbackModalOpen} onEscapeKeydown={closeModal}>
         <SuccessContent>
           <SuccessMsg>{text("feedback.success.msg")}</SuccessMsg>
-          <HideButton onClick={closeModal}>{text("general.hide")}</HideButton>
+          <HideButton onClick={closeModal}>{text("general.close")}</HideButton>
         </SuccessContent>
       </StyledFeedbackModal>
     );
