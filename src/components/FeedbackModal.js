@@ -424,6 +424,7 @@ const FeedbackModal = decorate((props) => {
                 type="file"
                 id="feedbackFiles"
                 name="feedbackFiles"
+                accept="image/*"
                 onChange={handleImageInputChange}
               />
             </StyledImageInputButton>
