@@ -67,6 +67,7 @@ export default (state) => {
       language: languageState.language,
       errors: [],
       shareModalOpen: false,
+      feedbackModalOpen: false,
       user: null,
       currentMapillaryViewerLocation: null,
       currentMapillaryMapLocation: null,
