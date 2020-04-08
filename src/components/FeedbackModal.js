@@ -13,8 +13,9 @@ import Loading from "./Loading";
 const StyledToggleFeedbackButton = styled.div`
   color: white;
   border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
   transition-duration: 0.1s;
+  margin: 0 40px -2px 25px;
+  min-width: max-content;
   &:hover {
     cursor: pointer;
     border-bottom: 2px solid rgba(255, 255, 255, 0.94);

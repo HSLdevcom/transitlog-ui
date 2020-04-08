@@ -51,7 +51,7 @@ const LangSelectContainer = styled.div`
   flex: 1 1 auto;
   align-items: center;
   justify-content: flex-start;
-  margin-right: 2rem;
+  margin: 0 0 0 4.5rem;
 
   div {
     flex: 0 0 auto;
