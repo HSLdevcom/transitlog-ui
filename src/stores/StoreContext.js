@@ -5,6 +5,7 @@ import FilterStore from "./FilterStore";
 import TimeStore from "./TimeStore";
 import UIStore from "./UIStore";
 import JourneyStore from "./JourneyStore";
+import FeedbackStore from "./FeedbackStore";
 import UpdateManager from "./UpdateManager";
 
 const initialState = getUrlState();
@@ -16,6 +17,7 @@ export const store = createStore(
     UI: UIStore,
     Journey: JourneyStore,
     Update: UpdateManager,
+    Feedback: FeedbackStore,
   },
   initialState
 );

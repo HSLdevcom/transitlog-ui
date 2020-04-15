@@ -11,8 +11,6 @@ jobs:
     steps:
     - name: Checkout UI
       uses: actions/checkout@v2
-      with:
-        ref: master
     - name: Build UI and publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@master
       with:

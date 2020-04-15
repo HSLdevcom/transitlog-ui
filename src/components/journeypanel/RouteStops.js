@@ -45,7 +45,7 @@ const RouteStops = decorate(({routeStops, color, Filters, UI}) => {
       <StopsList>
         {routeStops.map((stop, index) => (
           <RouteStop
-            key={stop.stopId}
+            key={stop.id}
             color={color}
             stop={stop}
             onHover={onHover}

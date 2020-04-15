@@ -69,6 +69,10 @@ export default (state) => {
     state.shareModalOpen = setTo;
   });
 
+  const toggleFeedbackModal = action((setTo = !state.feedbackModalOpen) => {
+    state.feedbackModalOpen = setTo;
+  });
+
   const setSidePanelTab = action((nextTab) => {
     // Validate that this is actually a tab
     if (Object.values(SidePanelTabs).includes(nextTab)) {
@@ -245,6 +249,7 @@ export default (state) => {
     setAreaEventsStyle,
     setAreaEventsRouteFilter,
     toggleShareModal,
+    toggleFeedbackModal,
     highlightStop,
     setUser,
     setWeeklyObservedTimesType,
