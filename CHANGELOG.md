@@ -1,5 +1,12 @@
 # Transitlog UI changelog
 
+## Version 1.9.0, deployed 2020-04-15 @ 08:00
+
+- New feedback feature with image upload.
+- Fix for route origin stop changes not being reflected in Reittiloki.
+- Update language files.
+- Fix weekly timetable E2E tests.
+
 ## Version 1.8.3, deployed 2020-03-23 @ 10:00
 
 - Show TLP event details in JourneyEvents list and in tooltips on the map.
