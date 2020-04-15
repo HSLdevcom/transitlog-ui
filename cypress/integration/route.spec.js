@@ -48,8 +48,6 @@ describe("Route smoke tests", () => {
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
-    cy.waitUntilLoadingFinishes();
-
     cy.getTestElement("sidebar-tab-week-journeys").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
 
@@ -68,8 +66,6 @@ describe("Route smoke tests", () => {
 
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
-
-    cy.waitUntilLoadingFinishes();
 
     cy.getTestElement("sidebar-tab-week-journeys").click();
     cy.getTestElement("journeys-by-week-list").should("exist");
