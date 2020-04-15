@@ -56,15 +56,15 @@ jobs:
         time: '5m' # Wait until all servers are restarted
     - name: Cypress tests
       uses: cypress-io/github-action@v1
-      with:
-        record: true # Only production records to Cypress.io
+      # with:
+      #   record: true # Only production records to Cypress.io
       env:
         CYPRESS_BASE_URL: https://reittiloki.hsl.fi
         CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
         CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
         CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
         CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
     - name: Upload screenshot artifacts
       uses: actions/upload-artifact@v1
       if: failure()
