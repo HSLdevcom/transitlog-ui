@@ -9,9 +9,8 @@ export const useQueryData = (query, options = {}, updateName = false, pickData =
 
   const activateRefetch = useRefetch(
     updateName || "",
-    get(options, "variables", {}),
-    false,
-    options.skip || false
+    {skip: options.skip || false, ...get(options, "variables", {})},
+    false
   );
 
   const pickedData = pickGraphqlData(data, pickData);
