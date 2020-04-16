@@ -1,5 +1,9 @@
 # Transitlog UI changelog
 
+## Version 1.9.1, deployed 2020-04-16 @ 15:00
+
+- No UI changes.
+
 ## Version 1.9.0, deployed 2020-04-15 @ 08:00
 
 - New feedback feature with image upload.
