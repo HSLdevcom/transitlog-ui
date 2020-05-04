@@ -89,7 +89,7 @@ describe("Route smoke tests", () => {
               .get("@first-departure-time")
               .then((firstStopDeparture) => lastStopArrival !== firstStopDeparture)
           ),
-      {timeout: 120000}
+      {timeout: 480000}
     );
 
     cy.getTestElement("weekly-departure-time").should("have.length.least", 2);
