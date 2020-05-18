@@ -107,9 +107,12 @@ describe("Route smoke tests", () => {
     cy.getTestElement("route-input").type("1018/1");
     cy.getTestElement("route-option-1018-1").click();
 
-    cy.getTestElement("observed-journey")
-      .first()
-      .click();
+    cy.waitUntil(() =>
+      cy
+        .getTestElement("observed-journey")
+        .first()
+        .click()
+    );
 
     cy.assertJourneySelected("1018");
 
