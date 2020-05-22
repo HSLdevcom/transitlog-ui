@@ -32,9 +32,11 @@ describe("Route smoke tests", () => {
 
     cy.getTestElement("observed-journey")
       .first()
-      .click({force: true})
-  
-    cy.getTestElement("observed-journey")
+      .as("first-observed-journey");
+
+    cy.get("@first-observed-journey").click({force: true});
+
+    cy.get("@first-observed-journey")
       .find(`[data-testid="journey-departure-time"]`)
       .text()
       .then((departureTime) => {
