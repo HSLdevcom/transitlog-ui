@@ -41,15 +41,17 @@ function checkGPS(positions, setState) {
 
 function checkLocHealth(events, incrementHealth, addMessage) {
   let odoCount = 0;
+  // PDE events are SUPPOSED to be triggered with the odometer, so exclude them from the check.
+  let eventsWithoutPDE = events.filter((evt) => evt.type !== "PDE");
 
-  for (const evt of events) {
+  for (const evt of eventsWithoutPDE) {
     if (typeof evt.loc !== "undefined" && evt.loc === "ODO") {
       odoCount++;
     }
   }
 
-  const score = events.length - odoCount;
-  const percentage = round((odoCount / events.length) * 100);
+  const score = eventsWithoutPDE.length - odoCount;
+  const percentage = round((odoCount / eventsWithoutPDE.length) * 100);
 
   incrementHealth(score);
 

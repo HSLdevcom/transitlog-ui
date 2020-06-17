@@ -124,7 +124,9 @@ export const JourneyEvent = decorate(
                 }}
               />
             </PlainSlot>
-            <AlignedLocBadge red={event.loc === "ODO"}>{event.loc}</AlignedLocBadge>
+            <AlignedLocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+              {event.loc}
+            </AlignedLocBadge>
             <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
         </StopContent>
@@ -238,7 +240,9 @@ export const JourneyStopEvent = decorate(
               style={{fontSize: "0.75rem", color: "var(--grey)", marginLeft: "0.5rem"}}>
               {event.type}
             </span>
-            <LocBadge red={event.loc === "ODO"}>{event.loc}</LocBadge>
+            <LocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+              {event.loc}
+            </LocBadge>
           </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>
@@ -467,7 +471,9 @@ export const JourneyTlpEvent = decorate(
                 }}
               />
             </PlainSlot>
-            <AlignedLocBadge red={event.loc === "ODO"}>{event.loc}</AlignedLocBadge>
+            <AlignedLocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+              {event.loc}
+            </AlignedLocBadge>
             <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
           <TlpDetailsWrapper>
