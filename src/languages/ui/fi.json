@@ -97,7 +97,7 @@
   "journey.event.DOC": "Ovi kiinni",
   "journey.event.DUE": "Saapumassa pysäkille",
   "journey.event.ARS": "Saapuminen",
-  "journey.event.PDE": "Lähtö",
+  "journey.event.PDE": "Lähtö pysäkiltä",
   "journey.event.PAS": "Ajo pysäkin ohi pysähtymättä",
   "journey.event.WAIT": "Odottaa pysäkillä",
   "journey.event.TLR": "Liikennevaloetuusilmaisu",

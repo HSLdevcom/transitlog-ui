@@ -63,12 +63,14 @@ const JourneyStopsLayer = decorate(
         const isLast = index === arr.length - 1;
 
         let useEvent;
-        const useDEP = events.some((evt) => !!(evt.isTimingStop || evt.isOrigin));
+
+        let isTimingOrOrigin = events.some((evt) => evt.isTimingStop || evt.isOrigin);
+        let onlyPDE = events.some((evt) => evt.type === "PDE" && evt.loc === "ODO");
+        let departureEventType = !onlyPDE && isTimingOrOrigin ? "DEP" : "PDE";
 
         const arrival = events.find((evt) => evt.type === "ARS");
         let departure =
-          events.find((evt) => [useDEP ? "DEP" : "PDE", "PAS"].includes(evt.type)) ||
-          arrival;
+          events.find((evt) => [departureEventType, "PAS"].includes(evt.type)) || arrival;
 
         if (!departure) {
           useEvent = events.find((evt) => evt.type === "PLANNED");

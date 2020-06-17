@@ -97,7 +97,7 @@
   "journey.event.DOC": "Dörrarna stängdes",
   "journey.event.DUE": "Anländer till hållplatsen",
   "journey.event.ARS": "Anländning",
-  "journey.event.PDE": "Avgång",
+  "journey.event.PDE": "Avgång från hållplats",
   "journey.event.PAS": "Körde förbi hållplatsen",
   "journey.event.WAIT": "Väntar på hållplatsen",
   "journey.event.TLR": "Trafikljusprioritetsbegäran",
