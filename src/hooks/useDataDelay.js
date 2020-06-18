@@ -23,10 +23,14 @@ export const useDataDelay = (journey) => {
       delays.push(delay);
     }
 
+    if (delays.length === 0) {
+      return false;
+    }
+
     const delaySum = delays.reduce((total, delay) => total + delay, 0);
     const delayCount = delays.length;
 
-    return delaySum / delayCount / 1000;
+    return delaySum / Math.max(1, delayCount) / 1000;
   }, [journey]);
 
   return dataDelay;
