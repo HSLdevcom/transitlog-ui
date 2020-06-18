@@ -102,10 +102,6 @@ export const JourneyEvent = decorate(
       timestamp,
     ]);
 
-    const isStopEvent = ["DOO", "DOC", "DUE", "ARR", "PDE", "PAS", "PLANNED"].includes(
-      event.type
-    );
-
     return (
       <StopWrapper>
         <StopElementsWrapper
@@ -116,18 +112,25 @@ export const JourneyEvent = decorate(
         <StopContent>
           <StopTime onClick={selectTime}>
             <PlainSlot {...applyTooltip(event.type)}>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html:
-                    text(`journey.event.${event.type}`) +
-                    (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
-                }}
-              />
+              <span>
+                {text(`journey.event.${event.type}`)}
+                {event.stopId ? ` (${event.stopId})` : ""}
+                <span
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--grey)",
+                    marginLeft: "0.5rem",
+                  }}>
+                  {event.type}
+                </span>
+              </span>
             </PlainSlot>
-            <AlignedLocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
-              {event.loc}
-            </AlignedLocBadge>
-            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+            <div style={{paddingTop: "0.15rem"}}>
+              <AlignedLocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+                {event.loc}
+              </AlignedLocBadge>
+              <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+            </div>
           </StopTime>
         </StopContent>
       </StopWrapper>
