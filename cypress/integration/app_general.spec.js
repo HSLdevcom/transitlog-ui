@@ -40,10 +40,10 @@ describe("App opening smoke tests", () => {
 
   it("Can share the view", () => {
     cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
+    cy.getTestElement("route-option-2510-1").click({force: true});
 
     cy.getTestElement("stop-input").type("1173434");
-    cy.getTestElement("stop-option-1173434").click();
+    cy.getTestElement("stop-option-1173434").click({force: true});
 
     cy.getTestElement("share-button").click();
     cy.getTestElement("share-url-display")
@@ -66,10 +66,10 @@ describe("App opening smoke tests", () => {
 
   it("Can reset the app", () => {
     cy.getTestElement("route-input").type("2510/1");
-    cy.getTestElement("route-option-2510-1").click();
+    cy.getTestElement("route-option-2510-1").click({force: true});
 
     cy.getTestElement("stop-input").type("1173434");
-    cy.getTestElement("stop-option-1173434").click();
+    cy.getTestElement("stop-option-1173434").click({force: true});
 
     cy.getTestElement("reset-button").click();
 

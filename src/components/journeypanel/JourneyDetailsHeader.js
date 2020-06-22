@@ -1,6 +1,6 @@
 import {Heading} from "../Typography";
 import {TransportIcon} from "../transportModes";
-import React, {useMemo} from "react";
+import React from "react";
 import styled from "styled-components";
 import Calendar from "../../icons/Calendar";
 import JourneyPlanner from "../../icons/JourneyPlanner";
@@ -108,7 +108,7 @@ const HealthDisplay = styled.div`
   }
 `;
 
-const HealthIndicator = styled.button`
+const HealthIndicator = styled.div`
   cursor: pointer;
   outline: 0;
   user-select: none;
@@ -172,33 +172,28 @@ export default observer(
             )}
             {journeyHealth && (
               <HealthDisplay>
-                {journeyHealth.isOK ? (
-                  <HealthIndicator
-                    onClick={() => selectTab("journey-health")}
-                    title="Journey health"
-                    value={journeyHealth.total}>
-                    {Math.floor(journeyHealth.total)}%
-                  </HealthIndicator>
-                ) : journeyHealth.total === 0 && journeyHealth.checklist.length === 0 ? (
-                  <HealthIndicator title="Journey health" value={0}>
-                    <Text>general.no_data</Text>
-                  </HealthIndicator>
-                ) : (
-                  <Button
-                    transparent={true}
-                    onClick={() => selectTab("journey-health")}
-                    style={{
-                      marginLeft: "auto",
-                      height: "auto",
-                      border: 0,
-                      background: "transparent",
-                      padding: 0,
-                      width: "auto",
-                    }}
-                    title="Journey health">
-                    <HealthAlert />
-                  </Button>
-                )}
+                <Button
+                  transparent={true}
+                  onClick={() => selectTab("journey-health")}
+                  style={{
+                    marginLeft: "auto",
+                    height: "auto",
+                    border: 0,
+                    background: "transparent",
+                    padding: 0,
+                    width: "auto",
+                  }}
+                  title="Journey health">
+                  {journeyHealth.total === 0 && journeyHealth.checklist.length === 0 ? (
+                    <HealthIndicator title="Journey health" value={0}>
+                      <Text>general.no_data</Text>
+                    </HealthIndicator>
+                  ) : (
+                    <HealthIndicator title="Journey health" value={journeyHealth.total}>
+                      {Math.floor(journeyHealth.total)}%
+                    </HealthIndicator>
+                  )}
+                </Button>
               </HealthDisplay>
             )}
           </MainHeaderRow>

@@ -23,7 +23,7 @@ describe("Vehicles smoke tests", () => {
 
         cy.getTestElement("vehicle-option")
           .first()
-          .click();
+          .click({force: true});
 
         cy.getTestElement("vehicle-block-list").should("exist");
         cy.getTestElement("selected-vehicle-display").should("exist");
@@ -40,12 +40,12 @@ describe("Vehicles smoke tests", () => {
 
     cy.getTestElement("vehicle-option-in-service")
       .first()
-      .click();
+      .click({force: true});
 
     cy.getTestElement("vehicle-block-list").should("exist");
     cy.getTestElement("vehicle-departure-option")
       .first()
-      .click();
+      .click({force: true});
 
     cy.assertJourneySelected();
   });

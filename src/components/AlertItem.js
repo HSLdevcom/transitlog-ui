@@ -14,6 +14,7 @@ import JourneyPlanner from "../icons/JourneyPlanner";
 import HSLLogoNoText from "../icons/HSLLogoNoText";
 import {text, alertText, Text} from "../helpers/text";
 import flow from "lodash/flow";
+import get from "lodash/get";
 import {inject} from "../helpers/inject";
 
 const AlertComponent = styled.div`
@@ -206,13 +207,13 @@ const AlertItem = decorate(({alert, state}) => {
 
   const colorful = type === "network";
   const lightBg = (colorful && !color.includes("red")) || !colorful;
+  const alertUrl = get(alert, "url", "");
 
-  const validUrl =
-    typeof alert.url.startsWith !== "undefined"
-      ? alert.url.startsWith("http")
-        ? alert.url
-        : "https://" + alert.url
-      : "";
+  const validUrl = alertUrl
+    ? alertUrl.startsWith("http")
+      ? alertUrl
+      : "https://" + alertUrl
+    : "";
 
   const affectedCount = alert.affectedIds.length;
   const affectedTitle =

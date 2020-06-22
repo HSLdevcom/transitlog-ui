@@ -54,7 +54,7 @@ describe("Area search", () => {
     cy.getTestElement("area-journeys-list").should("exist");
     cy.getTestElement("area-journey-item-journey")
       .first()
-      .click();
+      .click({force: true});
 
     cy.getTestElement("sidebar-tab-journeys").should("exist");
     cy.getTestElement("journey-details").should("exist");

@@ -1,5 +1,13 @@
 # Transitlog UI changelog
 
+## Version 1.9.2, deployed 2020-06-22 @ 15:00
+
+- De facto stop events change, PDE becomes the stop event.
+- Update ODO badge coloring for PDE events.
+- Update and fix E2E tests.
+- Clearer event type and event stop in events list.
+- Update journey health checks.
+
 ## Version 1.9.1, deployed 2020-04-16 @ 15:00
 
 - No UI changes.

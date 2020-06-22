@@ -186,6 +186,7 @@ const RouteDepartureItem = decorate(
     );
     const observedTimeString = get(departure, "observedDepartureTime.departureTime", "");
     const loc = get(departure, "observedDepartureTime.loc", "?");
+    const eventType = get(departure, "observedDepartureTime.eventType", "PDE");
 
     const diffTime = secondsToTimeObject(plannedObservedDiff);
     const delayType = getDelayType(plannedObservedDiff);
@@ -202,7 +203,7 @@ const RouteDepartureItem = decorate(
             {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
           </DelaySlot>
         </Tooltip>
-        {loc && <LocBadge red={loc === "ODO"}>{loc}</LocBadge>}
+        {loc && <LocBadge red={eventType !== "PDE" && loc === "ODO"}>{loc}</LocBadge>}
         <Tooltip helpText="Journey list observed">
           <TimeSlot>{observedTimeString}</TimeSlot>
         </Tooltip>
