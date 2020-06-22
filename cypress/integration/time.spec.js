@@ -58,7 +58,7 @@ describe("Time smoke tests", () => {
 
   it("Can use live mode", () => {
     cy.getTestElement("route-input").type("2550/1");
-    cy.getTestElement("route-option-2550-1").click();
+    cy.getTestElement("route-option-2550-1").click({force: true});
 
     cy.getTestElement("observed-journey")
       .eq(-1)
@@ -67,7 +67,7 @@ describe("Time smoke tests", () => {
     cy.assertJourneySelected("2550");
 
     // Clicking the vehicle marker will pin the tooltip
-    cy.getTestElement("hfp-marker-icon").click();
+    cy.getTestElement("hfp-marker-icon").click({force: true});
     cy.getTestElement("hfp-tooltip-content").should("exist");
 
     cy.getTestElement("hfp-event-time")
