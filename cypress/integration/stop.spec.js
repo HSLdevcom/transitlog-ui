@@ -46,7 +46,7 @@ describe("Stop smoke tests", () => {
 
   it("Finds a terminal and can select it", () => {
     cy.getTestElement("stop-input").type("1000002");
-    cy.getTestElement("terminal-option-1000002").click(){force: true};
+    cy.getTestElement("terminal-option-1000002").click({force: true});
 
     cy.url().should((url) => expect(url).to.include(`terminal=1000002`));
 
