@@ -14,7 +14,7 @@ describe("Route smoke tests", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click();
+    cy.getTestElement("route-option-1018-1").click({force: true});
 
     cy.url().should((url) =>
       expect(url).to.include(`route.routeId=1018&route.direction=1`)
@@ -28,11 +28,15 @@ describe("Route smoke tests", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click();
+    cy.getTestElement("route-option-1018-1").click({force: true});
 
     cy.getTestElement("observed-journey")
       .first()
-      .click()
+      .as("first-observed-journey");
+
+    cy.get("@first-observed-journey").click({force: true});
+
+    cy.get("@first-observed-journey")
       .find(`[data-testid="journey-departure-time"]`)
       .text()
       .then((departureTime) => {
@@ -46,9 +50,9 @@ describe("Route smoke tests", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click();
+    cy.getTestElement("route-option-1018-1").click({force: true});
 
-    cy.getTestElement("sidebar-tab-week-journeys").click();
+    cy.getTestElement("sidebar-tab-week-journeys").click({force: true});
     cy.getTestElement("journeys-by-week-list").should("exist");
 
     cy.getTestElement("weekly-departure-time").should("have.length.least", 2);
@@ -65,9 +69,9 @@ describe("Route smoke tests", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click();
+    cy.getTestElement("route-option-1018-1").click({force: true});
 
-    cy.getTestElement("sidebar-tab-week-journeys").click();
+    cy.getTestElement("sidebar-tab-week-journeys").click({force: true});
     cy.getTestElement("journeys-by-week-list").should("exist");
 
     cy.getTestElement("weekly-departure-time")
@@ -76,7 +80,7 @@ describe("Route smoke tests", () => {
       .text()
       .as("first-departure-time");
 
-    cy.getTestElement("observed-times-type-select").click();
+    cy.getTestElement("observed-times-type-select").click({force: true});
 
     cy.waitUntil(
       () =>
@@ -89,7 +93,7 @@ describe("Route smoke tests", () => {
               .get("@first-departure-time")
               .then((firstStopDeparture) => lastStopArrival !== firstStopDeparture)
           ),
-      {timeout: 120000}
+      {timeout: 480000}
     );
 
     cy.getTestElement("weekly-departure-time").should("have.length.least", 2);
@@ -105,17 +109,20 @@ describe("Route smoke tests", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
     cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click();
+    cy.getTestElement("route-option-1018-1").click({force: true});
 
-    cy.getTestElement("observed-journey")
-      .first()
-      .click();
+    cy.waitUntil(() =>
+      cy
+        .getTestElement("observed-journey")
+        .first()
+        .click({force: true})
+    );
 
     cy.assertJourneySelected("1018");
 
     cy.getTestElement("toggle-graph-button")
       .should("exist")
-      .click();
+      .click({force: true});
 
     cy.getTestElement("journey-graph-container").should("visible");
     cy.get(".test-class-journey-graph").should("exist");

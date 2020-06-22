@@ -94,18 +94,26 @@ const JourneyEvents = decorate(
       const isTimingStopArr = event.isTimingStop && event.type === "ARS";
       const isTerminalArr = (isOrigin || isLastOfType) && event.type === "ARS";
 
+      // Are there ODO-PDE events for this stop?
+      let odoPdeActive = events.some(
+        (evt) =>
+          evt.stopId === event.stopId &&
+          evt.type === "PDE" &&
+          ["ODO", "MAN"].includes(evt.loc)
+      );
+
+      // If the stop is the origin or a timing stop, AND there are no PDE events with loc == ODO for the stop,
+      // then DEP events can be shown as the official departure event.
+      let useDepAsDeparture = (isOrigin || isTimingStop) && !odoPdeActive;
+
       const types = [event.type];
 
       // Special departure filter for the relevant departure event for this stop.
       // DEP for origins and timing stops, PDE for everything else.
       if (
         event.type === "PAS" ||
-        (typeof event.isOrigin !== "undefined" &&
-          (isOrigin || isTimingStop) &&
-          event.type === "DEP") ||
-        (typeof event.isOrigin !== "undefined" &&
-          !(isOrigin || isTimingStop) &&
-          event.type === "PDE")
+        (event.type === "DEP" && useDepAsDeparture) ||
+        (event.type === "PDE" && odoPdeActive)
       ) {
         types.push("DEPARTURE");
       }

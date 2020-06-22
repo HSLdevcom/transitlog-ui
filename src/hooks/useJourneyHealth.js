@@ -41,15 +41,20 @@ function checkGPS(positions, setState) {
 
 function checkLocHealth(events, incrementHealth, addMessage) {
   let odoCount = 0;
+  // PDE events are SUPPOSED to be triggered with the odometer, so exclude them from the check.
+  // Filter out the PDE events if the events conform to the ODO-PDE spec.
+  let eventsWithoutPDE = events.some((evt) => evt.type === "PDE" && evt.loc === "ODO")
+    ? events.filter((evt) => evt.type !== "PDE")
+    : events;
 
-  for (const evt of events) {
+  for (const evt of eventsWithoutPDE) {
     if (typeof evt.loc !== "undefined" && evt.loc === "ODO") {
       odoCount++;
     }
   }
 
-  const score = events.length - odoCount;
-  const percentage = round((odoCount / events.length) * 100);
+  const score = eventsWithoutPDE.length - odoCount;
+  const percentage = round((odoCount / eventsWithoutPDE.length) * 100);
 
   incrementHealth(score);
 
@@ -63,7 +68,9 @@ function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessa
 
   if (stopId) {
     const firstStopDeparture = events.find(
-      (evt) => evt.stopId === stopId && evt.type === "DEP"
+      (evt) =>
+        evt.stopId === stopId &&
+        ((evt.type === "PDE" && evt.loc === "ODO") || evt.type === "DEP")
     );
 
     if (!firstStopDeparture) {
@@ -72,7 +79,7 @@ function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessa
       return;
     }
 
-    if (!firstStopDeparture._isVirtual) {
+    if (!firstStopDeparture._isVirtual || firstStopDeparture.loc === "MAN") {
       incrementHealth(100);
     } else if (firstStopDeparture._isVirtual) {
       addMessage(`${text("journey.health.origin_event_virtual")} ${stopId}.`);
@@ -94,7 +101,7 @@ function checkLastStopArrival(events, lastStop, incrementHealth, addMessage) {
       return;
     }
 
-    if (!lastStopArrival._isVirtual) {
+    if (!lastStopArrival._isVirtual || lastStopArrival.loc === "MAN") {
       incrementHealth(100);
     } else {
       addMessage(`${text("journey.health.destination_event_virtual")} ${lastStop}.`);
@@ -109,7 +116,9 @@ function checkTimingStopDepartures(events, visitedStops, incrementHealth, addMes
   if (timingStops.length !== 0) {
     for (const {stopId} of timingStops) {
       const timingStopDeparture = events.find(
-        (evt) => evt.stopId === stopId && evt.type === "DEP"
+        (evt) =>
+          evt.stopId === stopId &&
+          ((evt.type === "PDE" && evt.loc === "ODO") || evt.type === "DEP")
       );
 
       if (!timingStopDeparture) {
@@ -118,7 +127,7 @@ function checkTimingStopDepartures(events, visitedStops, incrementHealth, addMes
         continue;
       }
 
-      if (!timingStopDeparture._isVirtual) {
+      if (!timingStopDeparture._isVirtual || timingStopDeparture.loc === "MAN") {
         incrementHealth(100);
       } else {
         addMessage(`${text("journey.health.timing_event_virtual")} ${stopId}.`);
@@ -193,7 +202,9 @@ function checkPositionEventsHealth(
   reportMax(eventsChecked);
 }
 
-const stopEventTypes = ["DEP", ["PDE", "PAS"], "ARR", ["ARS", "PAS"]];
+// Stop events can be of many types, and they appear in the subarrays in the preference order.
+// For example, we prefer PDE events for stops but will accept DEP events if that's all we got.
+const stopEventTypes = [["PDE", "DEP"], ["PDE", "PAS"], "ARR", ["ARS", "PAS"]];
 const lastStopEventTypes = ["ARR", "ARS"];
 
 function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMessage) {
@@ -230,7 +241,7 @@ function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMes
     const virtualStopEvents = [];
 
     for (const stopEvent of eventsForStop) {
-      if (stopEvent._isVirtual) {
+      if (stopEvent._isVirtual && stopEvent.loc !== "MAN") {
         virtualStopEvents.push(stopEvent.type);
         incrementHealth(1);
       } else {

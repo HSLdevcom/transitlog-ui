@@ -347,7 +347,9 @@ const VehicleJourneys = decorate((props) => {
                         ? text("journey.event.DA")
                         : text("journey.event.DOUT")}
                     </PlainSlot>
-                    <LocBadge red={journey.loc === "ODO"}>{journey.loc}</LocBadge>
+                    <LocBadge red={journey.eventType !== "PDE" && journey.loc === "ODO"}>
+                      {journey.loc}
+                    </LocBadge>
                     <PlainSlotMono>{journey.recordedTime}</PlainSlotMono>
                   </TagButton>
                 </DriverEventRow>

@@ -33,7 +33,6 @@ const HealthRow = styled.div`
 const LineHeading = styled.span`
   color: var(--dark-grey);
   font-size: 0.9rem;
-  margin-right: 0.5rem;
   flex: 1 1 auto;
   align-items: flex-start;
   display: flex;
@@ -78,7 +77,7 @@ const TotalHealthIndicator = styled.div`
     var(--lightest-grey) 0 ${(p) => 100 - p.value}%
   );
   position: relative;
-  margin-right: 1rem;
+  margin-right: 1rem !important;
   flex: none;
 
   &:before {
@@ -154,6 +153,7 @@ const HealthAlert = styled(Alert).attrs({
   fill: "var(--red)",
 })`
   flex-shrink: 0;
+  margin-right: 1rem;
 `;
 
 const healthColor = (value, thresholds = defaultThresholds) => {
@@ -283,22 +283,24 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
             );
           }
         )}
-        <HealthRow {...dataDelayHelpText}>
-          <LineHeading>
-            <Text>journey.health.average_delay</Text>
-          </LineHeading>
-          <ObservedValue
-            color={dataDelay > 10 && dataDelay <= 60 ? "var(--dark-grey)" : "white"}
-            backgroundColor={
-              dataDelay <= 10
-                ? "var(--light-green)"
-                : dataDelay <= 60
-                ? "var(--yellow)"
-                : "var(--red)"
-            }>
-            {round(dataDelay)} <Text>general.seconds.short</Text>
-          </ObservedValue>
-        </HealthRow>
+        {dataDelay !== false && (
+          <HealthRow {...dataDelayHelpText}>
+            <LineHeading>
+              <Text>journey.health.average_delay</Text>
+            </LineHeading>
+            <ObservedValue
+              color={dataDelay > 10 && dataDelay <= 60 ? "var(--dark-grey)" : "white"}
+              backgroundColor={
+                dataDelay <= 10
+                  ? "var(--light-green)"
+                  : dataDelay <= 60
+                  ? "var(--yellow)"
+                  : "var(--red)"
+              }>
+              {round(dataDelay)} <Text>general.seconds.short</Text>
+            </ObservedValue>
+          </HealthRow>
+        )}
       </div>
     </JourneyHealthContainer>
   );

@@ -187,7 +187,9 @@ const RouteStop = decorate(
               {doubleDigit(get(departureDiffTime, "seconds", 0))}
             </ColoredBackgroundSlot>
             {departure && departure.loc && (
-              <LocBadge red={departure.loc === "ODO"}>{departure.loc}</LocBadge>
+              <LocBadge red={departure.eventType !== "PDE" && departure.loc === "ODO"}>
+                {departure.loc}
+              </LocBadge>
             )}
             <PlainSlotMono>{getNormalTime(stopDepartureTime)}</PlainSlotMono>
           </>

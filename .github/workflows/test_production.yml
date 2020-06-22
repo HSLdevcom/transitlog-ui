@@ -2,7 +2,7 @@ name: Daily production E2E testing
 
 on:
   schedule:
-    - cron: "0 4 * * *"
+    - cron: "0 5 * * *"
 
 jobs:
   test-production:

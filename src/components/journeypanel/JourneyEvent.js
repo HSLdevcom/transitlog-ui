@@ -102,10 +102,6 @@ export const JourneyEvent = decorate(
       timestamp,
     ]);
 
-    const isStopEvent = ["DOO", "DOC", "DUE", "ARR", "PDE", "PAS", "PLANNED"].includes(
-      event.type
-    );
-
     return (
       <StopWrapper>
         <StopElementsWrapper
@@ -116,16 +112,25 @@ export const JourneyEvent = decorate(
         <StopContent>
           <StopTime onClick={selectTime}>
             <PlainSlot {...applyTooltip(event.type)}>
-              <span
-                dangerouslySetInnerHTML={{
-                  __html:
-                    text(`journey.event.${event.type}`) +
-                    (event.stopId && isStopEvent ? ` (${event.stopId})` : ""),
-                }}
-              />
+              <span>
+                {text(`journey.event.${event.type}`)}
+                {event.stopId ? ` (${event.stopId})` : ""}
+                <span
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--grey)",
+                    marginLeft: "0.5rem",
+                  }}>
+                  {event.type}
+                </span>
+              </span>
             </PlainSlot>
-            <AlignedLocBadge red={event.loc === "ODO"}>{event.loc}</AlignedLocBadge>
-            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+            <div style={{paddingTop: "0.15rem"}}>
+              <AlignedLocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+                {event.loc}
+              </AlignedLocBadge>
+              <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+            </div>
           </StopTime>
         </StopContent>
       </StopWrapper>
@@ -238,7 +243,9 @@ export const JourneyStopEvent = decorate(
               style={{fontSize: "0.75rem", color: "var(--grey)", marginLeft: "0.5rem"}}>
               {event.type}
             </span>
-            <LocBadge red={event.loc === "ODO"}>{event.loc}</LocBadge>
+            <LocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+              {event.loc}
+            </LocBadge>
           </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>
@@ -467,7 +474,9 @@ export const JourneyTlpEvent = decorate(
                 }}
               />
             </PlainSlot>
-            <AlignedLocBadge red={event.loc === "ODO"}>{event.loc}</AlignedLocBadge>
+            <AlignedLocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+              {event.loc}
+            </AlignedLocBadge>
             <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
           <TlpDetailsWrapper>

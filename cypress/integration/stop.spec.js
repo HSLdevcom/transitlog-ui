@@ -11,7 +11,7 @@ describe("Stop smoke tests", () => {
 
   it("Finds a stop and can select it", () => {
     cy.getTestElement("stop-input").type("1173434");
-    cy.getTestElement("stop-option-1173434").click();
+    cy.getTestElement("stop-option-1173434").click({force: true});
 
     cy.url().should((url) => expect(url).to.include(`stop=1173434`));
 
@@ -24,7 +24,7 @@ describe("Stop smoke tests", () => {
 
   it("Can select a departure", () => {
     cy.getTestElement("stop-input").type("1173434");
-    cy.getTestElement("stop-option-1173434").click();
+    cy.getTestElement("stop-option-1173434").click({force: true});
 
     cy.getTestElement("departure-option")
       .first()
@@ -37,7 +37,7 @@ describe("Stop smoke tests", () => {
     cy.visitAndSpy("/?mapZoom=14");
 
     cy.get(".test-class-stop-marker").should("have.length.least", 2);
-    cy.get(".test-class-stop-marker-1010115").click();
+    cy.get(".test-class-stop-marker-1010115").click({force: true});
 
     cy.getTestElement("stop-input")
       .invoke("val")
@@ -46,7 +46,7 @@ describe("Stop smoke tests", () => {
 
   it("Finds a terminal and can select it", () => {
     cy.getTestElement("stop-input").type("1000002");
-    cy.getTestElement("terminal-option-1000002").click();
+    cy.getTestElement("terminal-option-1000002").click(){force: true};
 
     cy.url().should((url) => expect(url).to.include(`terminal=1000002`));
 
