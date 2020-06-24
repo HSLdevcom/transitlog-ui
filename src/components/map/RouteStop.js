@@ -173,8 +173,6 @@ const RouteStop = decorate(
       durationDiff = secondsToTimeObject(durationDiffSeconds);
     }
 
-    console.log(departure.type);
-
     const observedDepartureTime = (
       <TagButton onClick={onClickTime(stopDepartureTime)}>
         <PlainSlot>{getNormalTime(plannedDepartureTime)}</PlainSlot>
