@@ -216,6 +216,11 @@ export const JourneyStopEvent = decorate(
     const timeDiff = event.plannedTimeDifference;
     const delayType = getDelayType(timeDiff, !!event.isTimingStop);
     const diffObject = secondsToTimeObject(timeDiff);
+    let timeDiffColor = getTimelinessColor(delayType, "var(--light-green)");
+
+    if (event.isTimingStop && event.type === "ARS") {
+      timeDiffColor = "var(--light-green)";
+    }
 
     return (
       <StopWrapper data-testid="journey-stop-event">
@@ -312,8 +317,8 @@ export const JourneyStopEvent = decorate(
                   : text("general.unknown")}
               </PlainSlot>
               <ColoredBackgroundSlot
-                color={delayType === "late" ? "var(--dark-grey)" : "white"}
-                backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+                color={timeDiffColor === "var(--yellow)" ? "var(--dark-grey)" : "white"}
+                backgroundColor={timeDiffColor}>
                 {diffObject.hours > 0 ? doubleDigit(diffObject.hours) + ":" : ""}
                 {doubleDigit(get(diffObject, "minutes", 0))}:
                 {doubleDigit(get(diffObject, "seconds", 0))}
