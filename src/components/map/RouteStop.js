@@ -173,6 +173,8 @@ const RouteStop = decorate(
       durationDiff = secondsToTimeObject(durationDiffSeconds);
     }
 
+    console.log(departure.type);
+
     const observedDepartureTime = (
       <TagButton onClick={onClickTime(stopDepartureTime)}>
         <PlainSlot>{getNormalTime(plannedDepartureTime)}</PlainSlot>
@@ -187,7 +189,7 @@ const RouteStop = decorate(
               {doubleDigit(get(departureDiffTime, "seconds", 0))}
             </ColoredBackgroundSlot>
             {departure && departure.loc && (
-              <LocBadge red={departure.eventType !== "PDE" && departure.loc === "ODO"}>
+              <LocBadge red={departure.type !== "PDE" && departure.loc === "ODO"}>
                 {departure.loc}
               </LocBadge>
             )}
