@@ -14,7 +14,7 @@ import {
   ColoredBackgroundSlot,
   PlainSlotMono,
 } from "../TagButton";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {delayStopType} from "../../helpers/getDelayType";
 import doubleDigit from "../../helpers/doubleDigit";
 import PlusMinusInput from "../PlusMinusInput";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
@@ -367,7 +367,8 @@ const VehicleJourneys = decorate((props) => {
             const plannedObservedDiff = journey.timeDifference || 0;
             const observedTimeString = journey.recordedTime;
             const diffTime = secondsToTimeObject(plannedObservedDiff);
-            const delayType = getDelayType(plannedObservedDiff);
+            const delayType = getDelayType(plannedObservedDiff, delayStopType.ORIGIN);
+            const timelinessColor = getTimelinessColor(delayType, "var(--light-green)");
 
             const journeyIsSelected = selectedJourney && selectedJourneyId === journeyId;
 
@@ -386,8 +387,10 @@ const VehicleJourneys = decorate((props) => {
                   </HeadsignSlot>
                   <TimeSlot>{journeyTime.slice(0, -3)}</TimeSlot>
                   <ColoredBackgroundSlot
-                    color={delayType === "late" ? "var(--dark-grey)" : "white"}
-                    backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+                    color={
+                      timelinessColor === "var(--yellow)" ? "var(--dark-grey)" : "white"
+                    }
+                    backgroundColor={timelinessColor}>
                     {plannedObservedDiff < 0 ? "-" : ""}
                     {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
                     {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}

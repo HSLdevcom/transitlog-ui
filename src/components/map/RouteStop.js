@@ -19,7 +19,7 @@ import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {TimeHeading, StopHeading, StopArrivalTime, SmallText} from "../StopElements";
 import CalculateTerminalTime from "../journeypanel/CalculateTerminalTime";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {getDelayStopType} from "../../helpers/getDelayType";
 import StopPopupContent, {
   StopContentWrapper,
   StopPopupContentSection,
@@ -130,7 +130,7 @@ const RouteStop = decorate(
 
     const departureDiff = get(departure, "plannedTimeDifference", 0);
     const departureDelayType = !isPlanned
-      ? getDelayType(departureDiff, !!isTimingStop)
+      ? getDelayType(departureDiff, getDelayStopType(departure))
       : "planned";
 
     const departureDiffTime = secondsToTimeObject(departureDiff);
@@ -179,7 +179,7 @@ const RouteStop = decorate(
         {!isPlanned && (
           <>
             <ColoredBackgroundSlot
-              color={departureDelayType === "late" ? "var(--dark-grey)" : "white"}
+              color={color === "var(--yellow)" ? "var(--dark-grey)" : "white"}
               backgroundColor={color}>
               {departureDiff < 0 ? "-" : ""}
               {departureDiffTime.hours ? doubleDigit(departureDiffTime.hours) + ":" : ""}

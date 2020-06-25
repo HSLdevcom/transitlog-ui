@@ -1,4 +1,4 @@
-import getDelayType from "./getDelayType";
+import getDelayType, {getDelayStopType} from "./getDelayType";
 import {getTimelinessColor} from "./timelinessColor";
 import get from "lodash/get";
 import uniqBy from "lodash/uniqBy";
@@ -17,7 +17,7 @@ export const getJourneyStopDiffs = (journeyEvents) => {
     const departureDiff = get(event, "plannedTimeDifference", false);
 
     if (departureDiff) {
-      const departureDelayType = getDelayType(departureDiff, !!event.isTimingStop);
+      const departureDelayType = getDelayType(departureDiff, getDelayStopType(event));
       departureColor = getTimelinessColor(departureDelayType, "var(--light-green)");
       y = departureDiff;
       stopId = event.stopId;

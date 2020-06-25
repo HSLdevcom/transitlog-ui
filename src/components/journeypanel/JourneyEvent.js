@@ -17,7 +17,7 @@ import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {text, alertText, Text} from "../../helpers/text";
 import {getNormalTime, secondsToTimeObject, journeyEventTime} from "../../helpers/time";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {getDelayStopType} from "../../helpers/getDelayType";
 import {applyTooltip} from "../../hooks/useTooltip";
 import {observer} from "mobx-react-lite";
 import CrossThick from "../../icons/CrossThick";
@@ -214,7 +214,7 @@ export const JourneyStopEvent = decorate(
     }
 
     const timeDiff = event.plannedTimeDifference;
-    const delayType = getDelayType(timeDiff, !!event.isTimingStop);
+    const delayType = getDelayType(timeDiff, getDelayStopType(event));
     const diffObject = secondsToTimeObject(timeDiff);
     let timeDiffColor = getTimelinessColor(delayType, "var(--light-green)");
 
