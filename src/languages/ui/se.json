@@ -118,6 +118,7 @@
 
   "journey.health.passed": "OK",
   "journey.health.failed": "Underkänd",
+  "journey.health.unavailable": "Saknas",
   "journey.health.pending": "Oavgjord",
   "journey.health.unknown": "Okänd",
   "journey.health.doors": "Dörrar",

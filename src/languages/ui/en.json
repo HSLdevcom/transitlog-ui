@@ -117,6 +117,7 @@
 
   "journey.health.passed": "OK",
   "journey.health.failed": "Failed",
+  "journey.health.unavailable": "Unavailable",
   "journey.health.pending": "Pending",
   "journey.health.unknown": "Unknown",
   "journey.health.doors": "Doors",

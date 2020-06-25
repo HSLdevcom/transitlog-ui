@@ -118,6 +118,7 @@
 
   "journey.health.passed": "Kunnossa",
   "journey.health.failed": "Virhe",
+  "journey.health.unavailable": "Ei saatavissa",
   "journey.health.pending": "Odottaa",
   "journey.health.unknown": "Ei tiedossa",
   "journey.health.doors": "Ovet",
