@@ -27,7 +27,7 @@ function getDelayType(delay, stopType = delayStopType.NORMAL) {
 
   switch (stopType) {
     case "timing":
-      earlyThreshold = 0;
+      earlyThreshold = -5;
       break;
     case "origin":
       earlyThreshold = -20;
