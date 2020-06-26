@@ -5,6 +5,8 @@ import flow from "lodash/flow";
 import last from "lodash/last";
 import uniqBy from "lodash/uniqBy";
 import get from "lodash/get";
+import groupBy from "lodash/groupBy";
+import mapValues from "lodash/mapValues";
 import {inject} from "../../helpers/inject";
 import {
   JourneyStopEvent,
@@ -90,9 +92,45 @@ const JourneyEvents = decorate(
       [UI]
     );
 
-    if (events.length === 0) {
-      return null;
-    }
+    const stopDepartureEventTypes = useMemo(() => {
+      let stopGroups = groupBy(
+        events.filter((evt) => ["PAS", "PDE", "DEP"].includes(evt.type)),
+        "stopId"
+      );
+
+      return mapValues(stopGroups, (stopEvents) => {
+        // Stop redundant DEP events from being stop events if there are PAS events.
+        let hasPasEvents = stopEvents.some((evt) => evt.type === "PAS");
+
+        if (hasPasEvents) {
+          return "PAS";
+        }
+
+        // Are there PDE events at all?
+        let hasPdeEvents = stopEvents.some((evt) => evt.type === "PDE");
+
+        if (!hasPdeEvents) {
+          return "DEP";
+        }
+
+        let isTimingStop = stopEvents.some((evt) => evt.isTimingStop);
+        let isOrigin = !isTimingStop && stopEvents.some((evt) => evt.isOrigin);
+
+        // Are there PDE events using ODO?
+        let hasOdoPdeEvents = stopEvents.some(
+          (evt) => evt.type === "PDE" && ["ODO", "MAN"].includes(evt.loc || "")
+        );
+
+        // In cases when there are PDE events but they use GPS, should the stop fall back to DEP events?
+        let usesDepIfGpsPde = isOrigin || isTimingStop || false;
+
+        if (hasPdeEvents && !hasOdoPdeEvents && usesDepIfGpsPde) {
+          return "DEP";
+        }
+
+        return "PDE";
+      });
+    }, [events]);
 
     const visibleEvents = events.filter((event, index, arr) => {
       const eventsOfType = arr.filter((evt) => evt.type === event.type);
@@ -103,30 +141,15 @@ const JourneyEvents = decorate(
       const isOrigin = event.isOrigin === true;
       const isTimingStop = event.isTimingStop === true;
 
-      const isTimingStopArr = event.isTimingStop && event.type === "ARS";
+      const isTimingStopArr = isTimingStop && event.type === "ARS";
       const isTerminalArr = (isOrigin || isLastOfType) && event.type === "ARS";
-
-      // Are there ODO-PDE events for this stop?
-      let odoPdeActive = events.some(
-        (evt) =>
-          evt.stopId === event.stopId &&
-          evt.type === "PDE" &&
-          ["ODO", "MAN"].includes(evt.loc)
-      );
-
-      // If the stop is the origin or a timing stop, AND there are no PDE events with loc == ODO for the stop,
-      // then DEP events can be shown as the official departure event.
-      let useDepAsDeparture = (isOrigin || isTimingStop) && !odoPdeActive;
 
       const types = [event.type];
 
+      let stopEventType = stopDepartureEventTypes[event.stopId];
+
       // Special departure filter for the relevant departure event for this stop.
-      // DEP for origins and timing stops, PDE for everything else.
-      if (
-        event.type === "PAS" ||
-        (event.type === "DEP" && useDepAsDeparture) ||
-        (event.type === "PDE" && odoPdeActive)
-      ) {
+      if (event.type === stopEventType) {
         types.push("DEPARTURE");
       }
 
@@ -143,7 +166,7 @@ const JourneyEvents = decorate(
       return types.some((type) => state.journeyEventFilters[type]);
     });
 
-    return (
+    return events.length === 0 ? null : (
       <EventsListWrapper>
         <EventFilters
           onChange={Journey.setJourneyEventFilter}
