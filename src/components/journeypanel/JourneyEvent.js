@@ -150,6 +150,7 @@ export const JourneyStopEvent = decorate(
     isLast,
     isOrigin,
     color,
+    doorsWorking = true,
   }) => {
     const plannedTime = get(event, "plannedTime", "");
     const observedTime = get(event, "recordedTime");
@@ -253,7 +254,13 @@ export const JourneyStopEvent = decorate(
             </LocBadge>
           </EventTypeHeading>
           {event.doorsOpened === false && (
-            <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>
+            <EventTextSmall>
+              {text(
+                doorsWorking
+                  ? `journey.event.doors_not_open`
+                  : `journey.event.doors_not_working`
+              )}
+            </EventTextSmall>
           )}
           {event.stopped === false && (
             <EventTextSmall>{text(`journey.event.vehicle_not_stopped`)}</EventTextSmall>

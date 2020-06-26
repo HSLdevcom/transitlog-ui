@@ -13,6 +13,7 @@ import {
   JourneyEvent,
 } from "./JourneyEvent";
 import EventFilters from "./EventFilters";
+import {checkDoorEventsHealth, HealthChecklistValues} from "../../hooks/useJourneyHealth";
 
 const EventsListWrapper = styled.div`
   padding: 0.5rem 0;
@@ -28,6 +29,17 @@ const decorate = flow(observer, inject("Time", "Filters", "UI", "Journey"));
 
 const JourneyEvents = decorate(
   ({events = [], originDeparture, date, Filters, UI, Time, Journey, state, color}) => {
+    const doorsWorking = useMemo(() => {
+      let doorStatus = true;
+
+      checkDoorEventsHealth(
+        events,
+        (status) => (doorStatus = status === HealthChecklistValues.PASSED)
+      );
+
+      return doorStatus;
+    }, [events]);
+
     const eventFilterTypes = useMemo(
       () =>
         events.reduce(
@@ -169,6 +181,7 @@ const JourneyEvents = decorate(
                 departure={originDeparture}
                 onSelectTime={onClickTime}
                 color={color}
+                doorsWorking={doorsWorking}
               />
             );
           })}

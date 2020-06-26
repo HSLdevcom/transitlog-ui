@@ -65,6 +65,7 @@ const RouteStop = decorate(
     Filters,
     Time,
     UI,
+    doorsWorking = true,
   }) => {
     const onClickTime = useCallback(
       (time) => (e) => {
@@ -303,7 +304,11 @@ const RouteStop = decorate(
 
             {!isPlanned && !doorDidOpen && (
               <PopupParagraph>
-                <Text>map.stops.doors_not_open</Text>
+                {doorsWorking ? (
+                  <Text>map.stops.doors_not_open</Text>
+                ) : (
+                  <Text>map.stops.doors_not_working</Text>
+                )}
               </PopupParagraph>
             )}
 
@@ -353,7 +358,11 @@ const RouteStop = decorate(
         <div style={{fontSize: "1rem"}}>{stop.name}</div>
         {!isPlanned && !doorDidOpen && (
           <TooltipParagraph>
-            <Text>map.stops.doors_not_open</Text>
+            {doorsWorking ? (
+              <Text>map.stops.doors_not_open</Text>
+            ) : (
+              <Text>map.stops.doors_not_working</Text>
+            )}
           </TooltipParagraph>
         )}
         {(lastTerminal || isTimingStop) && observedArrivalTime && (
@@ -382,7 +391,7 @@ const RouteStop = decorate(
       <StopMarker
         testId="route-stop"
         key={`journey_stop_marker_${stopId}`}
-        dashedBorder={!isPlanned && !doorDidOpen}
+        dashedBorder={!isPlanned && !doorDidOpen && doorsWorking}
         color={color}
         selectedStop={state.stop}
         highlightedStop={state.highlightedStop}
