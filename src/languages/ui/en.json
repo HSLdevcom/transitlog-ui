@@ -60,6 +60,7 @@
   "vehicle.registry_nr": "Registry number",
   "vehicle.age": "Vehicle age",
   "vehicle.identifier": "Vehicle identifier",
+  "vehicle.train_number": "Train number",
   "vehicle.operator": "Operator",
   "vehicle.subcontractor": "Subcontractor",
   "vehicle.delay.late": "Late",

@@ -60,6 +60,7 @@
   "vehicle.registry_nr": "Registernummer",
   "vehicle.age": "Fordonets ålder",
   "vehicle.identifier": "Fordonets ID",
+  "vehicle.train_number": "Tågnummer",
   "vehicle.operator": "Operatör",
   "vehicle.subcontractor": "Underleverantör",
   "vehicle.delay.late": "Försenad",

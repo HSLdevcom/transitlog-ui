@@ -2,6 +2,7 @@
 
 schema {
   query: Query
+  mutation: Mutation
 }
 
 "Any object that describes something with a position implements this interface."
@@ -10,7 +11,7 @@ interface Position {
   lng: Float
 }
 
-union JourneyEventType = JourneyCancellationEvent | JourneyEvent | JourneyStopEvent | PlannedStopEvent
+union JourneyEventType = JourneyCancellationEvent | JourneyEvent | JourneyStopEvent | JourneyTlpEvent | PlannedStopEvent
 
 type Alert {
   affectedId: String!
@@ -45,6 +46,7 @@ type Cancellation {
 }
 
 type Departure {
+  _normalDayType: String
   alerts: [Alert!]!
   cancellations: [Cancellation!]!
   dayType: String!
@@ -77,6 +79,7 @@ type Departure {
   stop: Stop!
   stopId: String!
   terminalTime: Int
+  trainNumber: String
 }
 
 type DepartureJourney {
@@ -142,6 +145,18 @@ type ExceptionDay {
   startTime: Time
 }
 
+type Feedback {
+  email: String!
+  msgTs: String!
+  text: String!
+}
+
+type File {
+  encoding: String!
+  filename: String!
+  mimetype: String!
+}
+
 type Journey {
   alerts: [Alert!]!
   cancellations: [Cancellation!]!
@@ -193,6 +208,7 @@ type JourneyEvent {
   lat: Float
   lng: Float
   loc: String
+  mode: String
   receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
@@ -214,6 +230,7 @@ type JourneyStopEvent {
   lat: Float
   lng: Float
   loc: String
+  mode: String
   nextStopId: String!
   plannedDate: Date
   plannedDateTime: DateTime
@@ -231,11 +248,45 @@ type JourneyStopEvent {
   unplannedStop: Boolean!
 }
 
+type JourneyTlpEvent {
+  _sort: Int
+  attemptSeq: Int
+  decision: TlpDecision
+  frequency: Int
+  id: ID!
+  junctionId: Int
+  lat: Float
+  lineConfigId: Int
+  lng: Float
+  loc: String
+  mode: String
+  nextStopId: String
+  pointConfigId: Int
+  priorityLevel: TlpPriorityLevel
+  protocol: String
+  reason: TlpReason
+  receivedAt: DateTime!
+  recordedAt: DateTime!
+  recordedAtUnix: Int!
+  recordedTime: Time!
+  requestId: Int
+  requestType: TlpRequestType
+  signalGroupId: Int
+  signalGroupNbr: Int
+  type: String!
+}
+
+type Mutation {
+  sendFeedback(email: String!, text: String!, url: String!): Feedback!
+  uploadFeedbackImage(file: Upload!, msgTs: String): File!
+}
+
 type ObservedArrival {
   arrivalDate: Date!
   arrivalDateTime: DateTime!
   arrivalTime: Time!
   arrivalTimeDifference: Int!
+  eventType: String
   id: ID!
   loc: String
 }
@@ -245,6 +296,7 @@ type ObservedDeparture {
   departureDateTime: DateTime!
   departureTime: Time!
   departureTimeDifference: Int!
+  eventType: String
   id: ID!
   loc: String
 }
@@ -303,6 +355,7 @@ type Query {
   terminals(date: Date): [Terminal]!
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
+  uploads: [File]
   vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
   weeklyDepartures(date: Date!, direction: Direction!, lastStopArrival: Boolean, routeId: String!, stopId: String!): [Departure]!
 }
@@ -339,6 +392,7 @@ type RouteSegment implements Position {
   alerts: [Alert!]!
   cancellations: [Cancellation!]!
   destination: String!
+  destinationStopId: String
   direction: Direction!
   distanceFromPrevious: Int
   distanceFromStart: Int
@@ -517,11 +571,6 @@ enum AlertLevel {
   WARNING
 }
 
-enum CacheControlScope {
-  PRIVATE
-  PUBLIC
-}
-
 enum CancellationEffect {
   CANCEL_ENTIRE_DEPARTURE
   CANCEL_STOPS_FROM_END
@@ -593,6 +642,36 @@ enum CancellationType {
   TIS_ERROR
 }
 
+enum TlpDecision {
+  ACK
+  NAK
+}
+
+enum TlpPriorityLevel {
+  HIGH
+  NOREQUEST
+  NORMAL
+}
+
+enum TlpReason {
+  AHEAD
+  GLOBAL
+  LINE
+  PRIOEXEP
+}
+
+enum TlpRequestType {
+  ADVANCE
+  DOOR_CLOSE
+  DOOR_OPEN
+  NORMAL
+}
+
+enum TlpType {
+  TLA
+  TLR
+}
+
 input AlertSearchInput {
   all: Boolean
   allRoutes: Boolean
@@ -657,8 +736,7 @@ scalar VehicleId
 "A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. The precise bbox is not rounded."
 scalar PreciseBBox
 
+scalar Upload
+
 "A string that defines a bounding box. The coordinates should be in the format `minLng,maxLat,maxLng,minLat` which is compatible with what Leaflet's LatLngBounds.toBBoxString() returns. Toe coordinates will be rounded, use PreciseBBox if this is not desired."
 scalar BBox
-
-"The `Upload` scalar type represents a file upload."
-scalar Upload

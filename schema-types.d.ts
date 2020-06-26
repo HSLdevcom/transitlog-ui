@@ -12,10 +12,9 @@ export type Scalars = {
   Time: any,
   VehicleId: any,
   PreciseBBox: any,
-  BBox: any,
   Upload: any,
+  BBox: any,
 };
-
 
 export type Alert = {
    __typename?: 'Alert',
@@ -120,11 +119,6 @@ export type AreaEventsFilterInput = {
   direction?: Maybe<Scalars['Direction']>,
 };
 
-
-export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE'
-}
 
 export type Cancellation = {
    __typename?: 'Cancellation',
@@ -238,6 +232,7 @@ export type Departure = {
   terminalTime?: Maybe<Scalars['Int']>,
   recoveryTime?: Maybe<Scalars['Int']>,
   departureId: Scalars['Int'],
+  trainNumber?: Maybe<Scalars['String']>,
   operatingUnit?: Maybe<Scalars['String']>,
   departureTime: Scalars['Time'],
   departureDate: Scalars['Date'],
@@ -258,6 +253,7 @@ export type Departure = {
   observedArrivalTime?: Maybe<ObservedArrival>,
   plannedDepartureTime: PlannedDeparture,
   observedDepartureTime?: Maybe<ObservedDeparture>,
+  _normalDayType?: Maybe<Scalars['String']>,
 };
 
 export type DepartureFilterInput = {
@@ -341,6 +337,20 @@ export type ExceptionDay = {
   endTime?: Maybe<Scalars['Time']>,
 };
 
+export type Feedback = {
+   __typename?: 'Feedback',
+  text: Scalars['String'],
+  email: Scalars['String'],
+  msgTs: Scalars['String'],
+};
+
+export type File = {
+   __typename?: 'File',
+  filename: Scalars['String'],
+  mimetype: Scalars['String'],
+  encoding: Scalars['String'],
+};
+
 export type Journey = {
    __typename?: 'Journey',
   id: Scalars['ID'],
@@ -399,11 +409,12 @@ export type JourneyEvent = {
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
+  mode?: Maybe<Scalars['String']>,
   _isVirtual?: Maybe<Scalars['Boolean']>,
   _sort?: Maybe<Scalars['Int']>,
 };
 
-export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent;
+export type JourneyEventType = JourneyEvent | JourneyStopEvent | JourneyCancellationEvent | PlannedStopEvent | JourneyTlpEvent;
 
 export type JourneyStopEvent = {
    __typename?: 'JourneyStopEvent',
@@ -431,9 +442,58 @@ export type JourneyStopEvent = {
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
+  mode?: Maybe<Scalars['String']>,
   unplannedStop: Scalars['Boolean'],
   _isVirtual?: Maybe<Scalars['Boolean']>,
   _sort?: Maybe<Scalars['Int']>,
+};
+
+export type JourneyTlpEvent = {
+   __typename?: 'JourneyTlpEvent',
+  id: Scalars['ID'],
+  type: Scalars['String'],
+  requestId?: Maybe<Scalars['Int']>,
+  requestType?: Maybe<TlpRequestType>,
+  priorityLevel?: Maybe<TlpPriorityLevel>,
+  reason?: Maybe<TlpReason>,
+  attemptSeq?: Maybe<Scalars['Int']>,
+  decision?: Maybe<TlpDecision>,
+  junctionId?: Maybe<Scalars['Int']>,
+  signalGroupId?: Maybe<Scalars['Int']>,
+  signalGroupNbr?: Maybe<Scalars['Int']>,
+  lineConfigId?: Maybe<Scalars['Int']>,
+  pointConfigId?: Maybe<Scalars['Int']>,
+  frequency?: Maybe<Scalars['Int']>,
+  protocol?: Maybe<Scalars['String']>,
+  receivedAt: Scalars['DateTime'],
+  recordedAt: Scalars['DateTime'],
+  recordedAtUnix: Scalars['Int'],
+  recordedTime: Scalars['Time'],
+  nextStopId?: Maybe<Scalars['String']>,
+  lat?: Maybe<Scalars['Float']>,
+  lng?: Maybe<Scalars['Float']>,
+  loc?: Maybe<Scalars['String']>,
+  mode?: Maybe<Scalars['String']>,
+  _sort?: Maybe<Scalars['Int']>,
+};
+
+export type Mutation = {
+   __typename?: 'Mutation',
+  sendFeedback: Feedback,
+  uploadFeedbackImage: File,
+};
+
+
+export type MutationSendFeedbackArgs = {
+  text: Scalars['String'],
+  email: Scalars['String'],
+  url: Scalars['String']
+};
+
+
+export type MutationUploadFeedbackImageArgs = {
+  file: Scalars['Upload'],
+  msgTs?: Maybe<Scalars['String']>
 };
 
 export type ObservedArrival = {
@@ -444,6 +504,7 @@ export type ObservedArrival = {
   arrivalDateTime: Scalars['DateTime'],
   arrivalTimeDifference: Scalars['Int'],
   loc?: Maybe<Scalars['String']>,
+  eventType?: Maybe<Scalars['String']>,
 };
 
 export type ObservedDeparture = {
@@ -454,6 +515,7 @@ export type ObservedDeparture = {
   departureDateTime: Scalars['DateTime'],
   departureTimeDifference: Scalars['Int'],
   loc?: Maybe<Scalars['String']>,
+  eventType?: Maybe<Scalars['String']>,
 };
 
 export type PlannedArrival = {
@@ -500,9 +562,12 @@ export type Position = {
 
 export type Query = {
    __typename?: 'Query',
+  uploads?: Maybe<Array<Maybe<File>>>,
   equipment: Array<Maybe<Equipment>>,
   stop?: Maybe<Stop>,
   stops: Array<Maybe<Stop>>,
+  terminals: Array<Maybe<Terminal>>,
+  terminal?: Maybe<Terminal>,
   route?: Maybe<Route>,
   routes: Array<Maybe<Route>>,
   routeGeometry?: Maybe<RouteGeometry>,
@@ -541,6 +606,17 @@ export type QueryStopsArgs = {
 };
 
 
+export type QueryTerminalsArgs = {
+  date?: Maybe<Scalars['Date']>
+};
+
+
+export type QueryTerminalArgs = {
+  terminalId?: Maybe<Scalars['String']>,
+  date?: Maybe<Scalars['Date']>
+};
+
+
 export type QueryRouteArgs = {
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
@@ -569,8 +645,9 @@ export type QueryRouteSegmentsArgs = {
 
 
 export type QueryDeparturesArgs = {
+  stopId?: Maybe<Scalars['String']>,
+  terminalId?: Maybe<Scalars['String']>,
   filter?: Maybe<DepartureFilterInput>,
-  stopId: Scalars['String'],
   date: Scalars['Date']
 };
 
@@ -698,6 +775,7 @@ export type RouteSegment = Position & {
   routeId: Scalars['String'],
   direction: Scalars['Direction'],
   originStopId?: Maybe<Scalars['String']>,
+  destinationStopId?: Maybe<Scalars['String']>,
   destination: Scalars['String'],
   distanceFromPrevious?: Maybe<Scalars['Int']>,
   distanceFromStart?: Maybe<Scalars['Int']>,
@@ -749,6 +827,47 @@ export type StopRoute = {
   mode?: Maybe<Scalars['String']>,
 };
 
+export type Terminal = Position & {
+   __typename?: 'Terminal',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  lat: Scalars['Float'],
+  lng: Scalars['Float'],
+  stopIds?: Maybe<Array<Scalars['String']>>,
+  stops?: Maybe<Array<Stop>>,
+  modes?: Maybe<Array<Scalars['String']>>,
+};
+
+
+export enum TlpDecision {
+  Ack = 'ACK',
+  Nak = 'NAK'
+}
+
+export enum TlpPriorityLevel {
+  Normal = 'NORMAL',
+  High = 'HIGH',
+  Norequest = 'NOREQUEST'
+}
+
+export enum TlpReason {
+  Global = 'GLOBAL',
+  Ahead = 'AHEAD',
+  Line = 'LINE',
+  Prioexep = 'PRIOEXEP'
+}
+
+export enum TlpRequestType {
+  Normal = 'NORMAL',
+  DoorClose = 'DOOR_CLOSE',
+  DoorOpen = 'DOOR_OPEN',
+  Advance = 'ADVANCE'
+}
+
+export enum TlpType {
+  Tlr = 'TLR',
+  Tla = 'TLA'
+}
 
 export type UiMessage = {
    __typename?: 'UIMessage',

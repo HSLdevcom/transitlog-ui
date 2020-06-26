@@ -60,6 +60,7 @@
   "vehicle.registry_nr": "Rekisterinumero",
   "vehicle.age": "Ajoneuvon ikä",
   "vehicle.identifier": "Kylkinumero",
+  "vehicle.train_number": "Junanumero",
   "vehicle.operator": "Liikennöitsijä",
   "vehicle.subcontractor": "Ali-hankkija",
   "vehicle.delay.late": "Myöhässä",
