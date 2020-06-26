@@ -27,10 +27,14 @@ const SingleRouteQuery = observer(
 
     const shouldSkip = skip || !routeId || !date;
 
-    const activateRefetch = useRefetch(updateListenerName, {
-      ...variables,
-      skip: shouldSkip,
-    });
+    const activateRefetch = useRefetch(
+      updateListenerName,
+      {
+        ...variables,
+        skip: shouldSkip,
+      },
+      false
+    );
 
     return (
       <Query

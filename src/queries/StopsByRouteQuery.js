@@ -43,7 +43,7 @@ export default observer(({children, route, date, skip}) => {
     [route, date]
   );
 
-  const activateRefetch = useRefetch(updateListenerName, {...queryProps, skip});
+  const activateRefetch = useRefetch(updateListenerName, {...queryProps, skip}, false);
 
   return (
     <Query skip={skip} query={stopsByRouteQuery} variables={queryProps}>
