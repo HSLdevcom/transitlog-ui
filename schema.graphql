@@ -107,6 +107,7 @@ type DriverEvent {
   lng: Float
   loc: String
   mode: String
+  odo: Float
   operatorId: String
   receivedAt: DateTime
   recordedAt: DateTime!
@@ -209,6 +210,7 @@ type JourneyEvent {
   lng: Float
   loc: String
   mode: String
+  odo: Float
   receivedAt: DateTime!
   recordedAt: DateTime!
   recordedAtUnix: Int!
@@ -232,6 +234,7 @@ type JourneyStopEvent {
   loc: String
   mode: String
   nextStopId: String!
+  odo: Float
   plannedDate: Date
   plannedDateTime: DateTime
   plannedTime: Time
@@ -261,6 +264,7 @@ type JourneyTlpEvent {
   loc: String
   mode: String
   nextStopId: String
+  odo: Float
   pointConfigId: Int
   priorityLevel: TlpPriorityLevel
   protocol: String
@@ -488,6 +492,7 @@ type VehiclePosition implements Position {
   loc: String
   mode: String
   nextStopId: String
+  odo: Float
   operatorId: String
   receivedAt: DateTime!
   recordedAt: DateTime!

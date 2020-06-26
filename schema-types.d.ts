@@ -298,6 +298,7 @@ export type DriverEvent = {
   lat?: Maybe<Scalars['Float']>,
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
+  odo?: Maybe<Scalars['Float']>,
 };
 
 export type Equipment = {
@@ -410,6 +411,7 @@ export type JourneyEvent = {
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
   mode?: Maybe<Scalars['String']>,
+  odo?: Maybe<Scalars['Float']>,
   _isVirtual?: Maybe<Scalars['Boolean']>,
   _sort?: Maybe<Scalars['Int']>,
 };
@@ -443,6 +445,7 @@ export type JourneyStopEvent = {
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
   mode?: Maybe<Scalars['String']>,
+  odo?: Maybe<Scalars['Float']>,
   unplannedStop: Scalars['Boolean'],
   _isVirtual?: Maybe<Scalars['Boolean']>,
   _sort?: Maybe<Scalars['Int']>,
@@ -474,6 +477,7 @@ export type JourneyTlpEvent = {
   lng?: Maybe<Scalars['Float']>,
   loc?: Maybe<Scalars['String']>,
   mode?: Maybe<Scalars['String']>,
+  odo?: Maybe<Scalars['Float']>,
   _sort?: Maybe<Scalars['Int']>,
 };
 
@@ -921,5 +925,6 @@ export type VehiclePosition = Position & {
   delay?: Maybe<Scalars['Int']>,
   heading?: Maybe<Scalars['Int']>,
   mode?: Maybe<Scalars['String']>,
+  odo?: Maybe<Scalars['Float']>,
   _sort?: Maybe<Scalars['Int']>,
 };

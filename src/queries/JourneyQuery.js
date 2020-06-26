@@ -73,6 +73,7 @@ export const journeyQuery = gql`
         recordedAtUnix
         recordedTime
         velocity
+        odo
       }
       events {
         __typename
@@ -116,6 +117,7 @@ export const journeyQuery = gql`
           lat
           lng
           loc
+          odo
           _isVirtual
           stop {
             id
@@ -177,6 +179,7 @@ export const journeyQuery = gql`
           lat
           lng
           loc
+          odo
         }
         ... on JourneyEvent {
           id
@@ -189,6 +192,7 @@ export const journeyQuery = gql`
           lat
           lng
           loc
+          odo
           _isVirtual
         }
       }
