@@ -51,5 +51,16 @@
   "Create user": "Luo HSL ID-tunnus kirjautuaksesi palveluun.",
   "Focus on stop": "Kohdista pysäkkiin klikkaamalla.",
   "Show info": "Näytä tai piilota käyttöohjeet.",
-  "Data delay": "Tietojen viive tarkoittaa ero tapahtuman tallennushetkeltä tapahtuman vastaanottohetkeen. Suuri viive ei tarkoita että tiedot olisi virheellisiä."
+  "Data delay": "Tietojen viive tarkoittaa ero tapahtuman tallennushetkeltä tapahtuman vastaanottohetkeen. Suuri viive ei tarkoita että tiedot olisi virheellisiä.",
+
+  "PDE": "Lähtö, ovet laitettu kiinni.",
+  "DEP": "Lähtö, ajoneuvo poistunut pysäkkialueelta.",
+  "ARS": "Saapuminen, ajoneuvo pysähtynyt pysäkillä.",
+  "ARR": "Saapuminen, ajoneuvo pysäkkialueen sisällä.",
+  "ALL": "Näytä tai piilota kaikki tapahtumat. Piilotus palauttaa filtterit alkuasentoon jolloin näkyy tärkeimmät lähdöt ja saapumiset.",
+  "DEPARTURE": "Lähtö pysäkiltä. Tällä filtterillä näkyy pysäkkien PDE-tapahtumat. Joissakin tapauksissa tapahtumatyyppi on DEP.",
+  "TIMING_STOP_ARS": "Ajantasauspysäkille saapuminen. Näyttää vain ajantasauspysäkkien ARS-tapahtumat.",
+  "TERMINAL_ARS": "Alku- tai päätypysäkille saapuminen. Näyttää vain näiden pysäkkien ARS-tapahtumat.",
+  "PLANNED": "Suunniteltu lähtö JOREn mukaan.",
+  "CANCELLATION": "Peruutustapahtumat."
 }

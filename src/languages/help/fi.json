@@ -58,7 +58,7 @@
   "ARS": "Saapuminen, ajoneuvo pysähtynyt pysäkillä.",
   "ARR": "Saapuminen, ajoneuvo pysäkkialueen sisällä.",
   "ALL": "Näytä tai piilota kaikki tapahtumat. Piilotus palauttaa filtterit alkuasentoon jolloin näkyy tärkeimmät lähdöt ja saapumiset.",
-  "DEPARTURE": "Lähtö pysäkiltä. Tällä filtterillä näkyy DEP-tapahtuma reitin alkupysäkiltä ja ajantasauspysäkeiltä, ja PDE-tapahtuma muille pysäkeille.",
+  "DEPARTURE": "Lähtö pysäkiltä. Tällä filtterillä näkyy pysäkkien PDE-tapahtumat. Joissakin tapauksissa tapahtumatyyppi on DEP.",
   "TIMING_STOP_ARS": "Ajantasauspysäkille saapuminen. Näyttää vain ajantasauspysäkkien ARS-tapahtumat.",
   "TERMINAL_ARS": "Alku- tai päätypysäkille saapuminen. Näyttää vain näiden pysäkkien ARS-tapahtumat.",
   "PLANNED": "Suunniteltu lähtö JOREn mukaan.",
