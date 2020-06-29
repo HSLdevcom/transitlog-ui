@@ -92,11 +92,49 @@ Before running the script, ensure that you are logged in to Docker hub through D
 
 Builds and tags Docker images for all environments.
 
-## Environments
+## Configuration
 
 Each environment has its own set of environment variables. Since this is a frontend app, no secrets should be included in any env files.
 
 When building for an environment, the corresponding .env file will be included as `.env.production`, which CRA uses as the de facto env file of the build. The env file that is included in the build is determined by the Docker `BUILD_END` ARG, which should be either `dev`, `stage`, `production`, or match any other of the available env file endings. Just use the deploy scripts and it will work.
+
+## Deployment
+
+The app is deployed to a Docker swarm running on Azure. The deployment itself is managed by Gitlab pipelines, one repo for each environment. This repo also contains the service configuration for the app in the swarm, as well as the nginx configuration.
+
+First, build and push a new image for the environment you want to update, then simply run the pipeline for the corresponding environment:
+
+- Dev: https://gitlab.hsl.fi/transitlog/transitlog-app-dev-deploy
+
+- Stage: https://gitlab.hsl.fi/transitlog/transitlog-app-stage-deploy
+
+- Prod: https://gitlab.hsl.fi/transitlog/transitlog-app-prod-deploy
+
+### Github actions
+
+Each branch has a corresponding Github actions workflow that triggers on certain events. The master branch deploys to dev, which is triggered by a merged PR. The staging and production branches deploy to their respective environments on all pushes.
+
+The github actions workflow builds, pushes and deploys the app to Azure. So when using Github actions, you do not need to use the `./deploy-env` scripts or manually trigger the pipeline.
+
+After the update is deployed, the actions workflow starts the Cypress E2E testsuite.
+
+All Github actions workflow statuses are posted to the `#transitlog-deployment` channel in the HSLdevcom Slack.
+
+A Cypress testsuite is also triggered to run every day on a schedule. The result of this is also posted to the `#transitlog-deployment` channel.
+
+### Deployment Workflow
+
+To develop and deploy a feature or bugfix, follow these steps:
+
+1. You can either develop in the master branch or use a feature branch.
+2. _If you used a feature branch:_<br>
+   merge or rebase it to master once your update is ready. This will start a Github actions workflow and update the dev environment.<br>
+   _If you just used the master branch:_<br>
+   run `./deploy-env.sh` and select 2 (for development) when asked by the script. This will build and push an image for the dev environment. Then go to the deployment repo in Gitlab and run the pipeline.
+3. To update staging, merge the `master` branch into the `staging` branch. A github actions workflow will start and update the staging environment.
+4. And finally, to update production, merge or rebase the `staging` branch into the `production` branch.
+
+You can always also circumvent the Github workflow by building the images with the `deploy.sh` script and triggering the pipeline in Gitlab manually.
 
 ## Development
 
@@ -146,3 +184,66 @@ Contains the state of the app, divided into different _stores_ based on the area
 
 Contains the Cypress test suite.
 
+### Important modules
+
+The following modules are central to making Transitlog UI tick.
+
+#### components/App.js
+
+This is the main component that ties everything together. It renders the main elements of the UI; the map, the sidepanel and the filter bar. It also fetches some commonly used data and distributes it through the components.
+
+This is also where the `useAuth` hook is used. It plucks the HSL ID authentication code from the URL upon return to the app and sends it to the server for to authenticate the user. When no code, it fetches the user info and updates the app state to show the logged-in user.
+
+#### src/api.js
+
+This is where Apollo GraphQL is set up.
+
+#### src/index.css
+
+This is where all CSS variables are defined.
+
+#### src/constants.js
+
+This is where app configuration is located. Some values come from the environment variables.
+
+#### stores/StoreContext.js
+
+This file ties all stores together and initializes them with Mobx-App. It then provides the store context which wraps the whole app. If you add a store, be sure to add the store to this list.
+
+#### components/map/Map.js
+
+This is where Leaflet is configured and mounted. The actual map components for Transitlog are mounted in the MapContent component.
+
+#### components/map/MapContent.js
+
+This is where all Transitlog custom map components are mounted. All Leaflet setup is done in the Map component. This component is largely where the "what is visible when" logic for the map is located.
+
+#### components/filterbar/FilterBar.js
+
+This is the filterbar on the top of the page, containing search fields and date/time fields.
+
+#### components/SidePanel.js
+
+This is the sidepanel component which renders the sidebar. It displays various lists, mostly departures, by route, stop, terminal, vehicle, area or week, depending on what selections are made in the app. It is also the parent of the Journey Details sidebar which appears when a journey is selected.
+
+#### components/journeypanel/JourneyPanel.js
+
+This is the Journey Panel component which appears when a journey is selected. it displays detailed information about the journey.
+
+### Useful commands
+
+#### Run Cypress tests locally
+
+Substitute the configFile with the environment you want to test. Leave the whole `--env` option out to test the local version.
+
+```shell script
+yarn run cypress run --env configFile=production
+```
+
+#### Open the Cypress app
+
+The configFile value works the same as above.
+
+```shell script
+yarn run cypress open --env configFile=production
+```

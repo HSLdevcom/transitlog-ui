@@ -18,7 +18,6 @@ import LoginModal from "./LoginModal";
 import ServerMessage from "./ServerMessage";
 import MapEvents from "./map/MapEvents";
 import LeafletMap from "./map/Map";
-import StopsByRouteQuery from "../queries/StopsByRouteQuery";
 import {useAuth} from "../auth/useAuth";
 import CenterOnPosition from "./map/CenterOnPosition";
 
