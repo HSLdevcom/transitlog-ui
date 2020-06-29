@@ -237,7 +237,6 @@ const SendingSpinner = styled(Loading)`
 
 const ErrorMsg = styled.div`
   color: white;
-  background: red;
   border-radius: 15px;
   padding: 0.5rem 1rem;
   margin: 1.5rem 0 0 0;
