@@ -5,6 +5,9 @@ import flow from "lodash/flow";
 import RouteStop from "./RouteStop";
 import {inject} from "../../helpers/inject";
 import {SidePanelTabs} from "../../constants";
+import {useQueryData} from "../../hooks/useQueryData";
+import {stopsByRouteQuery} from "../../queries/StopsByRouteQuery";
+import get from "lodash/get";
 
 const StopsListWrapper = styled.div`
   padding: 0.5rem 0;
@@ -18,7 +21,18 @@ const StopsList = styled.div`
 
 const decorate = flow(observer, inject("Filters", "UI"));
 
-const RouteStops = decorate(({routeStops, color, Filters, UI}) => {
+const RouteStops = decorate(({state: {date, route}, color, Filters, UI}) => {
+  let {data: routeStopsData} = useQueryData(stopsByRouteQuery, {
+    skip: !route,
+    variables: {
+      routeId: get(route, "routeId"),
+      direction: get(route, "direction"),
+      date,
+    },
+  });
+
+  let routeStops = routeStopsData || [];
+
   const onClick = useCallback(
     (stopId) => {
       if (stopId) {

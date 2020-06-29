@@ -54,6 +54,9 @@
   "map.weather": "Weather",
   "map.stop_radius": "Stop radius",
   "map.vehicle_stopped_duration_label": "Stopped for",
+  "map.route_segment.distance_from_prev": "Distance from previous stop",
+  "map.route_segment.distance_from_start": "Distance from start",
+  "map.route_segment.duration": "Planned duration",
 
   "vehicle.next_stop": "Next stop",
   "vehicle.speed": "Speed",

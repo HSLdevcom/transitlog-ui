@@ -54,6 +54,9 @@
   "map.weather": "Sää",
   "map.stop_radius": "Pysäkkisäde",
   "map.vehicle_stopped_duration_label": "Pysähtynyt",
+  "map.route_segment.distance_from_prev": "Pituus viime pysäkiltä",
+  "map.route_segment.distance_from_start": "Pituus alusta",
+  "map.route_segment.duration": "Suunniteltu ajoaika",
 
   "vehicle.next_stop": "Seuraava pysäkki",
   "vehicle.speed": "Nopeus",

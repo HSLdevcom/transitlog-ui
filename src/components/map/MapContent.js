@@ -20,6 +20,7 @@ import JourneyEventsLayer from "./JourneyEventsLayer";
 import DriverEventLayer from "./DriverEventLayer";
 import RouteEventsLayer from "./RouteEventsLayer";
 import TerminalLayer from "./TerminalLayer";
+import RouteSegmentLengthLayer from "./RouteSegmentLengthLayer";
 
 const decorate = flow(observer, inject("state"));
 
@@ -29,7 +30,6 @@ const MapContent = decorate(
     journeyPositions,
     route,
     centerOnRoute = true,
-    routeStops = [],
     state: {
       selectedJourney,
       date,
@@ -54,10 +54,12 @@ const MapContent = decorate(
           <>
             <RouteLayer canCenterOnRoute={centerOnRoute} />
 
+            {mapOverlays.includes("Route segment length") && <RouteSegmentLengthLayer />}
+
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (
-              <RouteStopsLayer showRadius={showStopRadius} routeStops={routeStops} />
+              <RouteStopsLayer showRadius={showStopRadius} />
             )}
 
             {journeys.length !== 0 &&

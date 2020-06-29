@@ -105,57 +105,51 @@ function App({route, state, UI}) {
             <ServerMessage />
             <FilterBar journeys={currentJourneys} />
             <SidepanelAndMapWrapper>
-              <StopsByRouteQuery date={date} route={route} skip={!route}>
-                {({stops: routeStops}) => (
-                  <JourneyPosition date={date} journeys={currentJourneys}>
-                    {(currentJourneyPositions) => (
-                      <>
-                        <CenterOnPosition journeyPositions={currentJourneyPositions} />
-                        <SidePanel
-                          areaJourneysLoading={!live && areaJourneysLoading}
-                          journeyLoading={selectedJourneyLoading}
-                          areaEvents={areaJourneys}
-                          journey={selectedJourney}
-                          route={route}
-                          routeStops={routeStops}
-                          detailsOpen={detailsAreOpen}
-                        />
-                        <Map detailsOpen={detailsAreOpen}>
-                          <MapContent
-                            centerOnRoute={areaJourneys.length === 0}
-                            journeys={currentJourneys}
-                            journeyPositions={currentJourneyPositions}
-                            route={route}
-                            routeStops={routeStops}
+              <JourneyPosition date={date} journeys={currentJourneys}>
+                {(currentJourneyPositions) => (
+                  <>
+                    <CenterOnPosition journeyPositions={currentJourneyPositions} />
+                    <SidePanel
+                      areaJourneysLoading={!live && areaJourneysLoading}
+                      journeyLoading={selectedJourneyLoading}
+                      areaEvents={areaJourneys}
+                      journey={selectedJourney}
+                      route={route}
+                      detailsOpen={detailsAreOpen}
+                    />
+                    <Map detailsOpen={detailsAreOpen}>
+                      <MapContent
+                        centerOnRoute={areaJourneys.length === 0}
+                        journeys={currentJourneys}
+                        journeyPositions={currentJourneyPositions}
+                        route={route}
+                      />
+                      {selectedJourney && (
+                        <GraphContainer
+                          data-testid="journey-graph-container"
+                          journeyGraphOpen={
+                            get(selectedJourney, "vehiclePositions", []).length !== 0 &&
+                            journeyGraphOpen
+                          }>
+                          <Graph
+                            width={530}
+                            events={get(selectedJourney, "events", [])}
+                            vehiclePositions={get(
+                              selectedJourney,
+                              "vehiclePositions",
+                              []
+                            )}
+                            graphExpanded={
+                              get(selectedJourney, "departures", []) !== 0 &&
+                              journeyGraphOpen
+                            }
                           />
-                          {selectedJourney && (
-                            <GraphContainer
-                              data-testid="journey-graph-container"
-                              journeyGraphOpen={
-                                get(selectedJourney, "vehiclePositions", []).length !==
-                                  0 && journeyGraphOpen
-                              }>
-                              <Graph
-                                width={530}
-                                events={get(selectedJourney, "events", [])}
-                                vehiclePositions={get(
-                                  selectedJourney,
-                                  "vehiclePositions",
-                                  []
-                                )}
-                                graphExpanded={
-                                  get(selectedJourney, "departures", []) !== 0 &&
-                                  journeyGraphOpen
-                                }
-                              />
-                            </GraphContainer>
-                          )}
-                        </Map>
-                      </>
-                    )}
-                  </JourneyPosition>
+                        </GraphContainer>
+                      )}
+                    </Map>
+                  </>
                 )}
-              </StopsByRouteQuery>
+              </JourneyPosition>
             </SidepanelAndMapWrapper>
           </AppGrid>
         )}

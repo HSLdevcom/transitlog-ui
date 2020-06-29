@@ -54,6 +54,9 @@
   "map.weather": "Väder",
   "map.stop_radius": "Hållplatsradie",
   "map.vehicle_stopped_duration_label": "På plats i",
+  "map.route_segment.distance_from_prev": "Distans från föregående hållplats",
+  "map.route_segment.distance_from_start": "Distans från början",
+  "map.route_segment.duration": "Planerad körtid",
 
   "vehicle.next_stop": "Nästa hållplats",
   "vehicle.speed": "Hastighet",
