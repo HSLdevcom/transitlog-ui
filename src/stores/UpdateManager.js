@@ -35,8 +35,7 @@ export default (state) => {
       const nextTime = currentTime + timeIncrement;
       timeActions.setTime(secondsToTime(Math.max(0, nextTime)));
     } else if (live && timeIsCurrent) {
-      // Live-updating is impossible for 24h+ journeys, as the date will
-      // just be the current, real date.
+      // Live-updating does not take into account 24h+ journeys.
       const nowMoment = moment.tz(new Date(), TIMEZONE);
       timeActions.setTime(nowMoment.format("HH:mm:ss"));
     }
@@ -81,7 +80,7 @@ export default (state) => {
           }
 
           update(true);
-        }, 1000);
+        }, 1500);
       }
     },
     {fireImmediately: true, delay: 100, name: "Auto-update time reaction"}

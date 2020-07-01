@@ -3,11 +3,25 @@ import flow from "lodash/flow";
 import RouteStop from "./RouteStop";
 import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
+import {useQueryData} from "../../hooks/useQueryData";
+import {stopsByRouteQuery} from "../../queries/StopsByRouteQuery";
+import get from "lodash/get";
 
 const decorate = flow(observer, inject("state"));
 
 const RouteStopsLayer = decorate(
-  ({state: {date, selectedJourney}, routeStops = [], showRadius}) => {
+  ({state: {date, route, selectedJourney}, showRadius}) => {
+    let {data: routeStopsData} = useQueryData(stopsByRouteQuery, {
+      skip: !route,
+      variables: {
+        routeId: get(route, "routeId"),
+        direction: get(route, "direction"),
+        date,
+      },
+    });
+
+    let routeStops = routeStopsData || [];
+
     return routeStops.map((stop, index, arr) => {
       const isFirst = index === 0;
       const isLast = index === arr.length - 1;

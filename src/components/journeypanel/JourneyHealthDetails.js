@@ -254,7 +254,7 @@ const JourneyHealthDetails = observer(({journeyHealth, dataDelay}) => {
           const currentHealthColor =
             status === HealthChecklistValues.PENDING
               ? "var(--light-grey)"
-              : status === HealthChecklistValues.FAILED
+              : status !== HealthChecklistValues.PASSED
               ? "var(--red)"
               : "var(--light-green)";
 

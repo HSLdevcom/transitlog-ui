@@ -5,7 +5,7 @@ describe("getDelayType", () => {
     const delayValue = -10;
     const delayType = getDelayType(delayValue);
 
-    expect(delayType).toBe("early");
+    expect(delayType).toBe("normal-early");
   });
 
   test("delayType is 'late' if the value is three minutes or over (180 seconds)", () => {

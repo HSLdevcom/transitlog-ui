@@ -13,6 +13,7 @@ import {StoreContext} from "../stores/StoreContext";
 export const HealthChecklistValues = {
   PASSED: "passed",
   FAILED: "failed",
+  UNAVAILABLE: "unavailable",
   PENDING: "pending",
 };
 
@@ -21,11 +22,11 @@ export const defaultThresholds = {
   warning: 75,
 };
 
-function checkDoorEventsHealth(events, setState) {
+export function checkDoorEventsHealth(events, setState) {
   if (events.some((evt) => ["DOO", "DOC"].includes(evt.type) || !!evt.doorsOpened)) {
     setState(HealthChecklistValues.PASSED);
   } else if (events.length !== 0) {
-    setState(HealthChecklistValues.FAILED);
+    setState(HealthChecklistValues.UNAVAILABLE);
   }
 }
 

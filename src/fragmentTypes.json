@@ -9,6 +9,9 @@
             "name": "Stop"
           },
           {
+            "name": "Terminal"
+          },
+          {
             "name": "RouteGeometryPoint"
           },
           {
@@ -34,6 +37,9 @@
           },
           {
             "name": "PlannedStopEvent"
+          },
+          {
+            "name": "JourneyTlpEvent"
           }
         ]
       }

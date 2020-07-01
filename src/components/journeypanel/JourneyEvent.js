@@ -17,7 +17,7 @@ import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {text, alertText, Text} from "../../helpers/text";
 import {getNormalTime, secondsToTimeObject, journeyEventTime} from "../../helpers/time";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {getDelayStopType} from "../../helpers/getDelayType";
 import {applyTooltip} from "../../hooks/useTooltip";
 import {observer} from "mobx-react-lite";
 import CrossThick from "../../icons/CrossThick";
@@ -150,6 +150,7 @@ export const JourneyStopEvent = decorate(
     isLast,
     isOrigin,
     color,
+    doorsWorking = true,
   }) => {
     const plannedTime = get(event, "plannedTime", "");
     const observedTime = get(event, "recordedTime");
@@ -214,8 +215,13 @@ export const JourneyStopEvent = decorate(
     }
 
     const timeDiff = event.plannedTimeDifference;
-    const delayType = getDelayType(timeDiff, !!event.isTimingStop);
+    const delayType = getDelayType(timeDiff, getDelayStopType(event));
     const diffObject = secondsToTimeObject(timeDiff);
+    let timeDiffColor = getTimelinessColor(delayType, "var(--light-green)");
+
+    if (event.isTimingStop && event.type === "ARS") {
+      timeDiffColor = "var(--light-green)";
+    }
 
     return (
       <StopWrapper data-testid="journey-stop-event">
@@ -248,7 +254,13 @@ export const JourneyStopEvent = decorate(
             </LocBadge>
           </EventTypeHeading>
           {event.doorsOpened === false && (
-            <EventTextSmall>{text(`journey.event.doors_not_open`)}</EventTextSmall>
+            <EventTextSmall>
+              {text(
+                doorsWorking
+                  ? `journey.event.doors_not_open`
+                  : `journey.event.doors_not_working`
+              )}
+            </EventTextSmall>
           )}
           {event.stopped === false && (
             <EventTextSmall>{text(`journey.event.vehicle_not_stopped`)}</EventTextSmall>
@@ -312,8 +324,8 @@ export const JourneyStopEvent = decorate(
                   : text("general.unknown")}
               </PlainSlot>
               <ColoredBackgroundSlot
-                color={delayType === "late" ? "var(--dark-grey)" : "white"}
-                backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+                color={timeDiffColor === "var(--yellow)" ? "var(--dark-grey)" : "white"}
+                backgroundColor={timeDiffColor}>
                 {diffObject.hours > 0 ? doubleDigit(diffObject.hours) + ":" : ""}
                 {doubleDigit(get(diffObject, "minutes", 0))}:
                 {doubleDigit(get(diffObject, "seconds", 0))}

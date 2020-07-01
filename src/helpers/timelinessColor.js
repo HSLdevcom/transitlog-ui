@@ -5,6 +5,7 @@ export function getTimelinessColor(timeliness, defaultColor = "", darkYellow = f
     case "early":
       return "var(--red)";
     case "late":
+    case "normal-early":
       if (darkYellow) {
         return "var(--dark-yellow)";
       } else {

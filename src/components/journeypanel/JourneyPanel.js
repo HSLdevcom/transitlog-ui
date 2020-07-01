@@ -52,7 +52,6 @@ const decorate = flow(observer, inject("UI", "Time", "Filters"));
 const JourneyPanel = decorate(
   ({
     state: {date, timeMoment, user, selectedJourney},
-    routeStops = [],
     journey = null,
     route = null,
     loading = false,
@@ -124,14 +123,11 @@ const JourneyPanel = decorate(
                   color={journeyColor}
                 />
               )}
-              {routeStops.length !== 0 && (
-                <RouteStops
-                  name="route-stops"
-                  label={text("journey.stops")}
-                  routeStops={routeStops}
-                  color={journeyColor}
-                />
-              )}
+              <RouteStops
+                name="route-stops"
+                label={text("journey.stops")}
+                color={journeyColor}
+              />
               {(alerts.length !== 0 || cancellations.length !== 0) && (
                 <ListWrapper name="journey-alerts" label={text("domain.alerts")}>
                   {alerts.length !== 0 && (

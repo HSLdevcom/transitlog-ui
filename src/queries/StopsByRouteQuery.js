@@ -5,7 +5,7 @@ import get from "lodash/get";
 import {observer} from "mobx-react-lite";
 import {useRefetch} from "../hooks/useRefetch";
 
-const stopsByRouteQuery = gql`
+export const stopsByRouteQuery = gql`
   query routeSegments($routeId: String!, $direction: Direction!, $date: Date!) {
     routeSegments(routeId: $routeId, direction: $direction, date: $date) {
       id
@@ -31,7 +31,7 @@ const stopsByRouteQuery = gql`
 
 const updateListenerName = "route stops query";
 
-export default observer(({children, route, date, skip}) => {
+const StopsByRouteQuery = observer(({children, route, date, skip}) => {
   const prevResult = useRef([]);
 
   const queryProps = useMemo(
@@ -43,7 +43,7 @@ export default observer(({children, route, date, skip}) => {
     [route, date]
   );
 
-  const activateRefetch = useRefetch(updateListenerName, {...queryProps, skip});
+  const activateRefetch = useRefetch(updateListenerName, {...queryProps, skip}, false);
 
   return (
     <Query skip={skip} query={stopsByRouteQuery} variables={queryProps}>
@@ -73,3 +73,5 @@ export default observer(({children, route, date, skip}) => {
     </Query>
   );
 });
+
+export default StopsByRouteQuery;

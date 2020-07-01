@@ -271,6 +271,16 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
                 */}
             </FeatureGroup>
           </LayersControl.Overlay>
+          <LayersControl.Overlay
+            name="Route segment length"
+            checked={mapOverlays.includes("Route segment length")}>
+            <FeatureGroup>
+              {/*
+                  The route segment lengths are rendered in MapContent. This featuregroup
+                  is just a dummy so that the option will show in the layer control.
+                */}
+            </FeatureGroup>
+          </LayersControl.Overlay>
         </LayersControl>
         <Pane name="mapillary-lines" style={{zIndex: 390}} />
         <Pane name="mapillary-location" style={{zIndex: 400}} />
@@ -280,6 +290,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
         <Pane name="selected-stop-radius" style={{zIndex: 445}} />
         <Pane name="event-hover" style={{zIndex: 450}} />
         <Pane name="stops" style={{zIndex: 475}} />
+        <Pane name="route-length-popup" style={{zIndex: 476}} />
         <Pane name="terminal-markers" style={{zIndex: 477}} />
         <Pane name="stopped-markers" style={{zIndex: 479}} />
         <Pane name="hfp-events" style={{zIndex: 480}} />

@@ -17,6 +17,8 @@ import Timetable from "../../icons/Timetable";
 import ArrowRight from "../../icons/ArrowRight";
 import {text} from "../../helpers/text";
 import LocationMarker from "../../icons/LocationMarker";
+import Walking from "../../icons/Walking";
+import {round} from "../../helpers/getRoundedBbox";
 
 const TooltipWrapper = styled.div``;
 
@@ -61,6 +63,8 @@ const HfpTooltip = decorate(
     if (event) {
       prevEvent.current = event;
     }
+
+    let odo = get(usingEvent, "odo", 0) || 0;
 
     return (
       <Tooltip
@@ -124,6 +128,10 @@ const HfpTooltip = decorate(
           <TooltipDataRow>
             <LocationMarker fill="var(--blue)" width="1rem" height="1rem" />{" "}
             {get(usingEvent, "loc", text("general.unknown"))}
+          </TooltipDataRow>
+          <TooltipDataRow>
+            <Walking fill="var(--blue)" width="1rem" height="1rem" />{" "}
+            {odo > 999 ? `${round(odo / 1000)} km` : `${odo} m`}
           </TooltipDataRow>
         </TooltipWrapper>
       </Tooltip>

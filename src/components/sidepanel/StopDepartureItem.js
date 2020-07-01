@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import doubleDigit from "../../helpers/doubleDigit";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {getDelayStopType} from "../../helpers/getDelayType";
 import {transportColor} from "../transportModes";
 import {
   ColoredBackgroundSlot,
@@ -131,16 +131,17 @@ const StopDepartureItem = observer((props) => {
     // Diff planned and observed times
     const observedTimeString = observedTime.departureTime;
     const diff = observedTime.departureTimeDifference;
-    const delayType = getDelayType(diff, !!isTimingStop);
+    const delayType = getDelayType(diff, getDelayStopType(departure));
+    const timelinessColor = getTimelinessColor(delayType, "var(--light-green)");
     const {hours, minutes, seconds} = secondsToTimeObject(diff);
 
     observed = (
       <>
         <Tooltip helpText={observedTime.loc}>
           <ColoredBackgroundSlot
-            color={delayType === "late" ? "var(--dark-grey)" : "white"}
-            backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
-            {diff < 0 === "-" ? "-" : ""}
+            color={timelinessColor === "var(--yellow)" ? "var(--dark-grey)" : "white"}
+            backgroundColor={timelinessColor}>
+            {diff < 0 ? "-" : ""}
             {hours ? doubleDigit(hours) + ":" : ""}
             {doubleDigit(minutes)}:{doubleDigit(seconds)}
           </ColoredBackgroundSlot>
