@@ -177,6 +177,18 @@ export default decorate(({departure, state, journey, date}) => {
           </Line>
         </JourneyInfoRow>
       )}
+      {departure.trainNumber && departure.trainNumber !== "0" && (
+        <JourneyInfoRow>
+          <Line>
+            <LineHeading>
+              <Text>vehicle.train_number</Text>
+            </LineHeading>
+            <Values>
+              <span>{departure.trainNumber}</span>
+            </Values>
+          </Line>
+        </JourneyInfoRow>
+      )}
       <JourneyInfoRow>
         <Line>
           <LineHeading>

@@ -120,7 +120,6 @@ const SidePanel = decorate((props) => {
     journeyLoading = false,
     areaJourneysLoading = false,
     route,
-    routeStops = [],
     detailsOpen,
     state: {
       language,
@@ -216,7 +215,6 @@ const SidePanel = decorate((props) => {
             loading={journeyLoading}
             journey={journey}
             route={route || stateRoute}
-            routeStops={routeStops}
           />
         )}
         <div>

@@ -58,7 +58,7 @@
   "ARS": "Arrival when the vehicle arrived to a stop.",
   "ARR": "Arrival when the vehicle arrived inside the stop radius.",
   "ALL": "Show or hide all events. Deselecting this will reset the filters to the original state that shows the most important departure and arrival events.",
-  "DEPARTURE": "Departure from a stop. For timing stops and route origin stops, this will show DEP events. For other stops PDE events will be shown.",
+  "DEPARTURE": "PDE departure events from a stop. In some cases the event type is DEP.",
   "TIMING_STOP_ARS": "Arrival at a timing stop.",
   "TERMINAL_ARS": "Arrival at a terminus stop.",
   "PLANNED": "Planned stops according to JORE.",

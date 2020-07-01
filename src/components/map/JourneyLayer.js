@@ -5,7 +5,7 @@ import get from "lodash/get";
 import last from "lodash/last";
 import orderBy from "lodash/orderBy";
 import flow from "lodash/flow";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {getDelayStopType} from "../../helpers/getDelayType";
 import {observer} from "mobx-react-lite";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import HfpTooltip from "./HfpTooltip";
@@ -22,7 +22,9 @@ export function getLineChunksByDelay(events) {
     .reduce((allChunks, event) => {
       const isUnsigned = get(event, "journeyType", "journey") !== "journey";
       const eventDelay = get(event, "delay", 0);
-      const delayType = isUnsigned ? "unsigned" : getDelayType(-eventDelay); // "early", "late" or "on-time"
+      const delayType = isUnsigned
+        ? "unsigned"
+        : getDelayType(-eventDelay, getDelayStopType(event));
 
       // If this is the first event, allChunks will be empty.
       // Add it as a new chunk to kick things off.

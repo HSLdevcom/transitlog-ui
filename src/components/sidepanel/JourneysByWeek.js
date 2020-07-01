@@ -20,7 +20,7 @@ import ButtonGroup from "../ButtonGroup";
 import {TIMEZONE} from "../../constants";
 import moment from "moment-timezone";
 import Tooltip from "../Tooltip";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {delayStopType} from "../../helpers/getDelayType";
 import {text, Text} from "../../helpers/text";
 import {TransportIcon} from "../transportModes";
 import SomethingWrong from "../../icons/SomethingWrong";
@@ -520,7 +520,10 @@ const JourneysByWeek = decorate(
                                   : departure.observedDepartureTime.loc;
 
                                 const diffTime = secondsToTimeObject(plannedObservedDiff);
-                                const delayType = getDelayType(plannedObservedDiff);
+                                const delayType = getDelayType(
+                                  plannedObservedDiff,
+                                  delayStopType.ORIGIN
+                                );
 
                                 const color = getTimelinessColor(
                                   delayType,
@@ -544,7 +547,7 @@ const JourneysByWeek = decorate(
                                     onClick={() => selectJourney(departure.journey, true)}
                                     color={
                                       journeyIsSelected
-                                        ? delayType === "late"
+                                        ? bgColor === "var(--yellow)"
                                           ? "var(--dark-grey)"
                                           : "white"
                                         : color

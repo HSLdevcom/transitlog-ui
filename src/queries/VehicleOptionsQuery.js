@@ -27,7 +27,7 @@ const updateListenerName = "vehicle options query";
 
 export default observer(({children, date, skip}) => {
   const prevResults = useRef([]);
-  const activateRefetch = useRefetch(updateListenerName, {date, skip});
+  const activateRefetch = useRefetch(updateListenerName, {date, skip}, false);
 
   return (
     <Query query={vehiclesQuery} variables={{date}} skip={skip}>

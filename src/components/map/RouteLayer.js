@@ -9,7 +9,7 @@ import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import gql from "graphql-tag";
 
-const routeQuery = gql`
+const routeGeometryQuery = gql`
   query routeGeometryQuery($routeId: String!, $direction: Direction!, $date: Date!) {
     routeGeometry(routeId: $routeId, direction: $direction, date: $date) {
       id
@@ -28,7 +28,7 @@ const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
   const {route, date} = state;
 
   const {data: routeGeometry} = useQueryData(
-    routeQuery,
+    routeGeometryQuery,
     {
       skip: !route,
       variables: {

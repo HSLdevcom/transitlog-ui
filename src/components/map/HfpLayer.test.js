@@ -31,7 +31,7 @@ describe("SimpleHfpLayer", () => {
     expect(eventChunks[0].events.length).toBeGreaterThanOrEqual(3);
     expect(eventChunks[1].delayType).toBe("on-time");
     expect(eventChunks[1].events.length).toBeGreaterThanOrEqual(3);
-    expect(eventChunks[2].delayType).toBe("early");
+    expect(eventChunks[2].delayType).toBe("normal-early");
     expect(eventChunks[2].events.length).toBeGreaterThanOrEqual(3);
   });
 });

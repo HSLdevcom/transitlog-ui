@@ -2,7 +2,7 @@ import React, {useMemo} from "react";
 import {observer} from "mobx-react-lite";
 import get from "lodash/get";
 import doubleDigit from "../../helpers/doubleDigit";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {delayStopType} from "../../helpers/getDelayType";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import getJourneyId from "../../helpers/getJourneyId";
 import {
@@ -189,15 +189,16 @@ const RouteDepartureItem = decorate(
     const eventType = get(departure, "observedDepartureTime.eventType", "PDE");
 
     const diffTime = secondsToTimeObject(plannedObservedDiff);
-    const delayType = getDelayType(plannedObservedDiff);
+    const delayType = getDelayType(plannedObservedDiff, delayStopType.ORIGIN);
     const multipleInstances = departure.journey._numInstance !== 0;
+    const timelinessColor = getTimelinessColor(delayType, "var(--light-green)");
 
     const observedJourney = observedTimeString ? (
       <>
         <Tooltip helpText="Journey list diff">
           <DelaySlot
-            color={delayType === "late" ? "var(--dark-grey)" : "white"}
-            backgroundColor={getTimelinessColor(delayType, "var(--light-green)")}>
+            color={timelinessColor === "var(--yellow)" ? "var(--dark-grey)" : "white"}
+            backgroundColor={timelinessColor}>
             {plannedObservedDiff < 0 ? "-" : ""}
             {diffTime.hours ? doubleDigit(diffTime.hours) + ":" : ""}
             {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}

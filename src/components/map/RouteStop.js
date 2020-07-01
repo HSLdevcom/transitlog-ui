@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Tooltip} from "react-leaflet";
+import {Tooltip, Marker} from "react-leaflet";
 import {latLng} from "leaflet";
 import {observer} from "mobx-react-lite";
 import {P} from "../Typography";
@@ -19,7 +19,7 @@ import {getTimelinessColor} from "../../helpers/timelinessColor";
 import doubleDigit from "../../helpers/doubleDigit";
 import {TimeHeading, StopHeading, StopArrivalTime, SmallText} from "../StopElements";
 import CalculateTerminalTime from "../journeypanel/CalculateTerminalTime";
-import getDelayType from "../../helpers/getDelayType";
+import getDelayType, {getDelayStopType} from "../../helpers/getDelayType";
 import StopPopupContent, {
   StopContentWrapper,
   StopPopupContentSection,
@@ -65,6 +65,7 @@ const RouteStop = decorate(
     Filters,
     Time,
     UI,
+    doorsWorking = true,
   }) => {
     const onClickTime = useCallback(
       (time) => (e) => {
@@ -130,7 +131,7 @@ const RouteStop = decorate(
 
     const departureDiff = get(departure, "plannedTimeDifference", 0);
     const departureDelayType = !isPlanned
-      ? getDelayType(departureDiff, !!isTimingStop)
+      ? getDelayType(departureDiff, getDelayStopType(departure))
       : "planned";
 
     const departureDiffTime = secondsToTimeObject(departureDiff);
@@ -179,7 +180,7 @@ const RouteStop = decorate(
         {!isPlanned && (
           <>
             <ColoredBackgroundSlot
-              color={departureDelayType === "late" ? "var(--dark-grey)" : "white"}
+              color={color === "var(--yellow)" ? "var(--dark-grey)" : "white"}
               backgroundColor={color}>
               {departureDiff < 0 ? "-" : ""}
               {departureDiffTime.hours ? doubleDigit(departureDiffTime.hours) + ":" : ""}
@@ -187,7 +188,7 @@ const RouteStop = decorate(
               {doubleDigit(get(departureDiffTime, "seconds", 0))}
             </ColoredBackgroundSlot>
             {departure && departure.loc && (
-              <LocBadge red={departure.eventType !== "PDE" && departure.loc === "ODO"}>
+              <LocBadge red={departure.type !== "PDE" && departure.loc === "ODO"}>
                 {departure.loc}
               </LocBadge>
             )}
@@ -303,7 +304,11 @@ const RouteStop = decorate(
 
             {!isPlanned && !doorDidOpen && (
               <PopupParagraph>
-                <Text>map.stops.doors_not_open</Text>
+                {doorsWorking ? (
+                  <Text>map.stops.doors_not_open</Text>
+                ) : (
+                  <Text>map.stops.doors_not_working</Text>
+                )}
               </PopupParagraph>
             )}
 
@@ -353,7 +358,11 @@ const RouteStop = decorate(
         <div style={{fontSize: "1rem"}}>{stop.name}</div>
         {!isPlanned && !doorDidOpen && (
           <TooltipParagraph>
-            <Text>map.stops.doors_not_open</Text>
+            {doorsWorking ? (
+              <Text>map.stops.doors_not_open</Text>
+            ) : (
+              <Text>map.stops.doors_not_working</Text>
+            )}
           </TooltipParagraph>
         )}
         {(lastTerminal || isTimingStop) && observedArrivalTime && (
@@ -382,7 +391,7 @@ const RouteStop = decorate(
       <StopMarker
         testId="route-stop"
         key={`journey_stop_marker_${stopId}`}
-        dashedBorder={!isPlanned && !doorDidOpen}
+        dashedBorder={!isPlanned && !doorDidOpen && doorsWorking}
         color={color}
         selectedStop={state.stop}
         highlightedStop={state.highlightedStop}

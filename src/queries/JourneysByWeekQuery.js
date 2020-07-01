@@ -123,10 +123,14 @@ const JourneysByWeekQuery = observer(
     );
 
     const prevResults = useRef([]);
-    const activateRefetch = useRefetch(updateListenerName, {
-      ...queryProps,
-      skip: shouldSkip,
-    });
+    const activateRefetch = useRefetch(
+      updateListenerName,
+      {
+        ...queryProps,
+        skip: shouldSkip,
+      },
+      false
+    );
 
     return (
       <Query skip={shouldSkip} query={routeJourneysByWeekQuery} variables={queryProps}>
