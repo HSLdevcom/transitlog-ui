@@ -45,7 +45,7 @@ const RouteSegmentLengthLayer = decorate(({state}) => {
 
   return segments.map((segment, idx) => {
     if (idx === 0) {
-      // SKip first stop. It has no useful information.
+      // Skip first stop. It has no useful information.
       return null;
     }
 
