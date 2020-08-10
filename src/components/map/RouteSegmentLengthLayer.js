@@ -44,7 +44,13 @@ const RouteSegmentLengthLayer = decorate(({state}) => {
   let segments = routeSegments || [];
 
   return segments.map((segment, idx) => {
+    if (idx === 0) {
+      // Skip first stop. It has no useful information.
+      return null;
+    }
+
     let isLeft = idx % 2 === 0;
+
     return (
       <CircleMarker key={segment.id} center={[segment.lat, segment.lng]} radius={0}>
         <Tooltip
@@ -60,10 +66,6 @@ const RouteSegmentLengthLayer = decorate(({state}) => {
           <div>
             <Text>map.route_segment.distance_from_start</Text>:{" "}
             <strong>{segment.distanceFromStart} m</strong>
-          </div>
-          <div>
-            <Text>map.route_segment.duration</Text>:{" "}
-            <strong>{segment.duration} min</strong>
           </div>
         </Tooltip>
       </CircleMarker>
