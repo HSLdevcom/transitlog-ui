@@ -1,5 +1,9 @@
 # Transitlog UI changelog
 
+## Version 1.9.3, deployed 2020-08-10 @ 10:00
+
+- Improve route length display based on feedback.
+
 ## Version 1.9.2, deployed 2020-06-22 @ 15:00
 
 - De facto stop events change, PDE becomes the stop event.
