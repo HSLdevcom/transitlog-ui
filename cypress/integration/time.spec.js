@@ -56,7 +56,7 @@ describe("Time smoke tests", () => {
       });
   });
 
-  it("Can use live mode", () => {
+  it.skip("Can use live mode", () => {
     cy.getTestElement("route-input").type("2550/1");
     cy.getTestElement("route-option-2550-1").click({force: true});
 
