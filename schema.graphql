@@ -382,7 +382,7 @@ type Route {
 }
 
 type RouteGeometry {
-  coordinates: [RouteGeometryPoint!]!
+  geometry: String!
   id: ID!
   mode: String
 }
