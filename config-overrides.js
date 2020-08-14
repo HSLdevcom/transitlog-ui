@@ -9,9 +9,6 @@ const {
 const {addReactRefresh} = require("customize-cra-react-refresh");
 
 module.exports = override(
-  // enable legacy decorators babel plugin
-  addDecoratorsLegacy(),
-
   // disable eslint in webpack
   disableEsLint(),
 
@@ -19,5 +16,5 @@ module.exports = override(
   ...addBabelPlugins("polished", "styled-components"),
 
   // Add Fast Refresh
-  addReactRefresh({disableRefreshCheck: true})
+  addReactRefresh()
 );

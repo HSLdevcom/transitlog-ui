@@ -1,5 +1,5 @@
 import React, {useMemo, useEffect} from "react";
-import {GeoJSON} from "react-leaflet";
+import {Polyline} from "react-leaflet";
 import {observer} from "mobx-react-lite";
 import {getModeColor} from "../../helpers/vehicleColor";
 import flow from "lodash/flow";
@@ -37,26 +37,22 @@ const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
     "route geometry query"
   );
 
-  const geoJson = useMemo(() => {
+  const coordinates = useMemo(() => {
     let geometryJson = get(routeGeometry, "geometry");
 
     if (!geometryJson) {
-      return null;
+      return [];
     }
 
-    return JSON.parse(geometryJson);
+    geometryJson = JSON.parse(geometryJson);
+
+    return get(geometryJson, "geometry.coordinates", []).map(([lon, lat]) => [lat, lon]);
   }, [routeGeometry]);
 
   const mode = get(routeGeometry, "mode", []);
 
   useEffect(() => {
-    if (!route || !route.routeId || !canCenterOnRoute || !geoJson) {
-      return;
-    }
-
-    let coordinates = get(geoJson, "geometry.coordinates", []);
-
-    if (coordinates.length === 0) {
+    if (!route || !route.routeId || !canCenterOnRoute || coordinates.length === 0) {
       return;
     }
 
@@ -65,15 +61,12 @@ const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
     if (bounds && bounds.isValid()) {
       UI.setMapView(bounds);
     }
-  }, [geoJson, canCenterOnRoute, route]);
+  }, [coordinates, canCenterOnRoute, route]);
+
+  console.log(coordinates);
 
   const color = getModeColor(mode);
-
-  if (!geoJson) {
-    return null;
-  }
-
-  return <GeoJSON pane="route-lines" data={geoJson} style={() => ({color, weight: 3})} />;
+  return <Polyline pane="route-lines" weight={3} positions={coordinates} color={color} />;
 });
 
 export default RouteLayer;
