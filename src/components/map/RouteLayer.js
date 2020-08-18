@@ -62,8 +62,6 @@ const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
     }
   }, [coordinates, canCenterOnRoute, route]);
 
-  console.log(coordinates);
-
   const color = getModeColor(mode);
   return <Polyline pane="route-lines" weight={3} positions={coordinates} color={color} />;
 });
