@@ -45,7 +45,7 @@ const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
     }
 
     geometryJson = JSON.parse(geometryJson);
-    return get(geometryJson, "coordinates", []).map(([lat, lon]) => [lon, lat]);
+    return get(geometryJson, "coordinates", []);
   }, [routeGeometry]);
 
   const mode = get(routeGeometry, "mode", []);

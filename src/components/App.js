@@ -1,6 +1,6 @@
 import React, {useMemo} from "react";
 import FilterBar from "./filterbar/FilterBar";
-import {observer} from "mobx-react-lite";
+import {observer, Observer} from "mobx-react-lite";
 import styled from "styled-components";
 import SidePanel from "./sidepanel/SidePanel";
 import JourneyPosition from "./JourneyPosition";
@@ -67,7 +67,7 @@ const GraphContainer = styled.div`
 
 const decorate = flow(observer, withRoute, inject("UI"));
 
-function App({route, state, UI}) {
+const App = decorate(({route, state, UI}) => {
   const {
     date,
     selectedJourney,
@@ -100,57 +100,67 @@ function App({route, state, UI}) {
           areaJourneysLoading,
           selectedJourneyLoading,
         }) => (
-          <AppGrid>
-            <ServerMessage />
-            <FilterBar journeys={currentJourneys} />
-            <SidepanelAndMapWrapper>
-              <JourneyPosition date={date} journeys={currentJourneys}>
-                {(currentJourneyPositions) => (
-                  <>
-                    <CenterOnPosition journeyPositions={currentJourneyPositions} />
-                    <SidePanel
-                      areaJourneysLoading={!live && areaJourneysLoading}
-                      journeyLoading={selectedJourneyLoading}
-                      areaEvents={areaJourneys}
-                      journey={selectedJourney}
-                      route={route}
-                      detailsOpen={detailsAreOpen}
-                    />
-                    <Map detailsOpen={detailsAreOpen}>
-                      <MapContent
-                        centerOnRoute={areaJourneys.length === 0}
-                        journeys={currentJourneys}
-                        journeyPositions={currentJourneyPositions}
-                        route={route}
-                      />
-                      {selectedJourney && (
-                        <GraphContainer
-                          data-testid="journey-graph-container"
-                          journeyGraphOpen={
-                            get(selectedJourney, "vehiclePositions", []).length !== 0 &&
-                            journeyGraphOpen
-                          }>
-                          <Graph
-                            width={530}
-                            events={get(selectedJourney, "events", [])}
-                            vehiclePositions={get(
-                              selectedJourney,
-                              "vehiclePositions",
-                              []
-                            )}
-                            graphExpanded={
-                              get(selectedJourney, "departures", []) !== 0 &&
-                              journeyGraphOpen
-                            }
-                          />
-                        </GraphContainer>
-                      )}
-                    </Map>
-                  </>
-                )}
-              </JourneyPosition>
-            </SidepanelAndMapWrapper>
-          </AppGrid>
+          <Observer>
+            {() => (
+              <AppGrid>
+                <ServerMessage />
+                <FilterBar journeys={currentJourneys} />
+                <SidepanelAndMapWrapper>
+                  <JourneyPosition date={date} journeys={currentJourneys}>
+                    {(currentJourneyPositions) => (
+                      <Observer>
+                        {() => (
+                          <>
+                            <CenterOnPosition
+                              journeyPositions={currentJourneyPositions}
+                            />
+                            <SidePanel
+                              areaJourneysLoading={!live && areaJourneysLoading}
+                              journeyLoading={selectedJourneyLoading}
+                              areaEvents={areaJourneys}
+                              journey={selectedJourney}
+                              route={route}
+                              detailsOpen={detailsAreOpen}
+                            />
+                            <Map detailsOpen={detailsAreOpen}>
+                              <MapContent
+                                centerOnRoute={areaJourneys.length === 0}
+                                journeys={currentJourneys}
+                                journeyPositions={currentJourneyPositions}
+                                route={route}
+                              />
+                              {selectedJourney && (
+                                <GraphContainer
+                                  data-testid="journey-graph-container"
+                                  journeyGraphOpen={
+                                    get(selectedJourney, "vehiclePositions", [])
+                                      .length !== 0 && journeyGraphOpen
+                                  }>
+                                  <Graph
+                                    width={530}
+                                    events={get(selectedJourney, "events", [])}
+                                    vehiclePositions={get(
+                                      selectedJourney,
+                                      "vehiclePositions",
+                                      []
+                                    )}
+                                    graphExpanded={
+                                      get(selectedJourney, "departures", []) !== 0 &&
+                                      journeyGraphOpen
+                                    }
+                                  />
+                                </GraphContainer>
+                              )}
+                            </Map>
+                          </>
+                        )}
+                      </Observer>
+                    )}
+                  </JourneyPosition>
+                </SidepanelAndMapWrapper>
+              </AppGrid>
+            )}
+          </Observer>
         )}
       </MapEvents>
       <ErrorMessages />
@@ -158,6 +168,6 @@ function App({route, state, UI}) {
       <FeedbackModal onClose={() => UI.toggleFeedbackModal(false)} />
     </AppFrame>
   );
-}
+});
 
-export default decorate(App);
+export default App;

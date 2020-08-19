@@ -18,6 +18,9 @@ export const useAuth = (setUser) => {
   useEffect(() => {
     const auth = async () => {
       const response = await checkExistingSession();
+
+      console.log(response.email);
+
       response && response.isOk && response.email
         ? setUser(response.email)
         : setUser(null);

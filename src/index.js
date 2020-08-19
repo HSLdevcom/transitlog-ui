@@ -1,4 +1,4 @@
-import "mobx-react-lite/optimizeForReactDom";
+import "mobx-react-lite/batchingOptOut";
 /* eslint-disable import/first */
 import moment from "moment-timezone";
 import {TIMEZONE} from "./constants";
