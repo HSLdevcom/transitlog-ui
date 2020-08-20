@@ -410,7 +410,7 @@ type RouteSegment implements Position {
   originStopId: String
   radius: Float
   routeId: String!
-  shortId: String!
+  shortId: String
   stopId: String!
   stopIndex: Int!
 }
@@ -426,7 +426,7 @@ type Stop implements Position {
   name: String
   radius: Float
   routes: [StopRoute!]!
-  shortId: String!
+  shortId: String
   stopId: String!
   stopIndex: Int
 }
