@@ -49,8 +49,8 @@ describe("Route smoke tests", () => {
     // Go to the previous week
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click({force: true});
+    cy.getTestElement("route-input").type("1017/1");
+    cy.getTestElement("route-option-1017-1").click({force: true});
 
     cy.getTestElement("sidebar-tab-week-journeys").click({force: true});
     cy.getTestElement("journeys-by-week-list").should("exist");
@@ -61,15 +61,15 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    cy.assertJourneySelected("1018");
+    cy.assertJourneySelected("1017");
   });
 
   it("Can select a weekly departure in last stop arrival mode", () => {
     // Go to the previous week
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click({force: true});
+    cy.getTestElement("route-input").type("1017/1");
+    cy.getTestElement("route-option-1017-1").click({force: true});
 
     cy.getTestElement("sidebar-tab-week-journeys").click({force: true});
     cy.getTestElement("journeys-by-week-list").should("exist");
@@ -102,14 +102,14 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    cy.assertJourneySelected("1018");
+    cy.assertJourneySelected("1017");
   });
 
   it("Can display the journey graph", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click({force: true});
+    cy.getTestElement("route-input").type("1017/1");
+    cy.getTestElement("route-option-1017-1").click({force: true});
 
     cy.waitUntil(() =>
       cy
@@ -118,7 +118,7 @@ describe("Route smoke tests", () => {
         .click({force: true})
     );
 
-    cy.assertJourneySelected("1018");
+    cy.assertJourneySelected("1017");
 
     cy.getTestElement("toggle-graph-button")
       .should("exist")

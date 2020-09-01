@@ -3,8 +3,8 @@
   "viewportWidth": 1366,
   "viewportHeight": 1200,
   "watchForFileChanges": false,
-  "defaultCommandTimeout": 240000,
-  "numTestsKeptInMemory": 5,
+  "defaultCommandTimeout": 9999999,
+  "numTestsKeptInMemory": 10,
   "env": {
     "AUTH_URI": "https://hslid-dev.t5.fi/openid/token",
     "AUTH_SCOPE": "email https://oneportal.trivore.com/scope/groups.readonly"
