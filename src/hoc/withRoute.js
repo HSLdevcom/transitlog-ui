@@ -17,7 +17,9 @@ export const withRoute = (Component) =>
     const direction = get(route, "direction", get(state, "route.direction", ""));
 
     const onCompleted = useCallback(
-      ({route: fetchedRoute}) => {
+      (result = {}) => {
+        let {route: fetchedRoute} = result || {};
+
         if (
           createRouteId(fetchedRoute) === createRouteId(state.route) &&
           (!state.route.originStopId ||
