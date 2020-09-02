@@ -1,33 +1,16 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
-import get from "lodash/get";
 import AreaJourneys from "../AreaJourneys";
 import SelectedJourneyEvents from "../SelectedJourneyEvents";
 import MergedJourneys from "../MergedJourneys";
-import {inject} from "../../helpers/inject";
 
-const decorate = flow(observer, inject("state"));
+const decorate = flow(observer);
 
-const MapEvents = decorate(({children, state}) => {
-  const {areaEventsRouteFilter} = state;
-
+const MapEvents = decorate(({children}) => {
   return (
     <AreaJourneys>
       {({journeys: areaJourneysResult = [], loading: areaJourneysLoading}) => {
-        let areaJourneys = areaJourneysResult;
-
-        if (areaEventsRouteFilter) {
-          const routes = areaEventsRouteFilter.split(",").map((r) => r.trim());
-          areaJourneys = areaJourneysResult.filter((route) => {
-            if (!get(route, "routeId", null)) {
-              return routes.some((r) => r === "signoff");
-            }
-
-            return routes.some((r) => route.routeId.includes(r));
-          });
-        }
-
         return (
           <SelectedJourneyEvents>
             {({
@@ -35,12 +18,12 @@ const MapEvents = decorate(({children, state}) => {
               loading: selectedJourneyLoading = false,
             }) => (
               <MergedJourneys
-                areaJourneys={areaJourneys}
+                areaJourneys={areaJourneysResult}
                 selectedJourney={selectedJourney}>
                 {({currentJourneys = []}) =>
                   children({
                     selectedJourney,
-                    areaJourneys,
+                    areaJourneys: areaJourneysResult,
                     currentJourneys,
                     areaJourneysLoading,
                     selectedJourneyLoading: selectedJourneyLoading,

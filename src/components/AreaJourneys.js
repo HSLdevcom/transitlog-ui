@@ -6,6 +6,7 @@ import {setResetListener} from "../stores/FilterStore";
 import {inject} from "../helpers/inject";
 import {setUpdateListener} from "../stores/UpdateManager";
 import {getMomentFromDateTime} from "../helpers/time";
+import get from "lodash/get";
 
 const decorate = flow(observer, inject("state"));
 
@@ -13,12 +14,14 @@ const updateListenerName = "area hfp query";
 
 const AreaJourneys = decorate((props) => {
   const {children, skip, state} = props;
+
   const {
     isLiveAndCurrent,
     areaSearchRangeMinutes = "",
     time,
     date,
     selectedBounds,
+    areaEventsRouteFilter,
   } = state;
 
   const [minTime, setMinTime] = useState(null);
@@ -69,7 +72,23 @@ const AreaJourneys = decorate((props) => {
       maxTime={maxTime}
       date={queryDate}
       bbox={queryBbox}>
-      {children}
+      {({journeys = [], loading}) => {
+        let areaJourneys = journeys;
+
+        if (areaEventsRouteFilter) {
+          const routes = areaEventsRouteFilter.split(",").map((r) => r.trim());
+
+          areaJourneys = areaJourneys.filter((route) => {
+            if (!get(route, "routeId", null)) {
+              return routes.some((r) => r === "signoff");
+            }
+
+            return routes.some((r) => route.routeId.includes(r));
+          });
+        }
+
+        return children({journeys: areaJourneys, loading});
+      }}
     </AreaJourneysQuery>
   );
 });
