@@ -67,7 +67,7 @@ let AppContent = decorate(
     // Center the map on the current journey.
     useEffect(() => {
       if (live) {
-        return null;
+        return;
       }
 
       const selectedJourneyPosition =
