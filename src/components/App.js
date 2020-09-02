@@ -20,6 +20,7 @@ import MapEvents from "./map/MapEvents";
 import LeafletMap from "./map/Map";
 import {useAuth} from "../auth/useAuth";
 import CenterOnPosition from "./map/CenterOnPosition";
+import {useQueryData} from "../hooks/useQueryData";
 
 const AppFrame = styled.main`
   width: 100%;
@@ -94,7 +95,7 @@ function App({route, state, UI}) {
       {loginModalOpen && <LoginModal />}
       <MapEvents>
         {({
-          selectedJourney,
+          selectedJourney: currentJourney,
           areaJourneys,
           currentJourneys,
           areaJourneysLoading,
@@ -112,7 +113,7 @@ function App({route, state, UI}) {
                       areaJourneysLoading={!live && areaJourneysLoading}
                       journeyLoading={selectedJourneyLoading}
                       areaEvents={areaJourneys}
-                      journey={selectedJourney}
+                      journey={currentJourney}
                       route={route}
                       detailsOpen={detailsAreOpen}
                     />
@@ -123,23 +124,19 @@ function App({route, state, UI}) {
                         journeyPositions={currentJourneyPositions}
                         route={route}
                       />
-                      {selectedJourney && (
+                      {currentJourney && (
                         <GraphContainer
                           data-testid="journey-graph-container"
                           journeyGraphOpen={
-                            get(selectedJourney, "vehiclePositions", []).length !== 0 &&
+                            get(currentJourney, "vehiclePositions", []).length !== 0 &&
                             journeyGraphOpen
                           }>
                           <Graph
                             width={530}
-                            events={get(selectedJourney, "events", [])}
-                            vehiclePositions={get(
-                              selectedJourney,
-                              "vehiclePositions",
-                              []
-                            )}
+                            events={get(currentJourney, "events", [])}
+                            vehiclePositions={get(currentJourney, "vehiclePositions", [])}
                             graphExpanded={
-                              get(selectedJourney, "departures", []) !== 0 &&
+                              get(currentJourney, "departures", []) !== 0 &&
                               journeyGraphOpen
                             }
                           />
