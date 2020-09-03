@@ -2,7 +2,6 @@
 
 const {
   override,
-  addDecoratorsLegacy,
   disableEsLint,
   addBabelPlugins,
 } = require("customize-cra");
