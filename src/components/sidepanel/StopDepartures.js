@@ -33,7 +33,6 @@ export const departuresQuery = gql`
       equipmentColor
       equipmentType
       extraDeparture
-      index
       isNextDay
       isTimingStop
       operatorId

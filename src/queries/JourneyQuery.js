@@ -208,7 +208,6 @@ export const journeyQuery = gql`
         equipmentIsRequired
         equipmentType
         extraDeparture
-        index
         isNextDay
         isTimingStop
         operatorId
@@ -216,17 +215,6 @@ export const journeyQuery = gql`
         recoveryTime
         isCancelled
         operatingUnit
-        stop {
-          id
-          isTimingStop
-          lat
-          lng
-          modes
-          name
-          radius
-          shortId
-          stopId
-        }
         plannedArrivalTime {
           id
           arrivalDate
@@ -262,7 +250,6 @@ export const journeyQuery = gql`
         id
         stopId
         isTimingStop
-        index
         plannedDepartureTime {
           id
           departureDateTime

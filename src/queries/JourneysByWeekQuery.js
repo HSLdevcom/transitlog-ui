@@ -23,7 +23,6 @@ export const routeJourneysByWeekQuery = gql`
       lastStopArrival: $lastStopArrival
     ) {
       id
-      index
       isNextDay
       isTimingStop
       dayType
@@ -39,7 +38,6 @@ export const routeJourneysByWeekQuery = gql`
       routeId
       direction
       stopId
-      mode
       isCancelled
       cancellations {
         ...CancellationFieldsFragment

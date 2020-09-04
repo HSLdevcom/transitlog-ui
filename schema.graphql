@@ -60,13 +60,11 @@ type Departure {
   equipmentType: String
   extraDeparture: String!
   id: ID!
-  index: Int
   isCancelled: Boolean!
   isNextDay: Boolean!
   isOrigin: Boolean
   isTimingStop: Boolean!
   journey: DepartureJourney
-  mode: String!
   observedArrivalTime: ObservedArrival
   observedDepartureTime: ObservedDeparture
   operatingUnit: String
@@ -76,7 +74,6 @@ type Departure {
   plannedDepartureTime: PlannedDeparture!
   recoveryTime: Int
   routeId: String!
-  stop: Stop!
   stopId: String!
   terminalTime: Int
   trainNumber: String

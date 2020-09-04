@@ -26,7 +26,6 @@ export const routeJourneysQuery = gql`
       stopId: $stopId
     ) {
       id
-      index
       isNextDay
       isTimingStop
       dayType
