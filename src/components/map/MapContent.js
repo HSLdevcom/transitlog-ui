@@ -44,16 +44,19 @@ const MapContent = decorate(
     const showStopRadius = expr(() => mapOverlays.indexOf("Stop radius") !== -1);
 
     const selectedJourneyId = getJourneyId(selectedJourney);
-
+    
     return (
       <>
         <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
-        <StopLayer showRadius={showStopRadius} date={date} />
-        <TerminalLayer />
+        {!hasRoute && (
+          <>
+            <StopLayer showRadius={showStopRadius} date={date} />
+            <TerminalLayer />
+          </>
+        )}
         {hasRoute && (
           <>
             <RouteLayer canCenterOnRoute={centerOnRoute} />
-
             {mapOverlays.includes("Route segment length") && <RouteSegmentLengthLayer />}
 
             {(!selectedJourneyId ||

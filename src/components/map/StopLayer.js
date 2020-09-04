@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useEffect} from "react";
+import React, {useMemo, useRef} from "react";
 import {observer} from "mobx-react-lite";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
@@ -116,19 +116,8 @@ export const allStopsQuery = gql`
   ${StopFieldsFragment}
 `;
 
-let stopsVisibleBeforeRouteSelected = false;
-
 const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
-  const {
-    date,
-    stop,
-    route,
-    mapView,
-    mapBounds,
-    mapOverlays,
-    mapZoom,
-    selectedJourney,
-  } = state;
+  const {date, stop, mapView, mapBounds, mapOverlays, mapZoom, selectedJourney} = state;
 
   const {data: selectedStop, loading: selectedStopLoading} = useQueryData(
     singleStopQuery,
@@ -152,21 +141,6 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
 
   const stops = stopsData || [];
   const stopsHidden = mapZoom < 14 || !mapOverlays.includes("Stops");
-
-  useEffect(() => {
-    if (!!route.routeId) {
-      if (!stopsHidden) {
-        stopsVisibleBeforeRouteSelected = true;
-        UI.changeOverlay("remove")({name: "Stops"});
-      } else {
-        stopsVisibleBeforeRouteSelected = false;
-      }
-    }
-
-    if (!route.routeId && stopsVisibleBeforeRouteSelected) {
-      UI.changeOverlay("add")({name: "Stops"});
-    }
-  }, [route.routeId]);
 
   const stopsInArea = useMemo(() => {
     if (selectedJourney || mapZoom < 14 || !mapBounds) {

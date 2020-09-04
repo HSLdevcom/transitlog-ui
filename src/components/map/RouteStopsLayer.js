@@ -6,11 +6,12 @@ import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import {stopsByRouteQuery} from "../../queries/StopsByRouteQuery";
 import get from "lodash/get";
+import {singleStopQuery} from "./StopLayer";
 
 const decorate = flow(observer, inject("state"));
 
 const RouteStopsLayer = decorate(
-  ({state: {date, route, selectedJourney}, showRadius}) => {
+  ({state: {date, route, selectedJourney, stop: selectedStop}, showRadius}) => {
     let {data: routeStopsData} = useQueryData(stopsByRouteQuery, {
       skip: !route,
       variables: {
@@ -20,11 +21,28 @@ const RouteStopsLayer = decorate(
       },
     });
 
+    const {data: selectedStopData, loading: selectedStopLoading} = useQueryData(
+      singleStopQuery,
+      {
+        skip: !selectedStop || !!selectedJourney,
+        variables: {
+          stopId: selectedStop,
+          date,
+        },
+      },
+      "single stop query"
+    );
+
     let routeStops = routeStopsData || [];
 
     return routeStops.map((stop, index, arr) => {
       const isFirst = index === 0;
       const isLast = index === arr.length - 1;
+
+      let stopObj =
+        !selectedJourney && selectedStopData && stop.stopId === selectedStop
+          ? selectedStopData
+          : stop;
 
       return (
         <RouteStop
@@ -34,7 +52,7 @@ const RouteStopsLayer = decorate(
           selectedJourney={selectedJourney}
           firstStop={arr[0]}
           stopId={stop.stopId}
-          stop={stop}
+          stop={stopObj}
           date={date}
           showRadius={showRadius}
         />
