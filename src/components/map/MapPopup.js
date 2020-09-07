@@ -33,27 +33,28 @@ const PopupStyle = createGlobalStyle`
 
 const decorate = flow(observer, inject("state"));
 
-const MapPopup = decorate(({className, children, open = false, state}) => {
+const MapPopup = decorate(({className, children, open = false, popupRef, state}) => {
   const {objectCenteringAllowed} = state;
-  const popupRef = useRef(null);
+  let innerPopupRef = useRef(null);
+  let actualRef = popupRef || innerPopupRef;
 
   useEffect(() => {
-    if (popupRef.current) {
-      const popupElement = popupRef.current.leafletElement;
+    if (actualRef.current) {
+      const popupElement = actualRef.current.leafletElement;
 
-      if (open && popupElement && popupElement._source) {
+      if (open && popupElement) {
         popupElement._source.openPopup();
-      } else if (popupElement && popupElement._source) {
+      } else if (!open && popupElement) {
         popupElement._source.closePopup();
       }
     }
-  }, [popupRef.current, open]);
+  }, [actualRef.current, open]);
 
   return (
     <>
       <PopupStyle />
       <Popup
-        ref={popupRef}
+        ref={actualRef}
         pane="popups"
         className={className}
         autoClose={true}

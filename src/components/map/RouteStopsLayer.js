@@ -21,7 +21,7 @@ const RouteStopsLayer = decorate(
       },
     });
 
-    const {data: selectedStopData, loading: selectedStopLoading} = useQueryData(
+    const {data: selectedStopData} = useQueryData(
       singleStopQuery,
       {
         skip: !selectedStop || !!selectedJourney,

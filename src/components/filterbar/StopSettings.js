@@ -31,7 +31,7 @@ const StopSettings = decorate(({Filters, UI, state}) => {
     {variables: {date}},
     "all stops query"
   );
-
+  
   const {data: terminalsData} = useQueryData(
     terminalsQuery,
     {variables: {date}},

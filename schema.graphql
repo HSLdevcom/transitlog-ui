@@ -416,7 +416,7 @@ type Stop implements Position {
   _matchScore: Float
   alerts: [Alert!]!
   id: ID!
-  isTimingStop: Boolean!
+  isTimingStop: Boolean
   lat: Float!
   lng: Float!
   modes: [String]!

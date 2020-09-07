@@ -76,9 +76,16 @@ const RouteStop = decorate(
     );
 
     const onShowStreetView = useCallback(() => {
-      UI.setMapillaryViewerLocation(latLng({lat: stop.lat, lng: stop.lng}));
+      if (stop) {
+        UI.setMapillaryViewerLocation(latLng({lat: stop.lat, lng: stop.lng}));
+      }
     }, [stop]);
 
+    if (!stop) {
+      return null;
+    }
+
+    let stopIsSelected = state.stop === (stop?.stopId || stopId);
     const isTerminal = firstTerminal || lastTerminal;
 
     let stopTooltip = (
@@ -95,7 +102,7 @@ const RouteStop = decorate(
     );
 
     let stopStreetViewPopup = (
-      <MapPopup key={`stop_${stopId}_popup`}>
+      <MapPopup open={stopIsSelected} key={`stop_${stopId}_popup`}>
         <StopPopupContent stop={stop} />
       </MapPopup>
     );
@@ -283,7 +290,7 @@ const RouteStop = decorate(
     const stopShortId = get(stop, "shortId", "").replace(/ /g, "");
 
     const stopPopup = (
-      <MapPopup key={`stop${stopId}_popup`}>
+      <MapPopup open={stopIsSelected} key={`stop${stopId}_popup`}>
         <StopPopupContentSection>
           <StopContentWrapper>
             <StopHeading>

@@ -106,7 +106,7 @@ const CompoundStopMarker = observer(
         setRoute={setRoute}
         setStop={setStop}
         iconChildren={stops.length}>
-        <MapPopup>
+        <MapPopup open={selected}>
           <StopPopupContentSection style={{backgroundColor: "var(--lightest-grey)"}}>
             <ChooseStopHeading>
               <Text>map.stops.select_stop</Text>

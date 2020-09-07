@@ -73,16 +73,14 @@ const StopMarker = observer(
     isTimingStop = false,
     children,
     iconChildren,
-    selected,
+    selected: isSelected = false,
     setRoute,
     setStop,
     selectedStop,
     highlightedStop,
     testId = "stop-marker",
   }) => {
-    const isSelected =
-      typeof selected !== "undefined" ? !!selected : stop && selectedStop === stop.stopId;
-
+    const stopIsSelected = isSelected || (stop && selectedStop === stop.stopId);
     const isHighlighted = stop && highlightedStop === stop.stopId;
 
     const onSelectStop = useCallback(() => {
@@ -108,11 +106,11 @@ const StopMarker = observer(
           )}`}>
           <StopMarkerCircle
             thickBorder={isTerminal}
-            isSelected={isSelected}
+            isSelected={stopIsSelected}
             isHighlighted={isHighlighted}
             isTimingStop={stopIsTimingStop}
             dashed={dashedBorder}
-            big={!!(iconChildren || isSelected || isTerminal || stopIsTimingStop)}
+            big={!!(iconChildren || stopIsSelected || isTerminal || stopIsTimingStop)}
             color={stopColor}>
             {stopIsTimingStop ? <TimingStop fill={stopColor} /> : iconChildren}
           </StopMarkerCircle>
@@ -128,7 +126,7 @@ const StopMarker = observer(
     const popupElement = children ? (
       children
     ) : stop ? (
-      <MapPopup open={isSelected}>
+      <MapPopup open={stopIsSelected}>
         <StopPopupContent stop={stop} color={stopColor} onSelectRoute={setRoute} />
       </MapPopup>
     ) : null;
@@ -163,12 +161,14 @@ const StopMarker = observer(
       ) : (
         <CircleMarker
           className={`test-class-${testId} test-class-${testId}-${stop.stopId}`}
-          radius={selected ? 10 : isTerminal ? 9 : 7}
+          radius={stopIsSelected ? 10 : isTerminal ? 9 : 7}
           weight={3}
           color={stopColor}
           fill={true}
           dashArray={dashedBorder ? "2 5" : null}
-          fillColor={selected ? "var(--blue)" : isHighlighted ? "var(--grey)" : "white"}
+          fillColor={
+            stopIsSelected ? "var(--blue)" : isHighlighted ? "var(--grey)" : "white"
+          }
           fillOpacity={1}
           pane="stops"
           center={markerPosition}
@@ -183,9 +183,9 @@ const StopMarker = observer(
         // StopRadius component should be remounted when selected or
         // deselected for the circle to appear on the correct layer.
         key={`stop_radius_${get(stop, "stopId", selectedStop)}${
-          isSelected ? "_selected" : ""
+          stopIsSelected ? "_selected" : ""
         }`}
-        isHighlighted={isSelected}
+        isHighlighted={stopIsSelected}
         center={markerPosition}
         color={stopColor}
         radius={get(stop, "radius", 0)}>

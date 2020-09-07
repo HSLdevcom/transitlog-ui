@@ -814,7 +814,7 @@ export type Stop = Position & {
   radius?: Maybe<Scalars['Float']>;
   routes: Array<StopRoute>;
   modes: Array<Maybe<Scalars['String']>>;
-  isTimingStop: Scalars['Boolean'];
+  isTimingStop?: Maybe<Scalars['Boolean']>;
   stopIndex?: Maybe<Scalars['Int']>;
   _matchScore?: Maybe<Scalars['Float']>;
   alerts: Array<Alert>;
