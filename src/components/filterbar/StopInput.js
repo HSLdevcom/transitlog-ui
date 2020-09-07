@@ -68,7 +68,7 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
       <SuggestionText>
         {isStop(suggestion) ? (
           <strong>
-            {suggestion.id} ({(suggestion.shortId || '').replace(/ /g, "")})
+            {suggestion.id} ({(suggestion.shortId || "").replace(/ /g, "")})
           </strong>
         ) : (
           <strong>{suggestion.id}</strong>
@@ -148,7 +148,7 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
         return sortValue;
       }
 
-      return intval((shortId || '').substring(1)) + sortValue;
+      return intval((shortId || "").substring(1)) + sortValue;
     });
   }
 
