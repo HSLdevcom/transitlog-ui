@@ -108,7 +108,7 @@ export const singleStopQuery = gql`
 `;
 
 export const allStopsQuery = gql`
-  query allStopsQuery($date: Date, $search: String) {
+  query allStopsQuery($date: Date!, $search: String) {
     stops(date: $date, filter: {search: $search}) {
       ...StopFieldsFragment
     }

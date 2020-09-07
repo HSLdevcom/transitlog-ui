@@ -6,7 +6,7 @@ import RouteStop from "./RouteStop";
 import {inject} from "../../helpers/inject";
 import {SidePanelTabs} from "../../constants";
 import {useQueryData} from "../../hooks/useQueryData";
-import {stopsByRouteQuery} from "../../queries/StopsByRouteQuery";
+import {routeStopsQuery} from "../../queries/StopsByRouteQuery";
 import get from "lodash/get";
 
 const StopsListWrapper = styled.div`
@@ -22,7 +22,7 @@ const StopsList = styled.div`
 const decorate = flow(observer, inject("Filters", "UI"));
 
 const RouteStops = decorate(({state: {date, route}, color, Filters, UI}) => {
-  let {data: routeStopsData} = useQueryData(stopsByRouteQuery, {
+  let {data: routeStopsData} = useQueryData(routeStopsQuery, {
     skip: !route,
     variables: {
       routeId: get(route, "routeId"),

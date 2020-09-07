@@ -349,9 +349,10 @@ type Query {
   routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
   routeGeometry(date: Date!, direction: Direction!, routeId: String!): RouteGeometry
   routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
+  routeStops(date: Date!, direction: Direction!, routeId: String!): [Stop]!
   routes(date: Date, filter: RouteFilterInput): [Route]!
   stop(date: Date!, stopId: String!): Stop
-  stops(date: Date, filter: StopFilterInput): [Stop]!
+  stops(date: Date!, filter: StopFilterInput): [Stop]!
   terminal(date: Date, terminalId: String): Terminal
   terminals(date: Date): [Terminal]!
   uiMessage: UIMessage!
@@ -431,13 +432,17 @@ type Stop implements Position {
 type StopRoute {
   destination: String
   direction: Direction!
+  distanceFromPrevious: Int
+  distanceFromStart: Int
+  duration: Int
   id: ID!
-  isTimingStop: Boolean!
+  isTimingStop: Boolean
   mode: String
   name: String
   origin: String
   originStopId: String
   routeId: String!
+  stopIndex: Int
 }
 
 type Terminal implements Position {
