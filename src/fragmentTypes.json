@@ -12,10 +12,10 @@
             "name": "Terminal"
           },
           {
-            "name": "RouteSegment"
+            "name": "VehiclePosition"
           },
           {
-            "name": "VehiclePosition"
+            "name": "RouteSegment"
           },
           {
             "name": "RouteGeometryPoint"

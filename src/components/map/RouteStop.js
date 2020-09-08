@@ -112,6 +112,7 @@ const RouteStop = decorate(
 
     const mode = getPriorityMode(get(stop, "modes", []));
     let color = getModeColor(mode);
+    let route = get(stop, "routes", [])[0];
 
     if (!selectedJourney || (!departure && !arrival)) {
       return (
@@ -125,7 +126,7 @@ const RouteStop = decorate(
           color={color}
           isTerminal={isTerminal}
           stop={stop}
-          isTimingStop={get(stop, "isTimingStop", false)}
+          isTimingStop={get(route, "isTimingStop", false)}
           showRadius={showRadius}>
           {markerChildren}
         </StopMarker>

@@ -4,55 +4,41 @@ import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
-import gql from "graphql-tag";
 import {Text} from "../../helpers/text";
-
-const routeSegmentQuery = gql`
-  query routeSegmentQuery($routeId: String!, $direction: Direction!, $date: Date!) {
-    routeSegments(routeId: $routeId, direction: $direction, date: $date) {
-      id
-      distanceFromPrevious
-      distanceFromStart
-      duration
-      lat
-      lng
-      modes
-      stopId
-      stopIndex
-    }
-  }
-`;
+import {routeStopsQuery} from "../../queries/StopsByRouteQuery";
+import get from "lodash/get";
 
 const decorate = flow(observer, inject("UI"));
 
 const RouteSegmentLengthLayer = decorate(({state}) => {
   const {route, date} = state;
 
-  const {data: routeSegments} = useQueryData(
-    routeSegmentQuery,
+  const {data: routeStops} = useQueryData(
+    routeStopsQuery,
     {
-      skip: !route,
+      skip: !route || !route.routeId,
       variables: {
-        routeId: route.routeId,
-        direction: route.direction,
+        routeId: get(route, "routeId"),
+        direction: get(route, "direction"),
         date,
       },
     },
     "route geometry query"
   );
 
-  let segments = routeSegments || [];
+  let stops = routeStops || [];
 
-  return segments.map((segment, idx) => {
+  return stops.map((stop, idx) => {
     if (idx === 0) {
       // Skip first stop. It has no useful information.
       return null;
     }
 
     let isLeft = idx % 2 === 0;
+    let route = stop.routes[0];
 
     return (
-      <CircleMarker key={segment.id} center={[segment.lat, segment.lng]} radius={0}>
+      <CircleMarker key={stop.id} center={[stop.lat, stop.lng]} radius={0}>
         <Tooltip
           pane="route-length-popup"
           offset={[isLeft ? -15 : 15, 0]}
@@ -61,11 +47,11 @@ const RouteSegmentLengthLayer = decorate(({state}) => {
           permanent={true}>
           <div>
             <Text>map.route_segment.distance_from_prev</Text>:{" "}
-            <strong>{segment.distanceFromPrevious} m</strong>
+            <strong>{route.distanceFromPrevious || 0} m</strong>
           </div>
           <div>
             <Text>map.route_segment.distance_from_start</Text>:{" "}
-            <strong>{segment.distanceFromStart} m</strong>
+            <strong>{route.distanceFromStart || 0} m</strong>
           </div>
         </Tooltip>
       </CircleMarker>

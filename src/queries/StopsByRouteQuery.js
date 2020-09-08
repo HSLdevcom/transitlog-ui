@@ -17,6 +17,8 @@ export const routeStopsQuery = gql`
         routeId
         direction
         originStopId
+        origin
+        destination
         stopIndex
         isTimingStop
         mode

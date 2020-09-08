@@ -6,6 +6,7 @@ import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import {routeStopsQuery} from "../../queries/StopsByRouteQuery";
 import get from "lodash/get";
+import orderBy from "lodash/orderBy";
 import {singleStopQuery} from "./StopLayer";
 
 const decorate = flow(observer, inject("state"));
@@ -34,7 +35,7 @@ const RouteStopsLayer = decorate(
       "single stop query"
     );
 
-    let routeStops = routeStopsData || [];
+    let routeStops = orderBy(routeStopsData || [], (stop) => stop.routes[0]?.stopIndex);
 
     return routeStops.map((stop, index, arr) => {
       const isFirst = index === 0;

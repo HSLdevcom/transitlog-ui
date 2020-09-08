@@ -348,7 +348,6 @@ type Query {
   route(date: Date!, direction: Direction!, routeId: String!): Route
   routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
   routeGeometry(date: Date!, direction: Direction!, routeId: String!): RouteGeometry
-  routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
   routeStops(date: Date!, direction: Direction!, routeId: String!): [Stop]!
   routes(date: Date, filter: RouteFilterInput): [Route]!
   stop(date: Date!, stopId: String!): Stop
