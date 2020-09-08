@@ -9,6 +9,7 @@ import {flow} from "lodash";
 import {inject} from "../../helpers/inject";
 import {latLng} from "leaflet";
 import RouteSelect from "../RouteSelect";
+import {LoadingDisplay} from "../Loading";
 
 export const StopPopupContentSection = styled.div`
   padding: 0 1rem 0.5rem;
@@ -36,13 +37,14 @@ export const StopStreetViewWrapper = styled(StopPopupContentSection)`
 
 const decorate = flow(observer, inject("UI"));
 
-const StopPopupContent = decorate(({UI, color, stop}) => {
+const StopPopupContent = decorate(({loading = false, UI, color, stop}) => {
   return (
     <StopContentWrapper data-testid={`stop-popup stop-popup-${stop.stopId}`}>
       <StopPopupContentSection>
         <Heading level={4}>
           {stop.name}, {stop.shortId.replace(/ /g, "")} ({stop.stopId})
         </Heading>
+        <LoadingDisplay loading={loading} />
         <RouteSelect routes={stop.routes || []} color={color} />
       </StopPopupContentSection>
       <StopStreetViewWrapper>

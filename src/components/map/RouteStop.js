@@ -61,6 +61,7 @@ const RouteStop = decorate(
     selectedJourney,
     journey,
     showRadius,
+    loading = false,
     state,
     Filters,
     Time,
@@ -103,7 +104,7 @@ const RouteStop = decorate(
 
     let stopStreetViewPopup = (
       <MapPopup open={stopIsSelected} key={`stop_${stopId}_popup`}>
-        <StopPopupContent stop={stop} />
+        <StopPopupContent loading={loading} stop={stop} />
       </MapPopup>
     );
 
