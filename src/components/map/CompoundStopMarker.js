@@ -74,7 +74,14 @@ const CompoundStopMarker = observer(
         : null;
 
     const modesInCluster = uniq(
-      compact(stops.map((stop) => getPriorityMode(get(stop, "modes", ["BUS"]))))
+      compact(
+        stops.map((stop) =>
+          getPriorityMode([
+            ...get(stop, "modes", []),
+            ...get(stop, "routes", []).map((r) => r.mode),
+          ])
+        )
+      )
     );
 
     let mode =
@@ -87,7 +94,11 @@ const CompoundStopMarker = observer(
     let stopColor = getModeColor(mode);
 
     if (selectedStopObj) {
-      mode = getPriorityMode(get(selectedStopObj, "modes", ["BUS"]));
+      mode = getPriorityMode([
+        ...get(selectedStopObj, "modes", ["BUS"]),
+        ...get(selectedStopObj, "routes", []).map((r) => r.mode),
+      ]);
+
       stopColor = getModeColor(mode);
     }
 

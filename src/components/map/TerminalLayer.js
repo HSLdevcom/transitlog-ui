@@ -23,7 +23,7 @@ import uniqBy from "lodash/uniqBy";
 import MapPopup from "./MapPopup";
 import {Heading} from "../Typography";
 import {Button} from "../Forms";
-import {StopFieldsFragment} from "../../queries/StopFieldsFragment";
+import {RouteStopFieldsFragment} from "../../queries/StopFieldsFragment";
 import RouteSelect from "../RouteSelect";
 import {useCenterOnPopup} from "../../hooks/useCenterOnPopup";
 
@@ -53,11 +53,11 @@ export const singleTerminalQuery = gql`
       modes
       stopIds
       stops {
-        ...StopFieldsFragment
+        ...RouteStopFieldsFragment
       }
     }
   }
-  ${StopFieldsFragment}
+  ${RouteStopFieldsFragment}
 `;
 
 const TerminalIconStyle = createGlobalStyle`

@@ -4,15 +4,19 @@ import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
 import CompoundStopMarker from "./CompoundStopMarker";
 import flow from "lodash/flow";
+import uniq from "lodash/uniq";
 import {inject} from "../../helpers/inject";
 import {useQueryData} from "../../hooks/useQueryData";
 import gql from "graphql-tag";
-import {StopFieldsFragment} from "../../queries/StopFieldsFragment";
+import {
+  StopFieldsFragment,
+  RouteStopFieldsFragment,
+} from "../../queries/StopFieldsFragment";
 import {useCenterOnPopup} from "../../hooks/useCenterOnPopup";
 
 const decorate = flow(observer, inject("Filters", "UI"));
 
-const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
+const StopLayerContent = decorate(({stops, selectedStop, showRadius, state, Filters}) => {
   const {stop: selectedStopId, highlightedStop} = state;
 
   const prevStopAreas = useRef([]);
@@ -45,12 +49,18 @@ const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
       }
 
       const stopGroup = currentAreas.get(groupBounds) || [];
-      stopGroup.push(stop);
+
+      if (stop.stopId === selectedStop?.stopId) {
+        stopGroup.push(selectedStop);
+      } else {
+        stopGroup.push(stop);
+      }
+
       currentAreas.set(groupBounds, stopGroup);
     }
 
     return Array.from(currentAreas.entries());
-  }, [stops]);
+  }, [stops, selectedStop]);
 
   if (stopAreas.length !== 0) {
     prevStopAreas.current = stopAreas;
@@ -65,8 +75,7 @@ const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
 
         return (
           <React.Fragment
-            key={`stop_cluster_${stopCluster
-              .map((stop) => stop.stopId)
+            key={`stop_cluster_${uniq(stopCluster.map((stop) => stop.stopId))
               .sort()
               .join("_")}`}>
             {stopCluster.length === 1 ? (
@@ -101,10 +110,10 @@ const StopLayerContent = decorate(({stops, showRadius, state, Filters}) => {
 export const singleStopQuery = gql`
   query singleStopQuery($stopId: String!, $date: Date!) {
     stop(date: $date, stopId: $stopId) {
-      ...StopFieldsFragment
+      ...RouteStopFieldsFragment
     }
   }
-  ${StopFieldsFragment}
+  ${RouteStopFieldsFragment}
 `;
 
 export const allStopsQuery = gql`
@@ -171,6 +180,7 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
   return (
     <StopLayerContent
       key="stop layer content"
+      selectedStop={selectedStop}
       stops={stopsInArea}
       showRadius={showRadius}
     />

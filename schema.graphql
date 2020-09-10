@@ -241,7 +241,7 @@ type JourneyStopEvent {
   recordedAt: DateTime!
   recordedAtUnix: Int!
   recordedTime: Time!
-  stop: Stop
+  stop: RouteSegment
   stopId: String
   stopped: Boolean
   type: String!
@@ -330,7 +330,7 @@ type PlannedStopEvent {
   plannedDateTime: DateTime
   plannedTime: Time
   plannedUnix: Int
-  stop: Stop
+  stop: RouteSegment
   stopId: String
   type: String!
 }
@@ -348,9 +348,9 @@ type Query {
   route(date: Date!, direction: Direction!, routeId: String!): Route
   routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
   routeGeometry(date: Date!, direction: Direction!, routeId: String!): RouteGeometry
-  routeStops(date: Date!, direction: Direction!, routeId: String!): [Stop]!
+  routeStops(date: Date!, direction: Direction!, routeId: String!): [RouteStop!]!
   routes(date: Date, filter: RouteFilterInput): [Route]!
-  stop(date: Date!, stopId: String!): Stop
+  stop(date: Date!, stopId: String!): RouteStop
   stops(date: Date!, filter: StopFilterInput): [Stop]!
   terminal(date: Date, terminalId: String): Terminal
   terminals(date: Date): [Terminal]!
@@ -412,24 +412,34 @@ type RouteSegment implements Position {
   stopIndex: Int!
 }
 
-type Stop implements Position {
-  _matchScore: Float
+type RouteStop implements Position {
   alerts: [Alert!]!
   id: ID!
-  isTimingStop: Boolean
   lat: Float!
   lng: Float!
-  modes: [String]!
   name: String
   radius: Float
   routes: [StopRoute!]!
   shortId: String
   stopId: String!
-  stopIndex: Int
+}
+
+type Stop implements Position {
+  _matchScore: Float
+  alerts: [Alert!]!
+  id: ID!
+  lat: Float!
+  lng: Float!
+  modes: [String]!
+  name: String
+  radius: Float
+  shortId: String
+  stopId: String!
 }
 
 type StopRoute {
   destination: String
+  destinationStopId: String
   direction: Direction!
   distanceFromPrevious: Int
   distanceFromStart: Int
@@ -451,7 +461,7 @@ type Terminal implements Position {
   modes: [String!]
   name: String!
   stopIds: [String!]
-  stops: [Stop!]
+  stops: [RouteStop!]!
 }
 
 type UIMessage {

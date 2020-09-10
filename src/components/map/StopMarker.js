@@ -92,7 +92,13 @@ const StopMarker = observer(
     const {lat, lng} = stop || position || {};
 
     const stopIsTimingStop = isTimingStop || !!get(stop, "isTimingStop", false);
-    const stopMode = !stop ? mode : getPriorityMode(get(stop, "modes", []));
+    const stopMode = !stop
+      ? mode
+      : getPriorityMode([
+          ...get(stop, "modes", ["BUS"]),
+          ...get(stop, "routes", []).map((r) => r.mode),
+        ]);
+
     const stopColor = color ? color : getModeColor(stopMode);
 
     // Don't update the icon too often, will result in an update loop.

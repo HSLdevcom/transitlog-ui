@@ -6,16 +6,19 @@
         "name": "Position",
         "possibleTypes": [
           {
+            "name": "RouteStop"
+          },
+          {
             "name": "Stop"
           },
           {
             "name": "Terminal"
           },
           {
-            "name": "VehiclePosition"
+            "name": "RouteSegment"
           },
           {
-            "name": "RouteSegment"
+            "name": "VehiclePosition"
           },
           {
             "name": "RouteGeometryPoint"

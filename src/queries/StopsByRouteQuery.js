@@ -1,4 +1,3 @@
-import React from "react";
 import gql from "graphql-tag";
 
 export const routeStopsQuery = gql`
@@ -11,7 +10,6 @@ export const routeStopsQuery = gql`
       lng
       name
       radius
-      modes
       routes {
         id
         routeId
