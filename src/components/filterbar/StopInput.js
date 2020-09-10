@@ -41,7 +41,7 @@ const getSuggestionInputValue = (suggestion) => {
     return suggestion;
   }
 
-  return get(suggestion, "id", "");
+  return get(suggestion, "stopId", "");
 };
 
 const renderSuggestion = (suggestion, {isHighlighted}) => {
@@ -49,9 +49,11 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
   const hoverInfo = (suggestionIsStop ? suggestion.routes : suggestion.stopIds) || [];
   const suggestionType = suggestionIsStop ? "stop" : "terminal";
 
+  let idValue = suggestionType === "terminal" ? suggestion.id : suggestion.stopId;
+
   return (
     <SuggestionContent
-      data-testid={`${suggestionType}-option-${suggestion.id}`}
+      data-testid={`${suggestionType}-option-${idValue}`}
       {...applyTooltip(
         hoverInfo
           .map((item) => {
@@ -68,10 +70,10 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
       <SuggestionText>
         {isStop(suggestion) ? (
           <strong>
-            {suggestion.id} ({(suggestion.shortId || "").replace(/ /g, "")})
+            {idValue} ({(suggestion.shortId || "").replace(/ /g, "")})
           </strong>
         ) : (
-          <strong>{suggestion.id}</strong>
+          <strong>{idValue}</strong>
         )}
         <br />
         {suggestion.name}
@@ -106,8 +108,9 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
   const filteredStops =
     inputLength === 0
       ? stops
-      : stops.filter(({id, shortId, name}) => {
-          const matchStopId = prepareMatchVal(id);
+      : stops.filter(({id, stopId, shortId, name}) => {
+          const matchId = prepareMatchVal(id);
+          const matchStopId = prepareMatchVal(stopId);
           const matchShortId = prepareMatchVal(shortId);
           const matchName = prepareMatchVal(name);
 
@@ -117,6 +120,10 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
             (matchShortId && matchShortId.startsWith(inputValue)) ||
             matchShortId.substring(1).startsWith(inputValue)
           ) {
+            matches++;
+          }
+
+          if (matchId && matchId.startsWith(inputValue)) {
             matches++;
           }
 
@@ -154,10 +161,11 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
 
   return orderBy(
     filteredStops,
-    ({id, shortId, name}) => {
+    ({id, stopId, shortId, name}) => {
       let matchScore = 0;
 
-      const cleanStopId = prepareMatchVal(id);
+      const cleanId = prepareMatchVal(id);
+      const cleanStopId = prepareMatchVal(stopId);
       const cleanShortId = prepareMatchVal(shortId);
       const cleanName = prepareMatchVal(name);
 
@@ -169,6 +177,10 @@ const getFilteredSuggestions = (stops, {value = ""}) => {
         charIdx = 1;
         matchScore = matchScore + 100;
         checkValue = cleanShortId;
+      } else if (cleanId[0] === firstInputChar) {
+        charIdx = 1;
+        matchScore = matchScore + 20;
+        checkValue = cleanId;
       } else if (cleanStopId[0] === firstInputChar) {
         charIdx = 1;
         matchScore = matchScore + 20;

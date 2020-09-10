@@ -31,7 +31,7 @@ const StopSettings = decorate(({Filters, UI, state}) => {
     {variables: {date}},
     "all stops query"
   );
-  
+
   const {data: terminalsData} = useQueryData(
     terminalsQuery,
     {variables: {date}},
@@ -60,7 +60,7 @@ const StopSettings = decorate(({Filters, UI, state}) => {
     return <LoadingSpinner inline={true} />;
   }
 
-  const selectedStop = stops.find((s) => s.id === stop);
+  const selectedStop = stops.find((s) => s.stopId === stop);
   const selectedTerminal = terminals.find((t) => t.id === terminal);
 
   let terminalMode = "BUS";
@@ -102,7 +102,8 @@ const StopSettings = decorate(({Filters, UI, state}) => {
       {selectedStop && (
         <SelectedOptionDisplay data-testid="selected-stop-display">
           <SuggestionText>
-            <strong>{selectedStop.id}</strong> ({selectedStop.shortId.replace(/\s/g, "")})
+            <strong>{selectedStop.stopId}</strong> (
+            {selectedStop.shortId.replace(/\s/g, "")})
             <br />
             {selectedStop.name}
           </SuggestionText>
