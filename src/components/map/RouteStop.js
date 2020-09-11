@@ -5,7 +5,7 @@ import {observer} from "mobx-react-lite";
 import {P} from "../Typography";
 import {ColoredBackgroundSlot, PlainSlot, PlainSlotMono, TagButton} from "../TagButton";
 import styled from "styled-components";
-import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
+import {getPriorityMode, getModeColor, getStopModes} from "../../helpers/vehicleColor";
 import get from "lodash/get";
 import flow from "lodash/flow";
 import {
@@ -110,7 +110,7 @@ const RouteStop = decorate(
 
     let markerChildren = [stopTooltip, stopStreetViewPopup];
 
-    const mode = getPriorityMode(get(stop, "modes", []));
+    const mode = getPriorityMode(getStopModes(stop));
     let color = getModeColor(mode);
     let route = get(stop, "routes", [])[0];
 

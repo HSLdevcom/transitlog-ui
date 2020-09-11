@@ -10,7 +10,7 @@ import {Marker, Tooltip} from "react-leaflet";
 import {inject} from "../../helpers/inject";
 import getTransportType from "../../helpers/getTransportType";
 import {createGlobalStyle} from "styled-components";
-import {getModeColor, getPriorityMode} from "../../helpers/vehicleColor";
+import {getModeColor, getPriorityMode, getStopModes} from "../../helpers/vehicleColor";
 import {
   StopPopupContentSection,
   StopStreetViewWrapper,
@@ -77,7 +77,7 @@ const selectedTerminalStyle = (color = "var(--bus-blue)") =>
   `border: 2px solid white; box-shadow: 0 0 0 2px ${color};`;
 
 const SelectedTerminalPopup = decoratePopup(({terminal, UI, open}) => {
-  const terminalMode = getPriorityMode(get(terminal, "modes", []));
+  const terminalMode = getPriorityMode(getStopModes(terminal));
   const terminalColor = getModeColor(terminalMode);
 
   const terminalStops = terminal.stops || [];

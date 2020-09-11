@@ -11,7 +11,6 @@ export const StopRouteFragment = gql`
     destination
     distanceFromPrevious
     distanceFromStart
-    duration
     isTimingStop
     mode
     name

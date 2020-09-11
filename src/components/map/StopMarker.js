@@ -2,7 +2,7 @@ import React, {useCallback, useMemo} from "react";
 import styled from "styled-components";
 import {latLng} from "leaflet";
 import get from "lodash/get";
-import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
+import {getPriorityMode, getModeColor, getStopModes} from "../../helpers/vehicleColor";
 import {StopRadius} from "./StopRadius";
 import StopPopupContent from "./StopPopupContent";
 import MapPopup from "./MapPopup";
@@ -92,12 +92,7 @@ const StopMarker = observer(
     const {lat, lng} = stop || position || {};
 
     const stopIsTimingStop = isTimingStop || !!get(stop, "isTimingStop", false);
-    const stopMode = !stop
-      ? mode
-      : getPriorityMode([
-          ...get(stop, "modes", ["BUS"]),
-          ...get(stop, "routes", []).map((r) => r.mode),
-        ]);
+    const stopMode = !stop ? mode : getPriorityMode(getStopModes(stop), stop);
 
     const stopColor = color ? color : getModeColor(stopMode);
 

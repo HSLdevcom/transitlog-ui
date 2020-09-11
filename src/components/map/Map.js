@@ -228,7 +228,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
           <LayersControl.Overlay name="Stops" checked={mapOverlays.includes("Stops")}>
             <FeatureGroup>
               {/*
-                  The terminal markers are rendered in TerminalLayer. This featuregroup
+                  The stop markers are rendered in StopLayer. This featuregroup
                   is just a dummy so that the option will show in the layer control.
                 */}
             </FeatureGroup>

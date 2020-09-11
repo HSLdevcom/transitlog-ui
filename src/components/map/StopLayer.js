@@ -1,4 +1,4 @@
-import React, {useMemo, useRef} from "react";
+import React, {useMemo, useRef, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import StopMarker from "./StopMarker";
 import {latLng} from "leaflet";
@@ -125,8 +125,19 @@ export const allStopsQuery = gql`
   ${StopFieldsFragment}
 `;
 
-const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
-  const {date, stop, mapView, mapBounds, mapOverlays, mapZoom, selectedJourney} = state;
+let stopsVisibleBeforeRouteSelected = false;
+
+const StopLayer = decorate(({showRadius, state, Filters, UI}) => {
+  const {
+    date,
+    stop,
+    route,
+    mapView,
+    mapBounds,
+    mapOverlays,
+    mapZoom,
+    selectedJourney,
+  } = state;
 
   const {data: selectedStop, loading: selectedStopLoading} = useQueryData(
     singleStopQuery,
@@ -151,21 +162,55 @@ const StopLayer = decorate(({showRadius, state, UI, Filters}) => {
   const stops = stopsData || [];
   const stopsHidden = mapZoom < 14 || !mapOverlays.includes("Stops");
 
+  let hasRoute = route && route.routeId;
+
+  // Temporarily deactivate stops layer when route is selected.
+  // The user can still choose to see stops if they want.
+  useEffect(() => {
+    if (hasRoute) {
+      if (mapOverlays.includes("Stops")) {
+        console.log();
+        stopsVisibleBeforeRouteSelected = true;
+        UI.changeOverlay("remove")({name: "Stops"});
+      } else {
+        stopsVisibleBeforeRouteSelected = false;
+      }
+    }
+
+    if (!hasRoute && stopsVisibleBeforeRouteSelected) {
+      UI.changeOverlay("add")({name: "Stops"});
+    }
+  }, [hasRoute]);
+
+  useEffect(() => {
+    if (mapOverlays.includes("Stops")) {
+      stopsVisibleBeforeRouteSelected = true;
+    } else {
+      stopsVisibleBeforeRouteSelected = false;
+    }
+  }, [mapOverlays]);
+
   const stopsInArea = useMemo(() => {
-    if (selectedJourney || mapZoom < 14 || !mapBounds) {
+    if (selectedJourney || mapZoom < 14 || !mapBounds || stopsHidden) {
       return [];
     }
 
     return stops.filter(
       ({stopId, lat, lng}) => stopId === stop || mapBounds.contains([lat, lng])
     );
-  }, [stop, stops, mapView, mapBounds, mapZoom, selectedJourney]);
+  }, [stop, stops, mapView, mapBounds, mapZoom, selectedJourney, stopsHidden]);
 
   if (selectedJourney || (stopsHidden && !selectedStop)) {
     return null;
   }
 
-  if (stopsHidden && selectedStop) {
+  if (
+    stopsHidden &&
+    selectedStop &&
+    !selectedStop.routes.some(
+      (r) => r.routeId === route?.routeId && r.direction === route?.direction
+    )
+  ) {
     return (
       <StopMarker
         selected={true}

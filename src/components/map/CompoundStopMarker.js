@@ -6,7 +6,7 @@ import compact from "lodash/compact";
 import uniq from "lodash/uniq";
 import styled, {css} from "styled-components";
 import {latLng} from "leaflet";
-import {getPriorityMode, getModeColor} from "../../helpers/vehicleColor";
+import {getPriorityMode, getModeColor, getStopModes} from "../../helpers/vehicleColor";
 import StopPopupContent, {StopPopupContentSection} from "./StopPopupContent";
 import MapPopup from "./MapPopup";
 import StopMarker from "./StopMarker";
@@ -74,31 +74,14 @@ const CompoundStopMarker = observer(
         : null;
 
     const modesInCluster = uniq(
-      compact(
-        stops.map((stop) =>
-          getPriorityMode([
-            ...get(stop, "modes", []),
-            ...get(stop, "routes", []).map((r) => r.mode),
-          ])
-        )
-      )
+      compact(stops.map((stop) => getPriorityMode(getStopModes(stop))))
     );
 
-    let mode =
-      modesInCluster.length === 0
-        ? "BUS"
-        : modesInCluster.length === 1
-        ? modesInCluster[0]
-        : getPriorityMode(modesInCluster);
-
+    let mode = getPriorityMode(modesInCluster);
     let stopColor = getModeColor(mode);
 
     if (selectedStopObj) {
-      mode = getPriorityMode([
-        ...get(selectedStopObj, "modes", ["BUS"]),
-        ...get(selectedStopObj, "routes", []).map((r) => r.mode),
-      ]);
-
+      mode = getPriorityMode(getStopModes(selectedStopObj));
       stopColor = getModeColor(mode);
     }
 
@@ -124,7 +107,7 @@ const CompoundStopMarker = observer(
             </ChooseStopHeading>
             <StopGroupContainer>
               {stops.map((stopInGroup) => {
-                const mode = getPriorityMode(get(stopInGroup, "modes", []));
+                const mode = getPriorityMode(getStopModes(stopInGroup));
                 const stopColor = getModeColor(mode);
 
                 return (
