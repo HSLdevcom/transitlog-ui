@@ -49,6 +49,11 @@ export function getPriorityMode(modes) {
     "desc"
   );
 
+  // Return if we only have one mode type.
+  if (modeOccurrences.length === 1) {
+    return modeOccurrences[0][0];
+  }
+
   // Get the top mode type, and all modes that have close % ratio of occurrences.
   // These are tied for the #1 spot.
   let majorityModes = modeOccurrences.reduce((selectedModes, modeOccurrence) => {

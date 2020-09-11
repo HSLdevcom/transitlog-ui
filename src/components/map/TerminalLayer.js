@@ -17,7 +17,6 @@ import {
   StopContentWrapper,
 } from "./StopPopupContent";
 import {Text} from "../../helpers/text";
-import get from "lodash/get";
 import flatten from "lodash/flatten";
 import uniqBy from "lodash/uniqBy";
 import MapPopup from "./MapPopup";
