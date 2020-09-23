@@ -3,6 +3,7 @@ import styled from "styled-components";
 import get from "lodash/get";
 import flow from "lodash/flow";
 import findLast from "lodash/findLast";
+import mapValues from "lodash/mapValues";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import doubleDigit from "../../helpers/doubleDigit";
 import {getEquipmentType, validateEquipment} from "./equipmentType";
@@ -59,13 +60,13 @@ const Values = styled.div`
   margin-left: auto;
   display: flex;
   justify-content: flex-start;
-  align-items: baseline;
+  align-items: flex-start;
 
   > * {
     white-space: nowrap;
     flex-wrap: nowrap;
     border-radius: 4px;
-    line-height: 1;
+    line-height: 12px;
     padding: 4px 0.5rem;
     border: 1px solid var(--lighter-grey);
     margin-left: 0.5rem;
@@ -74,16 +75,16 @@ const Values = styled.div`
 
 const ObservedValue = styled.span`
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   border-radius: 4px;
-  line-height: 1;
-  padding: 4px 0.5rem;
+  line-height: 12px;
+  padding: 4px 7.9px;
   background: ${({backgroundColor = "var(--lighter-grey)"}) => backgroundColor};
   color: ${({color = "var(--dark-grey)"}) => color};
   margin-left: 0.5rem;
   font-family: "Courier New", Courier, monospace;
-  border-color: transparent;
+  border-color: ${({backgroundColor = "var(--lighter-grey)"}) => backgroundColor};
 `;
 
 const decorate = flow(observer, inject("state"));
@@ -107,6 +108,25 @@ export default decorate(({departure, state, journey, date}) => {
 
   const terminalTime = get(departure, "terminalTime", null);
   const recoveryTime = get(departure, "recoveryTime", null);
+
+  let equipmentInfo = journey.equipment
+    ? validateEquipment(departure, journey.equipment)
+    : null;
+
+  let equipmentInfoDisplay = mapValues(equipmentInfo || {}, (prop) => {
+    const propVal = prop.observed;
+
+    return (
+      prop.observed && (
+        <ObservedValue
+          key={`equipment_prop_${prop.name}`}
+          backgroundColor={prop.color}
+          color={prop.required !== false ? "white" : "var(--dark-grey)"}>
+          {propVal}
+        </ObservedValue>
+      )
+    );
+  });
 
   return (
     <JourneyInfo>
@@ -258,39 +278,38 @@ export default decorate(({departure, state, journey, date}) => {
             <span>
               {equipmentType
                 ? equipmentType
-                : equipmentCode
+                : // ET is short for Ei Tyyppiä, a fallback value for the equipment type field.
+                equipmentCode && equipmentCode !== "ET"
                 ? equipmentCode
                 : text("general.no_type")}
             </span>
-            {plannedColor && <span>{plannedColor}</span>}
+            {equipmentInfoDisplay.type && equipmentInfoDisplay.type}
           </Values>
         </Line>
-        {!!journey.equipment && (
-          <Line right>
+      </JourneyInfoRow>
+      {(plannedColor || equipmentInfoDisplay.exteriorColor) && (
+        <JourneyInfoRow>
+          <Line>
+            <LineHeading>
+              <Text>journey.exterior_color</Text>
+            </LineHeading>
             <Values>
-              {validateEquipment(departure, journey.equipment).map((prop) => {
-                const propVal = prop.observed;
-                let propValShort = propVal.slice(0, 11).trim();
-
-                if (propValShort < propVal) {
-                  propValShort += ".";
-                }
-
-                return (
-                  prop.observed && (
-                    <ObservedValue
-                      key={`equipment_prop_${prop.name}`}
-                      backgroundColor={prop.color}
-                      color={prop.required !== false ? "white" : "var(--dark-grey)"}>
-                      {propValShort}
-                    </ObservedValue>
-                  )
-                );
-              })}
+              {plannedColor && <span>{plannedColor}</span>}
+              {equipmentInfoDisplay.exteriorColor && equipmentInfoDisplay.exteriorColor}
             </Values>
           </Line>
-        )}
-      </JourneyInfoRow>
+        </JourneyInfoRow>
+      )}
+      {equipmentInfoDisplay.emissionClass && (
+        <JourneyInfoRow>
+          <Line>
+            <LineHeading>
+              <Text>journey.emission_class</Text>
+            </LineHeading>
+            <Values>{equipmentInfoDisplay.emissionClass}</Values>
+          </Line>
+        </JourneyInfoRow>
+      )}
     </JourneyInfo>
   );
 });

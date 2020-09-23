@@ -14,7 +14,12 @@ export default function CalculateTerminalTime({
   children,
 }) {
   const observedTime = useMemo(() => moment.tz(event.recordedAt, TIMEZONE), [event]);
-  const plannedTime = useMemo(() => moment.tz(event.plannedDateTime, TIMEZONE), [event]);
+
+  const plannedTime = useMemo(
+    () =>
+      !event.plannedDateTime ? observedTime : moment.tz(event.plannedDateTime, TIMEZONE),
+    [event]
+  );
 
   const bufferTime = get(departure, recovery ? "recoveryTime" : "terminalTime", 0);
 

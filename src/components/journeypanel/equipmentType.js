@@ -1,5 +1,6 @@
 import get from "lodash/get";
-import map from "lodash/map";
+import mapValues from "lodash/mapValues";
+import {text} from "../../helpers/text";
 
 const equipment = {
   "0": "C",
@@ -28,7 +29,7 @@ export function getEquipmentType(code) {
 
 export function validateEquipment(departure, equipment) {
   const {equipmentColor, equipmentIsRequired, equipmentType} = departure;
-  const {type, exteriorColor, emissionDesc, emissionClass} = equipment;
+  let {type, exteriorColor, emissionDesc, emissionClass} = equipment;
 
   const plannedEquipmentType = getEquipmentType(equipmentType);
 
@@ -37,6 +38,15 @@ export function validateEquipment(departure, equipment) {
   // value IF it was a requirement for the departure, otherwise it is false.
   // If "required" is not false, the "observed" and "required" props
   // should match for the requirement to be considered fulfilled.
+
+  emissionDesc = !emissionDesc && emissionClass === "11" ? "Raitiovaunu" : emissionDesc;
+
+  let emissionObserved =
+    emissionClass && emissionDesc
+      ? `${emissionDesc} (${emissionClass})`
+      : emissionClass && !emissionDesc
+      ? emissionClass
+      : text("journey.emission_class_unknown");
 
   const observedEquipment = {
     type: {
@@ -48,12 +58,12 @@ export function validateEquipment(departure, equipment) {
       required: equipmentColor || false,
     },
     emissionClass: {
-      observed: emissionDesc || emissionClass ? `${emissionClass}, ${emissionDesc}` : "",
+      observed: emissionObserved,
       required: false,
     },
   };
 
-  return map(observedEquipment, ({observed, required}, prop) => {
+  return mapValues(observedEquipment, ({observed, required}, prop) => {
     const isRequired = required !== false;
 
     const color = isRequired
