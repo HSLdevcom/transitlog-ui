@@ -3,6 +3,7 @@ export const delayStopType = {
   ORIGIN: "origin",
   DESTINATION: "destination",
   NORMAL: "normal",
+  BLOCK_FIRST: "block_first",
 };
 
 export function getDelayStopType(event, defaultType = delayStopType.NORMAL) {
@@ -43,6 +44,8 @@ function getDelayType(delay, stopType = delayStopType.NORMAL) {
   let earlyType = [delayStopType.NORMAL, delayStopType.DESTINATION].includes(stopType)
     ? "normal-early"
     : "early";
+
+  let lateType = stopType === delayStopType.BLOCK_FIRST ? "block-late" : "late";
 
   return delay <= earlyThreshold ? earlyType : delay >= 60 * 3 ? "late" : "on-time";
 }

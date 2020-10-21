@@ -124,7 +124,7 @@ const JourneyEvents = decorate(
         // In cases when there are PDE events but they use GPS, should the stop fall back to DEP events?
         let usesDepIfGpsPde = isOrigin || isTimingStop || false;
 
-        if (hasPdeEvents && !hasOdoPdeEvents && usesDepIfGpsPde) {
+        if (!hasOdoPdeEvents && usesDepIfGpsPde) {
           return "DEP";
         }
 
