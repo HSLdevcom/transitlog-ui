@@ -72,6 +72,7 @@ export default (state) => {
       }
 
       if (routeId && direction) {
+        routeId = routeId.replace("+", " ").replace("%20", " ");
         filterActions.setRoute({routeId: routeId, direction: direction});
       }
 
