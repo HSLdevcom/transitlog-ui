@@ -1,4 +1,3 @@
-import "mobx-react-lite/optimizeForReactDom";
 /* eslint-disable import/first */
 import moment from "moment-timezone";
 import {TIMEZONE} from "./constants";
