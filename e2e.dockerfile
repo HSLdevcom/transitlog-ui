@@ -1,4 +1,4 @@
-FROM cypress/browsers:node12.14.0-chrome79-ff71
+FROM cypress/browsers:node14.15.0-chrome86-ff82
 
 ENV WORK /opt/transitlog
 
