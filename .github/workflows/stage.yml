@@ -55,7 +55,7 @@ jobs:
       with:
         time: '5m'
     - name: Cypress tests
-      uses: cypress-io/github-action@v1
+      uses: cypress-io/github-action@v2
       env:
         CYPRESS_BASE_URL: https://stage.reittiloki.hsl.fi
         CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
