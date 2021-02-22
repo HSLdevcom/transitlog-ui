@@ -55,7 +55,7 @@ jobs:
       with:
         time: '5m' # Wait until all servers are restarted
     - name: Cypress tests
-      uses: cypress-io/github-action@v1
+      uses: cypress-io/github-action@v2
       # with:
       #   record: true # Only production records to Cypress.io
       env:
