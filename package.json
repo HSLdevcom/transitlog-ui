@@ -34,7 +34,7 @@
     "history": "^4.10.1",
     "leaflet": "^1.6.0",
     "leaflet-draw": "^1.0.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mapillary-js": "^2.20.0",
     "mobx": "^5.15.4",
     "mobx-app": "^1.0.3",
