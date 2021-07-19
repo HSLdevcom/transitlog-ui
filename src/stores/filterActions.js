@@ -49,11 +49,6 @@ const filterActions = (state) => {
     setUrlValue("vehicle", state.vehicle);
   });
 
-  const setLine = action("Set line", (lineId) => {
-    state.line = lineId;
-    setUrlValue("line", state.line);
-  });
-
   const setRoute = action("Set route", (route) => {
     const {routeId = "", direction = "", originStopId = ""} = route || {};
 
@@ -101,7 +96,6 @@ const filterActions = (state) => {
     setStop,
     setTerminal,
     setVehicle,
-    setLine,
     setRoute,
     setTimetableFilter,
     applyTimetableFilters,

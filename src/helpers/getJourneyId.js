@@ -64,11 +64,11 @@ export function createDepartureJourneyId(departure) {
     return "";
   }
 
-  const compositeJourney = createCompositeJourney(
-    useDepartureTime.departureDate,
-    departure,
-    useDepartureTime.departureTime
-  );
+  const compositeJourney = createCompositeJourney({
+    date: useDepartureTime.departureDate,
+    route: departure,
+    time: useDepartureTime.departureTime,
+  });
 
   return getJourneyId(compositeJourney, false);
 }
