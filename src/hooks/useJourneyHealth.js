@@ -53,14 +53,14 @@ function checkLocHealth(events, incrementHealth, addMessage) {
       odoCount++;
     }
   }
-
   const score = eventsWithoutPDE.length - odoCount;
-  const percentage = round((odoCount / eventsWithoutPDE.length) * 100);
-
+  const pdeCount = Math.abs(eventsWithoutPDE.length - events.length);
+  const percentage = round(((odoCount + pdeCount) / events.length) * 100);
   incrementHealth(score);
-
   if (percentage < 100) {
-    addMessage(`Events calculated with odometer: ${odoCount} (${percentage}%)`);
+    addMessage(
+      `Events calculated with odometer: ${odoCount + pdeCount} (${percentage}%)`
+    );
   }
 }
 
