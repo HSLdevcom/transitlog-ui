@@ -100,7 +100,11 @@ const StopDepartureItem = observer((props) => {
     const departureDate = departure.originDepartureTime.departureDate;
     const departureTime = departure.originDepartureTime.departureTime;
 
-    return createCompositeJourney(departureDate, departure, departureTime);
+    return createCompositeJourney({
+      date: departureDate,
+      route: departure,
+      time: departureTime,
+    });
   }, [departure]);
 
   if (!departure.journey) {

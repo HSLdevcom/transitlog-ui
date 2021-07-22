@@ -30,6 +30,7 @@ export function checkDoorEventsHealth(events, setState) {
   }
 }
 
+// Check that lat and long fields exist and have values.
 function checkGPS(positions, setState) {
   if (
     positions.some((evt) => typeof evt.lat === "number" && typeof evt.lng === "number")
@@ -40,30 +41,30 @@ function checkGPS(positions, setState) {
   }
 }
 
+// Check that GPS was used for events where this is desired. PDE events measured
+// with ODO are excluded from `events` as this is on purpose.
 function checkLocHealth(events, incrementHealth, addMessage) {
   let odoCount = 0;
-  // PDE events are SUPPOSED to be triggered with the odometer, so exclude them from the check.
-  // Filter out the PDE events if the events conform to the ODO-PDE spec.
-  let eventsWithoutPDE = events.some((evt) => evt.type === "PDE" && evt.loc === "ODO")
-    ? events.filter((evt) => evt.type !== "PDE")
-    : events;
 
-  for (const evt of eventsWithoutPDE) {
+  for (const evt of events) {
     if (typeof evt.loc !== "undefined" && evt.loc === "ODO") {
       odoCount++;
     }
   }
-  const score = eventsWithoutPDE.length - odoCount;
-  const pdeCount = Math.abs(eventsWithoutPDE.length - events.length);
-  const percentage = round(((odoCount + pdeCount) / events.length) * 100);
+
+  // One point for each event that was measured with GPS.
+  const score = events.length - odoCount;
+  const percentage = round((odoCount / events.length) * 100);
+
   incrementHealth(score);
+
   if (percentage < 100) {
-    addMessage(
-      `Events calculated with odometer: ${odoCount + pdeCount} (${percentage}%)`
-    );
+    addMessage(`Events calculated with odometer: ${odoCount} (${percentage}%)`);
   }
 }
 
+// Check that a HFP event representing the departure from the first stop is present.
+// Lower points if it is virtual, e.g. created from VP events.
 function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessage) {
   const {stopId = ""} = visitedStops[0] || {};
 
@@ -76,20 +77,25 @@ function checkFirstStopDeparture(events, visitedStops, incrementHealth, addMessa
 
     if (!firstStopDeparture) {
       addMessage(`${text("journey.health.origin_event_missing")} ${stopId}`);
-      incrementHealth(0); // Exit pending state
+      // Events were found but no first stop departure event was found. Zero points to indicate
+      // failure and pull this check out from pending state.
+      incrementHealth(0);
       return;
     }
 
     if (!firstStopDeparture._isVirtual || firstStopDeparture.loc === "MAN") {
+      // Full points if the found event is not virtual, or if it is a metro event.
       incrementHealth(100);
     } else if (firstStopDeparture._isVirtual) {
       addMessage(`${text("journey.health.origin_event_virtual")} ${stopId}.`);
-
+      // Half points for virtual stop events.
       incrementHealth(50);
     }
   }
 }
 
+// Check that a HFP event representing the arrival to the last stop is present.
+// Lower points if it is virtual, e.g. created from VP events.
 function checkLastStopArrival(events, lastStop, incrementHealth, addMessage) {
   if (lastStop) {
     const lastStopArrival = events.find(
@@ -98,20 +104,26 @@ function checkLastStopArrival(events, lastStop, incrementHealth, addMessage) {
 
     if (!lastStopArrival) {
       addMessage(`${text("journey.health.destination_event_missing")} ${lastStop}`);
-      incrementHealth(0); // exit pending state
+      // Events were found but no first stop arrival event was found. Zero points to indicate
+      // failure and pull this check out from pending state.
+      incrementHealth(0);
       return;
     }
 
     if (!lastStopArrival._isVirtual || lastStopArrival.loc === "MAN") {
+      // Full points if the found event is not virtual, or if it is a metro event.
       incrementHealth(100);
     } else {
       addMessage(`${text("journey.health.destination_event_virtual")} ${lastStop}.`);
+      // Half points for virtual stop events.
       incrementHealth(50);
     }
   }
 }
 
+// Same logic as above but for timing stop departures.
 function checkTimingStopDepartures(events, visitedStops, incrementHealth, addMessage) {
+  // Only run the check if the vehicle has visited timing stops.
   const timingStops = visitedStops.filter((stop) => !!stop.isTimingStop);
 
   if (timingStops.length !== 0) {
@@ -208,6 +220,7 @@ function checkPositionEventsHealth(
 const stopEventTypes = [["PDE", "DEP"], ["PDE", "PAS"], "ARR", ["ARS", "PAS"]];
 const lastStopEventTypes = ["ARR", "ARS"];
 
+// Check that stop events are of the right type for the stop.
 function checkStopEventsHealth(stopEvents, plannedStops, incrementHealth, addMessage) {
   const stopEventsLength = get(stopEvents, "length", 0);
 
@@ -292,6 +305,9 @@ export const useJourneyHealth = (journey) => {
 
   const journeyHealth = useMemo(() => {
     const journeyEvents = get(journey, "events", []);
+    // PDE events are SUPPOSED to be triggered with the odometer, so exclude them from the check.
+    const journeyEventsWithoutPDE = journeyEvents.filter((evt) => evt.type !== "PDE");
+
     const vehiclePositions = get(journey, "vehiclePositions", []);
     const plannedDepartures = orderBy(
       get(journey, "routeDepartures", []),
@@ -403,7 +419,7 @@ export const useJourneyHealth = (journey) => {
       positions: {health: 0, max: vehiclePositions.length, messages: []},
       locType: {
         health: 0,
-        max: journeyEvents.length,
+        max: journeyEventsWithoutPDE.length,
         messages: [],
         thresholds: {ok: 97, warning: 97},
       },
@@ -424,9 +440,9 @@ export const useJourneyHealth = (journey) => {
       const currentHealth = healthScores[which].health;
       let pointsToAdd = addPoints;
 
-      // Health checks that are pending have a value of -1. If we are adding points,
-      // it means that the health check is no longer pending, so we also pull it
-      // out from the pending state while adding points.
+      // Health checks that are pending have a value of -1. Since we are currently adding
+      // points, it means that the health check is no longer pending, so we must also
+      // pull it out from the pending state.
       if (currentHealth === -1) {
         pointsToAdd += 1;
       }
@@ -546,7 +562,7 @@ export const useJourneyHealth = (journey) => {
 
     // Check that the odometer isn't used too much to calculate events.
     checkLocHealth(
-      journeyEvents,
+      journeyEventsWithoutPDE,
       onIncrementHealth("locType"),
       onAddMessage("locType", healthScores)
     );
