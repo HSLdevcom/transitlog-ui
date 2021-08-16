@@ -17,8 +17,3 @@
 import "./commands";
 import "cypress-commands";
 import "cypress-wait-until";
-
-Cypress.on("uncaught:exception", (err, runnable) => {
-  console.log(err);
-  return false;
-});
