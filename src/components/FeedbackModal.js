@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from "react";
+import React, {useState, useCallback, useEffect, useMemo} from "react";
 import gql from "graphql-tag";
 import {useMutation, useApolloClient} from "@apollo/react-hooks";
 import StyledModal from "styled-react-modal";
@@ -288,7 +288,6 @@ const FeedbackModal = decorate((props) => {
     }
   `;
 
-  const [shareUrl, setShareUrl] = useState("");
   const [uploadImageMutation] = useMutation(UPLOAD_IMAGE_MUTATION);
   const [sendFeedbackMutation] = useMutation(SEND_FEEDBACK_MUTATION);
   const apolloClient = useApolloClient();
@@ -338,8 +337,10 @@ const FeedbackModal = decorate((props) => {
         Feedback.showFeedbackImageError();
       }
     }
+
     apolloClient.resetStore();
     Feedback.setSendingState(false);
+
     if (success) {
       Feedback.resetFeedback();
       Feedback.showFeedbackSuccessMsg();
@@ -351,7 +352,7 @@ const FeedbackModal = decorate((props) => {
     Feedback.resetErrorAndSuccessMsg();
   };
 
-  const createShareUrl = useCallback(() => {
+  const shareUrl = useMemo(() => {
     const prodOrigin = process.env.REACT_APP_PRODUCTION_URL;
     const currentOrigin = window.location.origin;
 
@@ -362,14 +363,8 @@ const FeedbackModal = decorate((props) => {
       urlToShare = urlToShare.replace(currentOrigin, prodOrigin);
     }
 
-    setShareUrl(urlToShare);
+    return urlToShare;
   }, [window.location.href]);
-
-  useEffect(() => {
-    if (feedbackModalOpen) {
-      createShareUrl();
-    }
-  }, [feedbackModalOpen]);
 
   if (showFeedbackSuccessMsg)
     return (
