@@ -13,22 +13,22 @@ describe("Route smoke tests", () => {
   it("Finds a route and can select it", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click({force: true});
+    cy.getTestElement("route-input").type("1024/1");
+    cy.getTestElement("route-option-1024-1").click({force: true});
 
     cy.url().should((url) =>
-      expect(url).to.include(`route.routeId=1018&route.direction=1`)
+      expect(url).to.include(`route.routeId=1024&route.direction=1`)
     );
 
     cy.getTestElement("journey-list").should("exist");
-    cy.assertRouteSelected("1018");
+    cy.assertRouteSelected("1024");
   });
 
   it("Selects a journey of the route", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1018/1");
-    cy.getTestElement("route-option-1018-1").click({force: true});
+    cy.getTestElement("route-input").type("1024/1");
+    cy.getTestElement("route-option-1024-1").click({force: true});
 
     cy.getTestElement("observed-journey")
       .first()
@@ -41,7 +41,7 @@ describe("Route smoke tests", () => {
       .text()
       .then((departureTime) => {
         const urlDepartureTime = departureTime.replace(":", "") + "00";
-        cy.assertJourneySelected("1018", urlDepartureTime);
+        cy.assertJourneySelected("1024", urlDepartureTime);
       });
   });
 
@@ -49,8 +49,8 @@ describe("Route smoke tests", () => {
     // Go to the previous week
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1017/1");
-    cy.getTestElement("route-option-1017-1").click({force: true});
+    cy.getTestElement("route-input").type("1024/1");
+    cy.getTestElement("route-option-1024-1").click({force: true});
 
     cy.getTestElement("sidebar-tab-week-journeys").click({force: true});
     cy.getTestElement("journeys-by-week-list").should("exist");
@@ -61,15 +61,15 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    cy.assertJourneySelected("1017");
+    cy.assertJourneySelected("1024");
   });
 
   it("Can select a weekly departure in last stop arrival mode", () => {
     // Go to the previous week
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1017/1");
-    cy.getTestElement("route-option-1017-1").click({force: true});
+    cy.getTestElement("route-input").type("1024/1");
+    cy.getTestElement("route-option-1024-1").click({force: true});
 
     cy.getTestElement("sidebar-tab-week-journeys").click({force: true});
     cy.getTestElement("journeys-by-week-list").should("exist");
@@ -102,14 +102,14 @@ describe("Route smoke tests", () => {
       .first()
       .click({force: true});
 
-    cy.assertJourneySelected("1017");
+    cy.assertJourneySelected("1024");
   });
 
   it("Can display the journey graph", () => {
     cy.visitAndSpy(`/?date=${yesterday}`);
 
-    cy.getTestElement("route-input").type("1017/1");
-    cy.getTestElement("route-option-1017-1").click({force: true});
+    cy.getTestElement("route-input").type("1024/1");
+    cy.getTestElement("route-option-1024-1").click({force: true});
 
     cy.waitUntil(() =>
       cy
@@ -118,7 +118,7 @@ describe("Route smoke tests", () => {
         .click({force: true})
     );
 
-    cy.assertJourneySelected("1017");
+    cy.assertJourneySelected("1024");
 
     cy.getTestElement("toggle-graph-button")
       .should("exist")

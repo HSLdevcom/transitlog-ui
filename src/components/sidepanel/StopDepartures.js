@@ -179,12 +179,12 @@ const StopDepartures = decorate(({state, Filters, Journey, Time}) => {
       let journey = departure.journey || null;
 
       if (departure.originDepartureTime) {
-        journey = createCompositeJourney(
-          departure.originDepartureTime.departureDate,
-          departure,
-          departure.originDepartureTime.departureTime,
-          get(journey, "uniqueVehicleId", "")
-        );
+        journey = createCompositeJourney({
+          date: departure.originDepartureTime.departureDate,
+          route: departure,
+          time: departure.originDepartureTime.departureTime,
+          uniqueVehicleId: get(journey, "uniqueVehicleId", ""),
+        });
       }
 
       const matchVehicle = !!journey.uniqueVehicleId;

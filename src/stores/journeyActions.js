@@ -15,7 +15,7 @@ export function createJourneyPath(journey) {
   ).replace("/", "_")}`;
 }
 
-export function createCompositeJourney(date, route, time, uniqueVehicleId = "") {
+export function createCompositeJourney({date, route, time, uniqueVehicleId = ""}) {
   if (!route || !route.routeId || !date || !time) {
     return false;
   }

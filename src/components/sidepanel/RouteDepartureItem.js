@@ -112,7 +112,12 @@ const RouteDepartureItem = decorate(
       !dayTypes.includes(departure.dayType);
 
     const compositeJourney = useMemo(
-      () => createCompositeJourney(departureDate, departure, departureTime),
+      () =>
+        createCompositeJourney({
+          date: departureDate,
+          route: departure,
+          time: departureTime,
+        }),
       [departure]
     );
 
