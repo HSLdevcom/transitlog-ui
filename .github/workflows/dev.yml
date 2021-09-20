@@ -74,7 +74,7 @@ jobs:
           path: cypress/screenshots
       - name: Upload video artifacts
         uses: actions/upload-artifact@v1
-        if: always()
+        if: failure()
         with:
           name: cypress-videos
           path: cypress/videos
