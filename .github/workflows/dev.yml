@@ -80,7 +80,7 @@ jobs:
           path: cypress/videos
       - name: Notify of tests
         uses: 8398a7/action-slack@v2
-        if: always()
+        if: failure()
         with:
           status: ${{ job.status }}
           text: Reittiloki DEV E2E test status
