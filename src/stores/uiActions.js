@@ -65,6 +65,10 @@ export default (state) => {
     state.mapDriverEvent = driverEvent;
   });
 
+  const setLocationMarker = action((latlng) => {
+    state.locationMarker = latlng;
+  });
+
   const toggleShareModal = action((setTo = !state.shareModalOpen) => {
     state.shareModalOpen = setTo;
   });
@@ -260,6 +264,7 @@ export default (state) => {
     setMapView,
     setMapBounds,
     setMapDriverEvent,
+    setLocationMarker,
     allowObjectCentering,
     toggleRouteJourneysLoading,
     toggleUnsignedEventsLoading,

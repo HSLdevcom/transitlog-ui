@@ -1,4 +1,5 @@
 import React from "react";
+import L from "leaflet";
 import {observer} from "mobx-react-lite";
 import StopLayer from "./StopLayer";
 import RouteLayer from "./RouteLayer";
@@ -21,6 +22,7 @@ import DriverEventLayer from "./DriverEventLayer";
 import RouteEventsLayer from "./RouteEventsLayer";
 import TerminalLayer from "./TerminalLayer";
 import RouteSegmentLengthLayer from "./RouteSegmentLengthLayer";
+import {Marker} from "react-leaflet";
 
 const decorate = flow(observer, inject("state"));
 
@@ -38,6 +40,7 @@ const MapContent = decorate(
       areaSearchRangeMinutes,
       mapView,
       mapZoom,
+      locationMarker,
     },
   }) => {
     const hasRoute = !!route && !!route.routeId;
@@ -45,10 +48,16 @@ const MapContent = decorate(
 
     const selectedJourneyId = getJourneyId(selectedJourney);
 
+    const myIcon = L.icon({
+      iconUrl: require("../../icons/location-pin.svg"),
+      iconSize: [30, 30],
+    });
+
     return (
       <>
         <AreaSelect enabled={mapZoom > 12 && areaSearchRangeMinutes} />
         <StopLayer showRadius={showStopRadius} date={date} />
+        {locationMarker && <Marker icon={myIcon} position={locationMarker} />}
         <TerminalLayer />
         {hasRoute && (
           <>
