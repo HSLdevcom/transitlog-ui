@@ -97,7 +97,7 @@ export default observer(({location, onSelect, loading}) => {
   return (
     <SuggestionInput
       testId="stop-input"
-      helpText="Select stop"
+      helpText="Select location"
       minimumInput={0}
       value={location}
       onSelect={onSelect}
