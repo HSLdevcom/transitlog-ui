@@ -32,9 +32,7 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
   const suggestionType = "terminal";
 
   return (
-    <SuggestionContent
-      data-testid={`${suggestionType}-option-${suggestion.id}`}
-      isHighlighted={isHighlighted}>
+    <SuggestionContent data-testid={`location-input`} isHighlighted={isHighlighted}>
       <SuggestionText>
         <strong>{suggestion.id}</strong>
         <br />
@@ -46,7 +44,7 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
 
 const renderSuggestionsContainer = (loading) => ({containerProps, children}) => {
   return (
-    <div data-testid="location-suggestions-list" {...containerProps}>
+    <div data-testid="location-input" {...containerProps}>
       {loading ? <LoadingSpinner inline={true} /> : children}
     </div>
   );
