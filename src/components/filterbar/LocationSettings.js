@@ -29,13 +29,12 @@ const LocationSettings = decorate(({Filters, UI, state}) => {
           <LocationInput onSelect={onSelectOption} location={location} />
         </Input>
         {!!location && (
-          <Tooltip helpText="Clear stop">
+          <Tooltip>
             <ClearButton
               onClick={() => {
                 setLocation(null);
                 UI.setLocationMarker(null);
               }}
-              helpText={text("filterpanel.remove_stop")}
             />
           </Tooltip>
         )}

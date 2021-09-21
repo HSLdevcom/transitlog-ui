@@ -46,7 +46,7 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
 
 const renderSuggestionsContainer = (loading) => ({containerProps, children}) => {
   return (
-    <div data-testid="stop-suggestions-list" {...containerProps}>
+    <div data-testid="location-suggestions-list" {...containerProps}>
       {loading ? <LoadingSpinner inline={true} /> : children}
     </div>
   );
@@ -96,7 +96,7 @@ export default observer(({location, onSelect, loading}) => {
   const throttledOnSearch = debounce(onSearch, 1000);
   return (
     <SuggestionInput
-      testId="stop-input"
+      testId="location-input"
       helpText="Select location"
       minimumInput={0}
       value={location}
