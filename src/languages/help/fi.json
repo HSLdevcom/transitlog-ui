@@ -9,6 +9,7 @@
   "Select time": "Valitse aika josta haluat tutkia tietoja. Voit myös asettaa aikaa liukusäätimellä.",
   "Time increment field": "Aseta kuinka paljon aika muuttuu kun simulointi on käynnissä tai kun käytät aikakentän eteenpäin/taaksepäin nappeja",
   "Search range minutes field": "Aseta aluehaun aikaväli, eli kuinka pitkältä aikaväliltä aluehaku hakee tapahtumia. Aikavälin keskipiste on valittu aika hakuhetkellä.",
+  "Select location": "Etsi sijaintia.",
   "Select route": "Valitse reitin minkä haluat tutkia.",
   "Select vehicle": "Etsi HSL-alueen ajoneuvoa rekisterinumerolla, kylkinumerolla tai liikennöitsijän nimellä. Korostettuina ajoneuvot jotka ovat olleet linja-ajossa kyseisenä päivänä",
   "Select vehicle disabled": "Ajoneuvohaku on suljettu kun sinulla on valittu lähtö. Poista lähtö-valinta niin voit hakea ajoneuvoa.",
