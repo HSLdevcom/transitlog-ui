@@ -34,13 +34,16 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Checkout UI
+        uses: actions/checkout@v2
       - name: test
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: hsldevcom/transitlog-ui-${{ steps.date.outputs.date }}
+          name: hsldevcom/transitlog-ui
           username: ddunderfelt
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           buildargs: BUILD_ENV=dev
+          tags: date-${{ steps.date.outputs.date }}
       - name: Deploy with Gitlab CI
         run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
       - name: Notify of deployment
