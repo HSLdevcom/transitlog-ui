@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout UI
         uses: actions/checkout@v2
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Build UI and publish Docker image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
@@ -31,9 +34,6 @@ jobs:
           username: ddunderfelt
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           tags: dev
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: test
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
@@ -41,7 +41,6 @@ jobs:
           username: ddunderfelt
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           buildargs: BUILD_ENV=dev
-          tags: dev
       - name: Deploy with Gitlab CI
         run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
       - name: Notify of deployment
