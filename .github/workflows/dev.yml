@@ -9,8 +9,19 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Checkout UI
         uses: actions/checkout@v2
+      - name: Build UI and publish timestamped Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-ui
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          buildargs: BUILD_ENV=dev
+          tags: date-${{ steps.date.outputs.date }}
       - name: Build UI and publish Docker image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
@@ -31,18 +42,12 @@ jobs:
           username: ddunderfelt
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           tags: dev
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Checkout UI
-        uses: actions/checkout@v2
-      - name: test
+      - name: Build Server and publish timestamped Docker image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: hsldevcom/transitlog-ui
+          name: hsldevcom/transitlog-server
           username: ddunderfelt
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
-          buildargs: BUILD_ENV=dev
           tags: date-${{ steps.date.outputs.date }}
       - name: Deploy with Gitlab CI
         run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
