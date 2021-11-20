@@ -2,14 +2,13 @@ import React from "react";
 import {GeoJSON, FeatureGroup} from "react-leaflet";
 import {circleMarker} from "leaflet";
 import get from "lodash/get";
-import {
-  closestPointCompareReducer,
-  closestPointInGeometry,
-} from "../../helpers/closestPoint";
+import {closestPointToPoint} from "../../helpers/closestPoint";
 import subYears from "date-fns/subYears";
 import format from "date-fns/format";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+
+const MAX_ZOOM = 14;
 
 class MapillaryGeoJSONLayer extends React.PureComponent {
   static defaultProps = {
@@ -26,19 +25,13 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
   onHover = (e) => {
     const {layerIsActive} = this.props;
     const {latlng} = e;
-
     // Bail if the layer isn't active or if we don't have any features
     if (!this.features || !layerIsActive) {
       return;
     }
 
     // Get the feature closest to where the user is hovering
-    let featurePoint = closestPointCompareReducer(
-      get(this, "features.features", []),
-      (feature) => closestPointInGeometry(latlng, feature.geometry, 200),
-      latlng
-    );
-
+    let featurePoint = closestPointToPoint(this.features, latlng);
     this.highlightedLocation = featurePoint;
 
     featurePoint = featurePoint && !featurePoint.equals(latlng) ? featurePoint : false;
@@ -55,7 +48,6 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
 
   highlightMapillaryPoint = (position) => {
     const {map} = this.props;
-
     if (map && position) {
       const marker = this.marker || this.createMarker(position);
 
@@ -64,15 +56,16 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
         this.marker.addTo(map);
       } else {
         this.marker.setLatLng(position);
+        this.marker.bringToFront();
       }
     } else if (!position) {
       this.removeMarker();
     }
   };
 
-  onMapClick = () => {
+  onMapClick = (evt) => {
     const {onSelectLocation} = this.props;
-
+    onSelectLocation(evt.latlng);
     if (this.highlightedLocation) {
       onSelectLocation(this.highlightedLocation);
     }
@@ -108,8 +101,28 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
     }
   }
 
+  wait = async (delay) => {
+    return new Promise((resolve) => setTimeout(resolve, delay));
+  };
+
+  fetchRetry = async (url, delay, tries, fetchOptions = {}) => {
+    const triesLeft = tries - 1;
+    if (!triesLeft) {
+      throw "Mapillary image fetch failed";
+    }
+
+    const res = await fetch(url, fetchOptions);
+    if (!res.ok) {
+      await this.wait(delay);
+      return await this.fetchRetry(url, delay, triesLeft, fetchOptions);
+    }
+    return res;
+  };
+
   fetchFeatures = async (bounds) => {
-    if (!bounds || !bounds.isValid()) {
+    const {map} = this.props;
+    if (!bounds || !bounds.isValid() || !map || map.getZoom() <= MAX_ZOOM) {
+      this.features = [];
       return;
     }
 
@@ -125,21 +138,53 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
     }
 
     this.prevFetchedBbox = bboxStr;
-    const minTime = format(
-      legacyParse(subYears(legacyParse(new Date()), 2)),
-      convertTokens("YYYY-MM-DD")
-    );
+    const url = `https://graph.mapillary.com/images?fields=id,geometry&bbox=${bboxStr}&limit=100&organization_id=227572519135262`;
+    const delay = 500;
+    const tries = 3;
+    const fetchOptions = {
+      method: "GET",
+      contentType: "application/json",
+      headers: {
+        Authorization: `Bearer ${process.env.MAPILLARY_CLIENT_TOKEN}`,
+      },
+    };
+    const existingFeatures = {};
+    if (this.geoJSONLayer.current) {
+      const keys = Object.values(this.geoJSONLayer.current.leafletElement._layers);
+      keys.forEach((layer) => {
+        if (layer.feature.mapillaryFeature) {
+          existingFeatures[layer.feature.imageId] = layer.feature.imageId;
+        }
+      });
+    }
+    const newFeatures = [];
 
-    const url = `https://a.mapillary.com/v3/sequences?bbox=${bboxStr}&client_id=V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw&per_page=500&start_time=${minTime}&organization_keys=mstFdbqROWkgC2sNNU2tZ1`;
+    try {
+      const authResponse = await this.fetchRetry(url, delay, tries, fetchOptions);
+      const json = await authResponse.json();
 
-    const request = await fetch(url);
-    const data = await request.json();
-
-    this.features = data;
-
+      if (json && json.data) {
+        json.data.forEach((feature) => {
+          if (!existingFeatures[feature.id]) {
+            newFeatures.push({
+              type: "Feature",
+              mapillaryFeature: true,
+              geometry: {
+                type: "Point",
+                coordinates: feature.geometry.coordinates,
+              },
+              imageId: feature.id,
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
     // Set the data imperatively since it won't update reactively.
-    if (this.geoJSONLayer.current && this.features) {
-      this.geoJSONLayer.current.leafletElement.addData(this.features);
+    if (this.geoJSONLayer.current) {
+      this.geoJSONLayer.current.leafletElement.addData(newFeatures);
+      this.features = this.features ? this.features.concat(newFeatures) : newFeatures;
     }
   };
 
@@ -179,13 +224,22 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
     this.removeMarker();
   }
 
-  render() {
-    const {layerIsActive} = this.props;
+  pointToLayer(feature, latlng) {
+    return circleMarker(latlng, {
+      radius: 4,
+      color: "#ff0000",
+      pane: "mapillary-location",
+    });
+  }
 
+  render() {
+    const {layerIsActive, map} = this.props;
+    const showLayer = !map || map.getZoom() > MAX_ZOOM;
     return (
       <FeatureGroup>
-        {layerIsActive && (
+        {layerIsActive && showLayer && (
           <GeoJSON
+            pointToLayer={this.pointToLayer}
             kaye="mapillary-json"
             pane="mapillary-lines"
             ref={this.geoJSONLayer}
@@ -194,7 +248,7 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
               weight: 3,
               opacity: 0.75,
             })}
-            data={{type: "FeatureCollection", features: []}} // The data wdoes not update reactively
+            data={{type: "FeatureCollection", features: []}} // The data does not update reactively
           />
         )}
       </FeatureGroup>
