@@ -32,9 +32,7 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
   const suggestionType = "terminal";
 
   return (
-    <SuggestionContent
-      data-testid={`${suggestionType}-option-${suggestion.id}`}
-      isHighlighted={isHighlighted}>
+    <SuggestionContent data-testid={`location-input`} isHighlighted={isHighlighted}>
       <SuggestionText>
         <strong>{suggestion.id}</strong>
         <br />
@@ -46,7 +44,7 @@ const renderSuggestion = (suggestion, {isHighlighted}) => {
 
 const renderSuggestionsContainer = (loading) => ({containerProps, children}) => {
   return (
-    <div data-testid="stop-suggestions-list" {...containerProps}>
+    <div data-testid="location-input" {...containerProps}>
       {loading ? <LoadingSpinner inline={true} /> : children}
     </div>
   );
@@ -104,7 +102,7 @@ export default observer(({location, onSelect, loading, onChange}) => {
   const throttledOnSearch = debounce(onSearch, 500);
   return (
     <SuggestionInput
-      testId="stop-input"
+      testId="location-input"
       helpText="Select location"
       minimumInput={0}
       value={location}

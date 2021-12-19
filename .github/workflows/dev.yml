@@ -9,8 +9,19 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Checkout UI
         uses: actions/checkout@v2
+      - name: Build UI and publish timestamped Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-ui
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          buildargs: BUILD_ENV=dev
+          tags: date-${{ steps.date.outputs.date }}
       - name: Build UI and publish Docker image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
@@ -31,6 +42,13 @@ jobs:
           username: ddunderfelt
           password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
           tags: dev
+      - name: Build Server and publish timestamped Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-server
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          tags: date-${{ steps.date.outputs.date }}
       - name: Deploy with Gitlab CI
         run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
       - name: Notify of deployment
@@ -49,11 +67,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: master
-      - name: Clear artifacts
-        uses: kolpav/purge-artifacts-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          expire-in: 1hr
       - name: Sleep for 5 minutes
         uses: jakejarvis/wait-action@master
         with:
@@ -74,13 +87,13 @@ jobs:
           path: cypress/screenshots
       - name: Upload video artifacts
         uses: actions/upload-artifact@v1
-        if: always()
+        if: failure()
         with:
           name: cypress-videos
           path: cypress/videos
       - name: Notify of tests
         uses: 8398a7/action-slack@v2
-        if: always()
+        if: failure()
         with:
           status: ${{ job.status }}
           text: Reittiloki DEV E2E test status
