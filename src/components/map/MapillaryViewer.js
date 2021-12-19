@@ -103,7 +103,7 @@ const MapillaryViewer = observer(
         return;
       }
 
-      const accessToken = process.env.MAPILLARY_CLIENT_TOKEN;
+      const accessToken = process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN;
       const viewerOptions = {
         accessToken,
         container: elementId,

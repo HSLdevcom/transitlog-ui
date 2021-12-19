@@ -136,7 +136,6 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
     if (bboxStr === this.prevFetchedBbox) {
       return;
     }
-
     this.prevFetchedBbox = bboxStr;
     const url = `https://graph.mapillary.com/images?fields=id,geometry&bbox=${bboxStr}&limit=100&organization_id=227572519135262`;
     const delay = 500;
@@ -145,7 +144,7 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
       method: "GET",
       contentType: "application/json",
       headers: {
-        Authorization: `Bearer ${process.env.MAPILLARY_CLIENT_TOKEN}`,
+        Authorization: `Bearer ${process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN}`,
       },
     };
     const existingFeatures = {};
