@@ -56,17 +56,24 @@ const getFilteredSuggestions = async (allOptions, {value = ""}) => {
   const response = await fetch(
     `https://nominatim.openstreetmap.org/search?accept-language=fi&namedetails=1&countrycodes=fi&addressdetails=1&viewbox=24.565027%2C60.112033%2C25.182923%2C60.371103&bounded=1&street=${searchInput}&format=json`
   );
-  const results = await response.json();
-  const filteredResults = {};
-  results.forEach((result) => {
-    const resultData = result;
-    const id = resultData.namedetails.name || resultData.address.road;
-    const name = `${resultData.address.road ? `${resultData.address.road}` : ""}${
-      resultData.address.house_number ? ` ${resultData.address.house_number}` : ""
-    }${resultData.address.suburb ? `, ${resultData.address.suburb}` : ""}${
-      resultData.address.city ? `, ${resultData.address.city}` : ""
-    }`;
 
+  const results = await response.json();
+
+  const searchResults = results.filter((result) => {
+    return result;
+  });
+
+  const filteredResults = {};
+  searchResults.forEach((result) => {
+    const resultData = result;
+    const houseNumber = resultData.address.house_number;
+    let id = resultData.address.road || resultData.namedetails.name;
+    if (houseNumber && resultData.address.road) {
+      id = `${id} ${houseNumber}`;
+    }
+    const name = `${resultData.address.road ? `${resultData.address.road}` : ""}${
+      resultData.address.suburb ? `, ${resultData.address.suburb}` : ""
+    }${resultData.address.city ? `, ${resultData.address.city}` : ""}`;
     if (!filteredResults[name]) {
       filteredResults[name] = {
         options: [
@@ -83,15 +90,16 @@ const getFilteredSuggestions = async (allOptions, {value = ""}) => {
   return Object.values(filteredResults);
 };
 
-export default observer(({location, onSelect, loading}) => {
+export default observer(({location, onSelect, loading, onChange}) => {
   const allOptions = useMemo(() => []);
   const [options, setOptions] = useState(allOptions);
 
   const onSearch = useCallback(async (searchQuery) => {
     const result = await getFilteredSuggestions(allOptions, searchQuery);
     setOptions(result);
+    onChange({searchQuery, result});
   }, []);
-  const throttledOnSearch = debounce(onSearch, 1000);
+  const throttledOnSearch = debounce(onSearch, 500);
   return (
     <SuggestionInput
       testId="location-input"

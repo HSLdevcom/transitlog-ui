@@ -1,7 +1,7 @@
 import React, {useRef, useEffect, useCallback} from "react";
 import Cross from "../../icons/Cross";
 import * as Mapillary from "mapillary-js";
-import "mapillary-js/dist/mapillary.min.css";
+import "mapillary-js/dist/mapillary.css";
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
 

@@ -35,7 +35,7 @@
     "leaflet": "^1.6.0",
     "leaflet-draw": "^1.0.4",
     "lodash": "^4.17.15",
-    "mapillary-js": "^2.20.0",
+    "mapillary-js": "4.0.0",
     "mobx": "^5.15.4",
     "mobx-app": "^1.0.3",
     "mobx-react-lite": "^1.5.2",
