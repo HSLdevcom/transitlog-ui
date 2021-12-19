@@ -10,6 +10,7 @@ import FilterSection from "./FilterSection";
 import Header from "./Header";
 import VehicleSettings from "./VehicleSettings";
 import StopSettings from "./StopSettings";
+import LocationSettings from "./LocationSettings";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 
@@ -32,7 +33,7 @@ const FilterBarWrapper = styled.div`
 
 const FilterBarGrid = styled.div`
   display: grid;
-  grid-template-columns: 22rem repeat(3, 1fr);
+  grid-template-columns: 22rem repeat(4, 1fr);
   height: auto;
   width: 100%;
 `;
@@ -82,6 +83,9 @@ const FilterBar = decorate(
           )}
           <FilterSection>
             <StopSettings />
+          </FilterSection>
+          <FilterSection>
+            <LocationSettings />
           </FilterSection>
         </FilterBarGrid>
         <BottomSlider journeys={journeys} />
