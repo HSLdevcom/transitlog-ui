@@ -193,8 +193,8 @@ export default (state) => {
     state.currentMapillaryViewerLocation = location;
   });
 
-  const setMapillaryMapLocation = action(({latLon: {lat, lon}}) => {
-    const location = latLng({lat, lng: lon});
+  const setMapillaryMapLocation = action(({lat, lng}) => {
+    const location = latLng({lat, lng});
     state.currentMapillaryMapLocation = location;
   });
 
