@@ -10,6 +10,7 @@ import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 
 const ContentWrapper = styled.div`
+  width: 100%;
   display: block;
 `;
 

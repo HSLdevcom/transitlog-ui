@@ -50,7 +50,7 @@ const MapillaryViewer = observer(
           method: "GET",
           contentType: "application/json",
           headers: {
-            Authorization: `Bearer ${process.env.MAPILLARY_CLIENT_TOKEN}`,
+            Authorization: `Bearer ${process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN}`,
           },
         }
       );
