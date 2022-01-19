@@ -1,8 +1,8 @@
 import React, {useRef, useEffect, useCallback} from "react";
+import * as turf from "@turf/turf";
 import Cross from "../../icons/Cross";
-import * as Mapillary from "mapillary-js";
-// Fix in mapillary version update
-// import "mapillary-js/dist/mapillary.min.css";
+import {Viewer} from "mapillary-js";
+import "mapillary-js/dist/mapillary.css";
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
 
@@ -40,6 +40,41 @@ const MapillaryViewer = observer(
     const resizeListener = useRef(null);
     const prevLocation = useRef(null);
 
+    const getClosestMapillaryImage = async ({lat, lng}) => {
+      const p = turf.point([lng, lat]);
+      const buffer = turf.buffer(p, 0.05, {units: "kilometers"});
+      const bbox = turf.bbox(buffer);
+      const authResponse = await fetch(
+        `https://graph.mapillary.com/images?fields=id,geometry&bbox=${bbox}&limit=100&organization_id=227572519135262`,
+        {
+          method: "GET",
+          contentType: "application/json",
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN}`,
+          },
+        }
+      );
+
+      const json = await authResponse.json();
+      if (!json.data) {
+        return null;
+      }
+      let closest;
+      json.data.forEach((feature) => {
+        const coordinates = feature.geometry.coordinates;
+        let distance = Math.hypot(
+          Math.abs(lat - coordinates[1]),
+          Math.abs(lng - coordinates[0])
+        );
+        if (!closest || distance < closest.distance) {
+          closest = feature;
+          closest.distance = distance;
+        }
+      });
+
+      return closest;
+    };
+
     const createResizeListener = useCallback(
       (currentMly) => () => {
         if (currentMly) {
@@ -56,7 +91,7 @@ const MapillaryViewer = observer(
           currentMly.setCenter([0.5, 0.675]);
         }
 
-        onNavigation(evt);
+        onNavigation(evt.image.lngLat);
       },
       []
     );
@@ -68,16 +103,14 @@ const MapillaryViewer = observer(
         return;
       }
 
-      currentMly = new Mapillary.Viewer(
-        elementId,
-        "V2RqRUsxM2dPVFBMdnlhVUliTkM0ZzoxNmI5ZDZhOTc5YzQ2MzEw",
-        null,
-        {
-          render: {
-            cover: false,
-          },
-        }
-      );
+      const accessToken = process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN;
+      const viewerOptions = {
+        accessToken,
+        container: elementId,
+        render: {cover: false},
+        imageKey: "2143821709111283",
+      };
+      currentMly = new Viewer(viewerOptions);
 
       const currentResizeListener = createResizeListener(currentMly);
 
@@ -88,19 +121,27 @@ const MapillaryViewer = observer(
       window.addEventListener("resize", currentResizeListener);
       resizeListener.current = currentResizeListener;
 
-      currentMly.setFilter(["==", "organizationKey", "mstFdbqROWkgC2sNNU2tZ1"]);
-      currentMly.on(Mapillary.Viewer.nodechanged, createViewerNavigator(currentMly));
+      currentMly.setFilter(["==", "organizationKey", "227572519135262"]);
+      currentMly.on("image", createViewerNavigator(currentMly));
 
       mly.current = currentMly;
     }, [mly.current, resizeListener.current]);
 
     const showLocation = useCallback(
-      (location) => {
-        if (mly.current && mly.current.isNavigable) {
-          mly.current
-            .moveCloseTo(location.lat, location.lng)
-            .then((node) => console.log(node.key))
-            .catch((err) => console.error(err));
+      async (location) => {
+        if (mly.current) {
+          const closest = await getClosestMapillaryImage({
+            lat: location.lat,
+            lng: location.lng,
+          });
+          if (closest && closest.id) {
+            mly.current
+              .moveTo(closest.id)
+              .then((node) => {
+                onNavigation(node.lngLat);
+              })
+              .catch((error) => console.warn(error));
+          }
         }
       },
       [mly.current, mly.current && mly.current.isNavigable]
