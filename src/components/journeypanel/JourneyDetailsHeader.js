@@ -9,6 +9,7 @@ import {observer} from "mobx-react-lite";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import CrossThick from "../../icons/CrossThick";
 import {Text} from "../../helpers/text";
+import {isCancelledDeparture} from "../../helpers/isCancelledDeparture";
 import Alert from "../../icons/Alert";
 import {Button} from "../Forms";
 
@@ -150,9 +151,10 @@ export default observer(
       return null;
     }
 
-    const {uniqueVehicleId, departureTime, departureDate, isCancelled} = journey || {};
+    const {uniqueVehicleId, departureTime, departureDate} = journey || {};
     const {mode, routeId, origin, destination} = route || {};
     const routeName = [origin, destination].join(" - ");
+    const isCancelled = isCancelledDeparture(journey);
 
     return (
       <JourneyPanelHeader data-testid="journey-details-header">
