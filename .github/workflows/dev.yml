@@ -74,6 +74,7 @@ jobs:
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         with:
+          record: true
           tag: node-14
         env:
           CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
