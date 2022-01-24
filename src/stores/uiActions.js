@@ -65,6 +65,10 @@ export default (state) => {
     state.mapDriverEvent = driverEvent;
   });
 
+  const setLocationMarker = action((latlng) => {
+    state.locationMarker = latlng;
+  });
+
   const toggleShareModal = action((setTo = !state.shareModalOpen) => {
     state.shareModalOpen = setTo;
   });
@@ -189,8 +193,8 @@ export default (state) => {
     state.currentMapillaryViewerLocation = location;
   });
 
-  const setMapillaryMapLocation = action(({latLon: {lat, lon}}) => {
-    const location = latLng({lat, lng: lon});
+  const setMapillaryMapLocation = action(({lat, lng}) => {
+    const location = latLng({lat, lng});
     state.currentMapillaryMapLocation = location;
   });
 
@@ -260,6 +264,7 @@ export default (state) => {
     setMapView,
     setMapBounds,
     setMapDriverEvent,
+    setLocationMarker,
     allowObjectCentering,
     toggleRouteJourneysLoading,
     toggleUnsignedEventsLoading,

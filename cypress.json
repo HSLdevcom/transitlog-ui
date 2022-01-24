@@ -4,6 +4,7 @@
   "viewportHeight": 1200,
   "watchForFileChanges": false,
   "defaultCommandTimeout": 240000,
+  "pageLoadTimeout": 180000,
   "numTestsKeptInMemory": 10,
   "env": {
     "AUTH_URI": "https://hslid-dev.t5.fi/openid/token",

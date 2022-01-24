@@ -21,6 +21,7 @@ import {cancelledStyle, LocBadge} from "../commonComponents";
 import Timetable from "../../icons/Timetable";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
+import {isCancelledDeparture} from "../../helpers/isCancelledDeparture";
 
 const JourneyListRow = styled.button`
   display: flex;
@@ -112,7 +113,12 @@ const RouteDepartureItem = decorate(
       !dayTypes.includes(departure.dayType);
 
     const compositeJourney = useMemo(
-      () => createCompositeJourney(departureDate, departure, departureTime),
+      () =>
+        createCompositeJourney({
+          date: departureDate,
+          route: departure,
+          time: departureTime,
+        }),
       [departure]
     );
 
@@ -137,8 +143,7 @@ const RouteDepartureItem = decorate(
       return selectedJourneyId === journeyId;
     }, [selectedJourneyId, departure, journeyId]);
 
-    const {isCancelled} = departure;
-
+    const isCancelled = isCancelledDeparture(departure);
     if (!departure.journey) {
       return (
         <JourneyListRow
