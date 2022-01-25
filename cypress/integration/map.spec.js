@@ -40,16 +40,6 @@ describe("Map smoke tests", () => {
       });
   });
 
-  it("Can display Mapillary coverage", () => {
-    cy.get(".leaflet-control-layers").trigger("mouseover");
-    cy.contains("Mapillary").click();
-    cy.url().should("include", "Mapillary");
-
-    cy.get(".leaflet-mapillary-lines-pane", {timeout: 60000})
-      .children()
-      .should("exist");
-  });
-
   it("Can display the weather", () => {
     cy.get(".leaflet-control-layers").trigger("mouseover");
     cy.contains("Weather").click();
