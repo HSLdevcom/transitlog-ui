@@ -76,8 +76,6 @@ jobs:
           time: "1m"
       - name: Cypress tests
         uses: cypress-io/github-action@v2
-        with:
-          node-version: "14"
         env:
           CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
