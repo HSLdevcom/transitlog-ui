@@ -3,7 +3,6 @@ name: Deploy and test dev
 on:
   pull_request:
     branches:
-      - master
       - dev
 
 jobs:
@@ -77,6 +76,11 @@ jobs:
           time: "5m"
       - name: Cypress tests
         uses: cypress-io/github-action@v2
+<<<<<<< HEAD
+=======
+        with:
+          node-version: "14"
+>>>>>>> production
         env:
           CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
