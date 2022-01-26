@@ -3,82 +3,105 @@ name: Deploy and test dev
 on:
   pull_request:
     branches:
-      - master
+      - dev
 
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout UI
-      uses: actions/checkout@v2
-    - name: Build UI and publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: hsldevcom/transitlog-ui
-        username: ddunderfelt
-        password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
-        buildargs: BUILD_ENV=dev
-        tags: dev
-    - name: Checkout server
-      uses: actions/checkout@v2
-      with:
-        repository: HSLdevcom/transitlog-server
-        ref: master
-    - name: Build Server and publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: hsldevcom/transitlog-server
-        username: ddunderfelt
-        password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
-        tags: dev
-    - name: Deploy with Gitlab CI
-      run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
-    - name: Notify of deployment
-      uses: 8398a7/action-slack@v2
-      if: always()
-      with:
-        status: ${{ job.status }}
-        text: Reittiloki DEV deployment status
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Checkout UI
+        uses: actions/checkout@v2
+      - name: Build UI and publish timestamped Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-ui
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          buildargs: BUILD_ENV=dev
+          tags: date-${{ steps.date.outputs.date }}
+      - name: Build UI and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-ui
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          buildargs: BUILD_ENV=dev
+          tags: dev
+      - name: Checkout server
+        uses: actions/checkout@v2
+        with:
+          repository: HSLdevcom/transitlog-server
+          ref: master
+      - name: Build Server and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-server
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          tags: dev
+      - name: Build Server and publish timestamped Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/transitlog-server
+          username: ddunderfelt
+          password: ${{ secrets.DDUNDERFELT_DOCKER_ACCESS_TOKEN }}
+          tags: date-${{ steps.date.outputs.date }}
+      - name: Deploy with Gitlab CI
+        run: curl -X POST -F token=${{ secrets.GITLAB_DEV_TRIGGER_TOKEN }} -F ref=master https://gitlab.hsl.fi/api/v4/projects/202/trigger/pipeline
+      - name: Notify of deployment
+        uses: 8398a7/action-slack@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: Reittiloki DEV deployment status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   test-dev:
     needs: deploy-dev
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: master
-    - name: Sleep for 5 minutes
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '5m'
-    - name: Cypress tests
-      uses: cypress-io/github-action@v2
-      env:
-        CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
-        CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
-        CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
-        CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
-        CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
-    - name: Upload screenshot artifacts
-      uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: cypress-screenshots
-        path: cypress/screenshots
-    - name: Upload video artifacts
-      uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: cypress-videos
-        path: cypress/videos
-    - name: Notify of tests
-      uses: 8398a7/action-slack@v2
-      if: always()
-      with:
-        status: ${{ job.status }}
-        text: Reittiloki DEV E2E test status
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+      - name: Sleep for 5 minutes
+        uses: jakejarvis/wait-action@master
+        with:
+          time: "5m"
+      - name: Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          node-version: "14"
+        env:
+          CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
+          CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
+          CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
+          CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
+          CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
+      - name: Upload screenshot artifacts
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+      - name: Upload video artifacts
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+      - name: Notify of tests
+        uses: 8398a7/action-slack@v2
+        if: failure()
+        with:
+          status: ${{ job.status }}
+          text: Reittiloki DEV E2E test status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
