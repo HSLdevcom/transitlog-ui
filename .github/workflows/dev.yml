@@ -69,11 +69,11 @@ jobs:
           node-version: "14"
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: dev
       - name: Sleep for 5 minutes
         uses: jakejarvis/wait-action@master
         with:
-          time: "2m"
+          time: "5m"
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         env:
