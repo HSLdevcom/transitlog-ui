@@ -69,15 +69,13 @@ jobs:
           node-version: "14"
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: dev
       - name: Sleep for 5 minutes
         uses: jakejarvis/wait-action@master
         with:
           time: "5m"
       - name: Cypress tests
         uses: cypress-io/github-action@v2
-        with:
-          node-version: "14"
         env:
           CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
