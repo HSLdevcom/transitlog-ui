@@ -73,7 +73,7 @@ jobs:
       - name: Sleep for 5 minutes
         uses: jakejarvis/wait-action@master
         with:
-          time: "1m"
+          time: "2m"
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         env:
