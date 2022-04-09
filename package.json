@@ -41,7 +41,7 @@
     "mobx-app": "^1.0.3",
     "mobx-react-lite": "^1.5.2",
     "mobx-utils": "^5.5.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.27",
     "p-all": "^2.1.0",
     "p-each-series": "^2.1.0",
