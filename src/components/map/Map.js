@@ -202,7 +202,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
               attribution={
                 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors '
               }
-              url="https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}@2x.png"
+              url="https://digitransit-prod-cdn-origin.azureedge.net/map/v2/hsl-map/{z}/{x}/{y}@2x.png"
               tileSize={512}
               zoomOffset={-1}
             />
