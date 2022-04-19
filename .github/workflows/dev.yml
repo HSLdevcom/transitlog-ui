@@ -69,7 +69,7 @@ jobs:
           node-version: "14"
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: dev
       - name: Sleep for 5 minutes
         uses: jakejarvis/wait-action@master
         with:
