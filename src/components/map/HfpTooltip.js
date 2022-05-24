@@ -40,6 +40,16 @@ const TooltipDataRow = styled.div`
   }
 `;
 
+const OdoValueDataTitle = styled.div`
+  padding: 2px 2px;
+  border-radius: 3px;
+  background: var(--blue);
+  font-size: 9px;
+  font-weight: bold;
+  color: white;
+  margin-right: 5px;
+`;
+
 const decorate = flow(observer, inject("state"));
 
 const HfpTooltip = decorate(
@@ -133,6 +143,11 @@ const HfpTooltip = decorate(
             <Walking fill="var(--blue)" width="1rem" height="1rem" />{" "}
             {odo > 999 ? `${round(odo / 1000)} km` : `${odo} m`}
           </TooltipDataRow>
+          {odo && (
+            <TooltipDataRow>
+              <OdoValueDataTitle>ODO</OdoValueDataTitle> {odo}
+            </TooltipDataRow>
+          )}
         </TooltipWrapper>
       </Tooltip>
     );
