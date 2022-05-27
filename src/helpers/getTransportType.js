@@ -1,6 +1,6 @@
 import "../components/LineIcon.css";
 
-function getTransportType(lineId = "", numeric = false) {
+function getTransportType(lineId = "", numeric = false, trunk = false) {
   const lineType = lineId.substring(0, 4);
 
   if (lineType >= 1001 && lineType <= 1010) {
@@ -37,11 +37,7 @@ function getTransportType(lineId = "", numeric = false) {
     return "RAIL";
   }
 
-  if (
-    ["20", "30", "40", "200", "500", "510", "550", "560", "570"].includes(
-      lineType.substr(1)
-    )
-  ) {
+  if (trunk) {
     if (numeric) {
       return 1000;
     }

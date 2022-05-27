@@ -22,6 +22,7 @@
         "isCancelled": false,
         "alerts": [],
         "cancellations": [],
+        "trunkRoute": 0,
         "journey": {
           "id": "departure_journey_2019-05-27_05:28:00_1018_2_0012/1906",
           "journeyType": "journey",
@@ -81,6 +82,7 @@
         "terminalTime": 2,
         "recoveryTime": 5,
         "routeId": "1018",
+        "trunkRoute": 0,
         "direction": 2,
         "stopId": "1304103",
         "isCancelled": false,

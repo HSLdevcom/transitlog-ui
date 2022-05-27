@@ -12,6 +12,7 @@ export const RouteFieldsFragment = gql`
     name
     origin
     originStopId
+    trunkRoute
     cancellations {
       ...CancellationFieldsFragment
     }

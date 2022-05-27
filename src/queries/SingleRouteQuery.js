@@ -41,7 +41,8 @@ const SingleRouteQuery = observer(
         onCompleted={onCompleted}
         skip={shouldSkip}
         query={singleRouteQuery}
-        variables={variables}>
+        variables={variables}
+        returnPartialData={true}>
         {({loading, error, data, refetch}) => {
           if (loading || error || !data) {
             return children({

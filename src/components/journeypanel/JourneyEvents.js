@@ -19,6 +19,7 @@ import {checkDoorEventsHealth, HealthChecklistValues} from "../../hooks/useJourn
 
 const EventsListWrapper = styled.div`
   padding: 0.5rem 0;
+  max-width: 25rem;
 `;
 
 const EventsList = styled.div`
