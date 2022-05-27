@@ -152,7 +152,7 @@ export default observer(
     }
 
     const {uniqueVehicleId, departureTime, departureDate} = journey || {};
-    const {mode, routeId, origin, destination} = route || {};
+    const {mode, routeId, origin, destination, trunkRoute} = route || {};
     const routeName = [origin, destination].join(" - ");
     const isCancelled = isCancelledDeparture(journey);
 
@@ -160,7 +160,7 @@ export default observer(
       <JourneyPanelHeader data-testid="journey-details-header">
         <HeaderContent>
           <MainHeaderRow>
-            <TransportIcon width={23} height={23} mode={mode} />
+            <TransportIcon width={23} height={23} mode={trunkRoute ? "TRUNK" : mode} />
             <LineIdHeading>{parseLineNumber(routeId)}</LineIdHeading>
             <HeaderText>
               <JourneyPlanner fill="var(--blue)" width="1rem" height="1rem" />
