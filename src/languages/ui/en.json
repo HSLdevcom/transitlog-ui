@@ -11,6 +11,7 @@
   "filterpanel.filter_by_vehicle": "Filter by vehicle",
   "filterpanel.remove_vehicle": "Remove vehicle",
   "filterpanel.filter_by_stop": "Search stops",
+  "filterpanel.filter_by_location": "Search location",
   "filterpanel.remove_stop": "Remove stop",
   "filterpanel.filter_by_line": "Search line",
   "filterpanel.find_line_route": "Search route",
