@@ -93,6 +93,29 @@ export const journeyQuery = gql`
           subCategory
           title
         }
+        ... on JourneyPassengerCountEvent {
+          id
+          type
+          dir
+          oper
+          veh
+          uniqueVehicleId
+          route_id
+          receivedAt
+          recordedAt
+          recordedAtUnix
+          recordedTime
+          route
+          stopId
+          start
+          lat
+          lng
+          passengerCountQuality
+          vehicleLoad
+          vehicleLoadRatio
+          totalPassengersIn
+          totalPassengersOut
+        }
         ... on JourneyStopEvent {
           id
           departureId

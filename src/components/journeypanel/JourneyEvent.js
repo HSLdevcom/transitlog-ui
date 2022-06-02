@@ -548,3 +548,54 @@ export const JourneyTlpEvent = decorate(
     );
   }
 );
+
+export const JourneyApcEvent = decorate(
+  ({event, color, date, isFirst, isLast, onSelectTime}) => {
+    const timestamp = moment.tz(event.recordedAt, TIMEZONE);
+
+    const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
+      timestamp,
+    ]);
+
+    return (
+      <StopWrapper>
+        <StopElementsWrapper
+          color={color}
+          terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
+          <StopMarker color={color} />
+        </StopElementsWrapper>
+        <StopContent>
+          <StopTime onClick={selectTime}>
+            <PlainSlot {...applyTooltip(event.type)}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: text(`journey.event.${event.type}`),
+                }}
+              />
+            </PlainSlot>
+            <AlignedLocBadge>{event.type}</AlignedLocBadge>
+            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+          </StopTime>
+          <TlpDetailsWrapper>
+            <TlpPropertyBox>
+              {text("apc.totalPassengersIn")}:{" "}
+              <TlpPropertyValue>{event.totalPassengersIn}</TlpPropertyValue>
+            </TlpPropertyBox>
+            <TlpPropertyBox>
+              {text("apc.totalPassengersOut")}:{" "}
+              <TlpPropertyValue>{event.totalPassengersOut}</TlpPropertyValue>
+            </TlpPropertyBox>
+            <TlpPropertyBox>
+              {text("apc.vehicleLoad")}:{" "}
+              <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
+            </TlpPropertyBox>
+            <TlpPropertyBox>
+              {text("apc.vehicleLoadRatio")}:{" "}
+              <TlpPropertyValue>{event.vehicleLoadRatio}</TlpPropertyValue>
+            </TlpPropertyBox>
+          </TlpDetailsWrapper>
+        </StopContent>
+      </StopWrapper>
+    );
+  }
+);

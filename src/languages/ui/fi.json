@@ -93,6 +93,7 @@
   "journey.type.journey": "Lähtö",
 
   "journey.event.ALL": "Kaikki tapahtumat",
+  "journey.event.APC": "Matkustajalaskenta",
   "journey.event.DEP": "Lähtö pysäkkialueelta",
   "journey.event.ARR": "Saapuminen pysäkkialueelle",
   "journey.event.DEPARTURE": "Lähtö",
@@ -183,6 +184,11 @@
   "tlp.priority": "Prioriteetti",
   "tlp.reason": "Syy",
   "tlp.signalgroupnbr": "Ilmaisun ID (output)",
+
+  "apc.totalPassengersIn": "Matkustajat sisään",
+  "apc.totalPassengersOut": "Matkustajat ulos",
+  "apc.vehicleLoad": "Kuorma",
+  "apc.vehicleLoadRatio": "Täyttöaste",
 
   "auth.login": "Kirjaudu (HSL ID)",
   "auth.logout": "Kirjaudu ulos",

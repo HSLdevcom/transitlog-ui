@@ -23,6 +23,13 @@ import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import {isCancelledDeparture} from "../../helpers/isCancelledDeparture";
 
+const BadgeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px 0 2px;
+`;
+
 const JourneyListRow = styled.button`
   display: flex;
   align-items: center;
@@ -50,7 +57,7 @@ const JourneyListRow = styled.button`
 const JourneyRowLeft = styled.span`
   display: block;
   font-weight: bold;
-  min-width: 7.5rem;
+  min-width: ${({hasApc = false}) => (hasApc ? "4.5rem" : "7.5rem")};
   text-align: left;
   position: relative;
 `;
@@ -94,7 +101,7 @@ const TimetableIcon = styled(Timetable)`
 const decorate = flow(observer, inject("state"));
 
 const RouteDepartureItem = decorate(
-  ({departure, scrollRef, selectJourney, state: {selectedJourney}}) => {
+  ({departure, scrollRef, selectJourney, state: {selectedJourney}, hasApc = false}) => {
     let matchVehicle =
       get(departure, "journey.uniqueVehicleId") &&
       get(selectedJourney, "uniqueVehicleId");
@@ -154,7 +161,7 @@ const RouteDepartureItem = decorate(
           isCancelled={isCancelled}
           onClick={() => selectJourney(compositeJourney, false)}>
           <Tooltip helpText="Planned journey time">
-            <JourneyRowLeft>
+            <JourneyRowLeft hasApc={hasApc}>
               {getNormalTime(departureTime).slice(0, -3)}
               {isSpecialDayType && (
                 <SpecialDayDisplay
@@ -197,7 +204,6 @@ const RouteDepartureItem = decorate(
     const delayType = getDelayType(plannedObservedDiff, delayStopType.ORIGIN);
     const multipleInstances = departure.journey._numInstance !== 0;
     const timelinessColor = getTimelinessColor(delayType, "var(--light-green)");
-
     const observedJourney = observedTimeString ? (
       <>
         <Tooltip helpText="Journey list diff">
@@ -209,7 +215,12 @@ const RouteDepartureItem = decorate(
             {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
           </DelaySlot>
         </Tooltip>
-        {loc && <LocBadge red={eventType !== "PDE" && loc === "ODO"}>{loc}</LocBadge>}
+        {loc && (
+          <BadgeWrapper>
+            <LocBadge red={eventType !== "PDE" && loc === "ODO"}>{loc}</LocBadge>
+          </BadgeWrapper>
+        )}
+        {departure.apc && <BadgeWrapper>{<LocBadge>{"APC"}</LocBadge>}</BadgeWrapper>}
         <Tooltip helpText="Journey list observed">
           <TimeSlot>{observedTimeString}</TimeSlot>
         </Tooltip>
@@ -226,6 +237,7 @@ const RouteDepartureItem = decorate(
         isCancelled={isCancelled}
         onClick={() => selectJourney(departure.journey, matchVehicle)}>
         <JourneyRowLeft
+          hasApc={hasApc}
           data-testid="journey-departure-time"
           {...applyTooltip("Planned journey time with data")}>
           {getNormalTime(departureTime).slice(0, -3)}

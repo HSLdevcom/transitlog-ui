@@ -182,6 +182,11 @@
   "tlp.reason": "Reason",
   "tlp.signalgroupnbr": "Signal group number",
 
+  "apc.totalPassengersIn": "Passengers in",
+  "apc.totalPassengersOut": "Passengers out",
+  "apc.vehicleLoad": "Vehicle load",
+  "apc.vehicleLoadRatio": "Vehicle load ratio",
+
   "auth.login": "Log in (HSL ID)",
   "auth.logout": "Log out",
   "auth.create_account": "Create Reittiloki account",
