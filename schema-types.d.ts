@@ -790,7 +790,7 @@ export type Route = {
   alerts: Array<Alert>;
   cancellations: Array<Cancellation>;
   _matchScore?: Maybe<Scalars['Float']>;
-  trunkRoute?: Maybe<Scalars['Boolean']>;
+  trunkRoute: Scalars['Boolean'];
 };
 
 export type RouteFilterInput = {
