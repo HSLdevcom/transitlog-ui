@@ -589,10 +589,15 @@ export const JourneyApcEvent = decorate(
               {text("apc.vehicleLoad")}:{" "}
               <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
             </TlpPropertyBox>
-            <TlpPropertyBox>
-              {text("apc.vehicleLoadRatio")}:{" "}
-              <TlpPropertyValue>{event.vehicleLoadRatio}</TlpPropertyValue>
-            </TlpPropertyBox>
+            {event.vehicleLoadRatio && (
+              <TlpPropertyBox>
+                {text("apc.vehicleLoadRatio")}:{" "}
+                <TlpPropertyValue
+                  color={event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)"}>{`${(
+                  100 * event.vehicleLoadRatio
+                ).toFixed()}%`}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
           </TlpDetailsWrapper>
         </StopContent>
       </StopWrapper>

@@ -78,10 +78,15 @@ const ApcTooltip = decorate(
             {text("apc.vehicleLoad")}:{" "}
             <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>
           </ApcDataRow>
-          <ApcDataRow>
-            {text("apc.vehicleLoadRatio")}:{" "}
-            <ApcPropertyValue>{event.vehicleLoadRatio}</ApcPropertyValue>
-          </ApcDataRow>
+          {event.vehicleLoadRatio && (
+            <ApcDataRow>
+              {text("apc.vehicleLoadRatio")}:{" "}
+              <ApcPropertyValue
+                color={event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)"}>
+                {`${(100 * event.vehicleLoadRatio).toFixed()}%`}
+              </ApcPropertyValue>
+            </ApcDataRow>
+          )}
         </TooltipWrapper>
       </Tooltip>
     );
