@@ -46,7 +46,14 @@ const CancellationsQuery = decorate(({date, cancellationsSearch, children}) => {
   return (
     <Query query={cancellationsQuery} variables={queryProps}>
       {({loading, error, data, refetch}) => {
-        const cancellations = get(data, "cancellations", []);
+        const cancellations = get(data, "cancellations", []).filter((c) => {
+          if (
+            c.cancellationType === "CANCEL_DEPARTURE" ||
+            c.cancellationType === "CANCEL_ENTIRE_DEPARTURE"
+          ) {
+            return c;
+          }
+        });
 
         activateRefetch(refetch);
 
