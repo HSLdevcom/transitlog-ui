@@ -29,9 +29,16 @@ const CancellationsList = decorate(
   }) => {
     const validCancellations =
       cancellations && Array.isArray(cancellations) ? cancellations : [];
-
+    const filteredCancellations = validCancellations.filter((c) => {
+      if (
+        c.cancellationType === "CANCEL_DEPARTURE" ||
+        c.cancellationType === "CANCEL_ENTIRE_DEPARTURE"
+      ) {
+        return c;
+      }
+    });
     const cancellationGroups = groupBy(
-      validCancellations,
+      filteredCancellations,
       ({departureDate, journeyStartTime, routeId, direction}) =>
         departureDate + journeyStartTime + routeId + direction
     );
