@@ -55,6 +55,14 @@ const ApcTooltip = decorate(
     if (event) {
       prevEvent.current = event;
     }
+
+    let vehicledLoadRatio = event.vehicleLoadRatioText;
+    if (event.vehicleLoadRatio === 0 || event.vehicleLoadRatio > 0) {
+      vehicledLoadRatio = `${(100 * event.vehicleLoadRatio).toFixed()}%`;
+    }
+    let vehicleLoadRatioColor =
+      event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)";
+
     return (
       <Tooltip
         className="tooltip-unpadded"
@@ -66,24 +74,29 @@ const ApcTooltip = decorate(
           <ApcDataRow>
             <strong>{text(`journey.event.${event.type}`)}</strong>
           </ApcDataRow>
-          <ApcDataRow>
-            {text("apc.totalPassengersIn")}:{" "}
-            <ApcPropertyValue>{event.totalPassengersIn}</ApcPropertyValue>
-          </ApcDataRow>
-          <ApcDataRow>
-            {text("apc.totalPassengersOut")}:{" "}
-            <ApcPropertyValue>{event.totalPassengersOut}</ApcPropertyValue>
-          </ApcDataRow>
-          <ApcDataRow>
-            {text("apc.vehicleLoad")}:{" "}
-            <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>
-          </ApcDataRow>
-          {event.vehicleLoadRatio && (
+          {event.totalPassengersIn && (
+            <ApcDataRow>
+              {text("apc.totalPassengersIn")}:{" "}
+              <ApcPropertyValue>{event.totalPassengersIn}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {event.totalPassengersOut && (
+            <ApcDataRow>
+              {text("apc.totalPassengersOut")}:{" "}
+              <ApcPropertyValue>{event.totalPassengersOut}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {event.vehicleLoad && (
+            <ApcDataRow>
+              {text("apc.vehicleLoad")}:{" "}
+              <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {vehicledLoadRatio && (
             <ApcDataRow>
               {text("apc.vehicleLoadRatio")}:{" "}
-              <ApcPropertyValue
-                color={event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)"}>
-                {`${(100 * event.vehicleLoadRatio).toFixed()}%`}
+              <ApcPropertyValue color={vehicleLoadRatioColor}>
+                {vehicledLoadRatio}
               </ApcPropertyValue>
             </ApcDataRow>
           )}

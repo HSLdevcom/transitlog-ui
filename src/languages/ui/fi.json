@@ -189,6 +189,12 @@
   "apc.totalPassengersOut": "Matkustajat ulos",
   "apc.vehicleLoad": "Kuorma",
   "apc.vehicleLoadRatio": "Täyttöaste",
+  "apc.empty": "Tyhjä",
+  "apc.mostlyAvailableSeats": "Paljon istumapaikkoja vapaana",
+  "apc.fewAvailableSeats": "Vähän istumapaikkoja vapaana",
+  "apc.onlyStandingSeats": "Ainoastaan seisomatilaa",
+  "apc.fewStandingSeats": "Vähän seisomatilaa",
+  "apc.full": "Täynnä",
 
   "auth.login": "Kirjaudu (HSL ID)",
   "auth.logout": "Kirjaudu ulos",

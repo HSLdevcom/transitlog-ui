@@ -452,6 +452,7 @@ export type JourneyPassengerCountEvent = {
   vehicleLoadRatio?: Maybe<Scalars['Float']>;
   totalPassengersIn?: Maybe<Scalars['Int']>;
   totalPassengersOut?: Maybe<Scalars['Int']>;
+  vehicleLoadRatioText?: Maybe<Scalars['String']>;
   _sort?: Maybe<Scalars['Int']>;
 };
 
@@ -790,7 +791,7 @@ export type Route = {
   alerts: Array<Alert>;
   cancellations: Array<Cancellation>;
   _matchScore?: Maybe<Scalars['Float']>;
-  trunkRoute: Scalars['Boolean'];
+  trunkRoute?: Maybe<Scalars['Boolean']>;
 };
 
 export type RouteFilterInput = {

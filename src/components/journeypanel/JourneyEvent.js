@@ -556,6 +556,12 @@ export const JourneyApcEvent = decorate(
     const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
       timestamp,
     ]);
+    let vehicledLoadRatio = event.vehicleLoadRatioText;
+    if (event.vehicleLoadRatio === 0 || event.vehicleLoadRatio > 0) {
+      vehicledLoadRatio = `${(100 * event.vehicleLoadRatio).toFixed()}%`;
+    }
+    let vehicleLoadRatioColor =
+      event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)";
 
     return (
       <StopWrapper>
@@ -577,25 +583,30 @@ export const JourneyApcEvent = decorate(
             <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
           <TlpDetailsWrapper>
-            <TlpPropertyBox>
-              {text("apc.totalPassengersIn")}:{" "}
-              <TlpPropertyValue>{event.totalPassengersIn}</TlpPropertyValue>
-            </TlpPropertyBox>
-            <TlpPropertyBox>
-              {text("apc.totalPassengersOut")}:{" "}
-              <TlpPropertyValue>{event.totalPassengersOut}</TlpPropertyValue>
-            </TlpPropertyBox>
-            <TlpPropertyBox>
-              {text("apc.vehicleLoad")}:{" "}
-              <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
-            </TlpPropertyBox>
-            {event.vehicleLoadRatio && (
+            {event.totalPassengersIn && (
+              <TlpPropertyBox>
+                {text("apc.totalPassengersIn")}:{" "}
+                <TlpPropertyValue>{event.totalPassengersIn}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.totalPassengersOut && (
+              <TlpPropertyBox>
+                {text("apc.totalPassengersOut")}:{" "}
+                <TlpPropertyValue>{event.totalPassengersOut}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {event.vehicleLoad && (
+              <TlpPropertyBox>
+                {text("apc.vehicleLoad")}:{" "}
+                <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {vehicledLoadRatio && (
               <TlpPropertyBox>
                 {text("apc.vehicleLoadRatio")}:{" "}
-                <TlpPropertyValue
-                  color={event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)"}>{`${(
-                  100 * event.vehicleLoadRatio
-                ).toFixed()}%`}</TlpPropertyValue>
+                <TlpPropertyValue color={vehicleLoadRatioColor}>
+                  {vehicledLoadRatio}
+                </TlpPropertyValue>
               </TlpPropertyBox>
             )}
           </TlpDetailsWrapper>
