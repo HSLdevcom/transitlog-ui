@@ -74,19 +74,19 @@ const ApcTooltip = decorate(
           <ApcDataRow>
             <strong>{text(`journey.event.${event.type}`)}</strong>
           </ApcDataRow>
-          {event.totalPassengersIn && (
+          {(event.totalPassengersIn || event.totalPassengersIn == 0) && (
             <ApcDataRow>
               {text("apc.totalPassengersIn")}:{" "}
               <ApcPropertyValue>{event.totalPassengersIn}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {event.totalPassengersOut && (
+          {(event.totalPassengersOut || event.totalPassengersOut == 0) && (
             <ApcDataRow>
               {text("apc.totalPassengersOut")}:{" "}
               <ApcPropertyValue>{event.totalPassengersOut}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {event.vehicleLoad && (
+          {(event.vehicleLoad || event.vehicleLoad == 0) && (
             <ApcDataRow>
               {text("apc.vehicleLoad")}:{" "}
               <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>

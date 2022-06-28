@@ -583,19 +583,19 @@ export const JourneyApcEvent = decorate(
             <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
           </StopTime>
           <TlpDetailsWrapper>
-            {event.totalPassengersIn && (
+            {(event.totalPassengersIn || event.totalPassengersIn == 0) && (
               <TlpPropertyBox>
                 {text("apc.totalPassengersIn")}:{" "}
                 <TlpPropertyValue>{event.totalPassengersIn}</TlpPropertyValue>
               </TlpPropertyBox>
             )}
-            {event.totalPassengersOut && (
+            {(event.totalPassengersOut || event.totalPassengersOut == 0) && (
               <TlpPropertyBox>
                 {text("apc.totalPassengersOut")}:{" "}
                 <TlpPropertyValue>{event.totalPassengersOut}</TlpPropertyValue>
               </TlpPropertyBox>
             )}
-            {event.vehicleLoad && (
+            {(event.vehicleLoad || event.vehicleLoad == 0) && (
               <TlpPropertyBox>
                 {text("apc.vehicleLoad")}:{" "}
                 <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
