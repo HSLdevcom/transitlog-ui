@@ -188,6 +188,12 @@
   "apc.totalPassengersOut": "Avstigande resenär",
   "apc.vehicleLoad": "Last",
   "apc.vehicleLoadRatio": "Fyllnadsgrad",
+  "apc.empty": "Empty",
+  "apc.mostlyAvailableSeats": "Mostly available seats",
+  "apc.fewAvailableSeats": "Few available seats",
+  "apc.onlyStandingSeats": "Only standing seats",
+  "apc.fewStandingSeats": "Few standing seats",
+  "apc.full": "Full",
 
   "auth.login": "Logga in (HSL ID)",
   "auth.logout": "Logga ut",

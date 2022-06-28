@@ -183,6 +183,17 @@
   "tlp.reason": "Reason",
   "tlp.signalgroupnbr": "Signal group number",
 
+  "apc.totalPassengersIn": "Total passengers in",
+  "apc.totalPassengersOut": "Total passengers out",
+  "apc.vehicleLoad": "Vehicle load",
+  "apc.vehicleLoadRatio": "Vehicle load ratio",
+  "apc.empty": "Empty",
+  "apc.mostlyAvailableSeats": "Mostly available seats",
+  "apc.fewAvailableSeats": "Few available seats",
+  "apc.onlyStandingSeats": "Only standing seats",
+  "apc.fewStandingSeats": "Few standing seats",
+  "apc.full": "Full",
+
   "apc.totalPassengersIn": "Passengers in",
   "apc.totalPassengersOut": "Passengers out",
   "apc.vehicleLoad": "Vehicle load",

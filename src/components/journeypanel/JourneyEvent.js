@@ -556,7 +556,7 @@ export const JourneyApcEvent = decorate(
     const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
       timestamp,
     ]);
-    let vehicledLoadRatio = event.vehicleLoadRatioText;
+    let vehicledLoadRatio = text(`apc.${event.vehicleLoadRatioText}`);
     if (event.vehicleLoadRatio === 0 || event.vehicleLoadRatio > 0) {
       vehicledLoadRatio = `${(100 * event.vehicleLoadRatio).toFixed()}%`;
     }

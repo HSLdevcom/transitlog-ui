@@ -215,12 +215,12 @@ const RouteDepartureItem = decorate(
             {doubleDigit(diffTime.minutes)}:{doubleDigit(diffTime.seconds)}
           </DelaySlot>
         </Tooltip>
+        {departure.apc && <BadgeWrapper>{<LocBadge>{"APC"}</LocBadge>}</BadgeWrapper>}
         {loc && (
           <BadgeWrapper>
             <LocBadge red={eventType !== "PDE" && loc === "ODO"}>{loc}</LocBadge>
           </BadgeWrapper>
         )}
-        {departure.apc && <BadgeWrapper>{<LocBadge>{"APC"}</LocBadge>}</BadgeWrapper>}
         <Tooltip helpText="Journey list observed">
           <TimeSlot>{observedTimeString}</TimeSlot>
         </Tooltip>
