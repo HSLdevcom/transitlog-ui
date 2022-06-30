@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: HSLdevcom/transitlog-server
-          ref: master
+          ref: dev
       - name: Build Server and publish Docker image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
