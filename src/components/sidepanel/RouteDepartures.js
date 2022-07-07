@@ -4,7 +4,7 @@ import getJourneyId from "../../helpers/getJourneyId";
 import styled from "styled-components";
 import {Text} from "../../helpers/text";
 import SidepanelList from "./SidepanelList";
-import flow from "lodash/flow";
+import {flow, find} from "lodash";
 import {inject} from "../../helpers/inject";
 import EmptyView from "../EmptyView";
 import RouteDepartureItem from "./RouteDepartureItem";
@@ -43,6 +43,7 @@ export const routeJourneysQuery = gql`
       direction
       stopId
       isCancelled
+      apc
       cancellations {
         ...CancellationFieldsFragment
       }
@@ -157,7 +158,7 @@ const RouteDepartures = decorate(({state, Time, Journey, UI}) => {
   );
 
   const departures = departuresData || [];
-
+  const hasApc = find(departures, {apc: true}) ? true : false;
   return (
     <>
       {error || (!loading && !shouldSkip && departures.length === 0) ? (
@@ -188,6 +189,7 @@ const RouteDepartures = decorate(({state, Time, Journey, UI}) => {
                 departure={departure}
                 scrollRef={scrollRef}
                 selectJourney={selectJourney}
+                hasApc={hasApc}
               />
             ))
           }

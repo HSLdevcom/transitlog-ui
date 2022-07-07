@@ -161,7 +161,7 @@ export function UsageInstructions({language}) {
         <div>
           <h3>Käyttöohjeet</h3>
           <p>
-            Reittilogi näyttää selainpohjaisessa karttaohjelmassa joukkoliikenteen
+            Reittiloki näyttää selainpohjaisessa karttaohjelmassa joukkoliikenteen
             ajetuista lähdöistä historia- ja reaaliaikaista tietoa sekä vertaa
             toteutunutta liikennettä aikataulun mukaisiin lähtöihin.
           </p>
@@ -288,6 +288,11 @@ export function UsageInstructions({language}) {
               Aikasimulointi- tai live-napilla voit toistaa valitsemasi lähdön tapahtumat
               kartalle haluamallasi nopeudella. Nopeutta voi muokata päivämäärä-ikkunassa
               aikamuutos kohdassa.
+            </li>
+            <li>
+              Matkustajalaskennan täyttöasteen määritelmä: Kapasiteetti lasketaan auton
+              rekisteröintikapasiteetista enimmäismäärän mukaan, eli istuma- ja
+              seisomapaikat ilman lastenvaunujen vähennystä.
             </li>
           </InstructionsList>
         </div>

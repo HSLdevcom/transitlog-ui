@@ -13,6 +13,7 @@ import {
   JourneyCancellationEventItem,
   JourneyTlpEvent,
   JourneyEvent,
+  JourneyApcEvent,
 } from "./JourneyEvent";
 import EventFilters from "./EventFilters";
 import {checkDoorEventsHealth, HealthChecklistValues} from "../../hooks/useJourneyHealth";
@@ -188,10 +189,12 @@ const JourneyEvents = decorate(
               case "JourneyTlpEvent":
                 Component = JourneyTlpEvent;
                 break;
+              case "JourneyPassengerCountEvent":
+                Component = JourneyApcEvent;
+                break;
               default:
                 Component = JourneyEvent;
             }
-
             return (
               <Component
                 isOrigin={get(originDeparture, "stopId", "") === event.stopId}
