@@ -185,6 +185,12 @@
   "tlp.reason": "Syy",
   "tlp.signalgroupnbr": "Ilmaisun ID (output)",
 
+  "loc.GPS": "Paikannus saatu GPS:stä.",
+  "loc.ODO": "Paikannus laskettu matkamittarin perusteella.",
+  "loc.MAN": "Paikannus määritelty manuaalisesti.",
+  "loc.DR": "Paikannus laskettu käyttäen dead reckoning (käytetään tunneleissa ja muissa paikoissa, joissa ei ole GPS-signaalia).",
+  "loc.N/A": "Paikannus ei saatavilla",
+
   "apc.totalPassengersIn": "Matkustajat sisään",
   "apc.totalPassengersOut": "Matkustajat ulos",
   "apc.vehicleLoad": "Kuorma",

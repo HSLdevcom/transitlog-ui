@@ -184,6 +184,12 @@
   "tlp.reason": "Orsak",
   "tlp.signalgroupnbr": "Signalgruppens nummer",
 
+  "loc.GPS": "Location is received from GPS.",
+  "loc.ODO": "Location is calculated based on odometer value.",
+  "loc.MAN": "Location is specified manually.",
+  "loc.DR": "Location is calculated using dead reckoning (used in tunnels and other locations without GPS signal).",
+  "loc.N/A": "Location is unavailable.",
+
   "apc.totalPassengersIn": "Påstigande resenärer",
   "apc.totalPassengersOut": "Avstigande resenär",
   "apc.vehicleLoad": "Last",
