@@ -218,7 +218,9 @@ const RouteDepartureItem = decorate(
         {departure.apc && <BadgeWrapper>{<LocBadge>{"APC"}</LocBadge>}</BadgeWrapper>}
         {loc && (
           <BadgeWrapper>
-            <LocBadge red={eventType !== "PDE" && loc === "ODO"}>{loc}</LocBadge>
+            <Tooltip helpText={text(`loc.${loc}`)}>
+              <LocBadge red={eventType !== "PDE" && loc === "ODO"}>{loc}</LocBadge>
+            </Tooltip>
           </BadgeWrapper>
         )}
         <Tooltip helpText="Journey list observed">

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {TagButton, ColoredBackgroundSlot, PlainSlotMono} from "../TagButton";
+import {LocBadge} from "../commonComponents";
 
 const ExampleSlotWrapper = styled.div`
   margin-left: 20px;
@@ -130,6 +131,33 @@ export function UsageInstructions({language}) {
               before the planned departure. If the vehicle arrives to the starting stop
               after the planned departure it is considered late and marked with red.
             </li>
+
+            <li>
+              Next to the departure times on the right, you can find the departure's
+              method of geotracking (e.g. <LocBadge>GPS</LocBadge>). These geotracking
+              tags can also be found elsewhere in the application. Possible geotracking
+              methods are:
+              <ExampleSlotWrapper>
+                <li>
+                  <LocBadge>GPS</LocBadge>: Location is received from GPS.
+                </li>
+                <li>
+                  <LocBadge>ODO</LocBadge>: Location is calculated based on odometer
+                  value.
+                </li>
+                <li>
+                  <LocBadge>MAN</LocBadge>: Location is specified manually.
+                </li>
+                <li>
+                  <LocBadge>DR</LocBadge>: Location is calculated using dead reckoning
+                  (used in tunnels and other locations without GPS signal).
+                </li>
+                <li>
+                  <LocBadge>N/A</LocBadge>: Location is unavailable.
+                </li>
+              </ExampleSlotWrapper>
+            </li>
+
             <li>
               To view the timetables for a stop, either select a stop from the map (you
               need to be zoomed in a bit to see them) or use the Stop filter input to
@@ -267,6 +295,31 @@ export function UsageInstructions({language}) {
               ajoissa. Alkupysäkillä värikoodina on vihreä jos ajoneuvo on saapunut
               pysäkille ennen suuniteltua lähtöaikaa. Jos ajoneuvo saapuu alkupysäkille
               suunnitellun lähtöajan jälkeen värikoodi on aina punainen.
+            </li>
+
+            <li>
+              Lähtöaikojen vierestä oikealta löytyy lähdön paikannusmenetelmä (esim.{" "}
+              <LocBadge>GPS</LocBadge>) jos sellainen on saatavilla. Kyseinen merkintä voi
+              löytyä muualtakin sovelluksesta. Mahdollisia paikannusmenetelmiä ovat:
+              <ExampleSlotWrapper>
+                <li>
+                  <LocBadge>GPS</LocBadge>: Paikannus saatu GPS:stä.
+                </li>
+                <li>
+                  <LocBadge>ODO</LocBadge>: Paikannus laskettu matkamittarin perusteella.
+                </li>
+                <li>
+                  <LocBadge>MAN</LocBadge>: Paikannus määritelty manuaalisesti.
+                </li>
+                <li>
+                  <LocBadge>DR</LocBadge>: Paikannus laskettu käyttäen dead reckoning
+                  (käytetään tunneleissa ja muissa paikoissa, joissa ei ole
+                  GPS-signaalia).
+                </li>
+                <li>
+                  <LocBadge>N/A</LocBadge>: Paikannus ei saatavilla
+                </li>
+              </ExampleSlotWrapper>
             </li>
 
             <li>
