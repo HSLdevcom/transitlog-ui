@@ -6,7 +6,7 @@
   "Select date field": "Valitse päivämäärä. Kaikki Transitlogin näyttämät tiedot ovat tämän päivämäärän mukaisia.",
   "One time step backward": "Yksi aika-askel taaksepäin",
   "One time step forward": "Yksi aika-askel eteenpäin",
-  "Select time": "Valitse aika josta haluat tutkia tietoja. Voit myös asettaa aikaa liukusäätimellä.",
+  "Select time": "Valitse aika josta haluat tutkia tietoja. Voit myös asettaa ajan liukusäätimellä.",
   "Time increment field": "Aseta kuinka paljon aika muuttuu kun simulointi on käynnissä tai kun käytät aikakentän eteenpäin/taaksepäin nappeja",
   "Search range minutes field": "Aseta aluehaun aikaväli, eli kuinka pitkältä aikaväliltä aluehaku hakee tapahtumia. Aikavälin keskipiste on valittu aika hakuhetkellä.",
   "Select location": "Etsi sijaintia.",
