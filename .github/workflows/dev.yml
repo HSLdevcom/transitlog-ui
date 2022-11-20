@@ -79,7 +79,7 @@ jobs:
         with:
           node-version: "14"
         env:
-          CYPRESS_BASE_URL: https://dev.reittiloki.hsl.fi
+          CYPRESS_BASE_URL: https://devtest.reittiloki.hsl.fi
           CYPRESS_CLIENT_ID: ${{ secrets.CYPRESS_CLIENT_ID }}
           CYPRESS_CLIENT_SECRET: ${{ secrets.CYPRESS_CLIENT_SECRET }}
           CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
