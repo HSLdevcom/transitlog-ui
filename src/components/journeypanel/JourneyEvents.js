@@ -164,15 +164,29 @@ const JourneyEvents = decorate(
       if (isTerminalArr) {
         types.push("TERMINAL_ARS");
       }
-
       return types.some((type) => state.journeyEventFilters[type]);
     });
+
+    // APC checkbox shows up even if no apc data present. state.journeyEventFilters doesn't update properly
+    // For now removing apc from the list of events manually.
+    const hasAPC = events.find((evt) => evt.type === "APC");
+    let filterCheckboxes = {};
+    if (state.journeyEventFilters) {
+      Object.keys(state.journeyEventFilters).forEach((type) => {
+        if (!filterCheckboxes[type] && type !== "APC") {
+          filterCheckboxes[type] = state.journeyEventFilters[type];
+        }
+      });
+    }
+    if (hasAPC) {
+      filterCheckboxes["APC"] = state.journeyEventFilters["APC"];
+    }
 
     return events.length === 0 ? null : (
       <EventsListWrapper>
         <EventFilters
           onChange={Journey.setJourneyEventFilter}
-          filterState={state.journeyEventFilters}
+          filterState={filterCheckboxes}
         />
         <EventsList>
           {uniqBy(visibleEvents, "id").map((event, index, arr) => {
