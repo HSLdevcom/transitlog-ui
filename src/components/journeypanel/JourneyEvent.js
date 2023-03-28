@@ -41,6 +41,7 @@ import {TIMEZONE} from "../../constants";
 import moment from "moment-timezone";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../icons/RoutesFail";
+import Tooltip from "../Tooltip";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 import {LocBadge} from "../commonComponents";
@@ -249,9 +250,11 @@ export const JourneyStopEvent = decorate(
               style={{fontSize: "0.75rem", color: "var(--grey)", marginLeft: "0.5rem"}}>
               {event.type}
             </span>
-            <LocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
-              {event.loc}
-            </LocBadge>
+            <Tooltip helpText={text(`loc.${event.loc}`)}>
+              <LocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+                {event.loc}
+              </LocBadge>
+            </Tooltip>
           </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>
