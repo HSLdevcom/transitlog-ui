@@ -9,7 +9,7 @@
         "headers": { "user-agent": "JS GraphQL" }
       },
       "Transitlog server dev": {
-        "url": "https://devtest.reittiloki.hsl.fi/server/graphql",
+        "url": "https://dev.reittiloki.hsl.fi/server/graphql",
         "method": "POST",
         "introspect": true,
         "headers": { "user-agent": "JS GraphQL" }
