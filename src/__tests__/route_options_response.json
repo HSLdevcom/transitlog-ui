@@ -11,6 +11,7 @@
         "name": "Eira - Töölö - Käpylä",
         "origin": "Eira",
         "originStopId": "1050417",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -41,6 +42,7 @@
         "name": "Eira - Töölö - Käpylä",
         "origin": "Käpylä",
         "originStopId": "1250431",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -71,6 +73,7 @@
         "name": "Eira - Munkkivuori",
         "origin": "Eira",
         "originStopId": "1020117",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -101,6 +104,7 @@
         "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
         "origin": "Itäkeskus(M)",
         "originStopId": "1453128",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -131,6 +135,7 @@
         "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
         "origin": "Herttoniemi(M)",
         "originStopId": "1431189",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -161,6 +166,7 @@
         "name": "Eira - Munkkivuori",
         "origin": "Munkkivuori",
         "originStopId": "1304130",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -191,6 +197,7 @@
         "name": "Rautatientori-Tattarisuo-Jakomäki",
         "origin": "Rautatientori, l. 6",
         "originStopId": "1020118",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -221,6 +228,7 @@
         "name": "Kulosaari-Herttoniemi(M)-Länsi-Herttoniemi",
         "origin": "Länsi-Herttoniemi",
         "originStopId": "1431138",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -251,6 +259,7 @@
         "name": "Kulosaari-Herttoniemi(M)-Länsi-Herttoniemi",
         "origin": "Kulosaari",
         "originStopId": "1420123",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -281,6 +290,7 @@
         "name": "Rautatientori-Tattarisuo-Jakomäki",
         "origin": "Jakomäki",
         "originStopId": "1414149",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -311,6 +321,7 @@
         "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
         "origin": "Itäkeskus(M)",
         "originStopId": "1453128",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,
@@ -341,6 +352,7 @@
         "name": "Herttoniemi(M)-Roihuvuori-Itäkeskus(M)",
         "origin": "Herttoniemi(M)",
         "originStopId": "1431189",
+        "trunkRoute": 0,
         "alerts": [
           {
             "id": 1,

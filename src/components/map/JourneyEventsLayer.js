@@ -4,6 +4,7 @@ import {observer} from "mobx-react-lite";
 import {inject} from "../../helpers/inject";
 import JourneyMapEvent from "./JourneyMapEvent";
 import JourneyMapEventTlp from "./JourneyMapEventTlp";
+import JourneyMapEventAPC from "./JourneyMapEventAPC";
 import {createGlobalStyle} from "styled-components";
 import uniqBy from "lodash/uniqBy";
 import {latLng} from "leaflet";
@@ -58,6 +59,9 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
       (evt.type === "TLR" || evt.type === "TLA") && !!state.journeyEventFilters[evt.type]
   );
 
+  const visibleApcEvents = uniqBy(events, "id").filter(
+    (evt) => evt.type === "APC" && !!state.journeyEventFilters[evt.type]
+  );
   const eventGroups = uniqBy(visibleEvents, "id").reduce((proximityGroups, event) => {
     if (!event.lat || !event.lng) {
       return proximityGroups;
@@ -92,7 +96,6 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
     proximityGroups.set(currentArea, currentGroup);
     return proximityGroups;
   }, new Map());
-
   return (
     <>
       <IconStyle />
@@ -106,6 +109,13 @@ const JourneyEventsLayer = decorate(({journey = null, state}) => {
       {visibleTlpEvents.map((event, i) => (
         <JourneyMapEventTlp
           key={`tlp_event_${event.requestId}_${event.type}_${i}`}
+          journey={journey}
+          event={event}
+        />
+      ))}
+      {visibleApcEvents.map((event, i) => (
+        <JourneyMapEventAPC
+          key={`apc_event_${event.receivedAt}_${event.type}_${i}`}
           journey={journey}
           event={event}
         />

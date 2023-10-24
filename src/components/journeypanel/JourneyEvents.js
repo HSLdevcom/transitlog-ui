@@ -13,12 +13,14 @@ import {
   JourneyCancellationEventItem,
   JourneyTlpEvent,
   JourneyEvent,
+  JourneyApcEvent,
 } from "./JourneyEvent";
 import EventFilters from "./EventFilters";
 import {checkDoorEventsHealth, HealthChecklistValues} from "../../hooks/useJourneyHealth";
 
 const EventsListWrapper = styled.div`
   padding: 0.5rem 0;
+  max-width: 25rem;
 `;
 
 const EventsList = styled.div`
@@ -162,15 +164,29 @@ const JourneyEvents = decorate(
       if (isTerminalArr) {
         types.push("TERMINAL_ARS");
       }
-
       return types.some((type) => state.journeyEventFilters[type]);
     });
+
+    // APC checkbox shows up even if no apc data present. state.journeyEventFilters doesn't update properly
+    // For now removing apc from the list of events manually.
+    const hasAPC = events.find((evt) => evt.type === "APC");
+    let filterCheckboxes = {};
+    if (state.journeyEventFilters) {
+      Object.keys(state.journeyEventFilters).forEach((type) => {
+        if (!filterCheckboxes[type] && type !== "APC") {
+          filterCheckboxes[type] = state.journeyEventFilters[type];
+        }
+      });
+    }
+    if (hasAPC) {
+      filterCheckboxes["APC"] = state.journeyEventFilters["APC"];
+    }
 
     return events.length === 0 ? null : (
       <EventsListWrapper>
         <EventFilters
           onChange={Journey.setJourneyEventFilter}
-          filterState={state.journeyEventFilters}
+          filterState={filterCheckboxes}
         />
         <EventsList>
           {uniqBy(visibleEvents, "id").map((event, index, arr) => {
@@ -187,10 +203,12 @@ const JourneyEvents = decorate(
               case "JourneyTlpEvent":
                 Component = JourneyTlpEvent;
                 break;
+              case "JourneyPassengerCountEvent":
+                Component = JourneyApcEvent;
+                break;
               default:
                 Component = JourneyEvent;
             }
-
             return (
               <Component
                 isOrigin={get(originDeparture, "stopId", "") === event.stopId}

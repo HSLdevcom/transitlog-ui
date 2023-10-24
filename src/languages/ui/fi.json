@@ -93,6 +93,7 @@
   "journey.type.journey": "Lähtö",
 
   "journey.event.ALL": "Kaikki tapahtumat",
+  "journey.event.APC": "Matkustajalaskenta",
   "journey.event.DEP": "Lähtö pysäkkialueelta",
   "journey.event.ARR": "Saapuminen pysäkkialueelle",
   "journey.event.DEPARTURE": "Lähtö",
@@ -183,6 +184,23 @@
   "tlp.priority": "Prioriteetti",
   "tlp.reason": "Syy",
   "tlp.signalgroupnbr": "Ilmaisun ID (output)",
+
+  "loc.GPS": "Paikannus saatu GPS:stä.",
+  "loc.ODO": "Paikannus laskettu matkamittarin perusteella.",
+  "loc.MAN": "Paikannus määritelty manuaalisesti.",
+  "loc.DR": "Paikannus laskettu käyttäen dead reckoning (käytetään tunneleissa ja muissa paikoissa, joissa ei ole GPS-signaalia).",
+  "loc.N/A": "Paikannus ei saatavilla",
+
+  "apc.totalPassengersIn": "Matkustajat sisään",
+  "apc.totalPassengersOut": "Matkustajat ulos",
+  "apc.vehicleLoad": "Kuorma",
+  "apc.vehicleLoadRatio": "Täyttöaste",
+  "apc.empty": "Tyhjä",
+  "apc.mostlyAvailableSeats": "Paljon istumapaikkoja vapaana",
+  "apc.fewAvailableSeats": "Vähän istumapaikkoja vapaana",
+  "apc.onlyStandingSeats": "Ainoastaan seisomatilaa",
+  "apc.fewStandingSeats": "Vähän seisomatilaa",
+  "apc.full": "Täynnä",
 
   "auth.login": "Kirjaudu (HSL ID)",
   "auth.logout": "Kirjaudu ulos",

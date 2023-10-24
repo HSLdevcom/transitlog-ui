@@ -69,7 +69,11 @@ const RouteSettings = decorate(
                     <SelectedOptionDisplay
                       data-testid="selected-route-display"
                       withIcon={true}
-                      className={getTransportType(selectedRoute.routeId || "")}>
+                      className={getTransportType(
+                        selectedRoute.routeId || "",
+                        false,
+                        selectedRoute.trunkRoute
+                      )}>
                       <SuggestionText withIcon={true}>
                         <strong>{selectedRoute.routeId}</strong>{" "}
                         <Text>domain.direction</Text> {selectedRoute.direction}

@@ -41,6 +41,7 @@ import {TIMEZONE} from "../../constants";
 import moment from "moment-timezone";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../icons/RoutesFail";
+import Tooltip from "../Tooltip";
 
 import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 import {LocBadge} from "../commonComponents";
@@ -249,9 +250,11 @@ export const JourneyStopEvent = decorate(
               style={{fontSize: "0.75rem", color: "var(--grey)", marginLeft: "0.5rem"}}>
               {event.type}
             </span>
-            <LocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
-              {event.loc}
-            </LocBadge>
+            <Tooltip helpText={text(`loc.${event.loc}`)}>
+              <LocBadge red={event.type !== "PDE" && event.loc === "ODO"}>
+                {event.loc}
+              </LocBadge>
+            </Tooltip>
           </EventTypeHeading>
           {event.doorsOpened === false && (
             <EventTextSmall>
@@ -540,6 +543,73 @@ export const JourneyTlpEvent = decorate(
               <TlpPropertyBox>
                 {text("tlp.signalgroupnbr")}:{" "}
                 <TlpPropertyValue>{event.signalGroupNbr}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+          </TlpDetailsWrapper>
+        </StopContent>
+      </StopWrapper>
+    );
+  }
+);
+
+export const JourneyApcEvent = decorate(
+  ({event, color, date, isFirst, isLast, onSelectTime}) => {
+    const timestamp = moment.tz(event.recordedAt, TIMEZONE);
+
+    const selectTime = useCallback(() => onSelectTime(journeyEventTime(event, date)), [
+      timestamp,
+    ]);
+    let vehicledLoadRatio = text(`apc.${event.vehicleLoadRatioText}`);
+    if (event.vehicleLoadRatio === 0 || event.vehicleLoadRatio > 0) {
+      vehicledLoadRatio = `${(100 * event.vehicleLoadRatio).toFixed()}%`;
+    }
+    let vehicleLoadRatioColor =
+      event.vehicleLoadRatio > 0 ? "var(--blue)" : "var(--grey)";
+
+    return (
+      <StopWrapper>
+        <StopElementsWrapper
+          color={color}
+          terminus={isFirst ? "origin" : isLast ? "destination" : undefined}>
+          <StopMarker color={color} />
+        </StopElementsWrapper>
+        <StopContent>
+          <StopTime onClick={selectTime}>
+            <PlainSlot {...applyTooltip(event.type)}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: text(`journey.event.${event.type}`),
+                }}
+              />
+            </PlainSlot>
+            <AlignedLocBadge>{event.type}</AlignedLocBadge>
+            <AlignedPlainSlotMono>{timestamp.format("HH:mm:ss")}</AlignedPlainSlotMono>
+          </StopTime>
+          <TlpDetailsWrapper>
+            {(event.totalPassengersIn || event.totalPassengersIn == 0) && (
+              <TlpPropertyBox>
+                {text("apc.totalPassengersIn")}:{" "}
+                <TlpPropertyValue>{event.totalPassengersIn}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.totalPassengersOut || event.totalPassengersOut == 0) && (
+              <TlpPropertyBox>
+                {text("apc.totalPassengersOut")}:{" "}
+                <TlpPropertyValue>{event.totalPassengersOut}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.vehicleLoad || event.vehicleLoad == 0) && (
+              <TlpPropertyBox>
+                {text("apc.vehicleLoad")}:{" "}
+                <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {vehicledLoadRatio && (
+              <TlpPropertyBox>
+                {text("apc.vehicleLoadRatio")}:{" "}
+                <TlpPropertyValue color={vehicleLoadRatioColor}>
+                  {vehicledLoadRatio}
+                </TlpPropertyValue>
               </TlpPropertyBox>
             )}
           </TlpDetailsWrapper>

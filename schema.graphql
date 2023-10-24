@@ -11,7 +11,12 @@ interface Position {
   lng: Float
 }
 
-union JourneyEventType = JourneyCancellationEvent | JourneyEvent | JourneyStopEvent | JourneyTlpEvent | PlannedStopEvent
+union JourneyEventType =
+    JourneyCancellationEvent
+  | JourneyEvent
+  | JourneyStopEvent
+  | JourneyTlpEvent
+  | PlannedStopEvent
 
 type Alert {
   affectedId: String!
@@ -341,15 +346,39 @@ type PlannedStopEvent {
 type Query {
   alerts(alertSearch: AlertSearchInput, language: String!, time: String): [Alert!]!
   cancellations(cancellationSearch: CancellationSearchInput, date: Date): [Cancellation!]!
-  departures(date: Date!, filter: DepartureFilterInput, stopId: String, terminalId: String): [Departure]!
+  departures(
+    date: Date!
+    filter: DepartureFilterInput
+    stopId: String
+    terminalId: String
+  ): [Departure]!
   driverEvents(date: Date!, uniqueVehicleId: VehicleId!): [DriverEvent]!
   equipment(date: Date, filter: EquipmentFilterInput): [Equipment]!
   exceptionDays(year: String!): [ExceptionDay]!
-  journey(departureDate: Date!, departureTime: Time!, direction: Direction!, routeId: String!, uniqueVehicleId: VehicleId, unsignedEvents: Boolean): Journey
+  journey(
+    departureDate: Date!
+    departureTime: Time!
+    direction: Direction!
+    routeId: String!
+    uniqueVehicleId: VehicleId
+    unsignedEvents: Boolean
+  ): Journey
   journeys(departureDate: Date!, direction: Direction!, routeId: String!): [Journey]!
-  journeysByBbox(bbox: PreciseBBox!, date: Date!, filters: AreaEventsFilterInput, maxTime: DateTime!, minTime: DateTime!, unsignedEvents: Boolean): [Journey]!
+  journeysByBbox(
+    bbox: PreciseBBox!
+    date: Date!
+    filters: AreaEventsFilterInput
+    maxTime: DateTime!
+    minTime: DateTime!
+    unsignedEvents: Boolean
+  ): [Journey]!
   route(date: Date!, direction: Direction!, routeId: String!): Route
-  routeDepartures(date: Date!, direction: Direction!, routeId: String!, stopId: String!): [Departure]!
+  routeDepartures(
+    date: Date!
+    direction: Direction!
+    routeId: String!
+    stopId: String!
+  ): [Departure]!
   routeGeometry(date: Date!, direction: Direction!, routeId: String!): RouteGeometry
   routeSegments(date: Date!, direction: Direction!, routeId: String!): [RouteSegment]!
   routes(date: Date, filter: RouteFilterInput): [Route]!
@@ -360,8 +389,18 @@ type Query {
   uiMessage: UIMessage!
   unsignedVehicleEvents(date: Date!, uniqueVehicleId: VehicleId!): [VehiclePosition]!
   uploads: [File]
-  vehicleJourneys(date: Date!, uniqueVehicleId: VehicleId!, unsignedEvents: Boolean): [VehicleJourney]!
-  weeklyDepartures(date: Date!, direction: Direction!, lastStopArrival: Boolean, routeId: String!, stopId: String!): [Departure]!
+  vehicleJourneys(
+    date: Date!
+    uniqueVehicleId: VehicleId!
+    unsignedEvents: Boolean
+  ): [VehicleJourney]!
+  weeklyDepartures(
+    date: Date!
+    direction: Direction!
+    lastStopArrival: Boolean
+    routeId: String!
+    stopId: String!
+  ): [Departure]!
 }
 
 type Route {
@@ -721,7 +760,6 @@ input RouteFilterInput {
 input StopFilterInput {
   search: String
 }
-
 
 "A Date string in YYYY-MM-DD format. The timezone is assumed to be Europe/Helsinki."
 scalar Date
