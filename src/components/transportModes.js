@@ -1,6 +1,7 @@
 import BusIcon from "../icons/Bus";
 import TramIcon from "../icons/Tram";
 import RailIcon from "../icons/Rail";
+import LRailIcon from "../icons/LRail";
 import SubwayIcon from "../icons/Subway";
 import FerryIcon from "../icons/Ferry";
 import React from "react";
@@ -9,6 +10,7 @@ import ReactDOMServer from "react-dom/server";
 import BusRectangle from "../icons/BusRectangle";
 import TramRectangle from "../icons/TramRectangle";
 import RailRectangle from "../icons/RailRectangle";
+import LRailRectangle from "../icons/LRailRectangle";
 import FerryRectangle from "../icons/FerryRectangle";
 import SubwaySign from "../icons/SubwaySign";
 
@@ -50,6 +52,14 @@ export const transportIconsHtml = {
         fill={{inner: "white", outer: "var(--purple)"}}
       />
     ),
+  L_RAIL: (size = 20) =>
+    ReactDOMServer.renderToStaticMarkup(
+      <LRailRectangle
+        width={size}
+        height={size}
+        fill={{inner: "white", outer: "var(--l_rail-green)"}}
+      />
+    ),
   SUBWAY: (size = 20) =>
     ReactDOMServer.renderToStaticMarkup(
       <SubwaySign
@@ -86,7 +96,6 @@ export const transportIconsHtml = {
 
 export const getTransportIconHtml = (name, size) => {
   let icon = getCachedIcon(name, size);
-
   if (icon) {
     return icon;
   }
@@ -102,6 +111,7 @@ export const transportIcons = {
   TRUNK: BusIcon,
   TRAM: TramIcon,
   RAIL: RailIcon,
+  L_RAIL: LRailIcon,
   SUBWAY: SubwayIcon,
   METRO: SubwayIcon,
   FERRY: FerryIcon,
@@ -112,6 +122,7 @@ export const transportColor = {
   TRUNK: "var(--orange)",
   TRAM: "var(--green)",
   RAIL: "var(--purple)",
+  L_RAIL: "var(--l_rail-green)",
   SUBWAY: "var(--orange)",
   METRO: "var(--orange)",
   FERRY: "var(--light-blue)",
