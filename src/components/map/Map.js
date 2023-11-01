@@ -177,7 +177,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   }, [leafletMap]);
 
   const apikey = `?digitransit-subscription-key=${process.env.REACT_APP_DIGITRANSIT_API_KEY}`;
-  const mapUrl = `https://dev-api.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
+  const mapUrl = `${process.env.REACT_APP_DIGITRANSIT_URL}map/v2/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
   return (
     <MapContainer className={className}>
       <LeafletMap
