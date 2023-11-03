@@ -176,6 +176,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     );
   }, [leafletMap]);
 
+  const apikey = `?digitransit-subscription-key=${process.env.REACT_APP_DIGITRANSIT_API_KEY}`;
+  const mapUrl = `${process.env.REACT_APP_DIGITRANSIT_URL}map/v2/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
   return (
     <MapContainer className={className}>
       <LeafletMap
@@ -202,7 +204,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
               attribution={
                 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors '
               }
-              url="https://digitransit-prod-cdn-origin.azureedge.net/map/v2/hsl-map/{z}/{x}/{y}@2x.png"
+              url={mapUrl}
               tileSize={512}
               zoomOffset={-1}
             />

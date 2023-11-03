@@ -11,6 +11,14 @@ function getTransportType(lineId = "", numeric = false, trunk = false) {
     return "TRAM";
   }
 
+  if (lineType == 2015) {
+    if (numeric) {
+      return 0;
+    }
+
+    return "L_RAIL";
+  }
+
   // The only ferry routes are 1019 and 1019E.
   if (lineId.startsWith("1019")) {
     if (numeric) {

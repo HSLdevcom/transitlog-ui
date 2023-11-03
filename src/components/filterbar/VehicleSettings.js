@@ -53,6 +53,15 @@ const VehicleSettings = decorate(({Filters, UI, state}) => {
               return <LoadingSpinner inline={true} />;
             }
 
+            let uniqueVehicles = vehicles.filter((item, index) => {
+              return (
+                index ===
+                vehicles.findIndex((obj) => {
+                  return JSON.stringify(obj) === JSON.stringify(item);
+                })
+              );
+            });
+
             return (
               <>
                 <ControlGroup>
@@ -63,7 +72,7 @@ const VehicleSettings = decorate(({Filters, UI, state}) => {
                     value={vehicle}
                     disabled={isDisabled}>
                     <VehicleInput
-                      vehicles={vehicles}
+                      vehicles={uniqueVehicles}
                       value={vehicle}
                       onSelect={onSelectVehicle}
                     />

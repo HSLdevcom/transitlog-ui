@@ -48,7 +48,7 @@ const HfpMarkerLayer = decorate(
         iconSize={isSelectedJourney ? [30, 30] : [20, 20]}
         icon={
           <VehicleMarker
-            mode={journey.mode}
+            mode={journey.routeId == "2015" ? "L_RAIL" : journey.mode}
             isUnsigned={get(journey, "journeyType", "journey") !== "journey"}
             isSelectedJourney={isSelectedJourney}
             event={event}

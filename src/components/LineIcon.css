@@ -30,3 +30,8 @@
   background-image: url("../icon-subway.svg");
   color: var(--orange);
 }
+
+.L_RAIL:before {
+  background-image: url("../icon-L-rail.svg");
+  color: #0098a1;
+}
