@@ -53,14 +53,9 @@ const VehicleSettings = decorate(({Filters, UI, state}) => {
               return <LoadingSpinner inline={true} />;
             }
 
-            let uniqueVehicles = vehicles.filter((item, index) => {
-              return (
-                index ===
-                vehicles.findIndex((obj) => {
-                  return JSON.stringify(obj) === JSON.stringify(item);
-                })
-              );
-            });
+            const uniqueVehicles = Array.from(
+              new Map(vehicles.map((vehicle) => [vehicle.id, vehicle])).values()
+            );
 
             return (
               <>
