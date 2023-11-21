@@ -24,7 +24,7 @@ const routeGeometryQuery = gql`
 
 const decorate = flow(observer, inject("UI"));
 
-const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
+const RouteLayer = decorate(({canCenterOnRoute, isTrunkRoute, UI, state}) => {
   const {route, date} = state;
 
   const {data: routeGeometry} = useQueryData(
@@ -39,10 +39,11 @@ const RouteLayer = decorate(({canCenterOnRoute, UI, state}) => {
     },
     "route geometry query"
   );
-
   const coordinates = get(routeGeometry, "coordinates", []);
-  const mode = get(routeGeometry, "mode", []);
-
+  let mode = get(routeGeometry, "mode", []);
+  if (isTrunkRoute) {
+    mode = "TRUNK";
+  }
   useEffect(() => {
     if (!route || !route.routeId || !canCenterOnRoute || coordinates.length === 0) {
       return;

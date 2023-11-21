@@ -61,14 +61,20 @@ const MapContent = decorate(
         <TerminalLayer />
         {hasRoute && (
           <>
-            <RouteLayer canCenterOnRoute={centerOnRoute} />
+            <RouteLayer
+              canCenterOnRoute={centerOnRoute}
+              isTrunkRoute={route.trunkRoute}
+            />
 
             {mapOverlays.includes("Route segment length") && <RouteSegmentLengthLayer />}
 
             {(!selectedJourneyId ||
               journeys.length === 0 ||
               !journeys.find((journey) => selectedJourneyId === journey.id)) && (
-              <RouteStopsLayer showRadius={showStopRadius} />
+              <RouteStopsLayer
+                showRadius={showStopRadius}
+                isTrunkRoute={route.trunkRoute}
+              />
             )}
 
             {journeys.length !== 0 &&

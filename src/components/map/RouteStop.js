@@ -61,6 +61,7 @@ const RouteStop = decorate(
     selectedJourney,
     journey,
     showRadius,
+    isTrunkRoute,
     state,
     Filters,
     Time,
@@ -74,7 +75,6 @@ const RouteStop = decorate(
       },
       []
     );
-
     const onShowStreetView = useCallback(() => {
       UI.setMapillaryViewerLocation(latLng({lat: stop.lat, lng: stop.lng}));
     }, [stop]);
@@ -102,7 +102,10 @@ const RouteStop = decorate(
 
     let markerChildren = [stopTooltip, stopStreetViewPopup];
 
-    const mode = getPriorityMode(get(stop, "modes", []));
+    let mode = getPriorityMode(get(stop, "modes", []));
+    if (isTrunkRoute) {
+      mode = "TRUNK";
+    }
     let color = getModeColor(mode);
 
     if (!selectedJourney || (!departure && !arrival)) {

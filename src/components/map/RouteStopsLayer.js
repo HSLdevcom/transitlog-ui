@@ -10,7 +10,7 @@ import get from "lodash/get";
 const decorate = flow(observer, inject("state"));
 
 const RouteStopsLayer = decorate(
-  ({state: {date, route, selectedJourney}, showRadius}) => {
+  ({state: {date, route, selectedJourney}, showRadius, isTrunkRoute}) => {
     let {data: routeStopsData} = useQueryData(stopsByRouteQuery, {
       skip: !route,
       variables: {
@@ -21,7 +21,6 @@ const RouteStopsLayer = decorate(
     });
 
     let routeStops = routeStopsData || [];
-
     return routeStops.map((stop, index, arr) => {
       const isFirst = index === 0;
       const isLast = index === arr.length - 1;
@@ -37,6 +36,7 @@ const RouteStopsLayer = decorate(
           stop={stop}
           date={date}
           showRadius={showRadius}
+          isTrunkRoute={isTrunkRoute}
         />
       );
     });
