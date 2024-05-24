@@ -71,11 +71,13 @@ const JourneyPanel = decorate(
       }
     }, [selectedJourney, loading]);
 
-    const journeyMode = get(route, "mode", "BUS");
+    let journeyMode = get(route, "mode", "BUS");
+    if (route.trunkRoute) {
+      journeyMode = "TRUNK";
+    }
     const journeyColor = get(transportColor, journeyMode, "var(--light-grey)");
     const originDeparture = get(journey, "departure", null);
     const journeyEvents = get(journey, "events", []);
-
     const journeyHealth = useJourneyHealth(journey);
     const dataDelay = useDataDelay(journey);
 
