@@ -176,7 +176,9 @@ export default (state) => {
     state.highlightedStop = stopId;
   });
 
-  const setSelectedBounds = action((bounds) => {
+  const setSelectedBounds = action(({bounds, speedSearch}) => {
+    setUrlValue("speedSearch", speedSearch);
+    state.speedSearch = speedSearch;
     state.selectedBounds =
       !bounds || (typeof bounds.isValid === "function" && !bounds.isValid)
         ? null

@@ -43,9 +43,8 @@ const FloatingListHeader = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
   z-index: 10;
-  padding-right: 7px;
+  width: 21rem;
 `;
 
 // Needs an absolutely positioned container for scrollbars to work in Chrome...
@@ -68,6 +67,7 @@ const SidepanelList = decorate(
     children = () => {},
     loading = false,
     testIdPrefix = "sidepanel",
+    disableScrollOffset = false,
   }) => {
     const scrollElementRef = useRef(null);
     const scrollPositionRef = useRef(null);
@@ -86,7 +86,7 @@ const SidepanelList = decorate(
         const nextOffset = scrollPositionRef.current.offsetTop;
         const currentOffset = scrollElementRef.current.scrollTop;
 
-        if (nextOffset && nextOffset !== currentOffset) {
+        if (nextOffset && nextOffset !== currentOffset && !disableScrollOffset) {
           scrollElementRef.current.scrollTop = nextOffset - listHeight.current / 2;
         }
       }

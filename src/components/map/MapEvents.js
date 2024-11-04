@@ -10,7 +10,12 @@ const decorate = flow(observer);
 const MapEvents = decorate(({children}) => {
   return (
     <AreaJourneys>
-      {({journeys: areaJourneysResult = [], loading: areaJourneysLoading}) => {
+      {({
+        journeys: areaJourneysResult = [],
+        areaSpeeds: areaSpeedsResult = [],
+        loading: areaJourneysLoading,
+        speedSearch: speedSearchResult = false,
+      }) => {
         return (
           <SelectedJourneyEvents>
             {({
@@ -19,16 +24,19 @@ const MapEvents = decorate(({children}) => {
             }) => (
               <MergedJourneys
                 areaJourneys={areaJourneysResult}
+                areaSpeeds={areaSpeedsResult}
                 selectedJourney={selectedJourney}>
-                {({currentJourneys = []}) =>
-                  children({
+                {({currentJourneys = []}) => {
+                  return children({
                     selectedJourney,
                     areaJourneys: areaJourneysResult,
+                    areaSpeeds: areaSpeedsResult,
+                    speedSearch: speedSearchResult,
                     currentJourneys,
                     areaJourneysLoading,
                     selectedJourneyLoading: selectedJourneyLoading,
-                  })
-                }
+                  });
+                }}
               </MergedJourneys>
             )}
           </SelectedJourneyEvents>

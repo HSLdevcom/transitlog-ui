@@ -59,6 +59,7 @@ export default (state) => {
       areaEventsStyle: getUrlValue("areaEventsStyle", areaEventsStyles.MARKERS),
       areaEventsRouteFilter: getUrlValue("areaEventsRouteFilter", ""),
       selectedBounds: urlBounds ? boundsFromBBoxString(urlBounds) : null,
+      speedSearch: getUrlValue("speedSearch", ""),
       weeklyObservedTimes: getUrlValue(
         "weeklyObservedTimes",
         weeklyObservedTimeTypes.FIRST_STOP_DEPARTURE
@@ -81,6 +82,7 @@ export default (state) => {
     },
     {
       selectedBounds: observable.ref,
+      speedSearch: observable.ref,
       currentMapillaryViewerLocation: observable.ref,
       currentMapillaryMapLocation: observable.ref,
       mapView: observable.ref,

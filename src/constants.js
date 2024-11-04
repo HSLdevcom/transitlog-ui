@@ -11,6 +11,7 @@ export const ENV_NAME = process.env.REACT_APP_ENV_NAME || "";
 // Faux-enum for validating sidepanel tab changes
 export const SidePanelTabs = {
   AreaJourneys: "area-journeys",
+  AreaSpeeds: "area-speeds",
   Journeys: "journeys",
   WeekJourneys: "week-journeys",
   VehicleJourneys: "vehicle-journeys",
