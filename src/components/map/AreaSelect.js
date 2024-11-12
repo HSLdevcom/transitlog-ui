@@ -1,27 +1,37 @@
 import React, {useRef, useCallback, useEffect} from "react";
 import "leaflet-draw/dist/leaflet.draw.css";
 import {FeatureGroup, Rectangle} from "react-leaflet";
-import {EditControl} from "react-leaflet-draw";
 import {observer} from "mobx-react-lite";
 import {setResetListener} from "../../stores/FilterStore";
-import CancelControl from "./CancelControl";
+import CustomDrawingControl from "./CustomDrawingControl";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
+import {SidePanelTabs} from "../../constants";
 
 // Leaflet path style
-const rectangleStyle = {
+const hfpRectangleStyle = {
   weight: 2,
   dashArray: "10 4",
   opacity: 1,
   color: "white",
   fillColor: "var(--blue)",
-  fillOpacity: 0.1,
+  fillOpacity: 0.2,
+};
+
+const speedRectangleStyle = {
+  weight: 2,
+  dashArray: "10 4",
+  opacity: 1,
+  color: "white",
+  fillColor: "var(--red)",
+  fillOpacity: 0.2,
 };
 
 const decorate = flow(observer, inject("UI"));
 
 const AreaSelect = decorate(({UI, state, enabled}) => {
-  const {selectedBounds} = state;
+  const {route, user, selectedBounds} = state;
+  const routeSelected = !!route.routeId;
   const featureLayer = useRef(null);
 
   const clearAreas = useCallback(() => {
@@ -29,15 +39,20 @@ const AreaSelect = decorate(({UI, state, enabled}) => {
     if (featureLayer.current) {
       featureLayer.current.leafletElement.clearLayers();
     }
-
-    UI.setSelectedBounds(null);
+    UI.setSelectedBounds({bounds: null, speedSearch: false});
   }, [featureLayer.current]);
 
   const onCreated = useCallback((e) => {
     const {layer} = e;
-
-    const layerBounds = layer.getBounds();
-    UI.setSelectedBounds(layerBounds);
+    const rectangleColor = layer.options.fillColor;
+    if (layer && layer.getBounds() && rectangleColor === "var(--red)") {
+      UI.setSelectedBounds({bounds: layer.getBounds(), speedSearch: true});
+      UI.setSidePanelTab(SidePanelTabs.AreaSpeeds);
+    }
+    if (layer && layer.getBounds() && rectangleColor === "var(--blue)") {
+      UI.setSelectedBounds({bounds: layer.getBounds(), speedSearch: false});
+      UI.setSidePanelTab(SidePanelTabs.AreaSpeeds);
+    }
   }, []);
 
   useEffect(() => {
@@ -46,38 +61,20 @@ const AreaSelect = decorate(({UI, state, enabled}) => {
     return () => {
       resetListener();
     };
-  }, []);
+  }, [user, selectedBounds, routeSelected]);
 
+  const rectangleStyles = state.speedSearch ? speedRectangleStyle : hfpRectangleStyle;
   return (
     <FeatureGroup ref={featureLayer}>
-      <EditControl
-        position="bottomright"
+      <CustomDrawingControl
+        user={user}
+        routeSelected={routeSelected}
+        UI={UI}
         onCreated={onCreated}
-        onDrawStart={clearAreas} // Clear rectangles when the user is about to draw a new one
-        edit={{
-          // Disable edit and remove buttons
-          edit: false,
-          remove: false,
-        }}
-        draw={{
-          rectangle: enabled
-            ? {
-                shapeOptions: rectangleStyle,
-              }
-            : false,
-          polyline: false,
-          polygon: false,
-          circle: false,
-          marker: false,
-          circlemarker: false,
-        }}
+        onClear={clearAreas}
+        selectedBounds={selectedBounds}
       />
-      {selectedBounds && (
-        <>
-          <CancelControl position="bottomright" onCancel={clearAreas} />
-          <Rectangle bounds={selectedBounds} {...rectangleStyle} />
-        </>
-      )}
+      {selectedBounds && <Rectangle bounds={selectedBounds} {...rectangleStyles} />}
     </FeatureGroup>
   );
 });

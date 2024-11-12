@@ -21,7 +21,10 @@ const AreaJourneys = decorate((props) => {
     time,
     date,
     selectedBounds,
+    speedSearch,
     areaEventsRouteFilter,
+    route,
+    speedFilter,
   } = state;
 
   const [minTime, setMinTime] = useState(null);
@@ -48,13 +51,24 @@ const AreaJourneys = decorate((props) => {
     }
 
     // Constrain search time span to 1 minute when auto-polling.
-    const timespan = isLiveAndCurrent ? 0.5 : Math.round(areaSearchRangeMinutes / 2);
+    const timespan = speedSearch
+      ? isLiveAndCurrent
+        ? 0.5
+        : Math.round((24 * 60) / 2)
+      : isLiveAndCurrent
+      ? 0.5
+      : Math.round(areaSearchRangeMinutes / 2);
 
-    const timeMoment = getMomentFromDateTime(date, time);
-    const min = timeMoment.clone().subtract(timespan, "minutes");
-    const max = isLiveAndCurrent
-      ? timeMoment
-      : timeMoment.clone().add(timespan, "minutes");
+    let timeMoment = getMomentFromDateTime(date, time);
+    let min = timeMoment.clone().subtract(timespan, "minutes");
+    let max = isLiveAndCurrent ? timeMoment : timeMoment.clone().add(timespan, "minutes");
+
+    if (speedSearch) {
+      const odayStart = getMomentFromDateTime(date, "01:00:00");
+      const odayEnd = odayStart.clone().add(1, "days");
+      min = odayStart;
+      max = odayEnd;
+    }
 
     setMinTime(min);
     setMaxTime(max);
@@ -71,8 +85,11 @@ const AreaJourneys = decorate((props) => {
       minTime={minTime}
       maxTime={maxTime}
       date={queryDate}
-      bbox={queryBbox}>
-      {({journeys = [], loading}) => {
+      bbox={queryBbox}
+      routeId={route.routeId}
+      speedSearch={speedSearch}
+      speedFilter={speedFilter}>
+      {({journeys = [], areaSpeeds = [], loading}) => {
         let areaJourneys = journeys;
 
         if (areaEventsRouteFilter) {
@@ -87,7 +104,7 @@ const AreaJourneys = decorate((props) => {
           });
         }
 
-        return children({journeys: areaJourneys, loading});
+        return children({journeys: areaJourneys, areaSpeeds: areaSpeeds, loading});
       }}
     </AreaJourneysQuery>
   );

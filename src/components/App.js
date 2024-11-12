@@ -51,6 +51,7 @@ function App({route, state, UI}) {
         {({
           selectedJourney: currentJourney,
           areaJourneys,
+          areaSpeeds,
           currentJourneys: allJourneys,
           areaJourneysLoading,
           selectedJourneyLoading,
@@ -65,6 +66,7 @@ function App({route, state, UI}) {
                     currentJourneyPositions={currentJourneyPositions}
                     areaJourneysLoading={areaJourneysLoading}
                     areaJourneys={areaJourneys}
+                    areaSpeeds={areaSpeeds}
                     route={route}
                     selectedJourneyLoading={selectedJourneyLoading}
                     currentJourney={currentJourney}
