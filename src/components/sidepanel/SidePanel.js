@@ -7,6 +7,7 @@ import StopDepartures from "./StopDepartures";
 import VehicleJourneys from "./VehicleJourneys";
 import {text} from "../../helpers/text";
 import AreaJourneyList from "./AreaJourneyList";
+import SpeedAreaJourneyList from "./SpeedAreaJourneyList";
 import JourneyPanel from "../journeypanel/JourneyPanel";
 import Info from "../../icons/Info";
 import Chart from "../../icons/Chart";
@@ -116,6 +117,7 @@ const SidePanel = decorate((props) => {
   const {
     UI: {toggleSidePanel, toggleJourneyDetails, toggleJourneyGraph, setSidePanelTab},
     areaEvents = [],
+    areaSpeeds = [],
     journey = null,
     journeyLoading = false,
     areaJourneysLoading = false,
@@ -132,21 +134,26 @@ const SidePanel = decorate((props) => {
       sidePanelVisible,
       showInstructions = false,
       selectedBounds,
+      speedSearch,
       user,
       sidePanelTab,
     },
   } = props;
 
-  const areaSearchActive = !!selectedBounds;
+  const speedAreaSearchActive = !!speedSearch;
+  const areaSearchActive = !!selectedBounds && !speedSearch;
   const hasRoute = (stateRoute && stateRoute.routeId) || (route && route.routeId);
 
   const routeId = createRouteId(route);
 
   const allTabsHidden =
-    !hasRoute && !areaSearchActive && !vehicle && !stateStop && !stateTerminal;
-
+    !hasRoute &&
+    !areaSearchActive &&
+    !vehicle &&
+    !stateStop &&
+    !stateTerminal &&
+    !speedAreaSearchActive;
   const detailsCanOpen = getJourneyId(selectedJourney) || route;
-
   return (
     <SidePanelContainer data-testid="sidepanel" visible={sidePanelVisible}>
       <MainSidePanel>
@@ -166,6 +173,15 @@ const SidePanel = decorate((props) => {
                 journeys={Array.isArray(areaEvents) ? areaEvents : []}
                 name={SidePanelTabs.AreaJourneys}
                 label={text("sidepanel.tabs.area_events")}
+              />
+            )}
+            {speedAreaSearchActive && (
+              <SpeedAreaJourneyList
+                helpText="Speed area search tab"
+                loading={areaJourneysLoading}
+                areaSpeeds={Array.isArray(areaSpeeds) ? areaSpeeds : []}
+                name={"area-speeds"}
+                label={text("sidepanel.tabs.area_speeds")}
               />
             )}
             {hasRoute && (

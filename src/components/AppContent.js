@@ -43,6 +43,7 @@ let AppContent = decorate(
     currentJourneyPositions,
     areaJourneysLoading,
     areaJourneys,
+    areaSpeeds,
     route,
     selectedJourneyLoading,
     currentJourney,
@@ -54,6 +55,7 @@ let AppContent = decorate(
       selectedJourney,
       journeyDetailsOpen,
       currentMapillaryMapLocation,
+      speedSearch,
     } = state;
 
     const selectedJourneyId = getJourneyId(selectedJourney);
@@ -96,6 +98,8 @@ let AppContent = decorate(
           areaJourneysLoading={!live && areaJourneysLoading}
           journeyLoading={selectedJourneyLoading}
           areaEvents={areaJourneys}
+          areaSpeeds={areaSpeeds}
+          speedSearch={speedSearch}
           journey={currentJourney}
           route={route}
           detailsOpen={detailsAreOpen}
@@ -106,6 +110,7 @@ let AppContent = decorate(
             journeys={allJourneys}
             journeyPositions={currentJourneyPositions}
             route={route}
+            speedSearch={speedSearch}
           />
           {currentJourney && (
             <GraphContainer

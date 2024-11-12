@@ -35,6 +35,7 @@ export default (state, initialState) => {
     },
     timeIncrement: parseInt(get(initialState, "time_increment", "5"), 10),
     areaSearchRangeMinutes: parseInt(get(initialState, "area_search_minutes", 60), 10),
+    speedFilter: get(initialState, "speed_filter", "30"),
   });
 
   const actions = timeActions(state);

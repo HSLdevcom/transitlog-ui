@@ -41,29 +41,93 @@ const areaJourneysQuery = gql`
   }
 `;
 
+const areaSpeedsQuery = gql`
+  query areaSpeedsQuery(
+    $minTime: DateTime!
+    $maxTime: DateTime!
+    $bbox: PreciseBBox!
+    $date: Date!
+    $routeId: String!
+    $speedFilter: String!
+  ) {
+    journeysByBboxAndRouteId(
+      minTime: $minTime
+      maxTime: $maxTime
+      bbox: $bbox
+      date: $date
+      routeId: $routeId
+      speedFilter: $speedFilter
+    ) {
+      id
+      journeyType
+      routeId
+      direction
+      departureDate
+      departureTime
+      uniqueVehicleId
+      operatorId
+      vehicleId
+      headsign
+      mode
+      vehiclePositions {
+        id
+        recordedAt
+        recordedAtUnix
+        recordedTime
+        stop
+        lat
+        lng
+        loc
+        doorStatus
+        velocity
+        delay
+        heading
+      }
+    }
+  }
+`;
+
 const AreaJourneysQuery = observer((props) => {
-  const {minTime, maxTime, bbox, date, skip, children} = props;
+  const {
+    minTime,
+    maxTime,
+    bbox,
+    date,
+    skip,
+    children,
+    speedSearch,
+    routeId,
+    speedFilter,
+  } = props;
 
   const queryParamsValid = minTime && maxTime && bbox && date;
   const shouldSkip = skip || !queryParamsValid;
+  const variables = {
+    minTime,
+    maxTime,
+    bbox,
+    date,
+  };
+  const areaQuery = speedSearch ? areaSpeedsQuery : areaJourneysQuery;
+  const resultSelector = speedSearch ? "journeysByBboxAndRouteId" : "journeysByBbox";
+  if (speedSearch) {
+    variables.routeId = routeId;
+    variables.speedFilter = speedFilter;
+  }
   return (
     <Query
       skip={shouldSkip}
       returnPartialData={true}
-      variables={{
-        minTime,
-        maxTime,
-        bbox,
-        date,
-      }}
-      query={areaJourneysQuery}>
+      variables={variables}
+      query={areaQuery}>
       {({loading, data, error}) => {
         if (!data || loading) {
           return children({journeys: [], loading, error});
         }
 
-        const journeys = get(data, "journeysByBbox", []);
-        return children({journeys, loading, error});
+        const journeys = get(data, resultSelector, []);
+        const areaSpeeds = get(data, resultSelector, []);
+        return children({journeys, areaSpeeds, loading, error});
       }}
     </Query>
   );

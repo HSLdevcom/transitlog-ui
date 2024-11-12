@@ -133,7 +133,13 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   // De-observed initial map state, because an update loop would be created otherwise.
   const initialViewport = useMemo(() => {
     const {mapView, mapZoom} = state;
-    return [mapView, mapZoom];
+    let center = mapView;
+    if (center instanceof LatLngBounds) {
+      center = center.getCenter();
+    }
+    const defaultCenter = [60.1699, 24.9384];
+    const defaultZoom = 13;
+    return [center || defaultCenter, mapZoom || defaultZoom];
   }, []);
 
   // Copy the internal state of the map into our app state.
@@ -153,7 +159,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     return reaction(
       () => state.mapView,
       (currentView) => {
-        if (leafletMap && state.objectCenteringAllowed) {
+        if (leafletMap && state.objectCenteringAllowed && currentView) {
           if (
             currentView instanceof LatLngBounds &&
             validBounds(currentView) &&
@@ -169,6 +175,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
             // If mapView is a latLng which does NOT equal the current map center,
             // set the map center to mapView.
             leafletMap.setView(currentView, state.mapZoom, {animate: false});
+          } else {
+            console.warn("Invalid currentView in map view reaction:", currentView);
           }
         }
       },

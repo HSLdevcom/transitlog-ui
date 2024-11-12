@@ -48,12 +48,18 @@ const timeActions = (state) => {
     setUrlValue("live", state.live);
   });
 
+  const setSpeedFilter = action("Set speed increment", (speedIncrement = 0) => {
+    state.speedFilter = "" + Math.max(Math.min(intval(speedIncrement || 0), 60 * 60), 1);
+    setUrlValue("speed_filter", state.speedFilter);
+  });
+
   return {
     setTime,
     setSeconds,
     setTimeIncrement,
     setAreaSearchMinutes,
     toggleLive,
+    setSpeedFilter,
   };
 };
 

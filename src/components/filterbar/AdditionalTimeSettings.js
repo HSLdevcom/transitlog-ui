@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {text, Text} from "../../helpers/text";
 import {ControlGroup, InputLabel} from "../Forms";
@@ -7,7 +7,6 @@ import Input from "../Input";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import {useTooltip} from "../../hooks/useTooltip";
-
 const SettingsWrapper = styled.div`
   padding-top: 0.5rem;
 `;
@@ -20,7 +19,25 @@ const IncrementValueInput = styled(Input)`
 const decorate = flow(observer, inject("Time"));
 
 const AdditionalTimeSettings = decorate(({state, Time}) => {
-  const {timeIncrement, areaSearchRangeMinutes} = state;
+  const {timeIncrement, areaSearchRangeMinutes, speedFilter} = state;
+  const [tempSpeedFilter, setTempSpeedFilter] = useState(speedFilter);
+  const tempSpeedFilterRef = useRef(tempSpeedFilter);
+
+  useEffect(() => {
+    tempSpeedFilterRef.current = tempSpeedFilter;
+  }, [tempSpeedFilter]);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setTempSpeedFilter(value);
+    tempSpeedFilterRef.current = value;
+  };
+
+  const handleMouseUp = () => {
+    const value = Number(tempSpeedFilterRef.current);
+    Time.setSpeedFilter(value);
+    setTempSpeedFilter(value);
+  };
 
   return (
     <SettingsWrapper>
@@ -51,6 +68,7 @@ const AdditionalTimeSettings = decorate(({state, Time}) => {
           maxLength={2}
           value={areaSearchRangeMinutes}
           animatedLabel={false}
+          disabled={true}
           onChange={(e) => Time.setAreaSearchMinutes(e.target.value)}
         />
         <input
@@ -61,6 +79,36 @@ const AdditionalTimeSettings = decorate(({state, Time}) => {
           min={1}
           value={areaSearchRangeMinutes}
           onChange={(e) => Time.setAreaSearchMinutes(e.target.value)}
+        />
+      </ControlGroup>
+      <ControlGroup style={{marginBottom: 0, marginTop: "0.75rem"}}>
+        <InputLabel>
+          <Text>filterpanel.speed_search_limit</Text>
+        </InputLabel>
+      </ControlGroup>
+      <ControlGroup>
+        <IncrementValueInput
+          style={{width: "auto"}}
+          helpText={text("sidepanel.tabs.speed_limit")}
+          type="number"
+          max={70}
+          min={1}
+          maxLength={2}
+          value={tempSpeedFilter}
+          animatedLabel={false}
+          disabled={true}
+          onChange={handleChange}
+          onMouseUp={handleMouseUp}
+        />
+        <input
+          style={{width: "100%", flex: "1 1 100%"}}
+          {...useTooltip(text("sidepanel.tabs.speed_limit"))}
+          type="range"
+          max={70}
+          min={1}
+          value={tempSpeedFilter}
+          onChange={handleChange}
+          onMouseUp={handleMouseUp}
         />
       </ControlGroup>
     </SettingsWrapper>
