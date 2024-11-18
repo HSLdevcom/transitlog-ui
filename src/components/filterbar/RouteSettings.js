@@ -38,13 +38,7 @@ const RouteSettings = decorate(
               if (loading) {
                 return <LoadingSpinner inline={true} />;
               }
-              const mode =
-                selectedRoute?.mode ||
-                getTransportType(
-                  selectedRoute?.routeId || "",
-                  false,
-                  selectedRoute?.trunkRoute
-                );
+
               return (
                 <>
                   <ControlGroup>
@@ -75,7 +69,11 @@ const RouteSettings = decorate(
                     <SelectedOptionDisplay
                       data-testid="selected-route-display"
                       withIcon={true}
-                      className={mode}>
+                      className={getTransportType(
+                        selectedRoute.routeId || "",
+                        false,
+                        selectedRoute.trunkRoute
+                      )}>
                       <SuggestionText withIcon={true}>
                         <strong>{selectedRoute.routeId}</strong>{" "}
                         <Text>domain.direction</Text> {selectedRoute.direction}

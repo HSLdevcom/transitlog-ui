@@ -16,9 +16,7 @@ const decorate = flow(observer, inject("Filters", "UI"));
 const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
   const route = getFullRoute(routes, suggestion);
   const {routeId, direction, origin, destination} = route;
-  const mode =
-    route?.mode || getTransportType(route?.routeId || "", false, route?.trunkRoute);
-
+  const mode = getTransportType(routeId, false, route.trunkRoute);
   return (
     <SuggestionContent
       data-testid={`route-option-${routeId}-${direction}`}

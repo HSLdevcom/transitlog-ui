@@ -48,6 +48,7 @@ const areaSpeedsQuery = gql`
     $bbox: PreciseBBox!
     $date: Date!
     $routeId: String!
+    $direction: String!
     $speedFilter: String!
   ) {
     journeysByBboxAndRouteId(
@@ -56,6 +57,7 @@ const areaSpeedsQuery = gql`
       bbox: $bbox
       date: $date
       routeId: $routeId
+      direction: $direction
       speedFilter: $speedFilter
     ) {
       id
@@ -97,6 +99,7 @@ const AreaJourneysQuery = observer((props) => {
     children,
     speedSearch,
     routeId,
+    direction,
     speedFilter,
   } = props;
 
@@ -112,6 +115,7 @@ const AreaJourneysQuery = observer((props) => {
   const resultSelector = speedSearch ? "journeysByBboxAndRouteId" : "journeysByBbox";
   if (speedSearch) {
     variables.routeId = routeId;
+    variables.direction = `${direction}`;
     variables.speedFilter = speedFilter;
   }
   return (
