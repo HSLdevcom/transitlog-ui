@@ -87,6 +87,7 @@ const AreaJourneys = decorate((props) => {
       date={queryDate}
       bbox={queryBbox}
       routeId={route.routeId}
+      direction={route.direction}
       speedSearch={speedSearch}
       speedFilter={speedFilter}>
       {({journeys = [], areaSpeeds = [], loading}) => {
