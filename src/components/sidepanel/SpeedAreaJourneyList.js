@@ -68,6 +68,7 @@ const SpeedAreaJourneyList = decorate(
           routeId: journey.routeId,
           operatorId: journey.operatorId,
           vehicleId: journey.vehicleId,
+          direction: journey.direction,
           speed: speed,
         };
       });
@@ -98,8 +99,8 @@ const SpeedAreaJourneyList = decorate(
             <Tooltip helpText={text("sidepanel.tabs.departure")}>
               <TableCell>{text("map.stops.depart")}</TableCell>
             </Tooltip>
-            <Tooltip helpText={text("sidepanel.tabs.operator")}>
-              <TableCell>{text("vehicle.operator_short")}</TableCell>
+            <Tooltip helpText={text("sidepanel.tabs.selected_route_dir")}>
+              <TableCell>{text("domain.route")}</TableCell>
             </Tooltip>
             <Tooltip helpText={text("sidepanel.tabs.vehicle_number")}>
               <TableCell>{text("vehicle.identifier_short")}</TableCell>
@@ -121,7 +122,7 @@ const SpeedAreaJourneyList = decorate(
                     routeId,
                     speed,
                     recordedTime,
-                    operatorId,
+                    direction,
                     vehicleId,
                   } = vehicleposition;
 
@@ -137,8 +138,8 @@ const SpeedAreaJourneyList = decorate(
                       <Tooltip helpText={text("sidepanel.tabs.departure")}>
                         <TableCell>{departureTime}</TableCell>
                       </Tooltip>
-                      <Tooltip helpText={text("sidepanel.tabs.operator")}>
-                        <TableCell>{operatorId}</TableCell>
+                      <Tooltip helpText={text("sidepanel.tabs.selected_route_dir")}>
+                        <TableCell>{`${routeId}/${direction}`}</TableCell>
                       </Tooltip>
                       <Tooltip helpText={text("sidepanel.tabs.vehicle_number")}>
                         <TableCell>{vehicleId}</TableCell>

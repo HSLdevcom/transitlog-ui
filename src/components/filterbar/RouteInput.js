@@ -16,13 +16,13 @@ const decorate = flow(observer, inject("Filters", "UI"));
 const renderSuggestion = (date, routes) => (suggestion, {isHighlighted}) => {
   const route = getFullRoute(routes, suggestion);
   const {routeId, direction, origin, destination} = route;
-
+  const mode = getTransportType(routeId, false, route.trunkRoute);
   return (
     <SuggestionContent
       data-testid={`route-option-${routeId}-${direction}`}
       isHighlighted={isHighlighted}
       withIcon={true}
-      className={getTransportType(routeId, false, route.trunkRoute)}>
+      className={mode}>
       <SuggestionText withIcon={true}>
         <div>
           <strong>{routeId}</strong> {text("domain.direction")} {direction}

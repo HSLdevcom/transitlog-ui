@@ -767,6 +767,7 @@ export type QueryJourneysByBboxAndRouteIdArgs = {
   bbox: Scalars['PreciseBBox'];
   date: Scalars['Date'];
   routeId: Scalars['String'];
+  direction: Scalars['String'];
   speedFilter: Scalars['String'];
   filters?: Maybe<AreaEventsFilterInput>;
   unsignedEvents?: Maybe<Scalars['Boolean']>;
