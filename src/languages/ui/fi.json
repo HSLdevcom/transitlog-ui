@@ -52,6 +52,7 @@
   "sidepanel.tabs.vehicle_number": "Ajoneuvon kylkinumero",
   "sidepanel.tabs.timestamp_description": "HFP VP-eventin aikaleima",
   "sidepanel.tabs.selected_route_dir": "Valittu reitti ja suunta",
+  "sidepanel.tabs.copy_to_clipboard": "Kopioi leikepöydälle",
 
   "map.stops.arrive": "Saapumisaika",
   "map.stops.depart": "Lähtöaika",

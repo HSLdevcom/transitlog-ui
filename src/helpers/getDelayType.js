@@ -27,17 +27,17 @@ function getDelayType(delay, stopType = delayStopType.NORMAL) {
 
   switch (stopType) {
     case "timing":
-      earlyThreshold = -5;
+      earlyThreshold = -15;
       break;
     case "origin":
       earlyThreshold = -20;
       break;
     case "destination":
-      earlyThreshold = -10;
+      earlyThreshold = -15;
       break;
     default:
     case "normal":
-      earlyThreshold = -10;
+      earlyThreshold = -15;
   }
 
   let earlyType = [delayStopType.NORMAL, delayStopType.DESTINATION].includes(stopType)
