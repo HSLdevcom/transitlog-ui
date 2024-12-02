@@ -131,14 +131,12 @@ const SpeedAreaJourneyList = decorate(
           if (journeyId && selectedJourneyId !== journeyId) {
             journey.departureDate = date;
             Journey.setSelectedJourney(journey);
+            const time = get(journey, "recordedTime");
+            if (time) {
+              Time.setTime(time);
+            }
           } else {
             Journey.setSelectedJourney(null);
-          }
-        } else if (journey.journeyType !== "journey") {
-          const time = get(journey, "vehiclePositions[0].recordedTime");
-          console.log(time);
-          if (time) {
-            Time.setTime(time);
           }
         }
       },
