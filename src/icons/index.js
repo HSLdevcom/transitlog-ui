@@ -145,6 +145,7 @@ import Timetable from "./Timetable";
 import TrashCan from "./TrashCan";
 import UserNearestStop from "./UserNearestStop";
 import TravelZones from "./TravelZones";
+import ClipBoard from "./ClipBoard";
 
 export default {
   AddCard,
@@ -184,6 +185,7 @@ export default {
   CheckmarkAnimated,
   CircleCheckmark,
   City,
+  ClipBoard,
   Cog,
   CreditCard,
   Cross,
