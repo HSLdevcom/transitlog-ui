@@ -118,8 +118,9 @@ export function UsageInstructions({language}) {
                   </ColoredBackgroundSlot>
                   <PlainSlotMono>17:59:30</PlainSlotMono>
                 </TagButton>
-                The vehicle departured more than 10 seconds before the scheduled departure
-                so it is early.
+                The vehicle departured more than 15 seconds before the scheduled departure
+                so it is early. For origin stops the threshold for early departure is 20
+                seconds.
               </li>
             </ExampleSlotWrapper>
             <li>
@@ -283,8 +284,8 @@ export function UsageInstructions({language}) {
                   </ColoredBackgroundSlot>
                   <PlainSlotMono>17:59:30</PlainSlotMono>
                 </TagButton>
-                Lähtö on tapahtunut 10 sekuntia ennen suunniteltua lähtöä eli lähtö on
-                etuajassa.
+                Lähtö on tapahtunut 15 sekuntia ennen suunniteltua lähtöä eli lähtö on
+                etuajassa. Reitin aloituspysäkille tämä raja on 20 sekuntia.
               </li>
             </ExampleSlotWrapper>
 

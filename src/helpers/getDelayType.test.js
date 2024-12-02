@@ -1,8 +1,8 @@
 import getDelayType from "./getDelayType";
 
 describe("getDelayType", () => {
-  test("delayType is 'early' if the value is -10 or under (seconds)", () => {
-    const delayValue = -10;
+  test("delayType is 'early' if the value is -15 or under (seconds)", () => {
+    const delayValue = -15;
     const delayType = getDelayType(delayValue);
 
     expect(delayType).toBe("normal-early");
