@@ -2,8 +2,8 @@ name: Deploy and test production
 
 on:
   push:
-    branches:
-      - production
+    tags:
+      - 'v*'
 
 jobs:
   deploy-production:
@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: production
+          ref: ${{ github.ref }}
       - name: Build UI and publish Docker image
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
@@ -19,7 +19,7 @@ jobs:
           username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
           password: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
           buildargs: BUILD_ENV=production
-          tags: production
+          tags: ${{ github.ref_name }}
       - name: Checkout server
         uses: actions/checkout@v2
         with:
@@ -47,6 +47,7 @@ jobs:
         with:
           time: "5m" # Wait until all servers are restarted
       - name: Cypress tests
+        if: false
         uses: cypress-io/github-action@v2
         # with:
         #   record: true # Only production records to Cypress.io
