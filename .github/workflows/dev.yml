@@ -30,25 +30,6 @@ jobs:
           password: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
           buildargs: BUILD_ENV=dev
           tags: dev
-      - name: Checkout server
-        uses: actions/checkout@v2
-        with:
-          repository: HSLdevcom/transitlog-server
-          ref: dev
-      - name: Build Server and publish Docker image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: hsldevcom/transitlog-server
-          username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
-          password: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
-          tags: dev
-      - name: Build Server and publish timestamped Docker image
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: hsldevcom/transitlog-server
-          username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
-          password: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
-          tags: date-${{ steps.date.outputs.date }}
 #  test-dev:
 #    needs: deploy-dev
 #    runs-on: ubuntu-latest
