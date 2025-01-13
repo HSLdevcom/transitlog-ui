@@ -14,7 +14,7 @@ describe("Map smoke tests", () => {
     cy.contains("Aerial").click();
     cy.url().should("include", `mapBaseLayer=Aerial`);
     cy.contains(
-      "© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY"
+      "© Espoon, Helsingin ja Vantaan kaupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY"
     );
 
     cy.get(".leaflet-control-layers").trigger("mouseover");
