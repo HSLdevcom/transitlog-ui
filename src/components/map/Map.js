@@ -185,7 +185,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
   }, [leafletMap]);
 
   const apikey = `?digitransit-subscription-key=${process.env.REACT_APP_DIGITRANSIT_API_KEY}`;
-  const mapUrl = `${process.env.REACT_APP_DIGITRANSIT_URL}map/v2/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
+  const mapUrl = `${process.env.REACT_APP_DIGITRANSIT_URL}map/v3/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
   return (
     <MapContainer className={className}>
       <LeafletMap
@@ -220,7 +220,7 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
           <LayersControl.BaseLayer name="Aerial" checked={currentBaseLayer === "Aerial"}>
             <TileLayer
               tileSize={256}
-              attribution="© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY"
+              attribution="© Espoon, Helsingin ja Vantaan kaupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY"
               url="https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg"
             />
           </LayersControl.BaseLayer>
