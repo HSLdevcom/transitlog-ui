@@ -65,7 +65,7 @@ const AreaJourneys = decorate((props) => {
 
     if (speedSearch) {
       const odayStart = getMomentFromDateTime(date, "01:00:00");
-      const odayEnd = odayStart.clone().add(1, "days");
+      const odayEnd = odayStart.clone().add(28, "hours");
       min = odayStart;
       max = odayEnd;
     }
