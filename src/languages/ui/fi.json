@@ -209,6 +209,8 @@
 
   "apc.totalPassengersIn": "Matkustajat sisään",
   "apc.totalPassengersOut": "Matkustajat ulos",
+  "apc.bikesIn": "Pyörät sisään",
+  "apc.bikesOut": "Pyörät ulos",
   "apc.vehicleLoad": "Kuorma",
   "apc.vehicleLoadRatio": "Täyttöaste",
   "apc.empty": "Tyhjä",

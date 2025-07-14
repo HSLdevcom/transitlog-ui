@@ -92,6 +92,17 @@ const ApcTooltip = decorate(
               <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>
             </ApcDataRow>
           )}
+          {(event.bikesIn || event.bikesIn == 0) && (
+            <ApcDataRow>
+              {text("apc.bikesIn")}: <ApcPropertyValue>{event.bikesIn}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {(event.bikesOut || event.bikesOut == 0) && (
+            <ApcDataRow>
+              {text("apc.bikesOut")}:{" "}
+              <ApcPropertyValue>{event.bikesOut}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
           {vehicledLoadRatio && (
             <ApcDataRow>
               {text("apc.vehicleLoadRatio")}:{" "}

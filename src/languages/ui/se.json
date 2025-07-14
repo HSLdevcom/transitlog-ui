@@ -207,6 +207,8 @@
 
   "apc.totalPassengersIn": "Påstigande resenärer",
   "apc.totalPassengersOut": "Avstigande resenär",
+  "apc.bikesIn": "Bikes in",
+  "apc.bikesOut": "Bikes out",
   "apc.vehicleLoad": "Last",
   "apc.vehicleLoadRatio": "Fyllnadsgrad",
   "apc.empty": "Empty",

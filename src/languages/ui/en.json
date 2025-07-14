@@ -207,6 +207,8 @@
 
   "apc.totalPassengersIn": "Total passengers in",
   "apc.totalPassengersOut": "Total passengers out",
+  "apc.bikesIn": "Bikes in",
+  "apc.bikesOut": "Bikes out",
   "apc.vehicleLoad": "Vehicle load",
   "apc.vehicleLoadRatio": "Vehicle load ratio",
   "apc.empty": "Empty",
