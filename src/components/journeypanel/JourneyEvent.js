@@ -616,6 +616,42 @@ export const JourneyApcEvent = decorate(
                 <TlpPropertyValue>{event.bikesOut}</TlpPropertyValue>
               </TlpPropertyBox>
             )}
+            {(event.wheelchairsIn || event.wheelchairsIn == 0) && (
+              <TlpPropertyBox>
+                {text("apc.wheelchairsIn")}:{" "}
+                <TlpPropertyValue>{event.wheelchairsIn}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.wheelchairsOut || event.wheelchairsOut == 0) && (
+              <TlpPropertyBox>
+                {text("apc.wheelchairsOut")}:{" "}
+                <TlpPropertyValue>{event.wheelchairsOut}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.pramsIn || event.pramsIn == 0) && (
+              <TlpPropertyBox>
+                {text("apc.pramsIn")}:{" "}
+                <TlpPropertyValue>{event.pramsIn}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.pramsOut || event.pramsOut == 0) && (
+              <TlpPropertyBox>
+                {text("apc.pramsOut")}:{" "}
+                <TlpPropertyValue>{event.pramsOut}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.otherIn || event.otherIn == 0) && (
+              <TlpPropertyBox>
+                {text("apc.otherIn")}:{" "}
+                <TlpPropertyValue>{event.otherIn}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.otherOut || event.otherOut == 0) && (
+              <TlpPropertyBox>
+                {text("apc.otherOut")}:{" "}
+                <TlpPropertyValue>{event.otherOut}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
             {vehicledLoadRatio && (
               <TlpPropertyBox>
                 {text("apc.vehicleLoadRatio")}:{" "}
