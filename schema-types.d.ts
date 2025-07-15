@@ -131,7 +131,7 @@ export type AreaEventsFilterInput = {
 
 export type Cancellation = {
   __typename?: 'Cancellation';
-  id: Scalars['Int'];
+  id: Scalars['ID'];
   routeId: Scalars['String'];
   direction: Scalars['Direction'];
   departureDate: Scalars['Date'];
@@ -456,6 +456,8 @@ export type JourneyPassengerCountEvent = {
   totalPassengersIn?: Maybe<Scalars['Int']>;
   totalPassengersOut?: Maybe<Scalars['Int']>;
   vehicleLoadRatioText?: Maybe<Scalars['String']>;
+  bikesIn?: Maybe<Scalars['Int']>;
+  bikesOut?: Maybe<Scalars['Int']>;
   _sort?: Maybe<Scalars['Int']>;
 };
 

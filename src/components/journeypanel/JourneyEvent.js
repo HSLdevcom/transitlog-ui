@@ -604,6 +604,18 @@ export const JourneyApcEvent = decorate(
                 <TlpPropertyValue>{event.vehicleLoad}</TlpPropertyValue>
               </TlpPropertyBox>
             )}
+            {(event.bikesIn || event.bikesIn == 0) && (
+              <TlpPropertyBox>
+                {text("apc.bikesIn")}:{" "}
+                <TlpPropertyValue>{event.bikesIn}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
+            {(event.bikesOut || event.bikesOut == 0) && (
+              <TlpPropertyBox>
+                {text("apc.bikesOut")}:{" "}
+                <TlpPropertyValue>{event.bikesOut}</TlpPropertyValue>
+              </TlpPropertyBox>
+            )}
             {vehicledLoadRatio && (
               <TlpPropertyBox>
                 {text("apc.vehicleLoadRatio")}:{" "}
