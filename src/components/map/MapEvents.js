@@ -15,6 +15,7 @@ const MapEvents = decorate(({children}) => {
         areaSpeeds: areaSpeedsResult = [],
         loading: areaJourneysLoading,
         speedSearch: speedSearchResult = false,
+        error: errorMsg = null,
       }) => {
         return (
           <SelectedJourneyEvents>
@@ -35,6 +36,7 @@ const MapEvents = decorate(({children}) => {
                     currentJourneys,
                     areaJourneysLoading,
                     selectedJourneyLoading: selectedJourneyLoading,
+                    errorMsg,
                   });
                 }}
               </MergedJourneys>

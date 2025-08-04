@@ -90,7 +90,7 @@ const AreaJourneys = decorate((props) => {
       direction={route.direction}
       speedSearch={speedSearch}
       speedFilter={speedFilter}>
-      {({journeys = [], areaSpeeds = [], loading}) => {
+      {({journeys = [], areaSpeeds = [], loading, error}) => {
         let areaJourneys = journeys;
 
         if (areaEventsRouteFilter) {
@@ -105,7 +105,7 @@ const AreaJourneys = decorate((props) => {
           });
         }
 
-        return children({journeys: areaJourneys, areaSpeeds: areaSpeeds, loading});
+        return children({journeys: areaJourneys, areaSpeeds: areaSpeeds, loading, error});
       }}
     </AreaJourneysQuery>
   );
