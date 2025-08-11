@@ -92,49 +92,27 @@ const ApcTooltip = decorate(
               <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {(event.bikesIn || event.bikesIn == 0) && (
+          {Number(event.bikesIn) > 0 && (
             <ApcDataRow>
               {text("apc.bikesIn")}: <ApcPropertyValue>{event.bikesIn}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {(event.bikesOut || event.bikesOut == 0) && (
+          {Number(event.bikesOut) > 0 && (
             <ApcDataRow>
               {text("apc.bikesOut")}:{" "}
               <ApcPropertyValue>{event.bikesOut}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {(event.wheelchairsIn || event.wheelchairsIn == 0) && (
+          {Number(event.wheelchairsIn) > 0 && (
             <ApcDataRow>
               {text("apc.wheelchairsIn")}:{" "}
               <ApcPropertyValue>{event.wheelchairsIn}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {(event.wheelchairsOut || event.wheelchairsOut == 0) && (
+          {Number(event.wheelchairsOut) > 0 && (
             <ApcDataRow>
               {text("apc.wheelchairsOut")}:{" "}
               <ApcPropertyValue>{event.wheelchairsOut}</ApcPropertyValue>
-            </ApcDataRow>
-          )}
-          {(event.pramsIn || event.pramsIn == 0) && (
-            <ApcDataRow>
-              {text("apc.pramsIn")}: <ApcPropertyValue>{event.pramsIn}</ApcPropertyValue>
-            </ApcDataRow>
-          )}
-          {(event.pramsOut || event.pramsOut == 0) && (
-            <ApcDataRow>
-              {text("apc.pramsOut")}:{" "}
-              <ApcPropertyValue>{event.pramsOut}</ApcPropertyValue>
-            </ApcDataRow>
-          )}
-          {(event.otherIn || event.otherIn == 0) && (
-            <ApcDataRow>
-              {text("apc.otherIn")}: <ApcPropertyValue>{event.otherIn}</ApcPropertyValue>
-            </ApcDataRow>
-          )}
-          {(event.otherOut || event.otherOut == 0) && (
-            <ApcDataRow>
-              {text("apc.otherOut")}:{" "}
-              <ApcPropertyValue>{event.otherOut}</ApcPropertyValue>
             </ApcDataRow>
           )}
           {vehicledLoadRatio && (
