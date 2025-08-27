@@ -55,6 +55,7 @@ function App({route, state, UI}) {
           currentJourneys: allJourneys,
           areaJourneysLoading,
           selectedJourneyLoading,
+          errorMsg,
         }) => (
           <AppGrid>
             <ServerMessage />
@@ -71,6 +72,7 @@ function App({route, state, UI}) {
                     selectedJourneyLoading={selectedJourneyLoading}
                     currentJourney={currentJourney}
                     allJourneys={allJourneys}
+                    errorMsg={errorMsg}
                   />
                 )}
               </JourneyPosition>

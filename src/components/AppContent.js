@@ -48,6 +48,7 @@ let AppContent = decorate(
     selectedJourneyLoading,
     currentJourney,
     allJourneys,
+    errorMsg,
   }) => {
     let {
       live,
@@ -59,7 +60,6 @@ let AppContent = decorate(
     } = state;
 
     const selectedJourneyId = getJourneyId(selectedJourney);
-
     // Condition for when the side panel is actually open, not only when it could be open.
     const detailsAreOpen = useMemo(
       () => journeyDetailsOpen && (!!selectedJourneyId || (!!route && !!route.routeId)),
@@ -103,6 +103,7 @@ let AppContent = decorate(
           journey={currentJourney}
           route={route}
           detailsOpen={detailsAreOpen}
+          errorMsg={errorMsg}
         />
         <Map detailsOpen={detailsAreOpen}>
           <MapContent

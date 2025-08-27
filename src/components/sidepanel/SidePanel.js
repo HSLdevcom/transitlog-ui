@@ -123,6 +123,7 @@ const SidePanel = decorate((props) => {
     areaJourneysLoading = false,
     route,
     detailsOpen,
+    errorMsg = null,
     state: {
       language,
       date,
@@ -182,6 +183,7 @@ const SidePanel = decorate((props) => {
                 areaSpeeds={Array.isArray(areaSpeeds) ? areaSpeeds : []}
                 name={"area-speeds"}
                 label={text("sidepanel.tabs.area_speeds")}
+                errorMsg={errorMsg}
               />
             )}
             {hasRoute && (
