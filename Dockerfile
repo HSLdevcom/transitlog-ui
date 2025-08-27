@@ -1,4 +1,7 @@
-FROM node:14-alpine
+
+FROM node:20-alpine
+
+ENV NODE_OPTIONS=--openssl-legacy-provider
 
 RUN apk --no-cache add curl
 
