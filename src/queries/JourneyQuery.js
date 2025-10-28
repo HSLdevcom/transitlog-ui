@@ -115,6 +115,14 @@ export const journeyQuery = gql`
           vehicleLoadRatio
           totalPassengersIn
           totalPassengersOut
+          bikesIn
+          bikesOut
+          wheelchairsIn
+          wheelchairsOut
+          pramsIn
+          pramsOut
+          otherIn
+          otherOut
           vehicleLoadRatioText
         }
         ... on JourneyStopEvent {

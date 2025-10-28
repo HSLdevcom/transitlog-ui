@@ -92,6 +92,51 @@ const ApcTooltip = decorate(
               <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>
             </ApcDataRow>
           )}
+          {Number(event.bikesIn) > 0 && (
+            <ApcDataRow>
+              {text("apc.bikesIn")}: <ApcPropertyValue>{event.bikesIn}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.bikesOut) > 0 && (
+            <ApcDataRow>
+              {text("apc.bikesOut")}:{" "}
+              <ApcPropertyValue>{event.bikesOut}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.wheelchairsIn) > 0 && (
+            <ApcDataRow>
+              {text("apc.wheelchairsIn")}:{" "}
+              <ApcPropertyValue>{event.wheelchairsIn}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.wheelchairsOut) > 0 && (
+            <ApcDataRow>
+              {text("apc.wheelchairsOut")}:{" "}
+              <ApcPropertyValue>{event.wheelchairsOut}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.pramsIn) > 0 && (
+            <ApcDataRow>
+              {text("apc.pramsIn")}: <ApcPropertyValue>{event.pramsIn}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.pramsOut) > 0 && (
+            <ApcDataRow>
+              {text("apc.pramsOut")}:{" "}
+              <ApcPropertyValue>{event.pramsOut}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.otherIn) > 0 && (
+            <ApcDataRow>
+              {text("apc.otherIn")}: <ApcPropertyValue>{event.otherIn}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
+          {Number(event.otherOut) > 0 && (
+            <ApcDataRow>
+              {text("apc.otherOut")}:{" "}
+              <ApcPropertyValue>{event.otherOut}</ApcPropertyValue>
+            </ApcDataRow>
+          )}
           {vehicledLoadRatio && (
             <ApcDataRow>
               {text("apc.vehicleLoadRatio")}:{" "}

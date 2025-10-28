@@ -105,6 +105,7 @@ const SpeedAreaJourneyList = decorate(
     areaSpeeds,
     loading,
     Time,
+    errorMsg,
     state: {language, speedFilter, date, selectedJourney},
   }) => {
     const vehiclepositions = areaSpeeds.flatMap((journey) => {
@@ -234,7 +235,11 @@ const SpeedAreaJourneyList = decorate(
         }>
         {(scrollRef) =>
           (!areaSpeeds || areaSpeeds.length === 0) && !loading ? (
-            <EmptyView text="message.emptyview.noareevents" />
+            errorMsg ? (
+              <EmptyView text={errorMsg.message} />
+            ) : (
+              <EmptyView text="message.emptyview.noareevents" />
+            )
           ) : (
             <ListWrapper>
               <TableBody>
