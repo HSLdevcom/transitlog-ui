@@ -27,12 +27,14 @@
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   z-index: 100;
+  padding: 0;
 }
 
 .react-autosuggest__suggestions-container {
   display: none;
   max-height: 80vh;
   overflow: auto;
+  padding: 0;
 }
 
 .react-autosuggest__suggestions-list {
@@ -43,6 +45,7 @@
 
 .react-autosuggest__suggestion {
   cursor: pointer;
+  white-space: normal;
 }
 
 .react-autosuggest__suggestion:not(:first-child) {

@@ -72,7 +72,8 @@ const RouteSettings = decorate(
                       className={getTransportType(
                         selectedRoute.routeId || "",
                         false,
-                        selectedRoute.trunkRoute
+                        selectedRoute.trunkRoute,
+                        selectedRoute.mode
                       )}>
                       <SuggestionText withIcon={true}>
                         <strong>{selectedRoute.routeId}</strong>{" "}
