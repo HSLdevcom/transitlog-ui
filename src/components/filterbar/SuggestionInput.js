@@ -27,16 +27,28 @@ export const SuggestionContent = styled.div`
   padding: 0.25rem 0.5rem;
   position: relative;
   width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 
   ${({withIcon = false}) =>
     withIcon
       ? `
 &:before {
-    margin-top: -0.5rem;
-    content: "";
-    width: 1.5rem;
-    height: 1.5rem;
-  }
+  content: "";
+
+  width: 20px;
+  height: 20px;
+
+  display: block;
+  flex-shrink: 0; 
+  
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  margin-top: 0;
+  margin-right: 0rem;
+}
 `
       : ""};
 `;
@@ -45,6 +57,10 @@ export const SuggestionText = styled.div`
   font-family: var(--font-family);
   line-height: 1.3;
   margin-left: ${({withIcon = false}) => (withIcon ? "0.5rem" : "0")};
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  word-break: break-word;
 `;
 
 export const SelectedOptionDisplay = styled(SuggestionContent)`
