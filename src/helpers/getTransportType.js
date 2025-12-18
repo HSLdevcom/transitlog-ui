@@ -2,6 +2,14 @@ import "../components/LineIcon.css";
 
 function getTransportType(lineId = "", numeric = false, trunk = false, mode = null) {
   const lineType = lineId.substring(0, 4);
+  if (lineType == 2015) {
+    if (numeric) {
+      return 0;
+    }
+
+    return "L_RAIL";
+  }
+
   if (mode && !trunk) {
     return mode;
   }
@@ -11,14 +19,6 @@ function getTransportType(lineId = "", numeric = false, trunk = false, mode = nu
     }
 
     return "TRAM";
-  }
-
-  if (lineType == 2015) {
-    if (numeric) {
-      return 0;
-    }
-
-    return "L_RAIL";
   }
 
   // The only ferry routes are 1019 and 1019E.
