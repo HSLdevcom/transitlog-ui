@@ -1,6 +1,7 @@
 import {ApolloClient} from "apollo-client";
 import {ApolloLink} from "apollo-link";
 import {HttpLink} from "apollo-link-http";
+import {RetryLink} from "apollo-link-retry";
 import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
@@ -51,8 +52,18 @@ export const getClient = (UIStore) => {
 
   const errorLink = createErrorLink(UIStore);
 
+  const retryLink = new RetryLink({
+    delay: (count) => ({
+      initial: 2000 * count,
+      max: 4000,
+      jitter: false,
+    }),
+
+    attempts: (count) => count <= 2,
+  });
+
   const contextLink = setContext((operation, prevContext) => {
-    const {headers} = prevContext;
+    const {headers} = prevContext || {};
 
     if (typeof operation.variables._cache !== "undefined") {
       const useCache = !!operation.variables._cache;
@@ -66,6 +77,7 @@ export const getClient = (UIStore) => {
         },
       };
     }
+    return prevContext;
   });
 
   const cache = new InMemoryCache({
@@ -84,7 +96,7 @@ export const getClient = (UIStore) => {
   });
 
   createdClient = new ApolloClient({
-    link: ApolloLink.from([errorLink, contextLink, uploadLink]),
+    link: ApolloLink.from([errorLink, retryLink, contextLink, uploadLink]),
     cache: cache,
   });
 
