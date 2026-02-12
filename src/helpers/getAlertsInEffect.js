@@ -1,10 +1,9 @@
 import get from "lodash/get";
 import orderBy from "lodash/orderBy";
-import differenceInMinutes from "date-fns/differenceInMinutes";
 import moment from "moment-timezone";
 import {TIMEZONE} from "../constants";
 
-import {legacyParse} from "@date-fns/upgrade/v2";
+import {differenceInMinutes, parseISO, isValid} from "date-fns";
 
 export const AlertLevel = {
   Info: "INFO",
@@ -49,8 +48,20 @@ export const orderAlerts = (alerts, compareDate = new Date()) => {
 
         return sortVal;
       },
-      (alert) => differenceInMinutes(legacyParse(alert.startDateTime), compareDate),
-      (alert) => differenceInMinutes(legacyParse(alert.endDateTime), compareDate),
+      (alert) => {
+        const d = parseISO(alert.startDateTime);
+        return differenceInMinutes(
+          isValid(d) ? d : new Date(alert.startDateTime),
+          compareDate
+        );
+      },
+      (alert) => {
+        const d = parseISO(alert.endDateTime);
+        return differenceInMinutes(
+          isValid(d) ? d : new Date(alert.endDateTime),
+          compareDate
+        );
+      },
     ],
     ["desc", "asc", "desc"]
   );

@@ -1,12 +1,7 @@
 import React from "react";
 import {GeoJSON, FeatureGroup} from "react-leaflet";
 import {circleMarker} from "leaflet";
-import get from "lodash/get";
 import {closestPointToPoint} from "../../helpers/closestPoint";
-import subYears from "date-fns/subYears";
-import format from "date-fns/format";
-
-import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
 
 const MAX_ZOOM = 14;
 

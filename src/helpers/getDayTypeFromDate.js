@@ -1,6 +1,4 @@
-import getDay from "date-fns/getDay";
-
-import {legacyParse} from "@date-fns/upgrade/v2";
+import {getDay, parseISO} from "date-fns";
 
 // This is used to sort items (eg. departures) by day type.
 // Thus it needs to be in the correct order.
@@ -11,5 +9,5 @@ export const dayTypes = ["Ma", "Ti", "Ke", "To", "Pe", "La", "Su"];
 const dayTypesWrongOrder = ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"];
 
 export function getDayTypeFromDate(date) {
-  return dayTypesWrongOrder[getDay(legacyParse(date))];
+  return dayTypesWrongOrder[getDay(parseISO(date))];
 }

@@ -22,7 +22,6 @@ import {applyTooltip} from "../../hooks/useTooltip";
 import {observer} from "mobx-react-lite";
 import CrossThick from "../../icons/CrossThick";
 import CircleCheckmark from "../../icons/CircleCheckmark";
-import format from "date-fns/format";
 import {
   CancellationHeader,
   CancellationContent,
@@ -42,8 +41,7 @@ import moment from "moment-timezone";
 import CalculateTerminalTime from "./CalculateTerminalTime";
 import RoutesFail from "../../icons/RoutesFail";
 import Tooltip from "../Tooltip";
-
-import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {format, parseISO, parse, isValid} from "date-fns";
 import {LocBadge} from "../commonComponents";
 
 const StopWrapper = styled(DefaultStopWrapper)`
@@ -381,6 +379,24 @@ const StopCancellation = styled.div`
 export const JourneyCancellationEventItem = decorate(({event, isFirst, isLast}) => {
   const timestamp = moment.tz(event.recordedAt, TIMEZONE);
 
+  const safeParseDate = (value) => {
+    if (!value) return null;
+    if (value instanceof Date) return isValid(value) ? value : null;
+    if (typeof value === "string") {
+      const iso = parseISO(value);
+      if (isValid(iso)) return iso;
+
+      const ymd = parse(value, "yyyy-MM-dd", new Date());
+      if (isValid(ymd)) return ymd;
+
+      const dmy = parse(value, "dd/MM/yyyy", new Date());
+      if (isValid(dmy)) return dmy;
+    }
+
+    const d = new Date(value);
+    return isValid(d) ? d : null;
+  };
+
   return (
     <CancellationWrapper isFirst={isFirst} isLast={isLast}>
       <StopElementsWrapper>
@@ -397,13 +413,19 @@ export const JourneyCancellationEventItem = decorate(({event, isFirst, isLast}) 
               <>
                 <CancellationTitle>{event.title}</CancellationTitle>
                 <CancellationTime>
-                  {format(legacyParse(event.plannedDate), convertTokens("DD/MM"))}{" "}
+                  {(() => {
+                    const d = safeParseDate(event.plannedDate);
+                    return d ? format(d, "dd/MM") : "";
+                  })()}{" "}
                   {event.plannedTime}
                 </CancellationTime>
               </>
             ) : (
               <CancellationTitle>
-                {format(legacyParse(event.plannedDate), convertTokens("DD/MM"))}{" "}
+                {(() => {
+                  const d = safeParseDate(event.plannedDate);
+                  return d ? format(d, "dd/MM") : "";
+                })()}{" "}
                 {event.plannedTime}
               </CancellationTitle>
             )}

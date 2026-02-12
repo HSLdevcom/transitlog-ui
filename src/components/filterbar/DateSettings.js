@@ -3,7 +3,6 @@ import {createPortal} from "react-dom";
 import moment from "moment-timezone";
 import {observer} from "mobx-react-lite";
 import DatePicker, {registerLocale, setDefaultLocale} from "react-datepicker";
-import {format} from "date-fns";
 import {text} from "../../helpers/text";
 import {InputBase, ControlGroup} from "../Forms";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,7 +15,7 @@ import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import ExceptionDaysQuery from "../../queries/ExceptionDaysQuery";
 import Tooltip from "../Tooltip";
-import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {format, parseISO, parse, isValid} from "date-fns";
 import fi from "date-fns/locale/fi";
 
 registerLocale("fi", fi);
@@ -95,7 +94,7 @@ const CalendarStyles = createGlobalStyle`
 `;
 
 const renderDay = (exceptionData) => (dayNumber, date) => {
-  const exception = get(exceptionData, format(date, convertTokens("YYYY-MM-DD")));
+  const exception = get(exceptionData, format(date, "yyyy-MM-dd"));
 
   if (!exception) {
     return <Day>{dayNumber}</Day>;
@@ -150,6 +149,20 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
     [Filters, date, setDate]
   );
 
+  const toKeyDate = (value) => {
+    if (!value) return "";
+    if (value instanceof Date) return isValid(value) ? format(value, "yyyy-MM-dd") : "";
+    if (typeof value === "string") {
+      const iso = parseISO(value);
+      if (isValid(iso)) return format(iso, "yyyy-MM-dd");
+
+      const ymd = parse(value, "yyyy-MM-dd", new Date());
+      if (isValid(ymd)) return format(ymd, "yyyy-MM-dd");
+    }
+    const d = new Date(value);
+    return isValid(d) ? format(d, "yyyy-MM-dd") : "";
+  };
+
   return (
     <DateControlGroup>
       <CalendarStyles />
@@ -176,15 +189,10 @@ const DateSettings = decorate(({calendarRootRef, Filters, Time, state: {date, li
             <ExceptionDaysQuery>
               {({exceptionDays = []}) => {
                 const dates = exceptionDays.reduce((collection, exception) => {
-                  collection[
-                    format(
-                      legacyParse(exception.exceptionDate),
-                      convertTokens("YYYY-MM-DD")
-                    )
-                  ] = exception;
+                  const key = toKeyDate(exception.exceptionDate);
+                  if (key) collection[key] = exception;
                   return collection;
                 }, {});
-
                 const highlightedDates = Object.keys(dates).map((date) => new Date(date));
 
                 return (

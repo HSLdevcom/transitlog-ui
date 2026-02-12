@@ -6,12 +6,11 @@ import {Heading} from "./Typography";
 import ToggleView from "./ToggleView";
 import {observer} from "mobx-react-lite";
 import {text, Text, alertText} from "../helpers/text";
-import format from "date-fns/format";
 import CrossThick from "../icons/CrossThick";
 import Checkmark2 from "../icons/Checkmark2";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
-import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {format, parseISO, isValid} from "date-fns";
 
 const CancellationComponent = styled.div`
   font-family: var(--font-family);
@@ -188,10 +187,12 @@ const CancellationItem = decorate(
                 )}
                 <CancellationTime>
                   <span>
-                    {format(
-                      legacyParse(cancellation.departureDate),
-                      convertTokens("DD/MM")
-                    )}{" "}
+                    {(() => {
+                      const raw = cancellation.departureDate;
+                      const d = typeof raw === "string" ? parseISO(raw) : new Date(raw);
+                      const date = isValid(d) ? d : new Date(raw);
+                      return isValid(date) ? format(date, "dd/MM") : "";
+                    })()}{" "}
                   </span>
                   <strong>{cancellation.journeyStartTime}</strong>
                 </CancellationTime>

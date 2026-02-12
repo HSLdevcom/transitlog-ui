@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import {Tooltip, Marker} from "react-leaflet";
+import {Tooltip} from "react-leaflet";
 import {latLng} from "leaflet";
 import {observer} from "mobx-react-lite";
 import {P} from "../Typography";

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useMemo} from "react";
+import React, {useMemo} from "react";
 import gql from "graphql-tag";
 import {useMutation, useApolloClient} from "@apollo/react-hooks";
 import StyledModal from "styled-react-modal";

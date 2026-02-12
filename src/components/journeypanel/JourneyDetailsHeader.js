@@ -10,7 +10,6 @@ import {parseLineNumber} from "../../helpers/parseLineNumber";
 import CrossThick from "../../icons/CrossThick";
 import {Text} from "../../helpers/text";
 import {isCancelledDeparture} from "../../helpers/isCancelledDeparture";
-import Alert from "../../icons/Alert";
 import {Button} from "../Forms";
 
 const JourneyPanelHeader = styled.div`
@@ -135,14 +134,6 @@ const HealthIndicator = styled.div`
   &:hover {
     transform: scale(1.025);
   }
-`;
-
-const HealthAlert = styled(Alert).attrs({
-  width: "1.5rem",
-  height: "1.5rem",
-  fill: "var(--red)",
-})`
-  flex-shrink: 0;
 `;
 
 export default observer(

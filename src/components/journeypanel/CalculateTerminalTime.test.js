@@ -76,8 +76,6 @@ describe("CalculateTerminalTime", () => {
    */
 
   test("calculates recovery time difference", () => {
-    const date = "2019-01-30";
-
     const departure = {
       terminalTime: 2,
       recoveryTime: 2,
@@ -104,8 +102,6 @@ describe("CalculateTerminalTime", () => {
   });
 
   test("wasLate is true when vehicle was late for the recovery time", () => {
-    const date = "2019-01-30";
-
     const departure = {
       terminalTime: 2,
       recoveryTime: 2,
