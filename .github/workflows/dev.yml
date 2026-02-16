@@ -15,7 +15,7 @@ jobs:
       - name: Checkout UI
         uses: actions/checkout@v2
       - name: Build UI and publish timestamped Docker image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           name: hsldevcom/transitlog-ui
           username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
@@ -23,7 +23,7 @@ jobs:
           buildargs: BUILD_ENV=dev
           tags: date-${{ steps.date.outputs.date }}
       - name: Build UI and publish Docker image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           name: hsldevcom/transitlog-ui
           username: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
