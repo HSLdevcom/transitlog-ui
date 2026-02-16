@@ -7,6 +7,7 @@ import {observer} from "mobx-react-lite";
 import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
 import Checkmark from "../icons/Checkmark";
+import {PRODUCTION_URL} from "../constants";
 
 const ShareModal = StyledModal.styled`
   width: 40vw;
@@ -80,7 +81,7 @@ const SharingModal = decorate((props) => {
   }, []);
 
   const createShareUrl = useCallback(() => {
-    const prodOrigin = process.env.REACT_APP_PRODUCTION_URL;
+    const prodOrigin = PRODUCTION_URL;
     const currentOrigin = window.location.origin;
 
     let urlToShare = window.location.href;

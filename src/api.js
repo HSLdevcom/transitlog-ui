@@ -5,13 +5,12 @@ import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory
 import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
 import {createUploadLink} from "apollo-upload-client";
+import {GRAPHQL_URL} from "./constants";
 import fragmentTypes from "./fragmentTypes";
 import uniqBy from "lodash/uniqBy";
 
-const serverUrl = process.env.REACT_APP_TRANSITLOG_SERVER_GRAPHQL;
-
-if (!serverUrl) {
-  console.error("Transitlog server URL not set!");
+if (!GRAPHQL_URL) {
+  console.error("Transitlog graphql URL not set!");
 }
 
 function createErrorLink(UIStore) {
@@ -97,7 +96,7 @@ export const getClient = (UIStore) => {
   });
 
   const uploadLink = createUploadLink({
-    uri: serverUrl,
+    uri: GRAPHQL_URL,
     credentials: "include",
   });
 

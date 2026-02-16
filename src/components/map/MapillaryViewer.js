@@ -5,6 +5,7 @@ import {Viewer} from "mapillary-js";
 import "mapillary-js/dist/mapillary.css";
 import styled from "styled-components";
 import {observer} from "mobx-react-lite";
+import {MAPILLARY_CLIENT_TOKEN} from "../../constants";
 
 const ViewerWrapper = styled.div`
   position: relative;
@@ -50,7 +51,7 @@ const MapillaryViewer = observer(
           method: "GET",
           contentType: "application/json",
           headers: {
-            Authorization: `Bearer ${process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN}`,
+            Authorization: `Bearer ${MAPILLARY_CLIENT_TOKEN}`,
           },
         }
       );
@@ -103,7 +104,7 @@ const MapillaryViewer = observer(
         return;
       }
 
-      const accessToken = process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN;
+      const accessToken = MAPILLARY_CLIENT_TOKEN;
       const viewerOptions = {
         accessToken,
         container: elementId,
