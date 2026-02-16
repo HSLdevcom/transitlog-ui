@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from "react";
+import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import SidepanelList from "./SidepanelList";
 import getJourneyId from "../../helpers/getJourneyId";

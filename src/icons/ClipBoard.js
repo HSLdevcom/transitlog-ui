@@ -1,8 +1,8 @@
 import React from "react";
-import {Svg, Circle, G, Path} from "react-primitives-svg";
+import {Svg, Path} from "react-primitives-svg";
 import PropTypes from "prop-types";
 import {Colors} from "./HSL_COLORS";
-import {svgTranslate, svgSize} from "../helpers/svg";
+import {svgSize} from "../helpers/svg";
 
 export default function Icon({fill, height, width, ...rest}) {
   return (

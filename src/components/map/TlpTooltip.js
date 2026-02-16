@@ -3,18 +3,13 @@ import {Tooltip} from "react-leaflet";
 import moment from "moment-timezone";
 import {observer} from "mobx-react-lite";
 import {TIMEZONE} from "../../constants";
-import BusStop from "../../icons/BusStop";
 import styled from "styled-components";
 import flow from "lodash/flow";
 import get from "lodash/get";
 import {inject} from "../../helpers/inject";
 import Time2 from "../../icons/Time2";
 import Bus from "../../icons/Bus";
-import Envelope from "../../icons/Envelope";
 import RealTime2 from "../../icons/RealTime2";
-import BusLine from "../../icons/BusLine";
-import Timetable from "../../icons/Timetable";
-import ArrowRight from "../../icons/ArrowRight";
 import {text} from "../../helpers/text";
 import LocationMarker from "../../icons/LocationMarker";
 

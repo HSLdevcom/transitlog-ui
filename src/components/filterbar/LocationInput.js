@@ -29,8 +29,6 @@ const getSuggestionInputValue = (suggestion) => {
 };
 
 const renderSuggestion = (suggestion, {isHighlighted}) => {
-  const suggestionType = "terminal";
-
   return (
     <SuggestionContent data-testid={`location-input`} isHighlighted={isHighlighted}>
       <SuggestionText>

@@ -1,5 +1,5 @@
 import React from "react";
-import {Svg, Path} from "react-primitives-svg";
+import {Svg} from "react-primitives-svg";
 import PropTypes from "prop-types";
 import {svgSize} from "../helpers/svg";
 

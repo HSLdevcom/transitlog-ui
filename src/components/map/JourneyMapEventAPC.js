@@ -1,7 +1,7 @@
 import flow from "lodash/flow";
 import {observer} from "mobx-react-lite";
 import React from "react";
-import {Marker, Tooltip} from "react-leaflet";
+import {Marker} from "react-leaflet";
 import {divIcon} from "leaflet";
 import {useToggle} from "../../hooks/useToggle";
 import ApcTooltip from "./ApcTooltip";
