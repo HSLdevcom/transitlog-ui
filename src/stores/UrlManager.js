@@ -2,7 +2,13 @@ import get from "lodash/get";
 import invoke from "lodash/invoke";
 import fromPairs from "lodash/fromPairs";
 import {createBrowserHistory as createHistory} from "history";
-import {AUTH_STATE_STORAGE_KEY} from "../constants";
+import {
+  AUTH_STATE_STORAGE_KEY,
+  AUTH_URI,
+  REDIRECT_URI,
+  CLIENT_ID,
+  AUTH_SCOPE,
+} from "../constants";
 
 /**
  * Make sure that all history operations happen through the specific history object
@@ -107,10 +113,7 @@ export const resetUrlState = (replace = false) => {
   }
 };
 
-const AUTH_URI = process.env.REACT_APP_AUTH_URI;
-const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-const SCOPE = process.env.REACT_APP_AUTH_SCOPE;
+const SCOPE = AUTH_SCOPE;
 
 export const redirectToLogin = (register = false) => {
   // Save the current url state so that we can re-apply it after the login.

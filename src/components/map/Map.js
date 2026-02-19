@@ -24,6 +24,7 @@ import "leaflet/dist/leaflet.css";
 import {validBounds} from "../../helpers/validBounds";
 import {LatLngBounds, LatLng} from "leaflet";
 import {useEffectOnce} from "../../hooks/useEffectOnce";
+import {DIGITRANSIT_API_KEY, DIGITRANSIT_URL} from "../../constants";
 
 const MapContainer = styled.div`
   overflow: hidden;
@@ -184,8 +185,8 @@ const Map = decorate(({state, UI, children, className, detailsOpen}) => {
     );
   }, [leafletMap]);
 
-  const apikey = `?digitransit-subscription-key=${process.env.REACT_APP_DIGITRANSIT_API_KEY}`;
-  const mapUrl = `${process.env.REACT_APP_DIGITRANSIT_URL}map/v3/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
+  const apikey = `?digitransit-subscription-key=${DIGITRANSIT_API_KEY}`;
+  const mapUrl = `${DIGITRANSIT_URL}map/v3/hsl-map/{z}/{x}/{y}@2x.png${apikey}`;
   return (
     <MapContainer className={className}>
       <LeafletMap

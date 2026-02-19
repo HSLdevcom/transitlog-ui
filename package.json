@@ -109,7 +109,7 @@
     "test:staged": "CI=true react-app-rewired test --env=jsdom --bail --findRelatedTests",
     "codestyle": "prettier \"src/**/*.{css,js}\" --write",
     "lint": "eslint \"src/**/*.js\" --fix",
-    "production": "serve -s -l 3000 build",
+    "production": "node ./scripts/write-runtime-config.js && serve -s -l 3000 build",
     "codegen": "gql-gen --config codegen.yml",
     "cypress": "cypress",
     "cypress:run:dev": "cypress run --env configFile=dev",
