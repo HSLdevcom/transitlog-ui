@@ -1,18 +1,16 @@
 import {ApolloClient} from "apollo-client";
 import {ApolloLink} from "apollo-link";
-import {HttpLink} from "apollo-link-http";
 import {RetryLink} from "apollo-link-retry";
 import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import {setContext} from "apollo-link-context";
 import {createUploadLink} from "apollo-upload-client";
+import {GRAPHQL_URL} from "./constants";
 import fragmentTypes from "./fragmentTypes";
 import uniqBy from "lodash/uniqBy";
 
-const serverUrl = process.env.REACT_APP_TRANSITLOG_SERVER_GRAPHQL;
-
-if (!serverUrl) {
-  console.error("Transitlog server URL not set!");
+if (!GRAPHQL_URL) {
+  console.error("Transitlog graphql URL not set!");
 }
 
 function createErrorLink(UIStore) {
@@ -46,8 +44,20 @@ export const getClient = (UIStore) => {
     return createdClient;
   }
 
+  const toApollo2Introspection = (possibleTypesMap) => ({
+    __schema: {
+      types: Object.entries(possibleTypesMap).map(([name, possibleTypes]) => ({
+        kind: "UNION",
+        name,
+        possibleTypes: possibleTypes.map((t) => ({name: t})),
+      })),
+    },
+  });
+
   const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData: fragmentTypes,
+    introspectionQueryResultData: fragmentTypes.possibleTypes
+      ? toApollo2Introspection(fragmentTypes.possibleTypes)
+      : fragmentTypes,
   });
 
   const errorLink = createErrorLink(UIStore);
@@ -85,13 +95,8 @@ export const getClient = (UIStore) => {
     addTypename: true,
   });
 
-  const httpLink = new HttpLink({
-    uri: serverUrl,
-    credentials: "include",
-  });
-
   const uploadLink = createUploadLink({
-    uri: serverUrl,
+    uri: GRAPHQL_URL,
     credentials: "include",
   });
 

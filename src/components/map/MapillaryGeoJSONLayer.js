@@ -1,12 +1,8 @@
 import React from "react";
 import {GeoJSON, FeatureGroup} from "react-leaflet";
 import {circleMarker} from "leaflet";
-import get from "lodash/get";
 import {closestPointToPoint} from "../../helpers/closestPoint";
-import subYears from "date-fns/subYears";
-import format from "date-fns/format";
-
-import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {MAPILLARY_CLIENT_TOKEN} from "../../constants";
 
 const MAX_ZOOM = 14;
 
@@ -144,7 +140,7 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
       method: "GET",
       contentType: "application/json",
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_MAPILLARY_CLIENT_TOKEN}`,
+        Authorization: `Bearer ${MAPILLARY_CLIENT_TOKEN}`,
       },
     };
     const existingFeatures = {};

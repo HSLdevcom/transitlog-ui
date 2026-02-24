@@ -17,7 +17,6 @@ const buttonStyles = {
   margin: "2px",
   textAlign: "center",
   fontWeight: "bold",
-  fontSize: "18px",
   border: "none",
   fontSize: "10px",
 };

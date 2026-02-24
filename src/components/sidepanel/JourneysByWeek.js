@@ -13,8 +13,7 @@ import map from "lodash/map";
 import {inject} from "../../helpers/inject";
 import doubleDigit from "../../helpers/doubleDigit";
 import {getDayTypeFromDate} from "../../helpers/getDayTypeFromDate";
-import getWeek from "date-fns/getISOWeek";
-import format from "date-fns/format";
+
 import JourneysByWeekQuery from "../../queries/JourneysByWeekQuery";
 import ButtonGroup from "../ButtonGroup";
 import {TIMEZONE} from "../../constants";
@@ -31,7 +30,7 @@ import Timetable from "../../icons/Timetable";
 import {weeklyObservedTimeTypes} from "../../stores/UIStore";
 import ToggleButton from "../ToggleButton";
 
-import {legacyParse, convertTokens} from "@date-fns/upgrade/v2";
+import {getISOWeek, format, parseISO} from "date-fns";
 
 const ListHeader = styled.div`
   display: flex;
@@ -188,7 +187,7 @@ const JourneysByWeek = decorate(
 
     const selectedJourneyId = getJourneyId(selectedJourney);
 
-    const weekNumber = getWeek(legacyParse(date));
+    const weekNumber = getISOWeek(parseISO(date));
     const currentDayType = getDayTypeFromDate(date);
 
     const [selectedDayTypes, setSelectedDayTypes] = useState([]);
@@ -344,7 +343,7 @@ const JourneysByWeek = decorate(
                         <TableCell
                           highlight={idx === currentDayTypeIndex}
                           key={`header_date_${day}`}>
-                          {format(legacyParse(day), convertTokens("D.M"))}
+                          {format(parseISO(day), "d.M")}
                         </TableCell>
                       ))}
                     </TableHeader>

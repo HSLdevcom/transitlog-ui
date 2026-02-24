@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useMemo} from "react";
+import React, {useMemo} from "react";
 import gql from "graphql-tag";
 import {useMutation, useApolloClient} from "@apollo/react-hooks";
 import StyledModal from "styled-react-modal";
@@ -9,6 +9,7 @@ import flow from "lodash/flow";
 import {inject} from "../helpers/inject";
 import {text} from "../helpers/text";
 import Loading from "./Loading";
+import {PRODUCTION_URL} from "../constants";
 
 const StyledToggleFeedbackButton = styled.div`
   color: white;
@@ -353,7 +354,7 @@ const FeedbackModal = decorate((props) => {
   };
 
   const shareUrl = useMemo(() => {
-    const prodOrigin = process.env.REACT_APP_PRODUCTION_URL;
+    const prodOrigin = PRODUCTION_URL;
     const currentOrigin = window.location.origin;
 
     let urlToShare = window.location.href;

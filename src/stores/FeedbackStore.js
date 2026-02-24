@@ -1,4 +1,4 @@
-import {extendObservable, observable} from "mobx";
+import {extendObservable} from "mobx";
 import feedbackActions from "./feedbackActions";
 
 export const initialFeedback = {

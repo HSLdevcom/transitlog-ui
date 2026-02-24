@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef, useMemo} from "react";
+import React, {useState, useCallback, useEffect, useMemo} from "react";
 import flow from "lodash/flow";
 import {inject} from "../../helpers/inject";
 import {observer} from "mobx-react-lite";
