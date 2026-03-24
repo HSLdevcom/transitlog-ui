@@ -327,6 +327,7 @@ export const JourneyStopEvent = decorate(
               <ColoredBackgroundSlot
                 color={timeDiffColor === "var(--yellow)" ? "var(--dark-grey)" : "white"}
                 backgroundColor={timeDiffColor}>
+                {timeDiff < 0 ? "-" : ""}
                 {diffObject.hours > 0 ? doubleDigit(diffObject.hours) + ":" : ""}
                 {doubleDigit(get(diffObject, "minutes", 0))}:
                 {doubleDigit(get(diffObject, "seconds", 0))}
