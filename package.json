@@ -98,7 +98,15 @@
     "react-test-renderer": "^16.12.0"
   },
   "resolutions": {
-    "**/graphql": "15.8.0"
+    "**/graphql": "15.8.0",
+    "**/minimatch": "^3.1.4",
+    "**/path-to-regexp": "^3.3.0",
+    "**/trim": "^0.0.3",
+    "**/nth-check": "^2.0.1",
+    "**/async": "^2.6.4",
+    "**/ansi-html": "^0.0.8",
+    "**/serialize-javascript": "^7.0.3",
+    "**/underscore": "^1.13.8"
   },
   "scripts": {
     "start": "craco start",
