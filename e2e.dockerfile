@@ -12,6 +12,6 @@ RUN yarn
 COPY ./cypress/ ${WORK}/cypress/
 
 COPY run_cypress.sh ${WORK}
-COPY cypress.json ${WORK}
+COPY cypress.config.js ${WORK}
 
 CMD ["yarn", "start"]
