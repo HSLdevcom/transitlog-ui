@@ -112,9 +112,8 @@
     "production": "node ./scripts/write-runtime-config.js && serve -s -l 3000 build",
     "codegen": "gql-gen --config codegen.yml",
     "cypress": "cypress",
-    "cypress:run:dev": "cypress run --env configFile=dev",
-    "cypress:run:stage": "cypress run --env configFile=stage",
-    "cypress:run:production": "cypress run --env configFile=production"
+    "cypress:run:local": "configFile=local cypress run",
+    "cypress:run:dev": "cypress run --env configFile=dev"
   },
   "eslintConfig": {
     "extends": [

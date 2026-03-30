@@ -1,3 +1,5 @@
+import moment from "moment";
+
 describe("App opening smoke tests", () => {
   beforeEach(() => {
     cy.visitAndSpy("/");
@@ -14,8 +16,10 @@ describe("App opening smoke tests", () => {
   });
 
   it("Has the date in the URL", () => {
-    const currentDate = Cypress.moment().format("YYYY-MM-DD");
-    cy.url().should((url) => expect(url).to.include(`date=${currentDate}`));
+    const currentDate = moment().format("YYYY-MM-DD");
+    cy.url().should((url) => {
+      expect(url).to.include(`date=${currentDate}`)
+    });
   });
 
   it("Can switch languages", () => {

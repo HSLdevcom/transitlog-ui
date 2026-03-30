@@ -9,6 +9,8 @@ describe("Vehicles smoke tests", () => {
     );
   });
 
+  // Auth not possible currently with tests
+  /*
   it("Can search for a vehicle", () => {
     cy.hslLogin();
 
@@ -49,4 +51,5 @@ describe("Vehicles smoke tests", () => {
 
     cy.assertJourneySelected();
   });
+  */
 });
