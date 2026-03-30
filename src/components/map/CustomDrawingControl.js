@@ -75,6 +75,7 @@ class CustomDrawingControl extends React.Component {
 
         this.hfpButton.setAttribute("data-testid", "hfp-area-button");
         this.cancelButton.setAttribute("data-testid", "hfp-area-cancel-button");
+        this.speedButton.setAttribute("data-testid", "hfp-area-speed-button");
 
         this.cancelButton.innerHTML = renderToStaticMarkup(
           <Cross fill="#464646" width="1rem" height="1rem" />
