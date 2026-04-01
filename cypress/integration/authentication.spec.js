@@ -9,8 +9,6 @@ describe("Authentication smoke tests", () => {
     );
   });
 
-  // Auth not possible currently with tests
-  /*
   it("Cannot see unauthorized elements when not logged in", () => {
     cy.visitAndSpy("/");
     cy.getTestElement("authenticated-user").should("not.exist");
@@ -36,5 +34,4 @@ describe("Authentication smoke tests", () => {
     cy.getTestElement("authenticated-user").should("not.exist");
     cy.getTestElement("vehicle-search").should("not.exist");
   });
-  */
 });
