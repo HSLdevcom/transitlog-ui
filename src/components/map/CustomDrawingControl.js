@@ -73,6 +73,9 @@ class CustomDrawingControl extends React.Component {
         this.speedButton = L.DomUtil.create("button", "leaflet-bar", container);
         this.hfpButton = L.DomUtil.create("button", "leaflet-bar", container);
 
+        this.hfpButton.setAttribute("data-testid", "hfp-area-button");
+        this.cancelButton.setAttribute("data-testid", "hfp-area-cancel-button");
+
         this.cancelButton.innerHTML = renderToStaticMarkup(
           <Cross fill="#464646" width="1rem" height="1rem" />
         );
@@ -80,7 +83,7 @@ class CustomDrawingControl extends React.Component {
           <Speedlimit fill="black" width="1.5rem" height="1.5rem" />
         );
         this.hfpButton.innerHTML = renderToStaticMarkup(
-          <Square fill="#464646" width="2rem" height="2rem" />
+          <Square fill="red" width="2rem" height="2rem" />
         );
 
         applyStyles(this.cancelButton, buttonStyles);
