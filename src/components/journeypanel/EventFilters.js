@@ -54,7 +54,7 @@ export default decorate(({onChange, filterState}) => {
                 type="checkbox"
                 name={name}
                 value={1}
-                checked={!!value}
+                checked={value}
                 onChange={() => onChangeFilter(name, value)}
               />
               {label}

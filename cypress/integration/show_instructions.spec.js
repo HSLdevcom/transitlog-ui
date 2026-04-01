@@ -4,7 +4,7 @@ describe("Instructions smoke test", () => {
   });
   
   afterEach(() => {
-    cy.get("@consoleError", {timeout: 5000}).should((errorLog) =>
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
       expect(errorLog).to.have.callCount(0)
     );
   });

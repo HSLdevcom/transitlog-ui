@@ -1,13 +1,11 @@
-import moment from "moment";
-
 describe("Route smoke tests", () => {
   // Yesterday's data is kept in cache for longer which make the tests faster.
-  const yesterday = moment()
+  const yesterday = Cypress.moment()
     .subtract(1, "day")
     .format("YYYY-MM-DD");
 
   afterEach(() => {
-    cy.get("@consoleError", {timeout: 5000}).should((errorLog) =>
+    cy.get("@consoleError", {timeout: 1000}).should((errorLog) =>
       expect(errorLog).to.have.callCount(0)
     );
   });
@@ -126,7 +124,7 @@ describe("Route smoke tests", () => {
       .should("exist")
       .click({force: true});
 
-    cy.getTestElement("journey-graph-container").should("be.visible");
+    cy.getTestElement("journey-graph-container").should("visible");
     cy.get(".test-class-journey-graph").should("exist");
   });
 });
