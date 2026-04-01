@@ -303,23 +303,26 @@ export function UsageInstructions({language}) {
               <LocBadge>GPS</LocBadge>) jos sellainen on saatavilla. Kyseinen merkintä voi
               löytyä muualtakin sovelluksesta. Mahdollisia paikannusmenetelmiä ovat:
               <ExampleSlotWrapper>
-                <li>
-                  <LocBadge>GPS</LocBadge>: Paikannus saatu GPS:stä.
-                </li>
-                <li>
-                  <LocBadge>ODO</LocBadge>: Paikannus laskettu matkamittarin perusteella.
-                </li>
-                <li>
-                  <LocBadge>MAN</LocBadge>: Paikannus määritelty manuaalisesti.
-                </li>
-                <li>
-                  <LocBadge>DR</LocBadge>: Paikannus laskettu käyttäen dead reckoning
-                  (käytetään tunneleissa ja muissa paikoissa, joissa ei ole
-                  GPS-signaalia).
-                </li>
-                <li>
-                  <LocBadge>N/A</LocBadge>: Paikannus ei saatavilla
-                </li>
+                <ul>
+                  <li>
+                    <LocBadge>GPS</LocBadge>: Paikannus saatu GPS:stä.
+                  </li>
+                  <li>
+                    <LocBadge>ODO</LocBadge>: Paikannus laskettu matkamittarin
+                    perusteella.
+                  </li>
+                  <li>
+                    <LocBadge>MAN</LocBadge>: Paikannus määritelty manuaalisesti.
+                  </li>
+                  <li>
+                    <LocBadge>DR</LocBadge>: Paikannus laskettu käyttäen dead reckoning
+                    (käytetään tunneleissa ja muissa paikoissa, joissa ei ole
+                    GPS-signaalia).
+                  </li>
+                  <li>
+                    <LocBadge>N/A</LocBadge>: Paikannus ei saatavilla
+                  </li>
+                </ul>
               </ExampleSlotWrapper>
             </li>
 
