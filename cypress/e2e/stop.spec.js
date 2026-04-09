@@ -37,11 +37,11 @@ describe("Stop smoke tests", () => {
     cy.visitAndSpy("/?mapZoom=14");
 
     cy.get(".test-class-stop-marker").should("have.length.least", 2);
-    cy.get(".test-class-stop-marker-1010115").click({force: true});
+    cy.get(".test-class-stop-marker-1010425").click({force: true});
 
     cy.getTestElement("stop-input")
       .invoke("val")
-      .should("equal", "1010115");
+      .should("equal", "1010425");
   });
 
   it("Finds a terminal and can select it", () => {
