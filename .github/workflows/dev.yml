@@ -32,6 +32,8 @@ jobs:
           tags: dev
   test-dev:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Check out PR code
         uses: actions/checkout@v4
