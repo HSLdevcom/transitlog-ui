@@ -22,6 +22,18 @@ const buttonStyles = {
 };
 
 class CustomDrawingControl extends React.Component {
+  updateButtonVisibility = () => {
+    const {routeSelected, user, selectedBounds} = this.props;
+
+    if (this.cancelButton) {
+      this.cancelButton.style.display = selectedBounds ? "block" : "none";
+    }
+
+    if (this.speedButton) {
+      this.speedButton.style.display = routeSelected && user ? "block" : "none";
+    }
+  };
+
   componentDidUpdate(prevProps) {
     const {routeSelected, user, selectedBounds} = this.props;
 
@@ -132,6 +144,8 @@ class CustomDrawingControl extends React.Component {
     });
 
     this.map.on(L.Draw.Event.CREATED, this.props.onCreated);
+
+    this.updateButtonVisibility();
   }
 
   componentWillUnmount() {
