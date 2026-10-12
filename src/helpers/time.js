@@ -56,6 +56,11 @@ export function getNormalTime(time = "") {
   return getTimeString(hours, minutes, seconds);
 }
 
+export function getCompactTime(time = "") {
+  const normalTime = getNormalTime(time);
+  return normalTime.endsWith(":00") ? normalTime.slice(0, -3) : normalTime;
+}
+
 export function getTimeString(hours = 0, minutes = 0, seconds = 0) {
   return `${doubleDigit(hours)}:${doubleDigit(minutes)}:${doubleDigit(seconds)}`;
 }
@@ -191,23 +196,24 @@ export function journeyEventTime(event, date) {
 export function getDepartureMoment(departure) {
   let {isNextDay, departureTime: departureTimeStr, departureDate} = departure;
 
-  const {hours = 0, minutes = 0} = timeToTimeObject(departureTimeStr);
+  const {hours = 0, minutes = 0, seconds = 0} = timeToTimeObject(departureTimeStr);
 
   const hour = isNextDay ? hours + 24 : hours;
-  const departureTime = getTimeString(hour, minutes);
+  const departureTime = getTimeString(hour, minutes, seconds);
 
   return getMomentFromDateTime(departureDate, departureTime);
 }
 
 // Return the departure time as a 24h+ time string
 export function departureTime(departure, useArrival = false) {
-  let {isNextDay, hours, minutes} = departure;
+  let {isNextDay, hours, minutes, seconds = 0} = departure;
 
   if (useArrival) {
     hours = departure.arrivalHours;
     minutes = departure.arrivalMinutes;
+    seconds = departure.arrivalSeconds ?? 0;
   }
 
   const hour = isNextDay ? hours + 24 : hours;
-  return getTimeString(hour, minutes);
+  return getTimeString(hour, minutes, seconds ?? 0);
 }

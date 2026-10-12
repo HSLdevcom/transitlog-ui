@@ -7,6 +7,7 @@ import {getTimelinessColor} from "../../helpers/timelinessColor";
 import getJourneyId from "../../helpers/getJourneyId";
 import {
   secondsToTimeObject,
+  getCompactTime,
   getNormalTime,
   getMomentFromDateTime,
 } from "../../helpers/time";
@@ -162,7 +163,7 @@ const RouteDepartureItem = decorate(
           onClick={() => selectJourney(compositeJourney, false)}>
           <Tooltip helpText="Planned journey time">
             <JourneyRowLeft hasApc={hasApc}>
-              {getNormalTime(departureTime).slice(0, -3)}
+              {getCompactTime(departureTime)}
               {isSpecialDayType && (
                 <SpecialDayDisplay
                   largeMargin={true}
@@ -242,7 +243,7 @@ const RouteDepartureItem = decorate(
           hasApc={hasApc}
           data-testid="journey-departure-time"
           {...applyTooltip("Planned journey time with data")}>
-          {getNormalTime(departureTime).slice(0, -3)}
+          {getNormalTime(departureTime)}
           {multipleInstances && (
             <JourneyInstanceDisplay {...applyTooltip("Journey instance")}>
               {departure.journey._numInstance}

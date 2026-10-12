@@ -14,7 +14,7 @@ import {
 import {getTimelinessColor} from "../../helpers/timelinessColor";
 import styled from "styled-components";
 import getJourneyId from "../../helpers/getJourneyId";
-import {secondsToTimeObject, getNormalTime} from "../../helpers/time";
+import {secondsToTimeObject, getCompactTime} from "../../helpers/time";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import {applyTooltip} from "../../hooks/useTooltip";
 import {getDayTypeFromDate, dayTypes} from "../../helpers/getDayTypeFromDate";
@@ -178,7 +178,7 @@ const StopDepartureItem = observer((props) => {
           )}
         </LineSlot>
         <PlannedTimeSlot>
-          {getNormalTime(departure.plannedDepartureTime.departureTime).slice(0, -3)}
+          {getCompactTime(departure.plannedDepartureTime.departureTime)}
           {isTimingStop && (
             <TimingStop fill={currentTransportColor} width="1rem" height="1rem" />
           )}

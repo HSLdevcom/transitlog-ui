@@ -28,4 +28,11 @@ describe("getDepartureByTime", () => {
     expect(departure2).toBeNull();
     expect(departure3).toBe(departures[6]);
   });
+
+  test("uses seconds when selecting between departures in the same minute", () => {
+    const earlier = {plannedDepartureTime: {departureTime: "13:05:10"}};
+    const later = {plannedDepartureTime: {departureTime: "13:05:50"}};
+
+    expect(getDepartureByTime([earlier, later], "13:05:45")).toBe(later);
+  });
 });

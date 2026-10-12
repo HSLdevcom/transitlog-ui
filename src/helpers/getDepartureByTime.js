@@ -7,7 +7,9 @@ export function getDepartureByTime(departures = [], time = "") {
 
   // Get numeric hour and minute values from the provided time string
   const timeHour = parseInt(time.split(":")[0], 10);
-  const timeMinute = parseInt(time.split(":")[1], 10);
+  const timeParts = time.split(":");
+  const timeMinute = parseInt(timeParts[1], 10);
+  const timeSecond = parseInt(timeParts[2] || "0", 10);
 
   // Get all departures that match by the hour
   const selectedHourDepartures = departures.filter(
@@ -25,11 +27,19 @@ export function getDepartureByTime(departures = [], time = "") {
      minutes. So if the minute value is 30, and the departure minute value is also
      30, the sort value is 0 and the departure is first in the list.
     */
-    return orderBy(selectedHourDepartures, ({plannedDepartureTime}) =>
-      Math.abs(
-        parseInt(plannedDepartureTime.departureTime.split(":")[1], 10) - timeMinute
-      )
-    )[0]; // Return the first element
+    return orderBy(selectedHourDepartures, ({plannedDepartureTime}) => {
+      const [
+        ,
+        departureMinute,
+        departureSecond = "0",
+      ] = plannedDepartureTime.departureTime.split(":");
+
+      return Math.abs(
+        (parseInt(departureMinute, 10) - timeMinute) * 60 +
+          parseInt(departureSecond, 10) -
+          timeSecond
+      );
+    })[0]; // Return the first element
   }
 
   return null;

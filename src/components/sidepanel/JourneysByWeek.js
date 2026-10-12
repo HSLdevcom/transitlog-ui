@@ -4,7 +4,7 @@ import getJourneyId, {createDepartureJourneyId} from "../../helpers/getJourneyId
 import styled from "styled-components";
 import SidepanelList from "./SidepanelList";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
-import {secondsToTimeObject} from "../../helpers/time";
+import {secondsToTimeObject, getCompactTime} from "../../helpers/time";
 import flow from "lodash/flow";
 import groupBy from "lodash/groupBy";
 import orderBy from "lodash/orderBy";
@@ -403,7 +403,7 @@ const JourneysByWeek = decorate(
                               <TableCell
                                 data-testid="weekly-departure-time"
                                 strong={true}>
-                                {plannedTime.slice(0, -3)}
+                                {getCompactTime(plannedTime)}
                               </TableCell>
                               {weekDepartures.map((departure, idx) => {
                                 const dayType = get(departure, "dayType", "unknown");

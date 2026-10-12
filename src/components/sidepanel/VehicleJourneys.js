@@ -18,7 +18,7 @@ import getDelayType, {delayStopType} from "../../helpers/getDelayType";
 import doubleDigit from "../../helpers/doubleDigit";
 import PlusMinusInput from "../PlusMinusInput";
 import {getTimelinessColor} from "../../helpers/timelinessColor";
-import {secondsToTimeObject, timeToSeconds} from "../../helpers/time";
+import {secondsToTimeObject, timeToSeconds, getCompactTime} from "../../helpers/time";
 import {parseLineNumber} from "../../helpers/parseLineNumber";
 import EmptyView from "../EmptyView";
 import gql from "graphql-tag";
@@ -312,7 +312,7 @@ const VehicleJourneys = decorate((props) => {
               <NextPrevLabel>
                 {selectedJourney ? (
                   <>
-                    {vehicle}, {selectedJourney.departureTime.slice(0, -3)}
+                    {vehicle}, {getCompactTime(selectedJourney.departureTime)}
                   </>
                 ) : (
                   vehicle
@@ -385,7 +385,7 @@ const VehicleJourneys = decorate((props) => {
                   <HeadsignSlot color={get(transportColor, mode, "var(--light-grey)")}>
                     {lineNumber}/{journey.direction}
                   </HeadsignSlot>
-                  <TimeSlot>{journeyTime.slice(0, -3)}</TimeSlot>
+                  <TimeSlot>{getCompactTime(journeyTime)}</TimeSlot>
                   <ColoredBackgroundSlot
                     color={
                       timelinessColor === "var(--yellow)" ? "var(--dark-grey)" : "white"

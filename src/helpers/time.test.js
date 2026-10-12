@@ -1,5 +1,6 @@
 import {
   timeToSeconds,
+  getCompactTime,
   getNormalTime,
   getTimeString,
   getMomentFromDateTime,
@@ -65,6 +66,18 @@ describe("Time helpers", () => {
     const expectTime = "14:30:20";
 
     expect(normalTime).toBe(expectTime);
+  });
+
+  test("getCompactTime includes non-zero seconds", () => {
+    expect(getCompactTime("14:30:20")).toBe("14:30:20");
+  });
+
+  test("getCompactTime omits zero seconds", () => {
+    expect(getCompactTime("14:30:00")).toBe("14:30");
+  });
+
+  test("getCompactTime normalizes 24h+ times and retains seconds", () => {
+    expect(getCompactTime("26:30:20")).toBe("02:30:20");
   });
 
   test("getTimeString converts numeric hours, minutes and seconds to a valid time string", () => {

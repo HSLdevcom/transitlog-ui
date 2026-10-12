@@ -92,6 +92,42 @@ describe("journeyStartTime", () => {
     expect(departureTimeStr).toBe(expectedTime);
   });
 
+  test("departureTime includes seconds when present", () => {
+    const departure = {
+      isNextDay: false,
+      hours: 3,
+      minutes: 24,
+      seconds: 18,
+    };
+
+    expect(departureTime(departure)).toBe("03:24:18");
+  });
+
+  test("departureTime defaults null seconds to zero", () => {
+    const departure = {
+      isNextDay: false,
+      hours: 3,
+      minutes: 24,
+      seconds: null,
+    };
+
+    expect(departureTime(departure)).toBe("03:24:00");
+  });
+
+  test("departureTime includes arrival seconds when requested", () => {
+    const departure = {
+      isNextDay: false,
+      hours: 3,
+      minutes: 24,
+      seconds: 18,
+      arrivalHours: 4,
+      arrivalMinutes: 25,
+      arrivalSeconds: 30,
+    };
+
+    expect(departureTime(departure, true)).toBe("04:25:30");
+  });
+
   test("departureTime returns a 24h+ time if isNextDay is true", () => {
     const departure = {
       isNextDay: true,
