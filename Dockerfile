@@ -1,5 +1,5 @@
 
-FROM node:20-alpine
+FROM node:22.23.4-alpine
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
