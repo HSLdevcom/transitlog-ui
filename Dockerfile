@@ -1,9 +1,11 @@
 
-FROM node:20-alpine
+FROM node:22-slim
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
-RUN apk --no-cache add curl
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV WORK /opt/transitlog
 
