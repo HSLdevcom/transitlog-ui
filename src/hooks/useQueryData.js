@@ -1,8 +1,12 @@
 import {useQuery, useLazyQuery} from "@apollo/react-hooks";
 import {pickGraphqlData} from "../helpers/pickGraphqlData";
 import {useRefetch} from "./useRefetch";
+import {useDebouncedDateVariables} from "./useDebouncedDateVariables";
 import get from "lodash/get";
 import {useMemo, useCallback} from "react";
+
+export {useDebouncedDateVariables} from "./useDebouncedDateVariables";
+
 
 export const useQueryData = (query, options = {}, updateName = false, pickData = "") => {
   const {loading, error, data, refetch} = useQuery(query, options);
