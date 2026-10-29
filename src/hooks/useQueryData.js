@@ -7,9 +7,9 @@ import {useMemo, useCallback} from "react";
 
 export {useDebouncedDateVariables} from "./useDebouncedDateVariables";
 
-
 export const useQueryData = (query, options = {}, updateName = false, pickData = "") => {
-  const {loading, error, data, refetch} = useQuery(query, options);
+  const variables = useDebouncedDateVariables(options.variables);
+  const {loading, error, data, refetch} = useQuery(query, {...options, variables});
 
   const activateRefetch = useRefetch(
     updateName || "",
