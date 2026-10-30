@@ -61,24 +61,24 @@ Transitlog UI mainly displays data from the Transitlog Server, but there are als
 
 ## Install
 
-Run `yarn` once to install dependencies.
+Run `npm install` once to install dependencies.
 
 ## Useful commands
 
 In the project directory, you can run:
 
-#### `yarn start`
+#### `npm start`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.
 
-#### `yarn run build`
+#### `npm run build`
 
 Builds the app for production to the `build` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
 
-#### `yarn run codegen`
+#### `npm run codegen`
 
 If you update the schema in transitlog-server, be sure to tun Codegen to bring the updated schema to the UI.
 
@@ -237,7 +237,7 @@ This is the Journey Panel component which appears when a journey is selected. it
 Substitute the configFile with the environment you want to test. Leave the whole `--env` option out to test the local version.
 
 ```shell script
-yarn run cypress run --env configFile=production
+npm run cypress -- run --env configFile=production
 ```
 
 #### Open the Cypress app
@@ -245,5 +245,5 @@ yarn run cypress run --env configFile=production
 The configFile value works the same as above.
 
 ```shell script
-yarn run cypress open --env configFile=production
+npm run cypress -- open --env configFile=production
 ```
