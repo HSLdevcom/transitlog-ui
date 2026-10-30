@@ -134,7 +134,7 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test --env=jsdom",
-    "check-and-build": "npm test -- --watchAll=false && npm run build",
+    "check-and-build": "npm test -- --watchAll=false --coverage && npm run build",
     "eject": "react-app-rewired eject",
     "test:ci": "CI=true react-app-rewired test --env=jsdom",
     "test:staged": "CI=true react-app-rewired test --env=jsdom --bail --findRelatedTests",
