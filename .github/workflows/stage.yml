@@ -66,13 +66,13 @@ jobs:
           CYPRESS_HSL_TESTING_HSLID_USERNAME: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_USERNAME }}
           CYPRESS_HSL_TESTING_HSLID_PASSWORD: ${{ secrets.CYPRESS_HSL_TESTING_HSLID_PASSWORD }}
       - name: Upload screenshot artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
       - name: Upload video artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: cypress-videos
