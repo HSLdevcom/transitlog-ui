@@ -71,7 +71,7 @@
     "react-vis": "^1.11.7",
     "serve": "^13.0.4",
     "styled-components": "^4.4.1",
-    "styled-react-modal": "^2.0.0",
+    "styled-react-modal": "^3.1.1",
     "use-debounce": "^3.3.0"
   },
   "devDependencies": {
