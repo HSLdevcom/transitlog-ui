@@ -104,7 +104,7 @@ class MapillaryGeoJSONLayer extends React.PureComponent {
   fetchRetry = async (url, delay, tries, fetchOptions = {}) => {
     const triesLeft = tries - 1;
     if (!triesLeft) {
-      throw "Mapillary image fetch failed";
+      throw new Error("Mapillary image fetch failed");
     }
 
     const res = await fetch(url, fetchOptions);

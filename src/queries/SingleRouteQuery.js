@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 import {useQuery} from "@apollo/react-hooks";
 import {observer} from "mobx-react-lite";
 import gql from "graphql-tag";

@@ -7,7 +7,7 @@ import {getUrlValue, onHistoryChange} from "./UrlManager";
 import {setResetListener} from "./FilterStore";
 import {TIMEZONE} from "../constants";
 
-export default (state, initialState) => {
+const createTimeStore = (state, initialState) => {
   extendObservable(state, {
     live: getUrlValue("live", false),
     time: get(initialState, "time", moment.tz(new Date(), TIMEZONE).format("HH:mm:ss")),
@@ -56,3 +56,5 @@ export default (state, initialState) => {
 
   return actions;
 };
+
+export default createTimeStore;

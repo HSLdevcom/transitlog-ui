@@ -12,7 +12,7 @@ import {getTimeString} from "../helpers/time";
 import {TIMEZONE} from "../constants";
 import {intval} from "../helpers/isWithinRange";
 
-export default (state) => {
+const createJourneyStore = (state) => {
   extendObservable(state, {
     selectedJourney: null,
     journeyEventFilters: getUrlValue("journeyEventFilters", "")
@@ -131,3 +131,5 @@ export default (state) => {
     ...actions,
   };
 };
+
+export default createJourneyStore;

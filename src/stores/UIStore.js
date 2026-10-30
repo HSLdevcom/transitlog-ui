@@ -29,7 +29,7 @@ export const weeklyObservedTimeTypes = {
   FIRST_STOP_DEPARTURE: "departure",
 };
 
-export default (state) => {
+const createUIStore = (state) => {
   const urlCenter = getUrlValue("mapView");
   const urlZoom = getUrlValue("mapZoom");
 
@@ -122,3 +122,5 @@ export default (state) => {
 
   return actions;
 };
+
+export default createUIStore;

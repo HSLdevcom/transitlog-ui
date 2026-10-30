@@ -8,7 +8,7 @@ export const initialFeedback = {
   feedbackImageFileNames: [],
 };
 
-export default (state) => {
+const createFeedbackStore = (state) => {
   extendObservable(state, {
     ...initialFeedback,
     feedbackSending: false,
@@ -21,3 +21,5 @@ export default (state) => {
 
   return actions;
 };
+
+export default createFeedbackStore;

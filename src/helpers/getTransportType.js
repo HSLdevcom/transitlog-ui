@@ -13,7 +13,7 @@ function getTransportType(lineId = "", numeric = false, trunk = false, mode = nu
     return "TRAM";
   }
 
-  if (lineType == 2015) {
+  if (lineType === "2015") {
     if (numeric) {
       return 0;
     }

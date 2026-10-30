@@ -7,7 +7,7 @@ import {
   getByText as getByTextUtil,
 } from "@testing-library/react";
 import {observable, action} from "mobx";
-import {MobxProviders} from "../util/MobxProviders";
+import {MobxProviders} from "../../test-utils/MobxProviders";
 import {MockedProvider} from "@apollo/react-testing";
 import mockStopResponse from "../stop_options_response.json";
 import mockStopDeparturesResponse from "../stop_departures_response.json";

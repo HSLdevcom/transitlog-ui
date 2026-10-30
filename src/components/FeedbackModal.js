@@ -222,7 +222,7 @@ const SendButton = styled(Button)`
     margin-left: -0.5rem;
   }
   ${(props) =>
-    props.disabled == true &&
+    props.disabled === true &&
     css`
       background: var(--light-grey);
       &:hover {

@@ -1,4 +1,4 @@
-import {StoreContext} from "../../stores/StoreContext";
+import {StoreContext} from "../stores/StoreContext";
 import React from "react";
 import {isObservable, observable} from "mobx";
 

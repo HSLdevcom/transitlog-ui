@@ -22,7 +22,7 @@ export function setResetListener(cb) {
   };
 }
 
-export default (state, initialState = {}) => {
+const createFilterStore = (state, initialState = {}) => {
   const emptyState = {
     date: moment.tz(new Date(), TIMEZONE).format("YYYY-MM-DD"),
     stop: "",
@@ -91,3 +91,5 @@ export default (state, initialState = {}) => {
     reset,
   };
 };
+
+export default createFilterStore;

@@ -2,8 +2,6 @@ import React, {useRef} from "react";
 import {Tooltip} from "react-leaflet";
 import {observer} from "mobx-react-lite";
 import styled from "styled-components";
-import flow from "lodash/flow";
-import {inject} from "../../helpers/inject";
 import {text} from "../../helpers/text";
 
 const TooltipWrapper = styled.div`
@@ -32,9 +30,7 @@ const ApcPropertyValue = styled.span`
   color: ${(props) => (props.color ? props.color : "var(--blue)")};
 `;
 
-const decorate = flow(observer, inject("state"));
-
-const ApcTooltip = decorate(
+const ApcTooltip = observer(
   ({
     journey = null,
     event = null,
@@ -42,11 +38,9 @@ const ApcTooltip = decorate(
     sticky = true,
     direction = "left",
     offset = [-25, 0],
-    state,
   }) => {
     const prevEvent = useRef(null);
     let usingEvent = event || prevEvent.current;
-    const {user = null} = state;
 
     if (!usingEvent) {
       return null;
@@ -74,19 +68,19 @@ const ApcTooltip = decorate(
           <ApcDataRow>
             <strong>{text(`journey.event.${event.type}`)}</strong>
           </ApcDataRow>
-          {(event.totalPassengersIn || event.totalPassengersIn == 0) && (
+          {(event.totalPassengersIn || event.totalPassengersIn === 0) && (
             <ApcDataRow>
               {text("apc.totalPassengersIn")}:{" "}
               <ApcPropertyValue>{event.totalPassengersIn}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {(event.totalPassengersOut || event.totalPassengersOut == 0) && (
+          {(event.totalPassengersOut || event.totalPassengersOut === 0) && (
             <ApcDataRow>
               {text("apc.totalPassengersOut")}:{" "}
               <ApcPropertyValue>{event.totalPassengersOut}</ApcPropertyValue>
             </ApcDataRow>
           )}
-          {(event.vehicleLoad || event.vehicleLoad == 0) && (
+          {(event.vehicleLoad || event.vehicleLoad === 0) && (
             <ApcDataRow>
               {text("apc.vehicleLoad")}:{" "}
               <ApcPropertyValue>{event.vehicleLoad}</ApcPropertyValue>

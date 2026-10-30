@@ -24,7 +24,7 @@ export function removeUpdateListener(name) {
 
 let updateTimerHandle = null;
 
-export default (state) => {
+const createUpdateManager = (state) => {
   const timeActions = TimeActions(state);
 
   const updateTime = () => {
@@ -90,3 +90,5 @@ export default (state) => {
     update,
   };
 };
+
+export default createUpdateManager;

@@ -12,7 +12,7 @@ import {validBounds} from "../helpers/validBounds";
 import uniq from "lodash/uniq";
 import {SidePanelTabs} from "../constants";
 
-export default (state) => {
+const createUIActions = (state) => {
   const setMapZoom = action((value) => {
     const nextZoom = intval(value) || 13;
 
@@ -272,3 +272,5 @@ export default (state) => {
     toggleUnsignedEventsLoading,
   };
 };
+
+export default createUIActions;

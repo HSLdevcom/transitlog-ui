@@ -1,7 +1,7 @@
 import {action} from "mobx";
 import {initialFeedback} from "./FeedbackStore";
 
-export default (state) => {
+const createFeedbackActions = (state) => {
   const setContent = action((content) => {
     state.feedbackContent = content;
   });
@@ -73,3 +73,5 @@ export default (state) => {
     resetFeedback,
   };
 };
+
+export default createFeedbackActions;

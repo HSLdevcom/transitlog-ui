@@ -30,7 +30,7 @@ export function createCompositeJourney({date, route, time, uniqueVehicleId = ""}
   };
 }
 
-export default (state) => {
+const createJourneyActions = (state) => {
   const filters = filterActions(state);
   const time = timeActions(state);
 
@@ -147,3 +147,5 @@ export default (state) => {
     setJourneyEventFilter,
   };
 };
+
+export default createJourneyActions;
