@@ -17,7 +17,4 @@ jobs:
     with:
       checkAndTestOutsideDocker: true
       checkAndTestInsideDocker: false
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      DOCKER_HUB_INFODEVOPS_USERNAME: ${{ secrets.TRANSITLOG_DOCKERHUB_USER }}
-      DOCKER_HUB_INFODEVOPS_TOKEN: ${{ secrets.TRANSITLOG_DOCKERHUB_TOKEN }}
+    secrets: inherit
