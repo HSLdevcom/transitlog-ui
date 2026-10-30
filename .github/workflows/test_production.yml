@@ -38,7 +38,7 @@ jobs:
           name: cypress-videos
           path: cypress/videos
       - name: Notify of tests
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         if: always()
         with:
           status: ${{ job.status }}
