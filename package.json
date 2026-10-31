@@ -60,7 +60,7 @@
     "react-dom": "16.14.0",
     "react-fetch-hook": "^1.8.0",
     "react-icons": "^3.9.0",
-    "react-leaflet": "^2.7.0",
+    "react-leaflet": "^5.0.0",
     "react-leaflet-draw": "^0.21.0",
     "react-markdown": "^4.3.1",
     "react-primitives-svg": "^0.0.3",
