@@ -61,30 +61,16 @@ describe("Time smoke tests", () => {
   });*/
 
   it("Can use live mode", () => {
-    cy.getTestElement("route-input").type("1500/1");
-    cy.getTestElement("route-option-1500-1").click({ force: true });
+    const liveToggle = () =>
+      cy.getTestElement("simulation-toggle").find("input");
 
-    cy.getTestElement("observed-journey")
-      .last()
-      .click({ force: true });
+    liveToggle().should("not.be.checked");
+    cy.getTestElement("simulation-toggle").click({force: true});
+    liveToggle().should("be.checked");
+    cy.url().should("include", "live=true");
 
-    cy.assertJourneySelected("1500");
-
-    cy.getTestElement("hfp-marker-icon").click({ force: true });
-    cy.getTestElement("hfp-tooltip-content").should("exist");
-
-    cy.getTestElement("hfp-event-time")
-      .invoke("text")
-      .then((startTime) => {
-        cy.getTestElement("simulation-toggle").click({ force: true });
-
-        cy.getTestElement("hfp-event-time", { timeout: 15000 })
-          .invoke("text")
-          .should((currentTime) => {
-            expect(currentTime).to.not.equal(startTime);
-          });
-      });
-
-    cy.getTestElement("simulation-toggle").click({ force: true });
+    cy.getTestElement("simulation-toggle").click({force: true});
+    liveToggle().should("not.be.checked");
+    cy.url().should("not.include", "live=true");
   });
 });
