@@ -1,6 +1,7 @@
 name: Daily production E2E testing
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 5 * * *"
 
