@@ -116,7 +116,7 @@
     "js-yaml": "^4.3.2",
     "brace-expansion": "^1.1.12",
     "shell-quote": "^1.10.0",
-    "qs": "^6.16.0",
+    "qs": "^6.17.1",
     "websocket-driver": "^0.7.5",
     "launch-editor": "^2.14.1",
     "@babel/core": "^7.29.5",
