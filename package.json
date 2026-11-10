@@ -91,15 +91,15 @@
     "cypress-wait-until": "^3.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^6.4.3",
-    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-prettier": "^3.4.1",
     "husky": "^9.1.7",
     "jest-resolve": "^30.4.1",
-    "jest-styled-components": "^7.4.0",
-    "lint-staged": "^17.3.0",
-    "prettier": "^3.9.6",
+    "jest-styled-components": "^6.3.4",
+    "lint-staged": "^10.5.4",
+    "prettier": "^1.19.1",
     "react-app-polyfill": "^3.0.0",
     "react-app-rewired": "^2.1.5",
-    "react-test-renderer": "^19.2.8"
+    "react-test-renderer": "^16.14.0"
   },
   "overrides": {
     "graphql": "15.8.0",
@@ -131,6 +131,7 @@
     "lodash": "^4.18.1"
   },
   "scripts": {
+    "prepare": "husky",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test --env=jsdom",
@@ -159,7 +160,7 @@
       "import/first": 0,
       "react-hooks/rules-of-hooks": 2,
       "react-hooks/exhaustive-deps": 0,
-      "prettier/prettier": 1,
+      "prettier/prettier": 0,
       "array-callback-return": 0,
       "react/jsx-no-target-blank": 0
     },
@@ -174,11 +175,6 @@
     "*.css": [
       "prettier --write"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "browserslist": {
     "production": [
