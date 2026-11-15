@@ -118,7 +118,7 @@
     "shell-quote": "^1.10.0",
     "qs": "^6.16.0",
     "websocket-driver": "^0.7.5",
-    "launch-editor": "^2.14.1",
+    "launch-editor": "^2.14.2",
     "@babel/core": "^7.29.5",
     "@babel/plugin-transform-modules-systemjs": "^7.29.4",
     "@babel/preset-env": "^7.29.5",
