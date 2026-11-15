@@ -72,7 +72,7 @@
     "serve": "^13.0.4",
     "styled-components": "^4.4.1",
     "styled-react-modal": "^2.0.0",
-    "use-debounce": "^3.3.0"
+    "use-debounce": "^10.1.1"
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
